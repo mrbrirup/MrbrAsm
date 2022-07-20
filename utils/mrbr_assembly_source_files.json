@@ -1,0 +1,37 @@
+{
+    "actions": [        
+        {
+            "action" : "build",
+            "command" : {
+                "app" :"tsc",
+                "args" :" -d"
+            }
+        },
+        {
+            "action" : "build",
+            "command" : {
+                "app" :"tsc",
+                "args" :"--project tsconfig_assembly.json -d"
+            }
+        },
+        {
+            "action" : "concat",
+            "files": [
+                "dest/mrbr/io/file.js",
+                "dest/mrbr/io/filetype.js",
+                "dest/mrbr/assembly/mrbr.js"
+            ],
+            "outFile": "dest/mrbr/assembly/mrbr_assembly.js"
+        },
+        {
+            "action":"copy",
+            "src":[
+                { 
+                    "path":"dest/mrbr",
+                    "extensions": [ ".js", ".map" ]
+                }
+            ],                        
+            "dest":"C:/Users/mrbr/source/repos/Cattap/CattapWeb/wwwroot/lib/mrbr/"
+        }
+    ]
+}

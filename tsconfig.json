@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "ES6",
+    "target": "ES6",
+    "lib": [
+      "ES6"
+    ],
+    "sourceMap": false,
+    "outDir": "./dist",
+    "declaration": false,
+    "rootDir":"./src",
+    "strictFunctionTypes": true,    
+    "importsNotUsedAsValues": "preserve",
+    "noImplicitAny": false
+  },
+  "include": [ "./src/**/*" ],
+  "exclude": [
+    "node_modules",
+    "./dist"
+  ]
+}

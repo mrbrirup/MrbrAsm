@@ -1,0 +1,3 @@
+C:\Users\mrbr\source\repos\Cattap\MrbrAssembly\obj\Debug\MrbrAssembly.njsproj.AssemblyReference.cache
+C:\Users\mrbr\source\repos\Cattap\MrbrAssembly\obj\Debug\MrbrAssembly.njsproj.CoreCompileInputs.cache
+C:\Users\mrbr\source\repos\Cattap\MrbrAssembly\bin\Microsoft.NodejsTools.WebRole.dll

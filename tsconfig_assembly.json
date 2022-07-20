@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "module": "amd",
+    "target": "ES6",
+    "lib": [
+      "ES6"
+    ],
+    "sourceMap": true,
+    "outFile": "dest/mrbr/mrbr_assembly.js",
+    "declaration": true,
+    "rootDir": "./src",
+    "emitDeclarationOnly": true
+  },
+  "include": [
+    "src/mrbr/io/file.ts",
+    "src/mrbr/io/filetype.ts",
+    "src/mrbr/mrbr.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

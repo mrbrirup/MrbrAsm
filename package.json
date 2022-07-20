@@ -1,0 +1,28 @@
+{
+  "name": "mrbr-assembly",
+  "version": "0.0.20",
+  "description": "MrbrAssembly",
+  "main": "./_dist/mrbr/assembly/mrbr.js",
+  "types": "./types/",
+  "author": "",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean"
+  },
+  "devDependencies": {
+    "@types/web": "^0.0.63",
+    "typescript": "^4.6.4",
+    "uglify-js": "^3.16.2",
+    "xml2js": "^0.4.23"
+  },
+  "license": "ISC",
+  "publishConfig": {
+    "registry": "http://localhost:4873"
+  },
+  "files": [
+    "./_dist/mrbr"
+  ],
+  "dependencies": {
+    "yargs": "^17.5.1"
+  }
+}
