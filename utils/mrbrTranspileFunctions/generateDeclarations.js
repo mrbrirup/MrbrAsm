@@ -32,7 +32,7 @@ function updateReferences(manifestEntry, startPosition, text, exportName) {
             indexOf++;
             //indexOf+= replaceText.length;
         }
-        else if ((match = endRegex.exec(text.substring(indexOf + manifestEntry.length, indexOf + manifestEntry.length + 1))) !== null) {   
+        else if ((match = endRegex.exec(text.substring(indexOf + manifestEntry.length, indexOf + manifestEntry.length + 1))) !== null) {
             indexOf++;
         }
         else if (manifestEntry === "MrbrBase") {
@@ -120,13 +120,23 @@ exports.generateDeclarations = function (input, fileManifestEntries) {
 
 
     /*
+        Export Enums
+    */
+    const exportEnumRegex = /(?<exportStatement>(?<exportKeyword>export)\s+(?<variableType>var|const|let)\s+(?<exportName>[\w$]+)\s*(?<end>;|$))/gm;
+    let exportEnumMatch = null;
+    if ((exportEnumMatch = exportEnumRegex.exec(declarationBody)) !== null && exportEnumMatch?.groups?.exportStatement) {
+        exportName = exportEnumMatch?.groups?.exportName;
+        declarationBody = splice(declarationBody, exportEnumMatch.index, exportEnumMatch.groups?.exportStatement.length, `${exportEnumMatch.groups.variableType} ${exportEnumMatch.groups.exportName}${exportEnumMatch.groups.end}`)
+    }
+
+    /*
         Export Functions
     */
-    const exportFunctionRegex = /(?<exportStatement>(?<exportKeyword>export)\s+(?<variableType>var|const|let)\s+(?<exportName>[\w$]+)\s*(?<end>;|$))/gm;
+    const exportFunctionRegex = /(?<exportStatement>(?<exportKeyword>export)\s+(?<function>|function)\s+(?<exportName>[\w$]+)\s*(?<methodSignature>\((?<parameters>[\s\S]*)?\))\s*\{)/gm;
     let exportFunctionMatch = null;
     if ((exportFunctionMatch = exportFunctionRegex.exec(declarationBody)) !== null && exportFunctionMatch?.groups?.exportStatement) {
         exportName = exportFunctionMatch?.groups?.exportName;
-        declarationBody = splice(declarationBody, exportFunctionMatch.index, exportFunctionMatch.groups?.exportStatement.length, `${exportFunctionMatch.groups.variableType} ${exportFunctionMatch.groups.exportName}${exportFunctionMatch.groups.end}`)
+        declarationBody = splice(declarationBody, exportFunctionMatch.index, exportFunctionMatch.groups?.exportStatement.length, `let ${exportFunctionMatch.groups.exportName} = function${exportFunctionMatch.groups.methodSignature}{`)
     }
 
 

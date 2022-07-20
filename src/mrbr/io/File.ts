@@ -10,7 +10,9 @@ export class Mrbr_IO_File {
     isAsync: boolean;
     isModule: boolean
     root: string;
-    constructor(fileType: Mrbr_IO_FileType, root: string | null | undefined, entryName: string, id: string | null, isAsync: boolean, isModule: boolean) {
+    loadingPromise?: Promise<any>;
+    attributes: object
+    constructor(fileType: Mrbr_IO_FileType, root: string | null | undefined, entryName: string, id: string | null, isAsync: boolean, isModule: boolean, attributes?: object) {
         let self = this,
             mrbrIOFileTYpe = Mrbr_IO_FileType;
         self.fileType = fileType;
@@ -31,6 +33,7 @@ export class Mrbr_IO_File {
             default:
                 break;
         }
+        self.attributes = attributes;
     }
     newId() {
         const currentDate = new Date();

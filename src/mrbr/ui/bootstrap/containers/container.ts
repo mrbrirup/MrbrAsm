@@ -6,11 +6,12 @@ export class Mrbr_UI_Bootstrap_Containers_Container {
     constructor(host?: HTMLElement) {
         const self = this;
         self._containerElement = document.createElement("div");
-        self.containerWidth = Mrbr_UI_Bootstrap_Containers_Container$Breakpoints.container;    
+        self.containerWidth = Mrbr_UI_Bootstrap_Containers_Container$Breakpoints.containerFluid;    
         if(host){
             host.appendChild(self._containerElement);
         }
-
+        self._containerElement.style.height = "200px";
+        self._containerElement.style.backgroundColor = "blue";
     }
     get containerWidth():Mrbr_UI_Bootstrap_Containers_Container$Breakpoints { return this._containerWidth; }
     set containerWidth(value: Mrbr_UI_Bootstrap_Containers_Container$Breakpoints) {
