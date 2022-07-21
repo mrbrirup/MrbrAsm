@@ -1,24 +1,24 @@
 import { Mrbr_IO_Fetch } from "./Fetch";
 import { Mrbr_IO_File } from "./File";
 
-export function Mrbr_IO_LoadScriptElement(file: Mrbr_IO_File): Promise<any> {
+export function Mrbr_IO_LoadCssElement(file: Mrbr_IO_File): Promise<any> {
     let resolveResult: Function,
         rejectResult: Function;
-    const script = document.createElement('script'),
+    const style = document.createElement('style'),
         loadResultPromise = new Promise((resolve, reject) => {
             resolveResult = resolve;
             rejectResult = reject;
         });
-    script.id = file.id;
+    style.id = file.id;
 
     let mrbrFetch = new Mrbr_IO_Fetch();
     file.fileName = file.entryName.replace(/_/g, "/")
-    script.id = file.id;
+    style.id = file.id;
 
     if (file.attributes) {
         Object.keys(file.attributes)
             .forEach(attributeName => {
-                script.setAttribute(attributeName, file.attributes[attributeName])
+                style.setAttribute(attributeName, file.attributes[attributeName])
             })
     }
     const
@@ -26,15 +26,14 @@ export function Mrbr_IO_LoadScriptElement(file: Mrbr_IO_File): Promise<any> {
         observer = new MutationObserver(mutations => {
             mutations.forEach(function (mutation: MutationRecord) {
                 for (var mutationsCounter = 0, mutationsCount = (mutation?.addedNodes?.length || 0); mutationsCounter <= mutationsCount; mutationsCounter++)
-                if((<HTMLElement>mutation.addedNodes[mutationsCounter])?.id){
-                    insertedNodes.push((<HTMLElement>mutation.addedNodes[mutationsCounter]).id);
-
-                }
+                    if ((<HTMLElement>mutation.addedNodes[mutationsCounter])?.id) {
+                        insertedNodes.push((<HTMLElement>mutation.addedNodes[mutationsCounter]).id);
+                    }
             })
         }),
         interval = Math.floor(1000 / 60),
         checkMutations = () => {
-            if (insertedNodes.indexOf(script.id) > -1) {
+            if (insertedNodes.indexOf(style.id) > -1) {
                 observer.disconnect();
                 resolveResult(file);
             }
@@ -47,9 +46,9 @@ export function Mrbr_IO_LoadScriptElement(file: Mrbr_IO_File): Promise<any> {
         .then(result => {
             result.text()
                 .then((txt: any) => {
-                    var inlineScript = document.createTextNode(txt);
-                    script.appendChild(inlineScript);
-                    document.head.appendChild(script);
+                    let styleText = document.createTextNode(txt);
+                    style.appendChild(styleText);
+                    document.head.appendChild(style);
                     checkMutations();
                 })
         })

@@ -303,6 +303,6 @@ output.push("")
 fs.appendFileSync(mrbrJSRootFile, output.join("\r\n"));
 
 var minifySource = fs.readFileSync(mrbrJSRootFile, "utf-8")
-var result = UglifyJS.minify(minifySource);
+var result = UglifyJS.minify(minifySource, {compress: true});
 console.log(result.error);
 fs.writeFileSync(mrbrJSRootMiniFile, result.code)

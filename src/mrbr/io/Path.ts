@@ -7,25 +7,27 @@ export class Mrbr_IO_Path {
     static doubleSlashRegex: RegExp = /[\\]{2}|[\/]{2}/
     constructor() { }
     static join(parts: Array<string | Array<string>>, isFileName: boolean): string {
+        const path = Mrbr_IO_Path;
         if (!parts) { return null }
         const entries: Array<string> = [];
         parts.forEach(part => {
-            Mrbr_IO_Path.toParts(part, entries);
+            path.toParts(part, entries);
         })
         let pathParts: Array<string> = [];
         for (let entryCounter = 0, entryCount = entries.length; entryCounter < entryCount; entryCounter++) {
+            const entry = entries[entryCounter]
             if (isFileName === true && entryCount - 1 === entryCounter && entries[entryCounter] === Mrbr_IO_Path.extensionSeperator) {
-                pathParts.push(entries[entryCounter]);
+                pathParts.push(entry);
                 continue;
             }
-            if (entries[entryCounter] === Mrbr_IO_Path.currentFolder) { continue; }
-            if (entries[entryCounter] === Mrbr_IO_Path.parentFolder) { pathParts.pop(); continue; }
-            if (entries[entryCounter] !== undefined && entries[entryCounter] !== null && entries[entryCounter] !== "") {
-                if (entries[entryCounter] === Mrbr_IO_Path.doubleSlash) {
+            if (entry === path.currentFolder) { continue; }
+            if (entry === path.parentFolder) { pathParts.pop(); continue; }
+            if (entry !== undefined && entries[entryCounter] !== null && entries[entryCounter] !== "") {
+                if (entry === path.doubleSlash) {
                     pathParts.push("//");
                 }
                 else {
-                    pathParts.push(entries[entryCounter]);
+                    pathParts.push(entry);
                 }
             }
         }
@@ -33,13 +35,14 @@ export class Mrbr_IO_Path {
         return returnPath;
     }
     static toParts(part: string | Array<string>, entries: Array<string>): Array<string> {
+        const path = Mrbr_IO_Path;
         if (typeof part === "string") {
 
-            let replacedPart = part.replace(Mrbr_IO_Path.doubleSlashRegex, `/${Mrbr_IO_Path.doubleSlash}/`);
-            replacedPart.split(Mrbr_IO_Path.pathSplitRegex).forEach(entry => entries.push(entry))
+            let replacedPart = part.replace(path.doubleSlashRegex, `/${path.doubleSlash}/`);
+            replacedPart.split(path.pathSplitRegex).forEach(entry => entries.push(entry))
         }
         if (Array.isArray(part)) {
-            part.forEach(_part => Mrbr_IO_Path.toParts(_part, entries));
+            part.forEach(_part => path.toParts(_part, entries));
         }
         return entries;
     }

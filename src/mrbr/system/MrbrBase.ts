@@ -1,14 +1,13 @@
 /// <mrbr manifest="false" />
 import { Mrbr_Assembly_MrbrConfig } from '../assembly/mrbrConfig'
 import { Mrbr_Collections_Dictionary } from '../collections/Dictionary';
-import { Mrbr_Collections_KeyValuePair } from '../collections/KeyValuePair';
 import { Mrbr_IO_Fetch } from '../io/Fetch';
 import { Mrbr_IO_File } from '../io/File';
 import { Mrbr_IO_FileType } from '../io/FileType';
 import { Mrbr_IO_Path } from '../io/Path';
 
 type nullFunction = (file: Mrbr_IO_File) => Promise<any> | null;
-
+type loadFunction = (file: Mrbr_IO_File) => Promise<any> | null;
 export class MrbrBase extends EventTarget {
     static cacheTimeOut: number = 5000;
     static temporaryObjectTimeOut: number = 5000;
@@ -19,17 +18,21 @@ export class MrbrBase extends EventTarget {
     host: any;
     _entries: any;
     _files: any;
-    _mrbr: MrbrBase;
-    get mrbr(): MrbrBase { return this._mrbr; }
+    static _mrbr: MrbrBase;
+    get mrbr(): MrbrBase { return MrbrBase._mrbr; }
+    set mrbr(value: MrbrBase) { MrbrBase._mrbr = value; }
+    static get mrbrInstance(): MrbrBase { return MrbrBase._mrbr; }
     constructor(assemblyEntries: Object) {
         super();
-        const self = this;
-        if ((assemblyEntries as any)["Mrbr_Collections_Dictionary"]) {
-            ((self.constructor as any).assembly as Mrbr_Collections_Dictionary<string, any>) = new (assemblyEntries as any)["Mrbr_Collections_Dictionary"]();
+        const self = this,
+            mrbrCollectionsDictionary: string = "Mrbr_Collections_Dictionary";
+        if ((assemblyEntries as any)[mrbrCollectionsDictionary]) {
+            ((self.constructor as any).assembly as Mrbr_Collections_Dictionary<string, any>) = new (assemblyEntries as any)[mrbrCollectionsDictionary]();
         }
+        let statics = (self.statics as any).assembly;
         self._entries =
             new Proxy(
-                (self.statics as any).assembly,
+                statics,
                 {
                     get(target, name) {
                         return (target.has(((name as unknown) as string))) ? (target.get(((name as unknown) as string))).result : undefined;
@@ -38,7 +41,7 @@ export class MrbrBase extends EventTarget {
             )
         self._files =
             new Proxy(
-                (self.statics as MrbrBase).assembly,
+                statics,
                 {
                     get(target, name) {
                         return (target.has(((name as unknown) as string))) ? (target.get(((name as unknown) as string))).file : undefined;
@@ -48,11 +51,10 @@ export class MrbrBase extends EventTarget {
 
         Object.keys(assemblyEntries)
             .forEach(property => {
-
                 self.asm[property] = { file: { loadingPromise: Promise.resolve() }, result: (assemblyEntries as any)[property] };
             })
         assemblyEntries = null;
-        this._mrbr = mrbr;
+        self.mrbr = mrbr;
     }
     static assembly: Mrbr_Collections_Dictionary<string, any>
     get paths(): Map<string, string> {
@@ -76,49 +78,48 @@ export class MrbrBase extends EventTarget {
             Object.keys(config.paths).forEach(key => (self.constructor as any)._paths.set(key, config.paths[key]));
             //(self.constructor as any)._paths.set("Mrbr", mrbrPath)
         }
-        let mrbrPath = (self.constructor as any)._paths.get("Mrbr") || document?.currentScript?.dataset?.pathMrbr || (self.constructor as any).defaultMrbrPath;
+        //let mrbrPath = (self.constructor as any)._paths.get("Mrbr") || document?.currentScript?.dataset?.pathMrbr || (self.constructor as any).defaultMrbrPath;
+        initialiseResolve(self);
         //if (!(self.constructor as any)._paths) {
         //(self.constructor as any)._paths.set("Mrbr", mrbrPath)
         //}
-        let manifest =
-            [
-                new Mrbr_IO_File(Mrbr_IO_FileType.Component, "Mrbr", "Mrbr_Assembly_MrbrConfig", null, false, false)
-                // ,
-                // new entries["Mrbr_IO_File"](entries["Mrbr_IO_FileType"].Component, "Mrbr", "Mrbr_IO_File", false, false),
-                // new entries["Mrbr_IO_File"](entries["Mrbr_IO_FileType"].Component, "Mrbr", "Mrbr_IO_FileType", false, false),
-                // new entries["Mrbr_IO_File"](entries["Mrbr_IO_FileType"].Component, "Mrbr", "Mrbr_Assembly_MrbrConfig", false, false)
-            ];
-        self.loadManifest(manifest)
-            .then(_ => {
-                initialiseResolve(self);
-            })
-            .catch(err => {
-                initialiseReject(err)
-            });
         return initialisePromise
     }
-    loadManifest(manifest: Array<Mrbr_IO_File>): Promise<any> {
+    loadManifest(manifest: Array<Mrbr_IO_File> | Mrbr_IO_File): Promise<any> {
         let self = this,
             loadReject: Function, loadResolve: Function,
             loadPromise = new Promise((resolve, reject) => { loadReject = reject, loadResolve = resolve })
-        let manifestEntries = [];
-        manifest.forEach(manifestEntry => manifestEntries.push(self.load(manifestEntry)))
-        Promise.all(manifestEntries)
-            .then(_ => {
-                loadResolve(self)
-            }
-            )
-        // .catch(err => loadReject(err))
+        Promise.all((Array.isArray(manifest) ? manifest : [manifest]).map(manifestEntry => self.load(manifestEntry)))
+            .then(_ => loadResolve(self))
+            .catch(err => loadReject(err));
         return loadPromise;
     }
+    _loadFunctionMap: Map<string, loadFunction> = null;
+    get loadFunctionMap(): Map<string, loadFunction> {
+        const self = this,
+            mrbrIOFileType = Mrbr_IO_FileType
+        if (self._loadFunctionMap) { return self._loadFunctionMap }
+
+        self._loadFunctionMap = new Map<string, loadFunction>();
+        const self_loadFunctionMap = self._loadFunctionMap,
+            self_loadFunctionMapSet = self_loadFunctionMap.set.bind(self_loadFunctionMap)
+        self_loadFunctionMapSet(mrbrIOFileType.Script, self.loadScript.bind(self));
+        self_loadFunctionMapSet(mrbrIOFileType.ScriptElement, self.loadScriptElement.bind(self));
+        self_loadFunctionMapSet(mrbrIOFileType.ScriptLink, self.loadScriptLink.bind(self));
+        self_loadFunctionMapSet(mrbrIOFileType.CssElement, self.loadCssElement.bind(self));
+        self_loadFunctionMapSet(mrbrIOFileType.CssLink, self.loadCssLink.bind(self));
+        self_loadFunctionMapSet(mrbrIOFileType.Component, self.loadComponent.bind(self));
+
+        return self._loadFunctionMap;
+    }
+
     load(file: Mrbr_IO_File): Promise<any> {
         const self = this,
-            mrbrIOFile = Mrbr_IO_File,
             mrbrIOFileType = Mrbr_IO_FileType;
         let resolveResult: Function,
-            rejectResult: Function;//,            loadResultPromise: Promise<any>;
-        if (self.asm[file.entryName]) {
-            return self.asm[file.entryName].file.filePromise;
+            rejectResult: Function;
+        if (self.asm[file.entryName]?.file?.loadingPromise) {
+            return self.asm[file.entryName].file.loadingPromise;
         }
         self.asm[file.entryName] = { file: file, result: null };
         if (!file.loadingPromise) {
@@ -127,48 +128,16 @@ export class MrbrBase extends EventTarget {
                 rejectResult = reject;
             });
         }
-        else {
-            return file.loadingPromise;
-        }
-        //console.log(file.entryName);
-        //console.log(self.asm[file.entryName]);
-        switch (file.fileType) {
-            // case mrbrIOFileType.Text:
-            //     break;
-            // case mrbrIOFileType.Text:
-            //     break;
-            // case mrbrIOFileType.Json:
-            //     break;
-            // case mrbrIOFileType.Script:
-            //     break;
-            case mrbrIOFileType.ScriptElement:
-                self.loadScriptElement(file)
-                .then(result=> resolveResult(result))
-                .catch(err => rejectResult(err))
-                break;
-            case mrbrIOFileType.ScriptLink:
-                self.loadScriptLink(file)
-                .then(result=> resolveResult(result))
-                .catch(err => rejectResult(err))
-                break;
-            // case mrbrIOFileType.CssElement:
-            //     break;
-            // case mrbrIOFileType.CssLink:
-            //     break;
-            // case mrbrIOFileType.Html:
-            //     break;
-            case mrbrIOFileType.Component:
-                self.loadComponent(file)
-                .then(result => resolveResult(resolveResult))
-                .catch(err => rejectResult(err))
-                break;
-            // case mrbrIOFileType.Other:
-            //     break;
-            default:
-                break;
-        }
+        self.loadFunctionMap.get(file.fileType)(file)
+            .then(result => resolveResult(result))
+            .catch(err => rejectResult(err))
         return file.loadingPromise;
     }
+    _loadScript: nullFunction = null;
+    _loadScriptElement: nullFunction = null;
+    _loadScriptLink: nullFunction = null;
+    _loadCssLink: nullFunction = null;
+    _loadCssElement: nullFunction = null;
     loadComponent(file: Mrbr_IO_File) {
         const self = this,
             componentName = file.entryName;
@@ -177,72 +146,74 @@ export class MrbrBase extends EventTarget {
         let root = self.paths.get(file.root) || "";
         let componentPath = Mrbr_IO_Path.join([root, file.fileName], false) + ".js";
         let fileReject: Function, fileResolve: Function,
-        filePromise = new Promise((resolve, reject) => { fileReject = reject, fileResolve = resolve });
+            filePromise = new Promise((resolve, reject) => { fileReject = reject, fileResolve = resolve });
         mrbrFetch.fetch(componentPath, {})
             .then(result => {
                 result.text()
                     .then((txt: any) => {
-                        var res = new Function("mrbr", "returnManifest", txt)(mrbr, true);
-                        if (res && Array.isArray(res) && res.length > 0) {
-                            self.loadManifest(res)
-                                .then(result => {
-                                    setTimeout(fileResolve(result), 0);
-                                })
-                        }
-                        else {
-                            setTimeout(fileResolve(result), 0);
-                        }
+
+                        self.loadManifest(new Function("mrbr", "returnManifest", "data", txt).bind(self)(mrbr, true, file.data))
+                            .then(result => {
+                                setTimeout(fileResolve(result), 0);
+                            })
                     })
             })
             .catch(err => fileReject(err));
-            return filePromise;
+        return filePromise;
     }
     loadText() { }
     loadJson() { }
-    loadScript() { }
-    //_loadScriptElement : null | (file: Mrbr_IO_File): Promise<any>{return null};
-    _loadScriptElement: nullFunction = null;
-    _loadScriptLink: nullFunction = null;
+    loadScript(file: Mrbr_IO_File): Promise<any> {
+        const self = this;
+        if (self._loadScript) { return self._loadScript(file); }
+        return self.addFileFunction(file, self, "_loadScript", "Mrbr_IO_LoadScript");
+    }
     loadScriptElement(file: Mrbr_IO_File): Promise<any> {
         const self = this;
-        if (self._loadScriptElement) { return self._loadScriptElement(file); }
-        let fileReject: Function, fileResolve: Function,
-            filePromise = new Promise((resolve, reject) => { fileReject = reject, fileResolve = resolve });
-        let manifest = [new Mrbr_IO_File(Mrbr_IO_FileType.Component, "Mrbr", "Mrbr_IO_LoadScriptElement", null, false, false)];
-        self.loadManifest(manifest)
-            .then(result => {
-                self._loadScriptElement = mrbr._entries["Mrbr_IO_LoadScriptElement"].bind(self);
-                self._loadScriptElement(file)
-                    .then(_ => {
-                        fileResolve(result)
-                    })
-            })
-            .catch(err => fileReject(err));
-        return filePromise;
+        return self._loadScriptElement ? self._loadScriptElement(file) : self.addFileFunction(file, self, "_loadScriptElement", "Mrbr_IO_LoadScriptElement");
     }
     loadScriptLink(file: Mrbr_IO_File): Promise<any> {
         const self = this;
-        if (self._loadScriptLink) { return self._loadScriptLink(file); }
-        let fileReject: Function, fileResolve: Function,
-            filePromise = new Promise((resolve, reject) => { fileReject = reject, fileResolve = resolve });
-        let manifest = [new Mrbr_IO_File(Mrbr_IO_FileType.Component, "Mrbr", "Mrbr_IO_LoadScriptLink", null, false, false)];
-        self.loadManifest(manifest)
-            .then(result => {
-                self._loadScriptLink = mrbr._entries["Mrbr_IO_LoadScriptLink"].bind(self);
-                self._loadScriptLink(file)
-                    .then(_ => {
-                        fileResolve(result)
-                    })
-                    .catch(err => fileReject(err))
-            })
-            .catch(err => fileReject(err));
-        return filePromise;
+        return self._loadScriptLink ? self._loadScriptLink(file) : self.addFileFunction(file, self, "_loadScriptLink", "Mrbr_IO_LoadScriptLink");
     }
-    loadCssElement() { }
-    loadCssLink() { }
+    loadCssElement(file: Mrbr_IO_File): Promise<any> {
+        const self = this;
+        return self._loadCssLink ? self._loadCssLink(file) : self.addFileFunction(file, self, "_loadCssElement", "Mrbr_IO_LoadCssElement");
+    }
+    loadCssLink(file: Mrbr_IO_File): Promise<any> {
+        const self = this;
+        return self._loadCssLink ? self._loadCssLink(file) : self.addFileFunction(file, self, "_loadCssLink", "Mrbr_IO_LoadCssLink");
+
+    }
     loadHtml() { }
     loadOther() { }
-
+    addFunction(target: any, targetFunctionName: string, newFunctionName: string, root?: string): Promise<any> {
+        const self = this;
+        if (target[targetFunctionName]) { return Promise.resolve(); }
+        let addFunctionReject: Function, addFunctionResolve: Function,
+            addFunctionPromise = new Promise((resolve, reject) => { addFunctionReject = reject, addFunctionResolve = resolve });
+        let manifest = new Mrbr_IO_File(Mrbr_IO_FileType.Component, null, newFunctionName, null, false, false);
+        self.loadManifest(manifest)
+            .then(result => {
+                target[targetFunctionName] = mrbr._entries[newFunctionName].bind(target);
+                addFunctionResolve(target[targetFunctionName])
+            })
+            .catch(err => addFunctionReject(err));
+        return addFunctionPromise;
+    }
+    addFileFunction(file: Mrbr_IO_File, target: any, targetFunctionName: string, newFunctionName: string, root?: string): Promise<any> {
+        const self = this;
+        let addFileFunctionReject: Function, addFileFunctionResolve: Function,
+            addFileFunctionPromise = new Promise((resolve, reject) => { addFileFunctionReject = reject, addFileFunctionResolve = resolve });
+        self.addFunction(target, targetFunctionName, newFunctionName)
+            .then(fn => {
+                fn(file)
+                    .then(result => { addFileFunctionResolve(result) })
+                    .catch(err => addFileFunctionReject(err))
+            })
+            .catch(err => addFileFunctionReject(err))
+        return addFileFunctionPromise;
+    }
     static eventNames = {
         DOMContentLoaded: "DOMContentLoaded",
         load: "load",

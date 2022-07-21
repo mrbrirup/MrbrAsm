@@ -12,9 +12,10 @@ export class Mrbr_IO_File {
     root: string;
     loadingPromise?: Promise<any>;
     attributes: object
+    data?:object
     constructor(fileType: Mrbr_IO_FileType, root: string | null | undefined, entryName: string, id: string | null, isAsync: boolean, isModule: boolean, attributes?: object) {
         let self = this,
-            mrbrIOFileTYpe = Mrbr_IO_FileType;
+            mrbrIOFileType = Mrbr_IO_FileType;
         self.fileType = fileType;
         self.entryName = entryName;
         if (id) { self.id = id; }
@@ -23,11 +24,11 @@ export class Mrbr_IO_File {
         self.isModule = isModule;
         self.root = root;
         switch (fileType) {
-            case Mrbr_IO_FileType.Component:
-                const componentToFileNameRegex = /\[._]/g
+            case mrbrIOFileType.Component:
+                const componentToFileNameRegex = /[._]/g
                 self.fileName = entryName.replace(componentToFileNameRegex, "/");
                 if (!root) {
-                    self.root = self.fileName = self.fileName.substring(0, self.fileName.indexOf("/"))
+                    self.root = self.fileName.substring(0, self.fileName.indexOf("/"))
                 }
                 break;
             default:
@@ -41,7 +42,7 @@ export class Mrbr_IO_File {
         var ticksPerMillisecond = 10000;
         var ticks = epochTicks + (currentDate.getTime() * ticksPerMillisecond);
         const suffix = Math.floor(Math.random() * 100);
-        const prefix = "script";
+        const prefix = "file";
         const id = `${prefix}_${ticks}_${suffix}`;
         return id;
     }

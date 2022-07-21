@@ -35,7 +35,7 @@ function updateReferences(manifestEntry, startPosition, text, exportName) {
         else if ((match = endRegex.exec(text.substring(indexOf + manifestEntry.length, indexOf + manifestEntry.length + 1))) !== null) {
             indexOf++;
         }
-        else if (manifestEntry === "MrbrBase") {
+        else if (manifestEntry === "MrbrBase" && exportName === "MrbrBase") {
             indexOf++;
         }
         else {
@@ -105,9 +105,6 @@ exports.generateDeclarations = function (input, fileManifestEntries) {
 
             //console.log(fileManifestEntries.filter(entry => entry.objectName === exportName))
             //fileManifestEntries.filter(entry => entry.objectName === exportName)?.children?
-            if (exportName === "Mrbr_UI_Bootstrap_Containers_Container") {
-                exportName = "Mrbr_UI_Bootstrap_Containers_Container"
-            }
             declarationBody = updateReferences(exportName, startPosition, declarationBody, exportName)
             importedReferences.forEach(entry => {
                 declarationBody = updateReferences(entry, 0, declarationBody, exportName)
@@ -137,6 +134,10 @@ exports.generateDeclarations = function (input, fileManifestEntries) {
     if ((exportFunctionMatch = exportFunctionRegex.exec(declarationBody)) !== null && exportFunctionMatch?.groups?.exportStatement) {
         exportName = exportFunctionMatch?.groups?.exportName;
         declarationBody = splice(declarationBody, exportFunctionMatch.index, exportFunctionMatch.groups?.exportStatement.length, `let ${exportFunctionMatch.groups.exportName} = function${exportFunctionMatch.groups.methodSignature}{`)
+        declarationBody = updateReferences(exportName, exportFunctionMatch.index+exportFunctionMatch.groups.exportStatement.length, declarationBody, exportName)
+        importedReferences.forEach(entry => {
+            declarationBody = updateReferences(entry, 0, declarationBody, exportName)
+        });
     }
 
 
