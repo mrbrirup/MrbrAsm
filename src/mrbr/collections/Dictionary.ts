@@ -6,13 +6,20 @@ export class Mrbr_Collections_Dictionary<TKey, TValue> extends EventTarget {
     static removeChange = "remove";
     static updateChange = "update";
     static clearChange = "clear";
-    _dictionary: Map<TKey, TValue> = new Map();
+    //_dictionary: Map<TKey, TValue> = new Map();
+    _dictionary: Map<TKey, TValue>;
     index: Map<TKey, TValue>
     get dictionary() { return this.index; }
 
-    constructor() {
+    constructor(sourceMap?: Map<TKey, TValue>) {
         super();
         const self = this;
+        if(sourceMap){
+            self._dictionary = sourceMap;
+        }
+        else{
+            this._dictionary = new Map<TKey,TValue>();
+        }
         self.index =
             new Proxy(
                 self._dictionary,
