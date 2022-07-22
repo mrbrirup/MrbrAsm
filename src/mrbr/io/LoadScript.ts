@@ -4,18 +4,17 @@ import { Mrbr_IO_File } from "./File";
 
 export function Mrbr_IO_LoadScript(file: Mrbr_IO_File): Promise<any> {
     const self = this;
-    let mrbrFetch = new Mrbr_IO_Fetch();
-    let fileReject: Function, fileResolve: Function,
-        filePromise = new Promise((resolve, reject) => { fileReject = reject, fileResolve = resolve });
-        console.log(file)
+    let mrbrFetch = new Mrbr_IO_Fetch(),
+        instance = MrbrBase.mrbrInstance,
+        promise = instance._promise()
     mrbrFetch.fetch(file.entryName, {})
         .then(result => {
             result.text()
                 .then((txt: any) => {
-                    var returnResult = new Function("mrbr", "returnResult", "data", txt)(MrbrBase.mrbrInstance, true, file.data);
-                    setTimeout(fileResolve(returnResult), 0);
+                    var returnResult = new Function("mrbr", "returnResult", "data", txt)(instance, true, file.data);
+                    setTimeout(promise.resolve(returnResult), 0);
                 })
         })
-        .catch(err => fileReject(err));
-    return filePromise;
+        .catch(err => promise.reject(err));
+    return promise.promise;
 }

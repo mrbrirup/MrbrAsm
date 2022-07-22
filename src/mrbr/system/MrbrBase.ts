@@ -57,7 +57,7 @@ export class MrbrBase extends EventTarget {
                 self.asm[property] = { file: { loadingPromise: Promise.resolve() }, result: (assemblyEntries as any)[property] };
             })
         assemblyEntries = null;
-        self.mrbr = mrbr;
+        self.mrbr = this;
     }
     _assembly: Map<string, any> = new Map<string, any>();
     get paths(): Map<string, string> {

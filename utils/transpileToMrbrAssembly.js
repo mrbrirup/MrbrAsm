@@ -288,14 +288,14 @@ output.push(`mrbr = self["mrbr"] = self["mrbr"] || new MrbrBase(cfg);`)
 //
 addedEntries = [];
 output.push(`setTimeout(() => {`)
-fileManifestEntries
-.flat()
-.forEach(entry => {
-    if (!addedEntries.includes(entry.objectName)) {
-        addedEntries.push(entry.objectName)
-        output.push(`${entry.objectName} = null;`)
-    }
-});
+// fileManifestEntries
+// .flat()
+// .forEach(entry => {
+//     if (!addedEntries.includes(entry.objectName)) {
+//         addedEntries.push(entry.objectName)
+//         output.push(`${entry.objectName} = null;`)
+//     }
+// });
 //output.push(`setTimeout(() => {${entry.objectName} = null;}, MrbrBase.temporaryObjectTimeOut);`)
 output.push(`cfg = null;}, MrbrBase.temporaryObjectTimeOut);`)
 output.push("})(this, false)")
