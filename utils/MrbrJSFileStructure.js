@@ -23,6 +23,8 @@ class MrbrJSFileStructure {
     declarations;
     imports;
     encoding = 'utf8';
+    declarationFileName;
+    manifestFileName;
     constructor(transpileFile) {
         let self = this;
         self.transpileFile = transpileFile;

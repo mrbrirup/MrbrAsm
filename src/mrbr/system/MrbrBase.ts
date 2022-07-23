@@ -9,7 +9,7 @@ type nullFunction = (file: Mrbr_IO_File) => Promise<any> | null;
 type loadFunction = (file: Mrbr_IO_File) => Promise<any> | null;
 type mrbrPromise = {
     promise: Promise<any>;
-    reject:Function;
+    reject: Function;
     resolve: Function;
 }
 export class MrbrBase extends EventTarget {
@@ -115,8 +115,6 @@ export class MrbrBase extends EventTarget {
             return self_asm[file.entryName].file.loadingPromise;
         }
         self.asm[file.entryName] = { file: file, result: null };
-        // let resolveResult: Function,
-        //     rejectResult: Function;
         let promise = self._promise();
         if (!file.loadingPromise) {
             file.loadingPromise = promise.promise;
@@ -139,7 +137,7 @@ export class MrbrBase extends EventTarget {
             resolve: _resolve
         }
     }
-    
+
     loadComponent(file: Mrbr_IO_File) {
         const self = this,
             componentName = file.entryName;
@@ -152,7 +150,9 @@ export class MrbrBase extends EventTarget {
             .then(result => {
                 result.text()
                     .then((txt: any) => {
-                        self.loadManifest(new Function("mrbr", "returnManifest", "data", txt).bind(self)(mrbr, true, file.data))
+                        let completedPromise = self._promise();
+                        new Function("mrbr", "returnManifest", "data", "completedPromise", txt).bind(self)(mrbr, true, file.data, completedPromise);
+                        completedPromise.promise
                             .then(result => {
                                 setTimeout(promise.resolve(result), 0);
                             })

@@ -92,10 +92,12 @@ exports.generateDeclarations = function (input, fileManifestEntries) {
         if (classDeclarationMatch.groups?.exportStatement) {
             let exportType = classDeclarationMatch?.groups?.exportType,
                 startPosition = classDeclarationMatch?.index,
-                classExtension = classDeclarationMatch.groups?.extends && classDeclarationMatch.groups?.baseClass ? (` extends ${classDeclarationMatch.groups?.baseClass} `) : "";
+                includeClassExtension = classDeclarationMatch.groups?.extends && classDeclarationMatch.groups?.baseClass ? (`\r\nvar mrbrClassExtension = (${classDeclarationMatch.groups?.baseClass});\r\n`) : "";
+                classExtension = classDeclarationMatch.groups?.extends && classDeclarationMatch.groups?.baseClass ? (` extends mrbrClassExtension `) : "";
+                //classExtension = classDeclarationMatch.groups?.extends && classDeclarationMatch.groups?.baseClass ? (` extends ${classDeclarationMatch.groups?.baseClass} `) : "";
             exportName = classDeclarationMatch?.groups?.exportName;
             if (exportName === mrbrBaseName) { isMrbrBase = true }
-            const replaceText = `let ${exportName} = ${exportType} ${classExtension}`
+            const replaceText = `${includeClassExtension}let ${exportName} = ${exportType} ${classExtension}`
             declarationBody = splice(declarationBody, startPosition, classDeclarationMatch.groups.exportStatement.length - classDeclarationMatch.groups.end.length, replaceText)
             //let findResult = findStartAndEndInFile(declarationBody, classDeclarationMatch.index + classDeclarationMatch.groups?.exportStatement.length - 1);
             let findResult = findStartAndEndInFile(declarationBody, classDeclarationMatch.index);
@@ -134,7 +136,7 @@ exports.generateDeclarations = function (input, fileManifestEntries) {
     if ((exportFunctionMatch = exportFunctionRegex.exec(declarationBody)) !== null && exportFunctionMatch?.groups?.exportStatement) {
         exportName = exportFunctionMatch?.groups?.exportName;
         declarationBody = splice(declarationBody, exportFunctionMatch.index, exportFunctionMatch.groups?.exportStatement.length, `let ${exportFunctionMatch.groups.exportName} = function${exportFunctionMatch.groups.methodSignature}{`)
-        declarationBody = updateReferences(exportName, exportFunctionMatch.index+exportFunctionMatch.groups.exportStatement.length, declarationBody, exportName)
+        declarationBody = updateReferences(exportName, exportFunctionMatch.index + exportFunctionMatch.groups.exportStatement.length, declarationBody, exportName)
         importedReferences.forEach(entry => {
             declarationBody = updateReferences(entry, 0, declarationBody, exportName)
         });
@@ -145,22 +147,37 @@ exports.generateDeclarations = function (input, fileManifestEntries) {
 
 
 
-    output.push(declarationBody);
 
 
     if (!isMrbrBase) {
-        output.push(`if (mrbr?.assembly?.get("${exportName}")) { let mrbrAsm = mrbr.asm["${exportName}"]; mrbrAsm ? mrbrAsm.result = ${exportName} : mrbrAsm = { file: null, result: ${exportName} }}`)
-        output.push("if(returnManifest) { return [");
+        //output.push("if(returnManifest) { return [");
 
         //output.push(fileManifestEntries.filter(entry => entry.objectName === exportName).map(include => (`new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].Component, "Mrbr", "${include.objectName}", null, false, false)`)).join(",\r\n"));
+        output.push(`mrbr.loadManifest([`)
         output.push(importedReferences.map(include => (`new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].Component, "Mrbr", "${include}", null, false, false)`)).join(",\r\n"));
-        output.push("];}");
-    }
+        //output.push("];}");
 
+        //new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].Component, "Mrbr", "Mrbr_UI_Controls_NavBar", null, false, false)
+        output.push(`]).then(_ => {`)
+
+
+
+    }
+    output.push(declarationBody);
+    if (!isMrbrBase) { output.push(`if (mrbr?.assembly?.get("${exportName}")) { let mrbrAsm = mrbr.asm["${exportName}"]; mrbrAsm ? mrbrAsm.result = ${exportName} : mrbrAsm = { file: null, result: ${exportName} }}`) }
+    output.push("})");
+
+    // return [
+    //     //new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].Component, "Mrbr", "Mrbr_UI_Controls_NavBar", null, false, false)
+    // ];
     //referencedIncludes.forEach(include => output.push(`setTimeout(() => { ${tempNamePrefix}${include.source} = null} , mrbr.entries["${mrbrBaseName}"].temporaryObjectTimeOut);`));
     output.push("");
     //output.push(`setTimeout(() => { ${mrbrBaseName} = null} , mrbr.entries["${mrbrBaseName}"].temporaryObjectTimeOut);`);
-    return output.join("\r\n");
+    return {
+        declaration: declarationBody,
+        importedReferences: importedReferences.map(include => (`new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].Component, "Mrbr", "${include}", null, false, false)`)).join(",\r\n"),
+        exportName: exportName
+    }
 }
 
 
