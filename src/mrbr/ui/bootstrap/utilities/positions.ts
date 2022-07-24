@@ -1,4 +1,4 @@
-export enum Mrbr_UI_Bootstrap_Controls_Utilities_Position {
+export enum Mrbr_UI_Bootstrap_Controls_Utilities_Positions {
     positionStatic = "position-static",
     positionRelative = "position-relative",
     positionAbsolute = "position-absolute",
