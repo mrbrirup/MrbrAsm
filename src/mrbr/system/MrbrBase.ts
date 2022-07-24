@@ -4,6 +4,7 @@ import { Mrbr_IO_Fetch } from '../io/Fetch';
 import { Mrbr_IO_File } from '../io/File';
 import { Mrbr_IO_FileType } from '../io/FileType';
 import { Mrbr_IO_Path } from '../io/Path';
+import { Mrbr_UI_Bootstrap_Controls_Control } from '../ui/bootstrap/controls/control';
 
 type nullFunction = (file: Mrbr_IO_File) => Promise<any> | null;
 type loadFunction = (file: Mrbr_IO_File) => Promise<any> | null;
@@ -29,7 +30,7 @@ export class MrbrBase extends EventTarget {
     static get mrbrInstance(): MrbrBase { return MrbrBase._mrbr; }
     constructor(assemblyEntries: Object) {
         super();
-
+        
         const self = this,
             assembly = self.assembly;
         self._entries = new Proxy(assembly, {
@@ -51,11 +52,11 @@ export class MrbrBase extends EventTarget {
                 return (target.has(name as string)) ? (target.get(name as string)).file : undefined;
             }
         })
-
+        
         Object.keys(assemblyEntries)
-            .forEach(property => {
-                self.asm[property] = { file: { loadingPromise: Promise.resolve() }, result: (assemblyEntries as any)[property] };
-            })
+        .forEach(property => {
+            self.asm[property] = { file: { loadingPromise: Promise.resolve() }, result: (assemblyEntries as any)[property] };
+        })
         assemblyEntries = null;
         self.mrbr = this;
     }
@@ -78,7 +79,6 @@ export class MrbrBase extends EventTarget {
         if (config?.paths) {
             Object.keys(config.paths).forEach(key => self_paths.set(key, config.paths[key]));
         }
-
         promise.resolve(self);
         return promise.promise;
     }

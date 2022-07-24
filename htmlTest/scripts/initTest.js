@@ -3,6 +3,7 @@ let cfg = {
 };
 function runRes(result) {
     try {
+
         let container = new mrbr.entries["Mrbr_Tests_Application"]()
     } catch (error) {
         console.log(error)
@@ -12,7 +13,6 @@ function runRes(result) {
     //     .then(r => {})
     //     .catch(r => console.log(r))
 }
-
 mrbr
     .initialise(cfg)
     .then(self => {

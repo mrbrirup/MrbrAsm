@@ -1,0 +1,28 @@
+export enum Mrbr_UI_Bootstrap_Controls_Utilities_Flex$Direction {
+    //  Direction
+    flexRow = "flex-row",
+    flexRowReverse = "flex-row-reverse",
+    flexColumn = "flex-column",
+    flexColumnRreverse = "flex-column-reverse",
+    flexSmRow = "flex-sm-row",
+    flexSmRowReverse = "flex-sm-row-reverse",
+    flexSmColumn = "flex-sm-column",
+    flexSmColumnReverse = "flex-sm-column-reverse",
+    flexMdRow = "flex-md-row",
+    flexMdRowReverse = "flex-md-row-reverse",
+    flexMdColumn = "flex-md-column",
+    flexMdColumnReverse = "flex-md-column-reverse",
+    flexLgRow = "flex-lg-row",
+    flexLgRowReverse = "flex-lg-row-reverse",
+    flexLgColumn = "flex-lg-column",
+    flexLgColumnReverse = "flex-lg-column-reverse",
+    flexXlRow = "flex-xl-row",
+    flexXlRowReverse = "flex-xl-row-reverse",
+    flexXlColumn = "flex-xl-column",
+    flexXlColumnReverse = "flex-xl-column-reverse",
+    flexXxlRow = "flex-xxl-row",
+    flexXxlRowReverse = "flex-xxl-row-reverse",
+    flexXxlColumn = "flex-xxl-column",
+    flexXxlColumnReverse = "flex-xxl-column-reverse",
+
+}
