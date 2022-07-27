@@ -1,4 +1,4 @@
-export enum Mrbr_UI_Bootstrap_Utilities_Sizing {
+export enum Mrbr_UI_Bootstrap_Utilities_Spacing {
     margin0 = "m-0",
     margin1 = "m-1",
     margin2 = "m-2",

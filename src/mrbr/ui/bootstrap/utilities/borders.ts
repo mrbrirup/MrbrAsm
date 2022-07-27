@@ -1,4 +1,4 @@
-export enum Mrbr_UI_Bootstrap_Controls_Utilities_Borders {
+export enum Mrbr_UI_Bootstrap_Utilities_Borders {
     border = "border",
     borderTop = "border-top",
     borderEnd = "border-end",

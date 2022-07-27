@@ -1,4 +1,4 @@
-export enum Mrbr_UI_Bootstrap_Controls_Helpers_Positions {
+export enum Mrbr_UI_Bootstrap_Helpers_Positions {
     fixedTop = "fixed-top",
     fixedBottom = "fixed-bottom",
     stickyTop = "sticky-top",

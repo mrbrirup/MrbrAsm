@@ -1,4 +1,4 @@
-export enum Mrbr_UI_Bootstrap_Controls_Utilities_Background {
+export enum Mrbr_UI_Bootstrap_Utilities_Backgrounds {
     primary = "bg-primary",
     secondary = "bg-secondary",
     success = "bg-success",

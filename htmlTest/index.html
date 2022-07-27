@@ -8,7 +8,8 @@
     <title>Mrbr Test</title>
     <!-- <script src="../dist/min/mrbr.min.js"></script> -->
     <style>
-        html,body{
+        html,
+        body {
             height: 100vh;
             width: 100vw;
         }
@@ -16,7 +17,28 @@
     <!-- <script src="../dist/min/mrbr.min.js"></script> -->
     <script src="../dist/asm/mrbr.js"></script>
     <script data-path-mrbr="../dist/asm" src="./scripts/initTest.js"></script>
+    <link href="./style/mrbrDialog.css" rel="stylesheet" type="text/css">
+    <style>
+
+        @keyframes FadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .mrbr_fadeIn {
+            animation-name: FadeIn;
+            animation-duration: 1s;
+            transition-timing-function: ease-in;
+        }
+    </style>
 </head>
+
 <body>
 </body>
+
 </html>

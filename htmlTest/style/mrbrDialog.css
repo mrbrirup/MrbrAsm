@@ -1,0 +1,71 @@
+:root {
+  --mrbr-dialog-handle-size: 5px;
+}
+
+.mrbr-dialog-handle {
+  position: absolute;
+}
+
+.mrbr-dialog-handle-n {
+  top: calc(-1 * var(--mrbr-dialog-handle-size));
+  left: 0;
+  right: 0;
+  height: calc(2 * var(--mrbr-dialog-handle-size));
+  cursor: n-resize;
+}
+
+.mrbr-dialog-handle-e {
+  top: 0;
+  right: calc(-1 * var(--mrbr-dialog-handle-size));
+  bottom: 0;
+  width: calc(2 * var(--mrbr-dialog-handle-size));
+  cursor: w-resize;
+}
+
+.mrbr-dialog-handle-s {
+  bottom: calc(-1 * var(--mrbr-dialog-handle-size));
+  left: 0;
+  right: 0;
+  height: calc(2 * var(--mrbr-dialog-handle-size));
+  cursor: n-resize;
+}
+
+.mrbr-dialog-handle-w {
+  top: 0;
+  left: calc(-1 * var(--mrbr-dialog-handle-size));
+  bottom: 0;
+  width: calc(2 * var(--mrbr-dialog-handle-size));
+  cursor: w-resize;
+}
+
+.mrbr-dialog-handle-nw {
+  top: calc(-1 * var(--mrbr-dialog-handle-size));
+  left: calc(-1 * var(--mrbr-dialog-handle-size));
+  width: calc(3 * var(--mrbr-dialog-handle-size));
+  height: calc(3 * var(--mrbr-dialog-handle-size));
+  cursor: nw-resize;
+}
+
+.mrbr-dialog-handle-ne {
+  top: calc(-1 * var(--mrbr-dialog-handle-size));
+  right: calc(-1 * var(--mrbr-dialog-handle-size));
+  width: calc(3 * var(--mrbr-dialog-handle-size));
+  height: calc(3 * var(--mrbr-dialog-handle-size));
+  cursor: ne-resize;
+}
+
+.mrbr-dialog-handle-sw {
+  bottom: calc(-1 * var(--mrbr-dialog-handle-size));
+  left: calc(-1 * var(--mrbr-dialog-handle-size));
+  width: calc(3 * var(--mrbr-dialog-handle-size));
+  height: calc(3 * var(--mrbr-dialog-handle-size));
+  cursor: ne-resize;
+}
+
+.mrbr-dialog-handle-se {
+  bottom: calc(-1 * var(--mrbr-dialog-handle-size));
+  right: calc(-1 * var(--mrbr-dialog-handle-size));
+  width: calc(3 * var(--mrbr-dialog-handle-size));
+  height: calc(3 * var(--mrbr-dialog-handle-size));
+  cursor: nw-resize;
+}

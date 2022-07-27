@@ -10,73 +10,11 @@ const args = require("yargs").argv;
 //const regex = /^\/{3}\s*(?<mrbrTag>\<mrbr.*?\/\>)\s*$|(^(?<import>import)\s*\{*\s*(?<assembly>\S*?)\s*\}*\s*from\s*(?<fileName>'.*?'|".*?")[\s;]*?\s*?$)|(^(?<export>\s*export\s+)(?<exportType>(class|enum))\s+(?<exportName>(\S[\S_]+)?)(?<genericType>\<\s*\S+\s*\>)*(?<extends>\s+extends\s+)*(?<baseClass>\S[\S_]+)?(\s*{))/mg;
 const typescriptFileExtension = ".ts";
 const { generateManifest } = require("./mrbrTranspileFunctions/generateManifest");
-//const { match } = require("assert");
 var UglifyJS = require("uglify-js");
 
 
 let { findStartAndEndInFile } = require("./mrbrTranspileFunctions/findObjectStartAndEndInFile");
 const { isTemplateExpression } = require("typescript");
-
-
-// let res = findStartAndEndInFile(`import { Mrbr_IO_FileType } from "./FileType";
-// export class Mrbr_IO_File {
-//     constructor(fileType, root, entryName, id, isAsync, isModule) {
-//         let self = this, mrbrIOFileTYpe = Mrbr_IO_FileType;
-//         self.fileType = fileType;
-//         self.entryName = entryName;
-//         if (id) {
-//             self.id = id;
-//         }
-//         else {
-//             self.id = self.newId();
-//         }
-//         self.isAsync = isAsync;
-//         self.isModule = isModule;
-//         self.root = root;
-//         switch (fileType) {
-//             case Mrbr_IO_FileType.Component:
-//                 const componentToFileNameRegex = /\[._]/g;
-//                 self.fileName = entryName.replace(componentToFileNameRegex, "/");
-//                 if (!root) {
-//                     self.root = self.fileName = self.fileName.substring(0, self.fileName.indexOf("/"));
-//                 }
-//                 break;
-//             default:
-//                 break;
-//         }
-//     }
-//     get fileType() { return this._fileType; }
-//     ;
-//     set fileType(value) { this._fileType = value; }
-//     ;
-//     newId() {
-//         const currentDate = new Date();
-//         var epochTicks = 621355968000000000;
-//         var ticksPerMillisecond = 10000;
-//         var ticks = epochTicks + (currentDate.getTime() * ticksPerMillisecond);
-//         const suffix = Math.floor(Math.random() * 100);
-//         const prefix = "script";
-//         const id = "{prefix}_{ticks}_{suffix}";
-//         return id;
-//     }
-// }
-// Mrbr_IO_Fetch.emptyString = "";
-// Mrbr_IO_Fetch.loadProgressEvent = "fetch_loadProgress";
-// Mrbr_IO_Fetch.messageEvent = "fetch_message";
-// Mrbr_IO_Fetch.contentEncodingHeaderName = "content-encoding";
-// Mrbr_IO_Fetch.contentLengthHeaderName = "content-length";
-// Mrbr_IO_Fetch.customFileSizeHeaderName = "x-file-size";
-// Mrbr_IO_Fetch.cancelRequestRejectMessage = "Cancel requested before server response.";
-// Mrbr_IO_Fetch.readableStreamNotSupportedMessage = "ReadableStream not supported in browser";
-// Mrbr_IO_Fetch.cancellingDownloadRequestMessage = "Cancel download requested";
-// Mrbr_IO_Fetch.cancellingDownloadMessage = "Cancelling current download";
-// Mrbr_IO_Fetch.cancellingReadMessage = "Canceling read";
-
-
-// `, 27)
-// console.log(res)
-// exit(0)
-
 
 //const parseString = require("xml2js").parseString;
 
@@ -122,7 +60,6 @@ function RecurseFolders(folder, files) {
         const sourceAbsoluteFileName = path.join(folder, file);
         const javascriptSourceAbsoluteFileName = path.join(resolvedDestinationFolder, sourceAbsoluteFileName.substring(resolvedSourceFolder.length, sourceAbsoluteFileName.length - 2) + "js");
         const assemblyDestinationAbsoluteFileName = path.join(resolvedDestinationFolder, "asm", sourceAbsoluteFileName.substring(resolvedSourceFolder.length, sourceAbsoluteFileName.length - 2) + "js");
-        //const destinationAbsoluteFileName = path.join(resolvedDestinationFolder, sourceAbsoluteFileName.substring(resolvedSourceFolder.length, sourceAbsoluteFileName.length - 2) + "js");
         if (fs.statSync(sourceAbsoluteFileName).isDirectory()) { return RecurseFolders(sourceAbsoluteFileName, files); }
         const extName = path.extname(sourceAbsoluteFileName).toLowerCase();
         if (extName === typescriptFileExtension) {
@@ -166,7 +103,6 @@ fileManifestEntries.forEach(entry => {
     entry.destinationFileName = `${entry.destinationFileName.substring(0, entry.destinationFileName.length - 2)}js`
     const baseName = path.basename(entry.destinationFileName)
     const assemblyDestinationAbsoluteFileName = path.join(resolvedDestinationFolder, "asm", dName);
-    //const assemblyDestinationAbsoluteFileName = path.join(resolvedDestinationFolder,"asm", entry.destinationFileName.substring(resolvedSourceFolder.length, entry.destinationFileName.length - 2) + "js");
     entry.assemblyFileName = assemblyDestinationAbsoluteFileName;
 })
 
