@@ -69,3 +69,7 @@
   height: calc(3 * var(--mrbr-dialog-handle-size));
   cursor: nw-resize;
 }
+
+.mrbr-dialog-handle-drag{
+  cursor: move;
+}

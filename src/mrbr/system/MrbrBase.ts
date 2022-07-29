@@ -30,7 +30,7 @@ export class MrbrBase extends EventTarget {
     static get mrbrInstance(): MrbrBase { return MrbrBase._mrbr; }
     constructor(assemblyEntries: Object) {
         super();
-        
+
         const self = this,
             assembly = self.assembly;
         self._entries = new Proxy(assembly, {
@@ -52,11 +52,11 @@ export class MrbrBase extends EventTarget {
                 return (target.has(name as string)) ? (target.get(name as string)).file : undefined;
             }
         })
-        
+
         Object.keys(assemblyEntries)
-        .forEach(property => {
-            self.asm[property] = { file: { loadingPromise: Promise.resolve() }, result: (assemblyEntries as any)[property] };
-        })
+            .forEach(property => {
+                self.asm[property] = { file: { loadingPromise: Promise.resolve() }, result: (assemblyEntries as any)[property] };
+            })
         assemblyEntries = null;
         self.mrbr = this;
     }
@@ -227,6 +227,7 @@ export class MrbrBase extends EventTarget {
      * @returns {Promise} DOM is "ready"
      */
     onReady(config: any) {
+        const readyStateChange_Handler = readyStateChange;
         let self = this,
             fnResolve: Function,
             self_constructor = self.constructor,
@@ -235,21 +236,25 @@ export class MrbrBase extends EventTarget {
         const eventNames = (self_constructor as typeof MrbrBase).eventNames;
         const fnReady = () => {
             [doc, win].forEach(hostObject => [eventNames.DOMContentLoaded, eventNames.load].forEach(eventName => hostObject.removeEventListener(eventName, fnReady)));
+            doc.removeEventListener(eventNames.readyStateChange, readyStateChange_Handler)
             fnResolve(self)
         }
         function readyStateChange() {
             if (doc.readyState === (self_constructor as typeof MrbrBase).documentStates.complete) {
-                doc.removeEventListener(eventNames.readyStateChange, readyStateChange)
+                doc.removeEventListener(eventNames.readyStateChange, readyStateChange_Handler)
                 fnReady();
             }
         }
         return new Promise(function (resolve, reject) {
             fnResolve = resolve;
-            doc.readyState === (self_constructor as typeof MrbrBase).documentStates.complete ?
-                resolve(self) :
+            doc.readyState === (self_constructor as typeof MrbrBase).documentStates.complete ? (() => {
+                doc.removeEventListener(eventNames.readyStateChange, readyStateChange_Handler);
+                resolve(self);
+            })()
+                :
                 (() => {
                     [doc, win].forEach(hostObject => [eventNames.DOMContentLoaded, eventNames.load].forEach(eventName => hostObject.addEventListener(eventName, fnReady)));
-                    doc.addEventListener(eventNames.readyStateChange, readyStateChange);
+                    doc.addEventListener(eventNames.readyStateChange, readyStateChange_Handler);
                 })()
         })
     }

@@ -1,3 +1,5 @@
+import { Mrbr_UI_Bootstrap_Forms_Dialog$Handles } from "./Dialog$Handles";
+
 type MrbrDialogParameters = {
     host: HTMLElement;
 }
@@ -12,13 +14,13 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
     _width: number = 0;
     _height: number = 0;
     _startWidth: number = 0;
-    startHeight: number = 0;
-    activeHandle: HTMLElement;
-    resizeDialog: boolean = false;
-    moveDialog: boolean = false;
-    minWidth: number = 320;
-    minHeight: number = 240;
-    animationFrame: number = 0;
+    _startHeight: number = 0;
+    _activeHandle: HTMLElement;
+    _resizeDialog: boolean = false;
+    _moveDialog: boolean = false;
+    _minWidth: number = 320;
+    _minHeight: number = 240;
+    _animationFrame: number = 0;
     constructor(config: MrbrDialogParameters) {
         super();
         const self = this;
@@ -37,113 +39,177 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
                 return true;
             }
         })
-        this.controls["dialogContainer"] = document.createElement("div");
-        this.controls["titleBar"] = document.createElement("div");
-        this.controls["titleText"] = document.createElement("span");
-        this.controls["contentContainer"] = document.createElement("div");
-        this.controls["footer"] = document.createElement("div");
 
+        const dialogContainer = this.createDialog(),
+            titleBar = this.createTitleBar(),
+            footer = this.createFooter(),
+            contentContainer = this.createContentContainer(),
+            handles = this.createHandles();
+
+        dialogContainer.appendChild(titleBar);
+        dialogContainer.appendChild(contentContainer);
+        dialogContainer.appendChild(footer);
+        handles.forEach(handle => dialogContainer.appendChild(handle))
+        config.host.appendChild(dialogContainer);
+
+
+    }
+    dragMouseMove_handler: (mouseEvent: MouseEvent) => any;
+    windowDragMouseLeave_handler: (mouseEvent: MouseEvent) => any;
+    dragMouseUp_handler: (mouseEvent: MouseEvent) => any;
+    windowDragMouseUp_handler: (mouseEvent: MouseEvent) => any;
+    handleMouseUp_handler: (mouseEvent: MouseEvent) => any;
+    windowMouseUp_handler: (mouseEvent: MouseEvent) => any;
+    handleMouseMove_handler: (mouseEvent: MouseEvent) => any;
+    windowMouseLeave_handler: (mouseEvent: MouseEvent) => any;
+    windowMouseOut_handler: (mouseEvent: MouseEvent) => any;
+    _drawDialog: () => any;
+    get controls() {
+        return this._controls;
+    }
+    get width(): number { return this._width }
+    set width(value: number) { this._width = Math.max(value, this._minWidth); }
+    get height(): number { return this._height }
+    set height(value: number) { this._height = Math.max(value, this._minHeight); }
+    get x(): number { return this._x }
+    set x(value: number) { this._x = Math.max(value, 0); }
+    get y(): number { return this._y }
+    set y(value: number) { this._y = Math.max(value, 0); }
+
+
+    createDialog(): HTMLElement {
+        const dialog = this.controls["dialogContainer"] = document.createElement("div"),
+            classListAdd = dialog.classList.add.bind(dialog.classList);
+        classListAdd("border")
+        classListAdd("shadow")
+        classListAdd("d-flex")
+        classListAdd("flex-column")
+        classListAdd("border-1")
+        classListAdd("border-dark")
         let style = this.controls["dialogContainer"].style
+        style.transform = `translate(${this.x}px,${this.y}px)`
         style.position = "absolute";
         style.top = "0px";
         style.left = "0px";
         style.width = "640px"
         style.height = "480px"
+        return dialog;
+    }
+    createTitleBar(): HTMLElement {
 
-        this.controls["dialogContainer"].classList.add("border")
-        this.controls["dialogContainer"].classList.add("shadow")
-        this.controls["dialogContainer"].classList.add("d-flex")
-        this.controls["dialogContainer"].classList.add("flex-column")
-        this.controls["dialogContainer"].classList.add("border-1")
-        this.controls["dialogContainer"].classList.add("border-dark")
+        const self = this,
+            titleBar = self.controls["titleBar"] = document.createElement("div"),
+            titleText = self.controls["titleText"] = document.createElement("span"),
+            titleBarClassListAdd = titleBar.classList.add.bind(titleBar.classList),
+            titleTextClassListAdd = titleText.classList.add.bind(titleText.classList);
+        titleBarClassListAdd("mrbr-dialog-handle-drag")
+        titleBarClassListAdd("container-fluid")
+        titleBarClassListAdd("bg-dark")
+        titleBarClassListAdd("d-flex")
+        titleBarClassListAdd("user-select-none")
+        titleText.textContent = "Title Text";
+        titleTextClassListAdd("row")
+        titleTextClassListAdd("justify-content-center")
+        titleTextClassListAdd("align-self-center")
+        titleTextClassListAdd("text-light")
+        titleTextClassListAdd("p-3")
+        titleBar.appendChild(titleText)
+        if (!self.titleBarMouseDown_handler) { self.titleBarMouseDown_handler = self.titleBarMouseDown.bind(this); }
+        titleBar.addEventListener("mousedown", self.titleBarMouseDown_handler);
+        if (!self._drawDialog) { self._drawDialog = self.drawDialog.bind(self) }
+        return titleBar;
+    }
+    _dragXStart: number = 0;
+    _dragYStart: number = 0;
+    titleBarMouseDown(mouseEvent: MouseEvent) {
+        mouseEvent.stopPropagation();
+        const self = this,
+            titleBar = self.controls["titleBar"],
+            dialogContainer = self.controls["dialogContainer"];
+        self._dragXStart = mouseEvent.pageX;
+        self._dragYStart = mouseEvent.pageY;
+        self._startX = self.x;
+        self._startY = self.y;
+        self._resizeDialog = false;
+        self._moveDialog = false;
+        if (!self.dragMouseMove_handler) { self.dragMouseMove_handler = self.dragMouseMove.bind(self); }
+        if (!self.windowDragMouseLeave_handler) { self.windowDragMouseLeave_handler = self.dragMouseUp.bind(self); }
+        if (!self.dragMouseUp_handler) { self.dragMouseUp_handler = self.dragMouseUp.bind(self); }
+        if (!self.windowDragMouseUp_handler) { self.windowDragMouseUp_handler = self.dragMouseUp.bind(self); }
+        window.addEventListener("mousemove", self.dragMouseMove_handler);
+        window.addEventListener("mouseup", self.windowDragMouseUp_handler);
+        dialogContainer.addEventListener("mousemove", self.dragMouseMove_handler);
+        dialogContainer.addEventListener("mouseup", self.windowDragMouseUp_handler);
+        titleBar.removeEventListener("mousedown", self.titleBarMouseDown_handler)
+    }
+    titleBarMouseDown_handler: any;
+    dragMouseMove(mouseEvent: MouseEvent) {
+        const self = this,
+            offsetX = mouseEvent.pageX - self._dragXStart,
+            offsetY = mouseEvent.pageY - self._dragYStart;
+        self.x = this._startX + offsetX;
+        self.y = this._startY + offsetY;
+        self._moveDialog = true;
 
-        this.controls["titleBar"].classList.add("container-fluid")
-        this.controls["titleBar"].classList.add("bg-dark")
-        this.controls["titleBar"].classList.add("d-flex")
-        //this.controls["titleBar"].style.height = "4rem";
+        if (self._animationFrame === 0) {
+            self._animationFrame = window.requestAnimationFrame(self._drawDialog);
+        }
+        if (mouseEvent.pageX < -3 || mouseEvent.pageY < -3) {
+            self.handleMouseUp(null);
+        }
+    }
+    dragMouseUp(event: MouseEvent) {
+        const self = this,
+            dialogContainer = this.controls["dialogContainer"],
+            titleBar = this.controls["titleBar"];
+        window.removeEventListener("mousemove", self.dragMouseMove_handler);
+        window.removeEventListener("mouseleave", self.windowMouseLeave_handler);
+        window.removeEventListener("mouseout", self.windowMouseOut_handler);
+        window.removeEventListener("mouseup", self.windowDragMouseUp_handler);
 
-        this.controls["footer"].classList.add("container-fluid")
-        this.controls["footer"].classList.add("bg-dark")
-        this.controls["footer"].classList.add("d-flex")
-        this.controls["footer"].classList.add("p-4")
-        //this.controls["footer"].style.height = "3rem";
+        dialogContainer.removeEventListener("mousemove", self.dragMouseMove_handler);
+        dialogContainer.removeEventListener("mouseup", self.windowDragMouseUp_handler);
+        titleBar.addEventListener("mousedown", this.titleBarMouseDown_handler)
+    }
 
-
-
-
-
-        this.controls["titleText"].textContent = "Title Text";
-
-        this.controls["titleText"].classList.add("row")
-        this.controls["titleText"].classList.add("justify-content-center")
-        this.controls["titleText"].classList.add("align-self-center")
-        this.controls["titleText"].classList.add("text-light")
-        this.controls["titleText"].classList.add("p-3")
-        //this.controls["titleText"].style.height = "1rem";
-
-        this.controls["titleBar"].appendChild(this.controls["titleText"])
-        this.controls["dialogContainer"].appendChild(this.controls["titleBar"]);
-
-        this.controls["contentContainer"].classList.add("container-fluid")
-        this.controls["contentContainer"].classList.add("h-100")
-        this.controls["contentContainer"].classList.add("p-1")
-        this.controls["contentContainer"].classList.add("bg-light")
-
-        this.controls["dialogContainer"].appendChild(this.controls["contentContainer"]);
-        this.controls["dialogContainer"].appendChild(this.controls["footer"]);
-
-
-        this.controls["mrbr-dialog-handle-n"] = document.createElement("div");
-        this.controls["mrbr-dialog-handle-s"] = document.createElement("div");
-        this.controls["mrbr-dialog-handle-e"] = document.createElement("div");
-        this.controls["mrbr-dialog-handle-w"] = document.createElement("div");
-        this.controls["mrbr-dialog-handle-nw"] = document.createElement("div");
-        this.controls["mrbr-dialog-handle-se"] = document.createElement("div");
-        this.controls["mrbr-dialog-handle-ne"] = document.createElement("div");
-        this.controls["mrbr-dialog-handle-sw"] = document.createElement("div");
-
-
-        let handles = [
-            "n",
-            "s",
-            "e",
-            "w",
-            "nw",
-            "se",
-            "ne",
-            "sw"
-        ];
-        handles
+    createFooter(): HTMLElement {
+        const footer = this.controls["footer"] = document.createElement("div"),
+            classListAdd = footer.classList.add.bind(footer.classList);
+        classListAdd("container-fluid")
+        classListAdd("bg-dark")
+        classListAdd("d-flex")
+        classListAdd("p-4")
+        return footer;
+    }
+    createContentContainer(): HTMLElement {
+        const contentContainer = this.controls["contentContainer"] = document.createElement("div"),
+            classListAdd = contentContainer.classList.add.bind(contentContainer.classList);
+        classListAdd("container-fluid")
+        classListAdd("h-100")
+        classListAdd("p-1")
+        classListAdd("bg-light")
+        return contentContainer;
+    }
+    createHandles(): Array<HTMLElement> {
+        let handles = [];
+        const self = this,
+            dialogHandles = Mrbr_UI_Bootstrap_Forms_Dialog$Handles;
+        Object.keys(dialogHandles)
             .forEach(handle => {
-                self.controls[handle] = document.createElement("div");
-                let controlHandle: HTMLElement = this.controls[handle];
-                controlHandle.dataset.handle = handle.substring(handle.length - 2);
-                controlHandle.dataset.lat = handle.includes("n") ? "n" : (handle.includes("s") ? "s" : "")
-                controlHandle.dataset.long = handle.includes("e") ? "e" : (handle.includes("w") ? "w" : "")
+                const controlHandle = self.controls[`mrbr-dialog-handle-${handle}`] = document.createElement("div");
+                controlHandle.dataset.handle = handle;
+                controlHandle.dataset.lat = handle.includes(dialogHandles.n) ? dialogHandles.n : (handle.includes(dialogHandles.s) ? dialogHandles.s : "")
+                controlHandle.dataset.long = handle.includes(dialogHandles.e) ? dialogHandles.e : (handle.includes(dialogHandles.w) ? dialogHandles.w : "")
                 controlHandle.classList.add(`mrbr-dialog-handle`);
                 controlHandle.classList.add(`mrbr-dialog-handle-${handle}`);
                 controlHandle.dataset.handle = handle;
                 controlHandle.addEventListener("mousedown", self.handleMouseDown.bind(self));
                 controlHandle.addEventListener("touchstart", self.handleTouchDown.bind(self), { passive: true });
-                self.controls["dialogContainer"].appendChild(controlHandle);
+                handles.push(controlHandle)
             })
-
-        config.host.appendChild(this.controls["dialogContainer"]);
-
-
-
+        if (!self._drawDialog) { self._drawDialog = self.drawDialog.bind(self) }
+        return handles;
     }
-    get controls() {
-        return this._controls;
-    }
-    get width(): number { return this._width }
-    set width(value: number) { this._width = Math.max(value, this.minWidth); }
-    get height(): number { return this._height }
-    set height(value: number) { this._height = Math.max(value, this.minHeight); }
-    get x(): number { return this._x }
-    set x(value: number) { this._x = Math.max(value, 0); }
-    get y(): number { return this._y }
-    set y(value: number) { this._y = Math.max(value, 0); }
     handleTouchDown(touchEvent: TouchEvent) {
         const self = this;
         let touch: Touch = touchEvent.touches.item(0)
@@ -156,101 +222,99 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
             window.addEventListener("touchend", self.touchUp.bind(self));
             self.x = touch.pageX;
             self.y = touch.pageY;
-            self.activeHandle = (<HTMLElement>touchEvent.target);
+            self._activeHandle = (<HTMLElement>touchEvent.target);
             self.focus();
         }
     }
     handleMouseDown(mouseEvent: MouseEvent) {
-        const self = this;
+        const self = this,
+            dialogContainer = self.controls["dialogContainer"];
         mouseEvent.stopPropagation();
         mouseEvent.cancelable && mouseEvent.preventDefault();
         if (self.isMaximised === false) {
-            self.controls["dialogContainer"].classList.add("mrbr-dialog-handle-drag")
-            self.activeHandle = (<HTMLElement>mouseEvent.target);
+            self._activeHandle = (<HTMLElement>mouseEvent.target);
             self._startX = mouseEvent.pageX;
             self._startY = mouseEvent.pageY;
-            self.startHeight = self.controls["dialogContainer"].offsetHeight;
-            self._startWidth = self.controls["dialogContainer"].offsetWidth;
-            self.height = self.controls["dialogContainer"].offsetHeight;
-            self.width = self.controls["dialogContainer"].offsetWidth;
-            self.resizeDialog = false;
-            self.moveDialog = false;
-            self.handleMouseMove_handler = self.mouseMove.bind(self);
-            self.windowMouseLeave_handler = self.mouseUp.bind(self);
-            self.handleMouseUp_handler = self.mouseUp.bind(self);
-            self.windowMouseUp_handler = self.mouseUp.bind(self);
+            self._startHeight = dialogContainer.offsetHeight;
+            self._startWidth = dialogContainer.offsetWidth;
+            self.height = dialogContainer.offsetHeight;
+            self.width = dialogContainer.offsetWidth;
+            self._resizeDialog = false;
+            self._moveDialog = false;
+            if (!self.handleMouseMove_handler) self.handleMouseMove_handler = self.handleMouseMove.bind(self);
+            if (!self.windowMouseLeave_handler) self.windowMouseLeave_handler = self.handleMouseUp.bind(self);
+            if (!self.handleMouseUp_handler) self.handleMouseUp_handler = self.handleMouseUp.bind(self);
+            if (!self.windowMouseUp_handler) self.windowMouseUp_handler = self.handleMouseUp.bind(self);
             window.addEventListener("mousemove", self.handleMouseMove_handler);
             window.addEventListener("mouseleave", self.windowMouseLeave_handler);
             window.addEventListener("mouseout", self.windowMouseOut_handler);
             window.addEventListener("mouseup", self.windowMouseUp_handler);
-            self.activeHandle.addEventListener("mouseup", self.handleMouseUp_handler);
+            self._activeHandle.addEventListener("mouseup", self.handleMouseUp_handler);
             self.focus();
         }
     }
-    handleMouseUp_handler: any;
-    windowMouseUp_handler: any;
-    handleMouseMove_handler: any;
-    windowMouseLeave_handler: any;
-    windowMouseOut_handler: any;
+
 
     touchMove() { }
     touchUp() { }
-    mouseMove(event: MouseEvent) {
+    handleMouseMove(event: MouseEvent) {
         const self = this,
             offsetX = event.pageX - self._startX,
             offsetY = event.pageY - self._startY,
-            latitide = self.activeHandle.dataset.lat,
-            longitude = self.activeHandle.dataset.long;
+            latitide = self._activeHandle.dataset.lat,
+            longitude = self._activeHandle.dataset.long,
+            dialogHandles = Mrbr_UI_Bootstrap_Forms_Dialog$Handles;
 
-        if (longitude === "e") {
+        if (longitude === dialogHandles.e) {
             self.width = self._startWidth + offsetX;
-            self.resizeDialog = true;
+            self._resizeDialog = true;
         }
-        else if (longitude === "w") {
+        else if (longitude === dialogHandles.w) {
             self.x = self._startX + offsetX;
             self.width = self._startWidth - offsetX;
-            self.resizeDialog = true;
-            self.moveDialog = true;
+            self._resizeDialog = true;
+            self._moveDialog = true;
         }
-        if (latitide === "s") {
-            self.height = self.startHeight + offsetY;
-            self.resizeDialog = true;
+        if (latitide === dialogHandles.s) {
+            self.height = self._startHeight + offsetY;
+            self._resizeDialog = true;
         }
-        else if (latitide === "n") {
+        else if (latitide === dialogHandles.n) {
             self.y = self._startY + offsetY;
-            self.height = self.startHeight - offsetY;
-            self.resizeDialog = true;
-            self.moveDialog = true;
+            self.height = self._startHeight - offsetY;
+            self._resizeDialog = true;
+            self._moveDialog = true;
         }
-        if (self.animationFrame === 0) {
-            self.animationFrame = window.requestAnimationFrame(self.drawDialog.bind(self));
+        if (self._animationFrame === 0) {
+            self._animationFrame = window.requestAnimationFrame(self._drawDialog);
         }
         if (event.pageX < -3 || event.pageY < -3) {
-            self.mouseUp(null);
+            self.handleMouseUp(null);
         }
     }
     drawDialog() {
         const self = this,
             dialog = self.controls["dialogContainer"];
 
-        if (self.resizeDialog === true) {
+        if (self._resizeDialog === true) {
             dialog.style.width = `${self.width}px`
             dialog.style.height = `${self.height}px`
         }
-        if (self.moveDialog === true) {
+        if (self._moveDialog === true) {
             dialog.style.transform = `translate(${this.x}px,${this.y}px)`
         }
-        self.resizeDialog = false;
-        self.moveDialog = false;
-        self.animationFrame = 0;
+        self._resizeDialog = false;
+        self._moveDialog = false;
+        self._animationFrame = 0;
     }
     focus() { }
-    mouseUp(event) {
+    handleMouseUp(mouseEvent: MouseEvent) {
         const self = this;
+        if (!self._activeHandle) { return; }
         window.removeEventListener("mousemove", self.handleMouseMove_handler);
         window.removeEventListener("mouseleave", self.windowMouseLeave_handler);
         window.removeEventListener("mouseup", self.windowMouseUp_handler);
         window.removeEventListener("mouseout", self.windowMouseOut_handler);
-        self.activeHandle.removeEventListener("mouseup", self.handleMouseUp_handler);
+        self._activeHandle.removeEventListener("mouseup", self.handleMouseUp_handler);
     }
 }
