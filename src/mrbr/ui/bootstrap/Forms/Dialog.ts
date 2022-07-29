@@ -3,6 +3,17 @@ import { Mrbr_UI_Bootstrap_Forms_Dialog$Handles } from "./Dialog$Handles";
 type MrbrDialogParameters = {
     host: HTMLElement;
 }
+type boundingSettings = {
+    dialog: HTMLElement
+    handleE: HTMLElement;
+    handleW: HTMLElement
+    handleEWidth: number
+    handleWWidth: number
+    handleS: HTMLElement
+    handleN: HTMLElement
+    handleSHeight: number
+    handleNHeight: number
+}
 export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
     _controls: Map<string, HTMLElement>
     _events: Map<string, Function>;
@@ -21,6 +32,12 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
     _minWidth: number = 320;
     _minHeight: number = 240;
     _animationFrame: number = 0;
+    _config: MrbrDialogParameters;
+    _minX: number = 0;
+    _minY: number = 0;
+    _maxX: number = 0;
+    _maxY: number = 0;
+    _dialogBoundingSettings: boundingSettings;
     constructor(config: MrbrDialogParameters) {
         super();
         const self = this;
@@ -40,6 +57,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
             }
         })
 
+
         const dialogContainer = this.createDialog(),
             titleBar = this.createTitleBar(),
             footer = this.createFooter(),
@@ -51,8 +69,23 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
         dialogContainer.appendChild(footer);
         handles.forEach(handle => dialogContainer.appendChild(handle))
         config.host.appendChild(dialogContainer);
+        let handleW = this.controls["mrbr-dialog-handle-w"];
+        let handleN = this.controls["mrbr-dialog-handle-n"];
+        this._config = config;
+        this._maxX = config.host.clientWidth;
+        this._maxY = config.host.clientHeight;
+        this.setBoundingSettings();
+        this.x = parseFloat(getComputedStyle(config.host).getPropertyValue('border-left-width')) + Math.ceil(parseFloat(getComputedStyle(handleW).getPropertyValue('left')) + parseFloat(getComputedStyle(handleW).getPropertyValue('width')));
+        this.y = parseFloat(getComputedStyle(config.host).getPropertyValue('border-top-width')) + Math.ceil(parseFloat(getComputedStyle(handleN).getPropertyValue('top')) + parseFloat(getComputedStyle(handleN).getPropertyValue('height')));
 
+        this._minX = parseFloat(getComputedStyle(config.host).getPropertyValue('border-left-width'));
+        this._minY = parseFloat(getComputedStyle(config.host).getPropertyValue('border-top-width'));
 
+        this.width = dialogContainer.offsetWidth;
+        this.height = dialogContainer.offsetHeight;
+        self._resizeDialog = true;
+        self._moveDialog = true;
+        this.drawDialog();
     }
     dragMouseMove_handler: (mouseEvent: MouseEvent) => any;
     windowDragMouseLeave_handler: (mouseEvent: MouseEvent) => any;
@@ -64,24 +97,67 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
     windowMouseLeave_handler: (mouseEvent: MouseEvent) => any;
     windowMouseOut_handler: (mouseEvent: MouseEvent) => any;
     _drawDialog: () => any;
+    setBoundingSettings() {
+        const self = this;
+        self._dialogBoundingSettings = {
+            dialog: self.controls["dialogContainer"],
+            handleE: self.controls["mrbr-dialog-handle-e"],
+            handleW: self.controls["mrbr-dialog-handle-w"],
+            handleEWidth: Math.ceil(parseFloat(getComputedStyle(self.controls["mrbr-dialog-handle-e"]).getPropertyValue('right')) + parseFloat(getComputedStyle(self.controls["mrbr-dialog-handle-e"]).getPropertyValue('width'))),
+            handleWWidth: Math.ceil(parseFloat(getComputedStyle(self.controls["mrbr-dialog-handle-w"]).getPropertyValue('left')) + parseFloat(getComputedStyle(self.controls["mrbr-dialog-handle-w"]).getPropertyValue('width'))),
+            handleS: self.controls["mrbr-dialog-handle-s"],
+            handleN: self.controls["mrbr-dialog-handle-n"],
+            handleSHeight: Math.ceil(parseFloat(getComputedStyle(self.controls["mrbr-dialog-handle-s"]).getPropertyValue('bottom')) + parseFloat(getComputedStyle(self.controls["mrbr-dialog-handle-s"]).getPropertyValue('height'))),
+            handleNHeight: Math.ceil(parseFloat(getComputedStyle(self.controls["mrbr-dialog-handle-n"]).getPropertyValue('top')) + parseFloat(getComputedStyle(self.controls["mrbr-dialog-handle-n"]).getPropertyValue('height')))
+        }
+    }
     get controls() {
         return this._controls;
     }
     get width(): number { return this._width }
-    set width(value: number) { this._width = Math.max(value, this._minWidth); }
+    set width(value: number) {
+        const self = this;
+        let _width = Math.max(value, this._minWidth)
+        if (_width + this._x + self._dialogBoundingSettings.handleEWidth > this._maxX) {
+            _width = this._maxX - this._x - self._dialogBoundingSettings.handleEWidth;
+        }
+        this._width = _width;
+    }
     get height(): number { return this._height }
-    set height(value: number) { this._height = Math.max(value, this._minHeight); }
+    set height(value: number) {
+        const self = this;
+        let _height = Math.max(value, this._minHeight)
+        if (_height + this._y + self._dialogBoundingSettings.handleSHeight > this._maxY) {
+            _height = this._maxY - this._y - self._dialogBoundingSettings.handleSHeight;
+        }
+        this._height = _height;
+    }
     get x(): number { return this._x }
-    set x(value: number) { this._x = Math.max(value, 0); }
+    set x(value: number) {
+        const self = this;
+
+        let _x = Math.max(value, this._minX + self._dialogBoundingSettings.handleWWidth)
+        if (_x >= this._maxX - self._dialogBoundingSettings.dialog.offsetWidth - self._dialogBoundingSettings.handleEWidth) {
+            _x = this._maxX - self._dialogBoundingSettings.dialog.offsetWidth - self._dialogBoundingSettings.handleEWidth;
+        }
+        this._x = _x;
+    }
     get y(): number { return this._y }
-    set y(value: number) { this._y = Math.max(value, 0); }
+    set y(value: number) {
+        const self = this;
+        let _y = Math.max(value, this._minY + self._dialogBoundingSettings.handleNHeight)
+        if (_y >= this._maxY - self._dialogBoundingSettings.dialog.offsetHeight - self._dialogBoundingSettings.handleSHeight) {
+            _y = this._maxY - self._dialogBoundingSettings.dialog.offsetHeight - self._dialogBoundingSettings.handleSHeight;
+        }
+        this._y = _y;
+    }
 
 
     createDialog(): HTMLElement {
         const dialog = this.controls["dialogContainer"] = document.createElement("div"),
             classListAdd = dialog.classList.add.bind(dialog.classList);
         classListAdd("border")
-        classListAdd("shadow")
+        //classListAdd("shadow")
         classListAdd("d-flex")
         classListAdd("flex-column")
         classListAdd("border-1")
@@ -123,6 +199,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
     _dragYStart: number = 0;
     titleBarMouseDown(mouseEvent: MouseEvent) {
         mouseEvent.stopPropagation();
+        this.setBoundingSettings();
         const self = this,
             titleBar = self.controls["titleBar"],
             dialogContainer = self.controls["dialogContainer"];
@@ -230,7 +307,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
         const self = this,
             dialogContainer = self.controls["dialogContainer"];
         mouseEvent.stopPropagation();
-        mouseEvent.cancelable && mouseEvent.preventDefault();
+        this.setBoundingSettings();
         if (self.isMaximised === false) {
             self._activeHandle = (<HTMLElement>mouseEvent.target);
             self._startX = mouseEvent.pageX;
@@ -288,7 +365,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
         if (self._animationFrame === 0) {
             self._animationFrame = window.requestAnimationFrame(self._drawDialog);
         }
-        if (event.pageX < -3 || event.pageY < -3) {
+        if (event?.pageX < -3 || event?.pageY < -3) {
             self.handleMouseUp(null);
         }
     }
