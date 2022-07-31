@@ -13,13 +13,14 @@ export function Mrbr_IO_LoadCssLink(file: Mrbr_IO_File): Promise<any> {
 
 
     link.href = file.entryName;
-    link.id = file.id;
+
     if (file.attributes) {
         Object.keys(file.attributes)
             .forEach(attributeName => {
                 link.setAttribute(attributeName, file.attributes[attributeName])
             })
     }
+    if(!link.id) { link.id = Mrbr_IO_File.createId("link")}
     function scriptLoad_Handler() {
         link.removeEventListener("load", scriptLoad_Handler);
         link.removeEventListener("error", scriptError_Handler);

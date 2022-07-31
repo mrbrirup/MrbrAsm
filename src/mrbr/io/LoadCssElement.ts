@@ -9,11 +9,8 @@ export function Mrbr_IO_LoadCssElement(file: Mrbr_IO_File): Promise<any> {
             resolveResult = resolve;
             rejectResult = reject;
         });
-    style.id = file.id;
-
     let mrbrFetch = new Mrbr_IO_Fetch();
     file.fileName = file.entryName.replace(/_/g, "/")
-    style.id = file.id;
 
     if (file.attributes) {
         Object.keys(file.attributes)
@@ -21,6 +18,7 @@ export function Mrbr_IO_LoadCssElement(file: Mrbr_IO_File): Promise<any> {
                 style.setAttribute(attributeName, file.attributes[attributeName])
             })
     }
+    if(!style.id) { style.id = Mrbr_IO_File.createId("style")}
     const
         insertedNodes: Array<string> = [],
         observer = new MutationObserver(mutations => {

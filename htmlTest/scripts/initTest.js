@@ -26,13 +26,13 @@ function onReady() {
     try {
 
         mrbr.loadManifest([
-            new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].Component, null, "Mrbr_Tests_Application", null, false, false),
-            new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].ScriptLink, null, "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js", null, false, false, {
+            mrbr.entries["Mrbr_IO_File"].component("Mrbr_Tests_Application"),
+            new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].ScriptLink, null, "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js", {
                 integrity: "sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM",
                 crossorigin: "anonymous"
             }),
 
-            new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].CssLink, null, "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css", null, false, false, {
+            new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].CssLink, null, "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css", "css", {
                 integrity: "sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC",
                 crossorigin: "anonymous"
             })

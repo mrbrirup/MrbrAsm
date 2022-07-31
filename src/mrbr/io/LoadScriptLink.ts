@@ -8,7 +8,6 @@ export function Mrbr_IO_LoadScriptLink(file: Mrbr_IO_File): Promise<any> {
             resolveResult = resolve;
             rejectResult = reject;
         });
-    script.id = file.id;
     script.setAttribute('src', file.entryName);
     if (file.attributes) {
         Object.keys(file.attributes)
@@ -16,6 +15,7 @@ export function Mrbr_IO_LoadScriptLink(file: Mrbr_IO_File): Promise<any> {
                 script.setAttribute(attributeName, file.attributes[attributeName])
             })
     }
+    if(!script.id) { script.id = Mrbr_IO_File.createId("script")}
     function scriptLoad_Handler() {
         script.removeEventListener("load", scriptLoad_Handler);
         script.removeEventListener("error", scriptError_Handler);

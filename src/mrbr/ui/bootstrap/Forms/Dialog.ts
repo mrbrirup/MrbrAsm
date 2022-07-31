@@ -1,11 +1,14 @@
+import { Mrbr_UI_Bootstrap_Controls_Control } from "../controls/control";
+import { Mrbr_UI_Bootstrap_Forms_ControlBox } from "./controlBox";
+import { Mrbr_UI_Bootstrap_Forms_ControlBox$Event } from "./controlBox$Event";
+import { Mrbr_UI_Bootstrap_Forms_ControlBox$Events } from "./controlBox$Events";
 import { Mrbr_UI_Bootstrap_Forms_Dialog$Handles } from "./Dialog$Handles";
+import { Mrbr_UI_Bootstrap_Forms_Dialog$States } from "./Dialog$States";
 
 type MrbrDialogParameters = {
     host: HTMLElement;
 }
-export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
-    _controls: Map<string, HTMLElement>
-    _isMaximised: boolean = false;
+export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_Control {
     _x: number = 0;
     _y: number = 0;
     _startX: number = 0;
@@ -28,30 +31,18 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
     _sHandleHeight: number = 0;
     _eHandleWidth: number = 0;
 
+    _windowState: Mrbr_UI_Bootstrap_Forms_Dialog$States = Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal;
     constructor(config: MrbrDialogParameters) {
         super();
         const self = this;
-        self._controls = new Proxy(new Map<string, HTMLElement>(), {
-            get(target, name) {
-                return (target.has(name as string)) ? target.get(name as string) : undefined;
-            },
-            set(target, name, value) {
-                if (value instanceof HTMLElement) {
-                    if (value && !value?.dataset?.id) {
-                        value.dataset.id = <string>name;
-                    }
-                }
-                target.set((name as string), value);
-                return true;
-            }
-        })
         const dialogContainer = self.createDialog(),
             titleBar = self.createTitleBar(),
             footer = self.createFooter(),
             contentContainer = self.createContentContainer(),
             handles = self.createHandles(),
-            handleW = self.controls["mrbr-dialog-handle-w"],
-            handleN = self.controls["mrbr-dialog-handle-n"];
+            handleW = self.elements["mrbr-dialog-handle-w"],
+            handleN = self.elements["mrbr-dialog-handle-n"],
+            controlBox = self.createControlBox();
         dialogContainer.appendChild(titleBar);
         dialogContainer.appendChild(contentContainer);
         dialogContainer.appendChild(footer);
@@ -69,6 +60,11 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
         self._resizeDialog = true;
         self._moveDialog = true;
         self.drawDialog();
+        controlBox.createControls().reverse().forEach(controlBoxControl => titleBar.appendChild(controlBoxControl))
+        //controlBox.addEventListener(Mrbr_UI_Bootstrap_Forms_ControlBox.controlBoxClickEventName, self.controlBoxClick_handler);        
+        controlBox.addEventListener(Mrbr_UI_Bootstrap_Forms_ControlBox.controlBoxClickEventName, <EventListenerOrEventListenerObject>self.controlBoxClick_handler);
+        //controlBox.addEventListener("click", function(w){console.log(w)});
+        window["controlBox"] = controlBox;
     }
     dragMouseMove_handler: (mouseEvent: MouseEvent) => any;
     windowDragMouseLeave_handler: (mouseEvent: MouseEvent) => any;
@@ -80,7 +76,6 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
     windowMouseLeave_handler: (mouseEvent: MouseEvent) => any;
     windowMouseOut_handler: (mouseEvent: MouseEvent) => any;
     _drawDialog: () => any;
-    get controls(): Map<string, HTMLElement> { return this._controls; }
     get width(): number { return this._width }
     set width(value: number) { this._width = value; }
     get height(): number { return this._height }
@@ -89,8 +84,14 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
     set x(value: number) { this._x = value; }
     get y(): number { return this._y }
     set y(value: number) { this._y = value; }
+    controlBoxClick_handler: (event: CustomEvent) => any;
+    //export class Mrbr_UI_Bootstrap_Forms_ControlBox$Event extends CustomEvent<Mrbr_UI_Bootstrap_Forms_ControlBox$Events> {
+    controlBoxClick(event: CustomEvent) {
+        let detail = event.detail
+        console.log("event: ", detail, event);
+    }
     createDialog(): HTMLElement {
-        const dialog = this.controls["dialogContainer"] = document.createElement("div"),
+        const dialog = this.elements["dialogContainer"] = document.createElement("div"),
             classListAdd = dialog.classList.add.bind(dialog.classList);
         classListAdd("border")
         classListAdd("shadow")
@@ -98,7 +99,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
         classListAdd("flex-column")
         classListAdd("border-1")
         classListAdd("border-dark")
-        let style = this.controls["dialogContainer"].style
+        let style = this.elements["dialogContainer"].style
         style.transform = `translate(${this.x}px,${this.y}px)`
         style.position = "absolute";
         style.top = "0px";
@@ -109,8 +110,8 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
     }
     createTitleBar(): HTMLElement {
         const self = this,
-            titleBar = self.controls["titleBar"] = document.createElement("div"),
-            titleText = self.controls["titleText"] = document.createElement("span"),
+            titleBar = self.elements["titleBar"] = document.createElement("div"),
+            titleText = self.elements["titleText"] = document.createElement("span"),
             titleBarClassListAdd = titleBar.classList.add.bind(titleBar.classList),
             titleTextClassListAdd = titleText.classList.add.bind(titleText.classList);
         titleBarClassListAdd("mrbr-dialog-handle-drag")
@@ -120,31 +121,37 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
         titleBarClassListAdd("user-select-none")
         titleText.textContent = "Title Text";
         titleTextClassListAdd("row")
-        titleTextClassListAdd("justify-content-center")
+        titleTextClassListAdd("justify-content-left")
         titleTextClassListAdd("align-self-center")
         titleTextClassListAdd("text-light")
         titleTextClassListAdd("p-3")
+        titleTextClassListAdd("flex-fill")
         titleBar.appendChild(titleText)
         if (!self.titleBarMouseDown_handler) { self.titleBarMouseDown_handler = self.titleBarMouseDown.bind(this); }
         titleBar.addEventListener("mousedown", self.titleBarMouseDown_handler);
         if (!self._drawDialog) { self._drawDialog = self.drawDialog.bind(self) }
+
         return titleBar;
+    }
+    createControlBox(): Mrbr_UI_Bootstrap_Forms_ControlBox {
+        this.controlBoxClick_handler = this.controlBoxClick.bind(this);
+        return new Mrbr_UI_Bootstrap_Forms_ControlBox();
     }
     _dragXStart: number = 0;
     _dragYStart: number = 0;
     titleBarMouseDown(mouseEvent: MouseEvent) {
         mouseEvent.stopPropagation();
         const self = this,
-            titleBar = self.controls["titleBar"],
-            dialogContainer = self.controls["dialogContainer"];
+            titleBar = self.elements["titleBar"],
+            dialogContainer = self.elements["dialogContainer"];
         self._dragXStart = mouseEvent.pageX;
         self._dragYStart = mouseEvent.pageY;
         self._startX = this._x;
         self._startY = this._y;
         self._resizeDialog = false;
         self._moveDialog = false;
-        self._sHandleHeight = parseFloat(getComputedStyle(self.controls["mrbr-dialog-handle-s"]).getPropertyValue('bottom')) + parseFloat(getComputedStyle(self.controls["mrbr-dialog-handle-s"]).getPropertyValue('height'));
-        self._eHandleWidth = parseFloat(getComputedStyle(self.controls["mrbr-dialog-handle-e"]).getPropertyValue('right')) + parseFloat(getComputedStyle(self.controls["mrbr-dialog-handle-e"]).getPropertyValue('width'));
+        self._sHandleHeight = parseFloat(getComputedStyle(self.elements["mrbr-dialog-handle-s"]).getPropertyValue('bottom')) + parseFloat(getComputedStyle(self.elements["mrbr-dialog-handle-s"]).getPropertyValue('height'));
+        self._eHandleWidth = parseFloat(getComputedStyle(self.elements["mrbr-dialog-handle-e"]).getPropertyValue('right')) + parseFloat(getComputedStyle(self.elements["mrbr-dialog-handle-e"]).getPropertyValue('width'));
         if (!self.dragMouseMove_handler) { self.dragMouseMove_handler = self.dragMouseMove.bind(self); }
         if (!self.windowDragMouseLeave_handler) { self.windowDragMouseLeave_handler = self.dragMouseUp.bind(self); }
         if (!self.dragMouseUp_handler) { self.dragMouseUp_handler = self.dragMouseUp.bind(self); }
@@ -158,7 +165,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
     titleBarMouseDown_handler: (mouseEvent: MouseEvent) => any;
     dragMouseMove(mouseEvent: MouseEvent) {
         const self = this,
-            dialog = self.controls["dialogContainer"],
+            dialog = self.elements["dialogContainer"],
             offsetX = mouseEvent.pageX - self._dragXStart,
             offsetY = mouseEvent.pageY - self._dragYStart,
             _minY = self._minY,
@@ -174,8 +181,8 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
     }
     dragMouseUp(event: MouseEvent) {
         const self = this,
-            dialogContainer = this.controls["dialogContainer"],
-            titleBar = this.controls["titleBar"];
+            dialogContainer = this.elements["dialogContainer"],
+            titleBar = this.elements["titleBar"];
         window.removeEventListener("mousemove", self.dragMouseMove_handler);
         window.removeEventListener("mouseleave", self.windowMouseLeave_handler);
         window.removeEventListener("mouseout", self.windowMouseOut_handler);
@@ -186,7 +193,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
         titleBar.addEventListener("mousedown", this.titleBarMouseDown_handler)
     }
     createFooter(): HTMLElement {
-        const footer = this.controls["footer"] = document.createElement("div"),
+        const footer = this.elements["footer"] = document.createElement("div"),
             classListAdd = footer.classList.add.bind(footer.classList);
         classListAdd("container-fluid")
         classListAdd("bg-dark")
@@ -195,7 +202,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
         return footer;
     }
     createContentContainer(): HTMLElement {
-        const contentContainer = this.controls["contentContainer"] = document.createElement("div"),
+        const contentContainer = this.elements["contentContainer"] = document.createElement("div"),
             classListAdd = contentContainer.classList.add.bind(contentContainer.classList);
         classListAdd("container-fluid")
         classListAdd("h-100")
@@ -209,7 +216,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
             dialogHandles = Mrbr_UI_Bootstrap_Forms_Dialog$Handles;
         Object.keys(dialogHandles)
             .forEach(handle => {
-                const controlHandle = self.controls[`mrbr-dialog-handle-${handle}`] = document.createElement("div");
+                const controlHandle = self.elements[`mrbr-dialog-handle-${handle}`] = document.createElement("div");
                 controlHandle.dataset.handle = handle;
                 controlHandle.dataset.lat = handle.includes(dialogHandles.n) ? dialogHandles.n : (handle.includes(dialogHandles.s) ? dialogHandles.s : "")
                 controlHandle.dataset.long = handle.includes(dialogHandles.e) ? dialogHandles.e : (handle.includes(dialogHandles.w) ? dialogHandles.w : "")
@@ -230,8 +237,8 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
         touchEvent.stopPropagation();
         touchEvent.cancelable && touchEvent.preventDefault();
 
-        if (self._isMaximised === false) {
-            self.controls["dialogContainer"].classList.add("mrbr-dialog-handle-drag")
+        if (self._windowState === Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal) {
+            self.elements["dialogContainer"].classList.add("mrbr-dialog-handle-drag")
             window.addEventListener("touchmove", self.touchMove.bind(self));
             window.addEventListener("touchend", self.touchUp.bind(self));
             self.x = touch.pageX;
@@ -242,10 +249,10 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
     }
     handleMouseDown(mouseEvent: MouseEvent) {
         const self = this,
-            dialogContainer = self.controls["dialogContainer"];
+            dialogContainer = self.elements["dialogContainer"];
         mouseEvent.stopPropagation();
         mouseEvent.preventDefault();
-        if (self._isMaximised === false) {
+        if (self._windowState === Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal) {
             self._activeHandle = (<HTMLElement>mouseEvent.target);
             self._startX = mouseEvent.pageX;
             self._startY = mouseEvent.pageY;
@@ -320,12 +327,13 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
     }
     drawDialog() {
         const self = this,
-            dialog = self.controls["dialogContainer"];
+            dialog = self.elements["dialogContainer"];
         if (self._resizeDialog === false && self._moveDialog === false) { self._animationFrame = 0; return; }
         self.x = self._x
         self.y = self._y
         self.height = self._height;
         self.width = self._width;
+
         if (self._moveDialog === true) {
             dialog.style.transform = `translate(${this.x}px,${this.y}px)`
         }
@@ -347,4 +355,26 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends EventTarget {
         window.removeEventListener("mouseout", self.windowMouseOut_handler);
         self._activeHandle.removeEventListener("mouseup", self.handleMouseUp_handler);
     }
+    get windowState(): Mrbr_UI_Bootstrap_Forms_Dialog$States {
+        return this._windowState;
+    }
+    set windowState(value: Mrbr_UI_Bootstrap_Forms_Dialog$States) {
+        this._changeState(value);
+        this._windowState = value;
+
+    }
+    _changeState(newState: Mrbr_UI_Bootstrap_Forms_Dialog$States) {
+        const self = this,
+            states = Mrbr_UI_Bootstrap_Forms_Dialog$States;
+        if (self._windowState === newState) { return; }
+        switch (self._windowState) {
+            case states.Normal:
+            case states.Maximised:
+            case states.Minimised:
+                break;
+        }
+
+    }
+    show() { }
+    showDialog() { }
 }

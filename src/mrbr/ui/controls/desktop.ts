@@ -28,6 +28,7 @@ export class Mrbr_UI_Controls_Desktop extends EventTarget {
         self.windowContainer.id ="windowContainer"
         self.windowContainer.classList.add("h-100")
         self.windowContainer.classList.add("w-100")
+        self.windowContainer.classList.add("overflow-hidden")
         
         
         
@@ -46,16 +47,16 @@ export class Mrbr_UI_Controls_Desktop extends EventTarget {
         //setTimeout(() => {unfade(desktopContainer.container);                    }, 0);
         function unfade(element) {
             let opacity = element?.style?.opacity            
-            var op =  parseInt(opacity) || 0.0;  // initial opacity
+            var initialOpacity =  parseInt(opacity) || 0.0;  // initial opacity
             //element.style.display = 'block';
             var timer = setInterval(function () {
                 console.log()
-                if (op >= 1){
+                if (initialOpacity >= 1){
                     clearInterval(timer);
                 }
-                element.style.opacity = op;
+                element.style.opacity = initialOpacity;
                 //element.style.filter = 'alpha(opacity=' + op * 100 + ")";
-                op += 2/60;
+                initialOpacity += 2/60;
             }, 2000/60);
         }
     }

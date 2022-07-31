@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="a" width="16px" height="16px" version="1.1" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+ <g display="none" fill="none" stroke="#000" stroke-linecap="round" stroke-width=".1">
+  <path d="m0 16 4-16h8l4 16h-16" style="paint-order:stroke fill markers"/>
+  <path d="m1 12h14" style="paint-order:stroke fill markers"/>
+  <path d="m2 8h12" style="paint-order:stroke fill markers"/>
+ </g>
+ <g stroke="#e6e6e6" stroke-linecap="round" stroke-linejoin="round" stroke-width=".1">
+  <path d="m1 15v-4h4v4z" fill="#4d4d4d" style="paint-order:stroke fill markers"/>
+  <path d="m6 11v4h4v-4z" fill="#999" style="paint-order:stroke fill markers"/>
+  <path d="m11 11v4h4v-4z" fill="#e6e6e6" style="paint-order:stroke fill markers"/>
+  <path d="m1 10v-4h4v4z" fill="#999" style="paint-order:stroke fill markers"/>
+  <path d="m6 6v4h4v-4z" fill="#e6e6e6" style="paint-order:stroke fill markers"/>
+  <path d="m11 6v4h4v-4z" fill="#f2f2f2" style="paint-order:stroke fill markers"/>
+  <path d="m1 5v-4h4v4z" fill="#e6e6e6" style="paint-order:stroke fill markers"/>
+  <path d="m6 1v4h4v-4z" fill="#f2f2f2" style="paint-order:stroke fill markers"/>
+  <path d="m11 1v4h4v-4z" fill="#fff" style="paint-order:stroke fill markers"/>
+ </g>
+</svg>

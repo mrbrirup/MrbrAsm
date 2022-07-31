@@ -142,7 +142,7 @@ exports.generateDeclarations = function (input, fileManifestEntries) {
 
     if (!isMrbrBase) {
         output.push(`mrbr.loadManifest([`)
-        output.push(importedReferences.filter(entry => entry.exclude === false).map(include => (`new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].Component, "Mrbr", "${include.assembly}", null, false, false)`)).join(",\r\n"));
+        output.push(importedReferences.filter(entry => entry.exclude === false).map(include => (`mrbr.entries["Mrbr_IO_File"].component("${include.assembly}")`)).join(",\r\n"));
         output.push(`]).then(_ => {`)
 
 
@@ -154,7 +154,7 @@ exports.generateDeclarations = function (input, fileManifestEntries) {
     output.push("");
     return {
         declaration: declarationBody,
-        importedReferences: importedReferences.filter(entry => entry.exclude === false).map(include => (`new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].Component, "Mrbr", "${include.assembly}", null, false, false)`)).join(",\r\n"),
+        importedReferences: importedReferences.filter(entry => entry.exclude === false).map(include => (`mrbr.entries["Mrbr_IO_File"].component("${include.assembly}")`)).join(",\r\n"),
         //importedReferences: importedReferences.map(include => (`new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].Component, "Mrbr", "${include}", null, false, false)`)).join(",\r\n"),
         exportName: exportName
     }

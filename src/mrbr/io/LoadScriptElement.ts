@@ -9,11 +9,9 @@ export function Mrbr_IO_LoadScriptElement(file: Mrbr_IO_File): Promise<any> {
             resolveResult = resolve;
             rejectResult = reject;
         });
-    script.id = file.id;
-
     let mrbrFetch = new Mrbr_IO_Fetch();
     file.fileName = file.entryName.replace(/_/g, "/")
-    script.id = file.id;
+    if(!script.id) { script.id = Mrbr_IO_File.createId("script")}
 
     if (file.attributes) {
         Object.keys(file.attributes)

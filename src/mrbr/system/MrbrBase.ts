@@ -144,7 +144,7 @@ export class MrbrBase extends EventTarget {
         file.fileName = file.entryName.replace(/_/g, "/")
         let mrbrFetch = new Mrbr_IO_Fetch(),
             root = self.paths.get(file.root) || "",
-            componentPath = Mrbr_IO_Path.join([root, file.fileName], false) + ".js",
+            componentPath = Mrbr_IO_Path.join([root, file.fileName], false) + `.${file.extension}`,
             promise = self._promise();
         mrbrFetch.fetch(componentPath, {})
             .then(result => {
@@ -189,7 +189,7 @@ export class MrbrBase extends EventTarget {
         const self = this;
         if (target[targetFunctionName]) { return Promise.resolve(); }
         let promise = self._promise()
-        let manifest = new Mrbr_IO_File(Mrbr_IO_FileType.Component, null, newFunctionName, null, false, false);
+        let manifest = new Mrbr_IO_File(Mrbr_IO_FileType.Component, null, newFunctionName, "js");
         self.loadManifest(manifest)
             .then(result => {
                 target[targetFunctionName] = mrbr._entries[newFunctionName].bind(target);
