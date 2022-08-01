@@ -10,8 +10,8 @@ type ControlBoxControl = {
 }
 export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Bootstrap_Controls_Control {
     static controlBoxClickEventName: string = "controlBox_click";
-    constructor() {
-        super();
+    constructor(rootElementName: string) {
+        super(rootElementName);
     }
 
     createControls(): Array<HTMLElement> {

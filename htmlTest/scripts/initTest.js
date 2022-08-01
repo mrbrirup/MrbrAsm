@@ -27,13 +27,14 @@ function onReady() {
 
         mrbr.loadManifest([
             mrbr.entries["Mrbr_IO_File"].component("Mrbr_Tests_Application"),
-            new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].ScriptLink, null, "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js", {
-                integrity: "sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM",
+            mrbr.entries["Mrbr_IO_File"].component("Mrbr_System_MrbrBase"),
+            new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].ScriptLink, null, "https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js", {
+                integrity: "sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa",
                 crossorigin: "anonymous"
             }),
 
-            new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].CssLink, null, "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css", "css", {
-                integrity: "sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC",
+            new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].CssLink, null, "https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css", "css", {
+                integrity: "sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx",
                 crossorigin: "anonymous"
             })
             /*

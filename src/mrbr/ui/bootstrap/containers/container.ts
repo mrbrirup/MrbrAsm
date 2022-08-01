@@ -1,24 +1,23 @@
 import { Mrbr_UI_Html_StyleClasses } from "../../html/StyleClasses";
+import { Mrbr_UI_Bootstrap_Controls_Control } from "../controls/control";
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Height } from "../utilities/sizing$height";
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Width } from "../utilities/sizing$width";
 import { Mrbr_UI_Bootstrap_Containers_Container$Breakpoints } from "./container$breakpoints";
 
-export class Mrbr_UI_Bootstrap_Containers_Container {
+export class Mrbr_UI_Bootstrap_Containers_Container extends Mrbr_UI_Bootstrap_Controls_Control {
     _containerType: Mrbr_UI_Bootstrap_Containers_Container$Breakpoints = Mrbr_UI_Bootstrap_Containers_Container$Breakpoints.containerFluid;
-    _containerElement: HTMLElement;
     _width: Mrbr_UI_Bootstrap_Utilities_Sizing$Width
     _height: Mrbr_UI_Bootstrap_Utilities_Sizing$Height
     style = Mrbr_UI_Html_StyleClasses;
-    constructor() {
+    constructor(rootElementName: string) {
+        super(rootElementName);
         const self = this;
-        self._containerElement = document.createElement("div");
+        self.createElement(self.rootElementName, "div")
     }
-    get container() { return this._containerElement }
-    set container(value) { this._containerElement = value; }
     get containerType(): Mrbr_UI_Bootstrap_Containers_Container$Breakpoints { return this._containerType; }
     set containerType(value: Mrbr_UI_Bootstrap_Containers_Container$Breakpoints) {
         const self = this,
-            element = self._containerElement,
+            element = self.rootElement,
             style = self.style,
             breakPoints = Mrbr_UI_Bootstrap_Containers_Container$Breakpoints;
         if (style.hasClass(element, value)) { return };
@@ -34,7 +33,7 @@ export class Mrbr_UI_Bootstrap_Containers_Container {
     set width(value) {
         this._width = value;
         const self = this,
-            element = self._containerElement,
+            element = self.rootElement,
             style = self.style,
             widths = Mrbr_UI_Bootstrap_Utilities_Sizing$Width;
         if (style.hasClass(element, value)) { return };
@@ -50,7 +49,7 @@ export class Mrbr_UI_Bootstrap_Containers_Container {
     set height(value) {
         this._height = value;
         const self = this,
-            element = self._containerElement,
+            element = self.rootElement,
             style = self.style,
             heights = Mrbr_UI_Bootstrap_Utilities_Sizing$Height;
         if (style.hasClass(element, value)) { return };

@@ -32,8 +32,8 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
     _eHandleWidth: number = 0;
 
     _windowState: Mrbr_UI_Bootstrap_Forms_Dialog$States = Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal;
-    constructor(config: MrbrDialogParameters) {
-        super();
+    constructor(rootElementName: string, config: MrbrDialogParameters) {
+        super(rootElementName);
         const self = this;
         const dialogContainer = self.createDialog(),
             titleBar = self.createTitleBar(),
@@ -135,7 +135,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
     }
     createControlBox(): Mrbr_UI_Bootstrap_Forms_ControlBox {
         this.controlBoxClick_handler = this.controlBoxClick.bind(this);
-        return new Mrbr_UI_Bootstrap_Forms_ControlBox();
+        return new Mrbr_UI_Bootstrap_Forms_ControlBox("");
     }
     _dragXStart: number = 0;
     _dragYStart: number = 0;
