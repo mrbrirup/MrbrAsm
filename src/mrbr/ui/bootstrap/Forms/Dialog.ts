@@ -104,7 +104,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
                             children: [
                                 new ctrlCfg("titleText", "span",
                                     {
-                                        classes: ["row", "justify-content-left", "align-self-center", "text-light", "p-3", "flex-fill"],
+                                        classes: ["row", "justify-content-left", "align-self-center", "text-light", "py-1", "pe-1", "ps-3", "flex-fill"],
                                         properties: { textContent: "Title Text" }
                                     })
                                 ,

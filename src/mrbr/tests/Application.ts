@@ -13,11 +13,11 @@ export class Mrbr_Tests_Application {
         console.log("Mrbr_UI_Bootstrap_Forms_Dialog: ", Mrbr_UI_Bootstrap_Forms_Dialog)
         MrbrBase.mrbrInstance.loadManifest([Mrbr_IO_File.component("Mrbr_UI_Bootstrap_Forms_UrlDialog")])
             .then(_ => {
-                console.log("Mrbr_UI_Bootstrap_Forms_Dialog: ", Mrbr_UI_Bootstrap_Forms_UrlDialog)
-                //let form = new Mrbr_UI_Bootstrap_Forms_UrlDialog(
-                let form = new Mrbr_UI_Bootstrap_Forms_Dialog(
+                //console.log("Mrbr_UI_Bootstrap_Forms_Dialog: ", Mrbr_UI_Bootstrap_Forms_UrlDialog)
+                let form = new Mrbr_UI_Bootstrap_Forms_UrlDialog(
+                //let form = new Mrbr_UI_Bootstrap_Forms_Dialog(
                     "newDialog1",
-                    { host: this.desktop.elements["windowContainer"] });
+                    { host: this.desktop.windowContainer });
             })
     }
 }

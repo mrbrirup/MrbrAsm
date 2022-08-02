@@ -1,5 +1,69 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="16" height="16" version="1.1" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
- <title>close</title>
- <path d="m5 11 6-6m-6 0 6 6" fill="none" stroke="#000" stroke-linecap="round" style="paint-order:stroke fill markers"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="16.0px"
+   height="16.0px"
+   viewBox="0 0 16.0 16.0"
+   version="1.1"
+   id="SVGRoot"
+   sodipodi:docname="close.svg"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title265">Close</title>
+  <sodipodi:namedview
+     id="namedview14"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     showgrid="true"
+     inkscape:zoom="70.713217"
+     inkscape:cx="9.8637854"
+     inkscape:cy="8.8455882"
+     inkscape:window-width="2139"
+     inkscape:window-height="1462"
+     inkscape:window-x="2547"
+     inkscape:window-y="511"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid20" />
+  </sodipodi:namedview>
+  <defs
+     id="defs9" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:#000000"
+       d="m 15.019461,14.999461 -2.059926,-0.02 L 0.95996553,2.9598937 0.97996481,0.97996481 3.0198916,0.95996553 15.03946,13.039532 Z"
+       id="path131" />
+    <path
+       style="fill:#000000"
+       d="m 0.9605027,14.999568 0.02,-2.059926 L 13.00007,0.94007327 14.98,0.96007327 15,3 2.9204327,15.019567 Z"
+       id="path131-3" />
+  </g>
+  <metadata
+     id="metadata263">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Close</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
 </svg>

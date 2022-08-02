@@ -17,20 +17,22 @@ export class Mrbr_UI_Controls_Desktop extends Mrbr_UI_Bootstrap_Containers_Conta
         self.height = Mrbr_UI_Bootstrap_Utilities_Sizing$Height.viewHeight100;
         self.width = Mrbr_UI_Bootstrap_Utilities_Sizing$Width.viewWidth100;
         self.classes(self.rootElement, classActions.Add, ["container-fluid", "px-0", "d-flex", "flex-column"]);
-        self.createElement( new Mrbr_UI_Bootstrap_Controls_ControlConfig("windowContainer", "div"))
-        let windowContainer = self.elements["windowContainer"];
+        self.createElement(new Mrbr_UI_Bootstrap_Controls_ControlConfig("windowContainer", "div", {
+            classes: ["h-100", "w-100", "overflow-hidden"],
+            styles: { position: "relative" },
+            attributes:{id :Mrbr_UI_Bootstrap_Controls_Control.createId("windowContainer")}
+        }))
+        let windowContainer = self.windowContainer;
         self.navbar = new Mrbr_UI_Controls_NavbarWindowManager(Mrbr_UI_Bootstrap_Controls_Control.createId("navbar"))
-        windowContainer.id = Mrbr_UI_Bootstrap_Controls_Control.createId("windowContainer");
-        self.classes(windowContainer, classActions.Add, [
-            "h-100",
-            "w-100",
-            "overflow-hidden"
-        ])
         self.rootElement.appendChild(windowContainer)
         self.rootElement.appendChild(self.navbar.rootElement)
-
-        windowContainer.style.position = "relative";
         self.rootElement.classList.add("mrbr_fadeIn");
         document.body.appendChild(self.rootElement);
+    }
+    public get windowContainer(): HTMLElement {
+        return this.elements["windowContainer"];;
+    }
+    public set windowContainer(value: HTMLElement) {
+        this.elements["windowContainer"] = value;
     }
 }

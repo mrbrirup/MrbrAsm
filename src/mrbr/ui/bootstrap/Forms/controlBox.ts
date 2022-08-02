@@ -22,26 +22,29 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Bootstrap_Contro
             ctrlCfg = Mrbr_UI_Bootstrap_Controls_ControlConfig,
             eventTypes = Mrbr_UI_Bootstrap_Forms_ControlBox$Events;
         this.createElement(new ctrlCfg(this.rootElementName, "div", {
-            classes: ["p-2 align-self-center"]
+            classes: ["btn-group p-1"]
         }));
         let controlBoxControls: Array<ControlBoxControl> = [
             { name: "closeButton", src: "/htmlTest/images/forms/close.svg", eventType: eventTypes.close, order: 1 },
-            { name: "minButton", src: "/htmlTest/images/forms/close.svg", eventType: eventTypes.minimise, order: 2 },
-            { name: "maxButton", src: "/htmlTest/images/forms/close.svg", eventType: eventTypes.maximise, order: 3 },
-            { name: "fullScreenButton", src: "/htmlTest/images/forms/close.svg", eventType: eventTypes.fullScreen, order: 4 }
+            { name: "minButton", src: "/htmlTest/images/forms/minimise.svg", eventType: eventTypes.minimise, order: 2 },
+            { name: "maxButton", src: "/htmlTest/images/forms/maximise.svg", eventType: eventTypes.maximise, order: 3 },
+            { name: "fullScreenButton", src: "/htmlTest/images/forms/fullscreen.svg", eventType: eventTypes.fullScreen, order: 4 }
         ]
         self._controlBoxClickHandler = self.controlBoxClick.bind(self);
         controlBoxControls.forEach(controlBoxControl => {
             let controlBoxControlElement = <HTMLElement>self.createElement(new ctrlCfg(controlBoxControl.name, "button",
                 {
-                    styles: { width: "2em" },
-                    classes: ["p-0", "btn", "ms-1", "btn-light", "btn-secondary", "rounded-0"],
+                    //styles: { width: "2em" },
+                    classes: ["btn", "btn-transparent"],
+                    //classes: ["p-0", "btn", "ms-1", "btn-light", "btn-secondary", "rounded-0"],
                     attributes: { type: "button" },
                     children: [
                         new ctrlCfg(`${controlBoxControl.name}_image`, "img",
                             {
-                                attributes: { src: "/htmlTest/images/forms/close.svg" },
-                                classes: ["w-100", "h-100"],
+                                attributes: {
+                                    src: controlBoxControl.src
+                                },
+                                classes: ["w-100", "h-100", "mrbr-invert-color"],
                                 data: {
                                     eventType: controlBoxControl.eventType.toString(),
                                     order: controlBoxControl.order.toString()
