@@ -1,58 +1,59 @@
 import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../controls/classActions";
 import { Mrbr_UI_Bootstrap_Controls_Control } from "../controls/control";
+import { Mrbr_UI_Bootstrap_Controls_ControlConfig } from "../controls/ControlConfig";
 import { Mrbr_UI_Bootstrap_Forms_ControlBox$Event } from "./controlBox$Event";
 import { Mrbr_UI_Bootstrap_Forms_ControlBox$Events } from "./controlBox$Events";
 type ControlBoxControl = {
     name: string,
     src: string,
-    eventType: Mrbr_UI_Bootstrap_Forms_ControlBox$Events
-
+    eventType: Mrbr_UI_Bootstrap_Forms_ControlBox$Events,
+    order: number
 }
 export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Bootstrap_Controls_Control {
     static controlBoxClickEventName: string = "controlBox_click";
     constructor(rootElementName: string) {
         super(rootElementName);
+        this.createControls();
     }
 
-    createControls(): Array<HTMLElement> {
+    createControls() {
 
-        let toolboxControls: Array<HTMLElement> = [],
+        const self = this,
+            ctrlCfg = Mrbr_UI_Bootstrap_Controls_ControlConfig,
             eventTypes = Mrbr_UI_Bootstrap_Forms_ControlBox$Events;
+        this.createElement(new ctrlCfg(this.rootElementName, "div", {
+            classes: ["p-2 align-self-center"]
+        }));
         let controlBoxControls: Array<ControlBoxControl> = [
-            { name: "closeButton", src: "/htmlTest/images/forms/close.svg", eventType: eventTypes.close },
-            { name: "minButton", src: "/htmlTest/images/forms/close.svg", eventType: eventTypes.minimise },
-            { name: "maxButton", src: "/htmlTest/images/forms/close.svg", eventType: eventTypes.maximise },
-            { name: "fullScreenButton", src: "/htmlTest/images/forms/close.svg", eventType: eventTypes.fullScreen }
+            { name: "closeButton", src: "/htmlTest/images/forms/close.svg", eventType: eventTypes.close, order: 1 },
+            { name: "minButton", src: "/htmlTest/images/forms/close.svg", eventType: eventTypes.minimise, order: 2 },
+            { name: "maxButton", src: "/htmlTest/images/forms/close.svg", eventType: eventTypes.maximise, order: 3 },
+            { name: "fullScreenButton", src: "/htmlTest/images/forms/close.svg", eventType: eventTypes.fullScreen, order: 4 }
         ]
-        const self = this;
         self._controlBoxClickHandler = self.controlBoxClick.bind(self);
         controlBoxControls.forEach(controlBoxControl => {
-            let controlBoxControlElement = self.controls[controlBoxControl.name] = document.createElement("button");
-            controlBoxControlElement.style.width = "2em";
-            controlBoxControlElement.style.height = "2em";
-            self.classes(controlBoxControlElement, Mrbr_UI_Bootstrap_Controls_ClassActions.Add, [
-                "p-0",
-                "btn",
-                "ms-1",
-                "btn-light",
-                "align-self-center",
-                "btn-secondary",
-                "rounded-0"
-            ])
-            controlBoxControlElement.setAttribute("type", "button");
-            let controlBoxControlImageElement = self.controls[`${controlBoxControl.name}_image`] = document.createElement("img");
-            controlBoxControlImageElement.setAttribute("src", "/htmlTest/images/forms/close.svg");
+            let controlBoxControlElement = <HTMLElement>self.createElement(new ctrlCfg(controlBoxControl.name, "button",
+                {
+                    styles: { width: "2em" },
+                    classes: ["p-0", "btn", "ms-1", "btn-light", "btn-secondary", "rounded-0"],
+                    attributes: { type: "button" },
+                    children: [
+                        new ctrlCfg(`${controlBoxControl.name}_image`, "img",
+                            {
+                                attributes: { src: "/htmlTest/images/forms/close.svg" },
+                                classes: ["w-100", "h-100"],
+                                data: {
+                                    eventType: controlBoxControl.eventType.toString(),
+                                    order: controlBoxControl.order.toString()
+                                }
 
-            controlBoxControlImageElement.classList.add("w-100");
-            controlBoxControlImageElement.classList.add("h-100");
-            controlBoxControlElement.dataset.eventType = controlBoxControl.eventType.toString();
-            controlBoxControlElement.appendChild(controlBoxControlImageElement);
+                            })
+                    ]
+                }));
             controlBoxControlElement.addEventListener("click", self._controlBoxClickHandler)
-            toolboxControls.push(controlBoxControlElement);
+            this.rootElement.appendChild(controlBoxControlElement);
         })
-
-        return toolboxControls;
-
+        Array.from(self.rootElement.children).sort((a, b) => parseInt((<HTMLElement>a).dataset.order) > parseInt((<HTMLElement>b).dataset.order) ? 1 : -1).forEach(element => self.rootElement.appendChild(element))
     }
     _controlBoxClickHandler: (mouseEvent: MouseEvent) => any;
     controlBoxClick(mouseEvent: MouseEvent) {

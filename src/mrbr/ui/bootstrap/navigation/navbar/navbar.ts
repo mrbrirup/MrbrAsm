@@ -1,5 +1,6 @@
 import { Mrbr_UI_Bootstrap_Controls_ClassActions } from '../../controls/classActions';
 import { Mrbr_UI_Bootstrap_Controls_Control } from '../../controls/control';
+import { Mrbr_UI_Bootstrap_Controls_ControlConfig } from '../../controls/ControlConfig';
 import { Mrbr_UI_Bootstrap_Utilities_Backgrounds } from '../../utilities/backgrounds';
 import { Mrbr_UI_Bootstrap_Navigation_NavBar_NavBar$classes } from './navbar$classes';
 
@@ -8,7 +9,7 @@ export class Mrbr_UI_Bootstrap_Navigation_NavBar_NavBar extends Mrbr_UI_Bootstra
     constructor(rootElementName: string) {
         super(rootElementName);
         const self = this;
-        let navbar = this.createElement(this.rootElementName, "nav");
+        let navbar = <HTMLElement>this.createElement(new Mrbr_UI_Bootstrap_Controls_ControlConfig(this.rootElementName, "nav"));
         let navStyles = Mrbr_UI_Bootstrap_Navigation_NavBar_NavBar$classes,
             bgStyles = Mrbr_UI_Bootstrap_Utilities_Backgrounds;
         let styles = [

@@ -1,5 +1,6 @@
 import { Mrbr_UI_Html_StyleClasses } from "../../html/StyleClasses";
 import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "./classActions";
+import { Mrbr_UI_Bootstrap_Controls_ControlConfig } from "./ControlConfig";
 export class Mrbr_UI_Bootstrap_Controls_Control extends EventTarget {
     _styleClasses = Mrbr_UI_Html_StyleClasses
     _rootElementName: string;
@@ -31,10 +32,36 @@ export class Mrbr_UI_Bootstrap_Controls_Control extends EventTarget {
         })
 
     }
-    createElement(name: string, elementType: string): HTMLElement {
-        let _element = document.createElement(elementType);
-        this._elements[name] = _element;
-        return this._elements[name];
+    createElement(config: Mrbr_UI_Bootstrap_Controls_ControlConfig | HTMLElement | Array<Mrbr_UI_Bootstrap_Controls_ControlConfig | Mrbr_UI_Bootstrap_Controls_ControlConfig>): HTMLElement | Array<HTMLElement> {
+        const self = this;
+        if (Array.isArray(config) === true) {
+            return (<Array<Mrbr_UI_Bootstrap_Controls_ControlConfig>>config).map(entry => <HTMLElement>self.createElement(entry));
+        }
+        let _config: Mrbr_UI_Bootstrap_Controls_ControlConfig = <Mrbr_UI_Bootstrap_Controls_ControlConfig>config;
+
+        if (config instanceof HTMLElement) {
+            return config;
+        }
+
+        let _element = document.createElement(_config.elementType);
+        _element.id = _config.id || Mrbr_UI_Bootstrap_Controls_Control.createId(_config.elementType)
+        self.classes(_element, Mrbr_UI_Bootstrap_Controls_ClassActions.Add, _config.classes)
+        self.attributes(_element, _config.attributes)
+        self.dataset(_element, _config.data)
+        self.properties(_element, _config.properties)
+        self.styles(_element, _config.styles)
+
+        self._elements[_config.elementName] = _element;
+        if (_config.children) {
+            let children = _config.children.map(entry => self.createElement(entry));
+            if (Array.isArray(children)) {
+                (<Array<HTMLElement>>children).forEach(entry => { _element.appendChild(entry) })
+            }
+            else {
+                _element.appendChild(<HTMLElement>children)
+            }
+        }
+        return _element;
     }
     get elements() { return this._elements }
     get controls() { return this._controls }
@@ -87,14 +114,35 @@ export class Mrbr_UI_Bootstrap_Controls_Control extends EventTarget {
     attributes(targetElement: string | HTMLElement, attributesSettings: object): HTMLElement {
         const self = this;
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
-        Object.keys(attributesSettings).forEach(key => _targetElement.setAttribute(key, attributesSettings[key]))
+        if (attributesSettings) {
+            Object.keys(attributesSettings).forEach(key => _targetElement.setAttribute(key, attributesSettings[key]))
+        }
         return _targetElement
     }
 
-    dataset(targetElement: string | HTMLElement, attributesSettings: object): HTMLElement {
+    dataset(targetElement: string | HTMLElement, datasetSettings: object): HTMLElement {
         const self = this;
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
-        Object.keys(attributesSettings).forEach(key => _targetElement.dataset[key] = attributesSettings[key]);
+        if (datasetSettings) {
+            Object.keys(datasetSettings).forEach(key => _targetElement.dataset[key] = datasetSettings[key]);
+        }
+        return _targetElement
+    }
+    properties(targetElement: string | HTMLElement, propertyValues: object): HTMLElement {
+        const self = this;
+        let _targetElement: HTMLElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
+        if (propertyValues) {
+            Object.keys(propertyValues).forEach(key => _targetElement[key] = propertyValues[key]);
+        }
+        return _targetElement
+    }
+    styles(targetElement: string | HTMLElement, styleValues: object): HTMLElement {
+        const self = this;
+        let _targetElement: HTMLElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
+        if (styleValues) {
+            Object.keys(styleValues).forEach(key => _targetElement.style[key] = styleValues[key]);
+            console.log(_targetElement.style)
+        }
         return _targetElement
     }
     static createId(prefix: string) { return `${prefix}_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`; }

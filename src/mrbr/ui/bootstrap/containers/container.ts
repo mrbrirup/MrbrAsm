@@ -1,5 +1,6 @@
 import { Mrbr_UI_Html_StyleClasses } from "../../html/StyleClasses";
 import { Mrbr_UI_Bootstrap_Controls_Control } from "../controls/control";
+import { Mrbr_UI_Bootstrap_Controls_ControlConfig } from "../controls/ControlConfig";
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Height } from "../utilities/sizing$height";
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Width } from "../utilities/sizing$width";
 import { Mrbr_UI_Bootstrap_Containers_Container$Breakpoints } from "./container$breakpoints";
@@ -12,7 +13,7 @@ export class Mrbr_UI_Bootstrap_Containers_Container extends Mrbr_UI_Bootstrap_Co
     constructor(rootElementName: string) {
         super(rootElementName);
         const self = this;
-        self.createElement(self.rootElementName, "div")
+        self.createElement(new Mrbr_UI_Bootstrap_Controls_ControlConfig(self.rootElementName, "div"))
     }
     get containerType(): Mrbr_UI_Bootstrap_Containers_Container$Breakpoints { return this._containerType; }
     set containerType(value: Mrbr_UI_Bootstrap_Containers_Container$Breakpoints) {

@@ -2,6 +2,7 @@ import { Mrbr_UI_Bootstrap_Containers_Container } from "../bootstrap/containers/
 import { Mrbr_UI_Bootstrap_Containers_Container$Breakpoints } from "../bootstrap/containers/container$breakpoints";
 import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../bootstrap/controls/classActions";
 import { Mrbr_UI_Bootstrap_Controls_Control } from "../bootstrap/controls/control";
+import { Mrbr_UI_Bootstrap_Controls_ControlConfig } from "../bootstrap/controls/ControlConfig";
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Height } from "../bootstrap/utilities/sizing$height";
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Width } from "../bootstrap/utilities/sizing$width";
 import { Mrbr_UI_Controls_NavbarWindowManager } from "./navbarWindowManager";
@@ -16,7 +17,7 @@ export class Mrbr_UI_Controls_Desktop extends Mrbr_UI_Bootstrap_Containers_Conta
         self.height = Mrbr_UI_Bootstrap_Utilities_Sizing$Height.viewHeight100;
         self.width = Mrbr_UI_Bootstrap_Utilities_Sizing$Width.viewWidth100;
         self.classes(self.rootElement, classActions.Add, ["container-fluid", "px-0", "d-flex", "flex-column"]);
-        self.createElement("windowContainer", "div")
+        self.createElement( new Mrbr_UI_Bootstrap_Controls_ControlConfig("windowContainer", "div"))
         let windowContainer = self.elements["windowContainer"];
         self.navbar = new Mrbr_UI_Controls_NavbarWindowManager(Mrbr_UI_Bootstrap_Controls_Control.createId("navbar"))
         windowContainer.id = Mrbr_UI_Bootstrap_Controls_Control.createId("windowContainer");
