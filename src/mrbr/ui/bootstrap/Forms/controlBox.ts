@@ -34,9 +34,7 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Bootstrap_Contro
         controlBoxControls.forEach(controlBoxControl => {
             let controlBoxControlElement = <HTMLElement>self.createElement(new ctrlCfg(controlBoxControl.name, "button",
                 {
-                    //styles: { width: "2em" },
-                    classes: ["btn", "btn-transparent"],
-                    //classes: ["p-0", "btn", "ms-1", "btn-light", "btn-secondary", "rounded-0"],
+                    classes: ["btn", "btn-dark"],
                     attributes: { type: "button" },
                     children: [
                         new ctrlCfg(`${controlBoxControl.name}_image`, "img",

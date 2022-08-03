@@ -18,6 +18,7 @@ export class Mrbr_Tests_Application {
                 //let form = new Mrbr_UI_Bootstrap_Forms_Dialog(
                     "newDialog1",
                     { host: this.desktop.windowContainer });
+                    form.dispose();
             })
     }
 }
