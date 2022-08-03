@@ -50,8 +50,8 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
         self._maxX = config.host.clientWidth;
         self._maxY = config.host.clientHeight;
         let computedHostStyle = getComputedStyle(config.host),
-        computedHandleWStyle = getComputedStyle(handleW),
-        computedHandleNStyle = getComputedStyle(handleN);
+            computedHandleWStyle = getComputedStyle(handleW),
+            computedHandleNStyle = getComputedStyle(handleN);
         self._minX = parseFloat(computedHostStyle.getPropertyValue('border-left-width')) + Math.ceil(parseFloat(computedHandleWStyle.getPropertyValue('left')) + parseFloat(computedHandleWStyle.getPropertyValue('width')));
         self._minY = parseFloat(computedHostStyle.getPropertyValue('border-top-width')) + Math.ceil(parseFloat(getComputedStyle(handleN).getPropertyValue('top')) + parseFloat(getComputedStyle(handleN).getPropertyValue('height')));
         self.x = parseFloat(computedHostStyle.getPropertyValue('border-left-width')) + Math.ceil(parseFloat(computedHandleWStyle.getPropertyValue('left')) + parseFloat(computedHandleWStyle.getPropertyValue('width'))) + self._minX;
@@ -115,10 +115,12 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
                             ]
                         }),
                         new ctrlCfg("contentContainer", "div", {
-                            classes: ["container-fluid", "h-100", "p-1", "bg-light"]
+                            classes: ["container-fluid", "h-100", "p-1", "bg-light"],
+                            styles: {"minHeight": `${self._minHeight/2}px`}
                         }),
                         new Mrbr_UI_Bootstrap_Controls_ControlConfig("footer", "div", {
-                            classes: ["container-fluid", "bg-dark", "d-flex", "p-4"]
+                            classes: ["container-fluid", "bg-dark", "d-flex", "p-4"],
+                            styles:{height: "3rem"}
                         }),
                         ...handles
                     ]
@@ -129,7 +131,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
     _dragYStart: number = 0;
     titleBarMouseDown(mouseEvent: MouseEvent) {
         mouseEvent.stopPropagation();
-        const self = this,            
+        const self = this,
             dialogContainer = this.rootElement;
         if (self._isDragging === true) { return; }
         self._isDragging = true;
@@ -202,36 +204,36 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
         self._isDragging = false;
     }
     createHandles(): Array<HTMLElement> {
-        let handles = [];
         const self = this,
             dialogHandles = Mrbr_UI_Bootstrap_Forms_Dialog$Handles;
-        Object.keys(dialogHandles)
-            .forEach(handle => {
-                const controlHandle = self.elements[`mrbr-dialog-handle-${handle}`] = document.createElement("div");
-                controlHandle.dataset.handle = handle;
-                controlHandle.dataset.lat = handle.includes(dialogHandles.n) ? dialogHandles.n : (handle.includes(dialogHandles.s) ? dialogHandles.s : "")
-                controlHandle.dataset.long = handle.includes(dialogHandles.e) ? dialogHandles.e : (handle.includes(dialogHandles.w) ? dialogHandles.w : "")
-                controlHandle.classList.add(`mrbr-dialog-handle`);
-                controlHandle.classList.add(`mrbr-dialog-handle-${handle}`);
-                controlHandle.dataset.handle = handle;
-                self.events[`mrbr-dialog-handle-${handle}_mousedown`] = <MrbrEventHandler>{
-                    event: self.handleMouseDown,
-                    eventName: "mousedown",
-                    context: self,
-                    eventTarget: controlHandle
-                }
-                self.events[`mrbr-dialog-handle-${handle}_touchstart`] = <MrbrEventHandler>{
-                    event: self.handleTouchDown,
-                    eventName: "touchstart",
-                    context: self,
-                    eventTarget: controlHandle,
-                    options: { passive: true }
-                }
-                controlHandle.draggable = false
-                handles.push(controlHandle)
-            })
+        let handles =
+            Object.keys(dialogHandles)
+                .map(handle => {
+                    const controlHandle = <HTMLElement>self.createElement(new Mrbr_UI_Bootstrap_Controls_ControlConfig(`mrbr-dialog-handle-${handle}`, "div", {
+                        data: {
+                            handle: handle,
+                            lat: handle.includes(dialogHandles.n) ? dialogHandles.n : (handle.includes(dialogHandles.s) ? dialogHandles.s : ""),
+                            long: handle.includes(dialogHandles.e) ? dialogHandles.e : (handle.includes(dialogHandles.w) ? dialogHandles.w : "")
+                        },
+                        classes: [`mrbr-dialog-handle`, `mrbr-dialog-handle-${handle}`],
+                        properties: { draggable: false }
+                    }))
+                    self.events[`mrbr-dialog-handle-${handle}_mousedown`] = <MrbrEventHandler>{
+                        event: self.handleMouseDown,
+                        eventName: "mousedown",
+                        context: self,
+                        eventTarget: controlHandle
+                    }
+                    self.events[`mrbr-dialog-handle-${handle}_touchstart`] = <MrbrEventHandler>{
+                        event: self.handleTouchDown,
+                        eventName: "touchstart",
+                        context: self,
+                        eventTarget: controlHandle,
+                        options: { passive: true }
+                    }
+                    return controlHandle;
+                })
         if (!self._drawDialog) { self._drawDialog = self.drawDialog.bind(self) }
-        debugger;
         return handles;
     }
     handleTouchDown(touchEvent: TouchEvent) {
@@ -289,7 +291,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
             }
             self.events["container_handle_mousemove"] = <MrbrEventHandler>{
                 event: self.handleMouseMove,
-                eventName: "mouseout",
+                eventName: "mousemove",
                 context: self,
                 eventTarget: self.rootElement
             }
@@ -300,6 +302,11 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
                 eventTarget: self._activeHandle
             }
             self.focus();
+            self.createElement(new Mrbr_UI_Bootstrap_Controls_ControlConfig("contentContainer_overlay", "div", {
+                classes: "w-100 h-100",
+                styles: { position: "absolute", backgroundColor: "transparent", top: "0", left: "0", zIndex: "2000" }
+            }))
+            self.elements["contentContainer"].appendChild(self.elements["contentContainer_overlay"])
         }
     }
 
@@ -307,8 +314,9 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
     touchMove() { }
     touchUp() { }
     handleMouseMove(event: MouseEvent) {
-        const self = this,
-            offsetX = event.pageX - self._startX,
+        const self = this;
+        if (!self._activeHandle) { return; }
+        const offsetX = event.pageX - self._startX,
             offsetY = event.pageY - self._startY,
             latitide = self._activeHandle.dataset.lat,
             longitude = self._activeHandle.dataset.long,
@@ -382,7 +390,12 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
         self.events["window_handle_mousemove"].remove();
         self.events["window_handle_mouseup"].remove();
         self.events["activehandle_mouseup"].remove();
+        self.events["container_handle_mousemove"].remove();
         self._activeHandle = null;
+
+        self.elements["contentContainer"].removeChild(self.elements["contentContainer_overlay"])
+        self.elements["contentContainer_overlay"] = null;
+
     }
     get windowState(): Mrbr_UI_Bootstrap_Forms_Dialog$States {
         return this._windowState;

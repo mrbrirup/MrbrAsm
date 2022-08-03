@@ -16,13 +16,20 @@ export class Mrbr_UI_Bootstrap_Controls_Control extends EventTarget {
             get(target, name) {
                 return (target.has(name as string)) ? target.get(name as string) : undefined;
             },
-            set(target, name, value) {
+            set(target, name: string, value) {
+                if (name === "delete") {
+                    throw new Error("Delete is a function and cannot be used as a key")
+
+                }
                 if (value instanceof HTMLElement) {
                     if (value && !value?.dataset?.id) {
                         value.dataset.id = <string>name;
                     }
                 }
                 target.set((name as string), value);
+                if(!value){
+                    target.delete(name)
+                }
                 return true;
             }
         })
@@ -38,7 +45,7 @@ export class Mrbr_UI_Bootstrap_Controls_Control extends EventTarget {
                 return (target.has(name as string)) ? target.get(name as string) : undefined;
             },
             set(target, name: string, value: MrbrEventHandler) {
-                if (target.has(name)){
+                if (target.has(name)) {
                     console.warn(`Duplicate event name: ${name}`)
                     return true;
                 }
@@ -178,7 +185,6 @@ export class Mrbr_UI_Bootstrap_Controls_Control extends EventTarget {
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
         if (styleValues) {
             Object.keys(styleValues).forEach(key => _targetElement.style[key] = styleValues[key]);
-            console.log(_targetElement.style)
         }
         return _targetElement
     }

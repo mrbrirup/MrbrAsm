@@ -16,7 +16,7 @@ export class Mrbr_UI_Bootstrap_Forms_UrlDialog extends Mrbr_UI_Bootstrap_Forms_D
 
         let inputTextId = Mrbr_UI_Bootstrap_Forms_UrlDialog.createId("textBox");
         let iFrameId = Mrbr_UI_Bootstrap_Forms_UrlDialog.createId("iFrame");
-        let navigationButtons = ([
+        /*let navigationButtons = ([
             { name: "navigationBack", src: "/htmlTest/images/forms/close.svg", eventType: "back", order: 1 },
             { name: "navigationForwards", src: "/htmlTest/images/forms/minimise.svg", eventType: "forwards", order: 2 },
             { name: "navigationGo", src: "/htmlTest/images/forms/maximise.svg", eventType: "go", order: 3 }
@@ -43,7 +43,7 @@ export class Mrbr_UI_Bootstrap_Forms_UrlDialog extends Mrbr_UI_Bootstrap_Forms_D
                     }));
                 return navigationButtonElement;                    
             })
-
+        */
 
 
 
@@ -51,37 +51,37 @@ export class Mrbr_UI_Bootstrap_Forms_UrlDialog extends Mrbr_UI_Bootstrap_Forms_D
             {
                 classes: "h-100 w-100",
                 children: [
-                    new ctrlCfg("navigationContainer", "div",
-                        {
-                            classes: "/*d-flex*/ flex-row border-0 bg-dark text-light p-1",
-                            children: [
-                                new ctrlCfg("buttonBar", "div", {
-                                    classes: ["btn-group p-0"],
-                                    children: [...navigationButtons]
-                                }),
-                                new ctrlCfg("formGroupRow", "div", {
-                                    classes: "input-group input-group-sm py-0 my-0 ms-2 ps-3",
-                                    children: [
-                                        new ctrlCfg("span1", "span", {
-                                            classes: "input-group-text py-0 my-0 w-100 px-1",
-                                            properties: { textContent: "URL: ", id: inputTextId },
-                                            children: [
+                    // new ctrlCfg("navigationContainer", "div",
+                    //     {
+                    //         classes: "/*d-flex*/ flex-row border-0 bg-dark text-light p-1",
+                    //         children: [
+                    //             // new ctrlCfg("buttonBar", "div", {
+                    //             //     classes: ["btn-group p-0"],
+                    //             //     children: [...navigationButtons]
+                    //             // }),
+                    //             // new ctrlCfg("formGroupRow", "div", {
+                    //             //     classes: "input-group input-group-sm py-0 my-0 ms-2 ps-3",
+                    //             //     children: [
+                    //             //         new ctrlCfg("span1", "span", {
+                    //             //             classes: "input-group-text py-0 my-0 w-100 px-1",
+                    //             //             properties: { textContent: "URL: ", id: inputTextId },
+                    //             //             children: [
 
-                                                new ctrlCfg("url", "input", {
-                                                    properties: {
-                                                        type: "text",
-                                                        "aria-label": "sizing",
-                                                        "aria-describedby": inputTextId
-                                                    },
-                                                    classes: "form-control ms-2"
+                    //             //                 new ctrlCfg("url", "input", {
+                    //             //                     properties: {
+                    //             //                         type: "text",
+                    //             //                         "aria-label": "sizing",
+                    //             //                         "aria-describedby": inputTextId
+                    //             //                     },
+                    //             //                     classes: "form-control ms-2"
 
-                                                })
-                                            ]
-                                        })
-                                    ]
-                                }),
-                            ]
-                        }),
+                    //             //                 })
+                    //             //             ]
+                    //             //         })
+                    //             //     ]
+                    //             // }),
+                    //         ]
+                    //     }),
                     new ctrlCfg("iframeContainer", "iframe", {
                         classes: ["w-100 h-100"],
                         properties: {
@@ -91,8 +91,6 @@ export class Mrbr_UI_Bootstrap_Forms_UrlDialog extends Mrbr_UI_Bootstrap_Forms_D
 
                 ]
             }));
-
-        self.navigationBar.style.display = "none";
         self._iframe_loadStart_handler = self.iFrameLoadStart.bind(self);
         self._iframe_popstate_handler = self.iFramePopState.bind(self);
         self._iframe_load_handler = self.iFrameLoaded(self);
