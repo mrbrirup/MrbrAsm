@@ -54,7 +54,8 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Bootstrap_Contro
             controlBoxControlElement.addEventListener("click", self._controlBoxClickHandler)
             this.rootElement.appendChild(controlBoxControlElement);
         })
-        Array.from(self.rootElement.children).sort((a, b) => parseInt((<HTMLElement>a).dataset.order) > parseInt((<HTMLElement>b).dataset.order) ? 1 : -1).forEach(element => self.rootElement.appendChild(element))
+
+        controlBoxControls.sort((a: ControlBoxControl, b: ControlBoxControl) => -a.order + b.order).forEach(element => self.rootElement.appendChild(self.elements[element.name]))
     }
     _controlBoxClickHandler: (mouseEvent: MouseEvent) => any;
     controlBoxClick(mouseEvent: MouseEvent) {

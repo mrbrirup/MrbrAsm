@@ -29,15 +29,15 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
      showgrid="true"
-     inkscape:zoom="45.254834"
-     inkscape:cx="15.335378"
-     inkscape:cy="8.2201163"
-     inkscape:window-width="3777"
-     inkscape:window-height="2137"
-     inkscape:window-x="1975"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer6"
+     inkscape:zoom="64"
+     inkscape:cx="8.4921875"
+     inkscape:cy="8.796875"
+     inkscape:window-width="1436"
+     inkscape:window-height="1273"
+     inkscape:window-x="2338"
+     inkscape:window-y="306"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g11977"
      showguides="true">
     <inkscape:grid
        type="xygrid"
@@ -61,14 +61,18 @@
        d="M 8.9472233,9.1646851 H 0.91904221 V 12.164647 L 12.007967,12.160747 11.957791,1.164758 H 8.9472233 Z"
        id="path11975"
        sodipodi:nodetypes="ccccccc" />
+    <path
+       style="fill:#000000"
+       d="m 11.958036,3.1647163 h -0.75 v 8.2499997 h -9.5 V 9.1647163 h -0.75 v 2.9999997 h 11 z"
+       id="path1001"
+       sodipodi:nodetypes="ccccccccc" />
   </g>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
      style="display:inline"
-     transform="matrix(-1,0,0,1,15.968852,0)"
-     sodipodi:insensitive="true">
+     transform="matrix(-1,0,0,1,15.968852,0)">
     <g
        inkscape:groupmode="layer"
        id="layer6"
@@ -88,6 +92,11 @@
        style="fill:#b3b3b3;fill-opacity:0;stroke:#000000;stroke-width:0.0783688;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;paint-order:stroke fill markers"
        d="M 0.9891844,0.9891844 V 11.960816 H 11.960816 V 0.9891844 Z"
        id="path6389" />
+    <path
+       style="fill:#000000"
+       d="m 11.968852,3 h -0.75 v 8.25 h -9.5 V 3 h -0.75 v 9 h 11 z"
+       id="path1003"
+       sodipodi:nodetypes="ccccccccc" />
   </g>
   <metadata
      id="metadata10496">

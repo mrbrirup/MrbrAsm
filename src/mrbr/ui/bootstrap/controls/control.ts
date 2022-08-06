@@ -27,7 +27,7 @@ export class Mrbr_UI_Bootstrap_Controls_Control extends EventTarget {
                     }
                 }
                 target.set((name as string), value);
-                if(!value){
+                if (!value) {
                     target.delete(name)
                 }
                 return true;
@@ -94,9 +94,10 @@ export class Mrbr_UI_Bootstrap_Controls_Control extends EventTarget {
         self.properties(_element, _config.properties)
         self.styles(_element, _config.styles)
 
-        self._elements[_config.elementName] = _element;
+        self.elements[_config.elementName] = _element;
         if (_config.children) {
             let children = _config.children.map(entry => self.createElement(entry));
+            //console.log(_config.elementName, children)
             if (Array.isArray(children)) {
                 (<Array<HTMLElement>>children).forEach(entry => { _element.appendChild(entry) })
             }
@@ -168,7 +169,9 @@ export class Mrbr_UI_Bootstrap_Controls_Control extends EventTarget {
         const self = this;
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
         if (datasetSettings) {
-            Object.keys(datasetSettings).forEach(key => _targetElement.dataset[key] = datasetSettings[key]);
+            Object.keys(datasetSettings).forEach(key => {
+                _targetElement.dataset[key] = datasetSettings[key]
+            });
         }
         return _targetElement
     }
@@ -189,7 +192,6 @@ export class Mrbr_UI_Bootstrap_Controls_Control extends EventTarget {
         return _targetElement
     }
     dispose() {
-        console.log("Mrbr_UI_Bootstrap_Controls_Control")
         const self = this;
         let remainingEvents = Array.from(Object.keys(self._events));
         remainingEvents.forEach(eventName => {
