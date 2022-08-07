@@ -1,13 +1,13 @@
-import { Mrbr_UI_Html_StyleClasses } from "../../html/StyleClasses";
-import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "./classActions";
-import { Mrbr_UI_Bootstrap_Controls_ControlConfig } from "./ControlConfig";
-import { MrbrEventHandler } from "./MrbrEventHandler";
-export class Mrbr_UI_Bootstrap_Controls_Control extends EventTarget {
+import { Mrbr_UI_Html_StyleClasses } from "../html/StyleClasses";
+import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../bootstrap/controls/classActions";
+import { Mrbr_UI_Controls_ControlConfig } from "./ControlConfig";
+import { Mrbr_UI_Controls_EventHandler } from "../bootstrap/controls/EventHandler";
+export class Mrbr_UI_Controls_Control extends EventTarget {
     _styleClasses = Mrbr_UI_Html_StyleClasses
     _rootElementName: string;
     _elements: Map<string, HTMLElement>
-    _controls: Map<string, Mrbr_UI_Bootstrap_Controls_Control>
-    _events: Map<string, MrbrEventHandler>;
+    _controls: Map<string, Mrbr_UI_Controls_Control>
+    _events: Map<string, Mrbr_UI_Controls_EventHandler>;
     constructor(rootElementName: string) {
         super();
         const self = this;
@@ -34,17 +34,22 @@ export class Mrbr_UI_Bootstrap_Controls_Control extends EventTarget {
             }
         })
 
-        this._controls = new Proxy(new Map<string, Mrbr_UI_Bootstrap_Controls_Control>(), {
-            get(target: Map<string, Mrbr_UI_Bootstrap_Controls_Control>, name: string) {
+        this._controls = new Proxy(new Map<string, Mrbr_UI_Controls_Control>(), {
+            get(target: Map<string, Mrbr_UI_Controls_Control>, name: string) {
                 return (target.has(name)) ? (target.get(name)) : undefined;
+            },
+            set(target, name: string, value) {
+                target.set((name as string), value);
+                return true;
             }
+
         })
 
-        self._events = new Proxy(new Map<string, MrbrEventHandler>(), {
+        self._events = new Proxy(new Map<string, Mrbr_UI_Controls_EventHandler>(), {
             get(target, name: string) {
                 return (target.has(name as string)) ? target.get(name as string) : undefined;
             },
-            set(target, name: string, value: MrbrEventHandler) {
+            set(target, name: string, value: Mrbr_UI_Controls_EventHandler) {
                 if (target.has(name)) {
                     console.warn(`Duplicate event name: ${name}`)
                     return true;
@@ -75,19 +80,19 @@ export class Mrbr_UI_Bootstrap_Controls_Control extends EventTarget {
             }
         });
     }
-    createElement(config: Mrbr_UI_Bootstrap_Controls_ControlConfig | HTMLElement | Array<Mrbr_UI_Bootstrap_Controls_ControlConfig | Mrbr_UI_Bootstrap_Controls_ControlConfig>): HTMLElement | Array<HTMLElement> {
+    createElement(config: Mrbr_UI_Controls_ControlConfig | HTMLElement | Array<Mrbr_UI_Controls_ControlConfig | Mrbr_UI_Controls_ControlConfig>): HTMLElement | Array<HTMLElement> {
         const self = this;
         if (Array.isArray(config) === true) {
-            return (<Array<Mrbr_UI_Bootstrap_Controls_ControlConfig>>config).map(entry => <HTMLElement>self.createElement(entry));
+            return (<Array<Mrbr_UI_Controls_ControlConfig>>config).map(entry => <HTMLElement>self.createElement(entry));
         }
-        let _config: Mrbr_UI_Bootstrap_Controls_ControlConfig = <Mrbr_UI_Bootstrap_Controls_ControlConfig>config;
+        let _config: Mrbr_UI_Controls_ControlConfig = <Mrbr_UI_Controls_ControlConfig>config;
 
         if (config instanceof HTMLElement) {
             return config;
         }
 
         let _element = document.createElement(_config.elementType);
-        _element.id = _config.id || Mrbr_UI_Bootstrap_Controls_Control.createId(_config.elementType)
+        _element.id = _config.id || Mrbr_UI_Controls_Control.createId(_config.elementType)
         self.classes(_element, Mrbr_UI_Bootstrap_Controls_ClassActions.Add, _config.classes)
         self.attributes(_element, _config.attributes)
         self.dataset(_element, _config.data)
@@ -109,7 +114,7 @@ export class Mrbr_UI_Bootstrap_Controls_Control extends EventTarget {
     }
     get elements() { return this._elements }
     get controls() { return this._controls }
-    get events(): Map<string, MrbrEventHandler> { return this._events }
+    get events(): Map<string, Mrbr_UI_Controls_EventHandler> { return this._events }
     get rootElementName(): string { return this._rootElementName; }
     set rootElementName(value: string) { this._rootElementName = value; }
     get rootElement(): HTMLElement { const self = this; return self.elements[self._rootElementName]; }

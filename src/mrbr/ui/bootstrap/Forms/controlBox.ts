@@ -1,6 +1,7 @@
 import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../controls/classActions";
-import { Mrbr_UI_Bootstrap_Controls_Control } from "../controls/control";
-import { Mrbr_UI_Bootstrap_Controls_ControlConfig } from "../controls/ControlConfig";
+import { Mrbr_UI_Controls_Control } from "../../controls/control";
+import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
+import { Mrbr_UI_Controls_EventHandler } from "../controls/EventHandler";
 import { Mrbr_UI_Bootstrap_Forms_ControlBox$Event } from "./controlBox$Event";
 import { Mrbr_UI_Bootstrap_Forms_ControlBox$Events } from "./controlBox$Events";
 type ControlBoxControl = {
@@ -9,7 +10,7 @@ type ControlBoxControl = {
     eventType: Mrbr_UI_Bootstrap_Forms_ControlBox$Events,
     order: number
 }
-export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Bootstrap_Controls_Control {
+export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control {
     static controlBoxClickEventName: string = "controlBox_click";
     constructor(rootElementName: string) {
         super(rootElementName);
@@ -19,7 +20,7 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Bootstrap_Contro
     createControls() {
 
         const self = this,
-            ctrlCfg = Mrbr_UI_Bootstrap_Controls_ControlConfig,
+            ctrlCfg = Mrbr_UI_Controls_ControlConfig,
             eventTypes = Mrbr_UI_Bootstrap_Forms_ControlBox$Events;
         this.createElement(new ctrlCfg(this.rootElementName, "div", {
             classes: ["btn-group p-1"]
@@ -30,12 +31,15 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Bootstrap_Contro
             { name: "maxButton", src: "/htmlTest/images/forms/maximise.svg", eventType: eventTypes.maximise, order: 3 },
             { name: "fullScreenButton", src: "/htmlTest/images/forms/fullscreen.svg", eventType: eventTypes.fullScreen, order: 4 }
         ]
-        self._controlBoxClickHandler = self.controlBoxClick.bind(self);
         controlBoxControls.forEach(controlBoxControl => {
             let controlBoxControlElement = <HTMLElement>self.createElement(new ctrlCfg(controlBoxControl.name, "button",
                 {
                     classes: ["btn", "btn-dark"],
                     attributes: { type: "button" },
+                    data: {
+                        eventType: controlBoxControl.eventType.toString(),
+                        order: controlBoxControl.order.toString()
+                    },
                     children: [
                         new ctrlCfg(`${controlBoxControl.name}_image`, "img",
                             {
@@ -43,19 +47,20 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Bootstrap_Contro
                                     src: controlBoxControl.src
                                 },
                                 classes: ["w-100", "h-100", "mrbr-invert-color"],
-                                data: {
-                                    eventType: controlBoxControl.eventType.toString(),
-                                    order: controlBoxControl.order.toString()
-                                }
 
                             })
                     ]
                 }));
-            controlBoxControlElement.addEventListener("click", self._controlBoxClickHandler)
+            self.events[`${controlBoxControl.name}_click`] = <Mrbr_UI_Controls_EventHandler>{
+                eventName: `click`,
+                eventTarget: controlBoxControlElement,
+                event: self.controlBoxClick.bind(self),
+                context: self
+            };
             this.rootElement.appendChild(controlBoxControlElement);
         })
 
-        controlBoxControls.sort((a: ControlBoxControl, b: ControlBoxControl) => -a.order + b.order).forEach(element => self.rootElement.appendChild(self.elements[element.name]))
+        controlBoxControls.sort((a: ControlBoxControl, b: ControlBoxControl) => - a.order + b.order).forEach(element => self.rootElement.appendChild(self.elements[element.name]))
     }
     _controlBoxClickHandler: (mouseEvent: MouseEvent) => any;
     controlBoxClick(mouseEvent: MouseEvent) {

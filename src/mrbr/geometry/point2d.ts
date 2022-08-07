@@ -17,4 +17,8 @@ export class Mrbr_Geometry_Point2d {
     public set x(value: number) {
         this._x = value;
     }
+    setPoint(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+    }
 }

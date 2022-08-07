@@ -1,4 +1,4 @@
-import { Mrbr_UI_Bootstrap_Controls_ControlConfig } from "../controls/ControlConfig";
+import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
 import { Mrbr_UI_Bootstrap_Forms_Dialog } from "./Dialog";
 type NavigationButtons = {
     name: string,
@@ -12,7 +12,7 @@ export class Mrbr_UI_Bootstrap_Forms_UrlDialog extends Mrbr_UI_Bootstrap_Forms_D
     constructor(rootElementName: string, config) {
         super(rootElementName, config);
         const self = this,
-            ctrlCfg = Mrbr_UI_Bootstrap_Controls_ControlConfig;
+            ctrlCfg = Mrbr_UI_Controls_ControlConfig;
 
         let inputTextId = Mrbr_UI_Bootstrap_Forms_UrlDialog.createId("textBox");
         let iFrameId = Mrbr_UI_Bootstrap_Forms_UrlDialog.createId("iFrame");

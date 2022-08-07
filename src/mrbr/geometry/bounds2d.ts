@@ -33,4 +33,18 @@ export class Mrbr_Geometry_Bounds2d {
     public set width(value: number) {
         this._width = value;
     }
+    setBounds(x: number, y: number, width: number, height: number) {
+        this.x = x;
+        this._y = y;
+        this.width = width;
+        this.height = height;
+    }
+    setXY(x: number, y: number) {
+        this.x = x;
+        this._y = y;
+    }
+    setWidthHeight(width: number, height: number) {
+        this.width = width;
+        this.height = height;
+    }
 }

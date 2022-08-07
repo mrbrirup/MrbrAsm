@@ -1,44 +1,35 @@
+import { Mrbr_Geometry_Bounds2d } from "../../../geometry/bounds2d";
 import { Mrbr_Geometry_Point2d } from "../../../geometry/point2d";
 import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../controls/classActions";
-import { Mrbr_UI_Bootstrap_Controls_Control } from "../controls/control";
-import { Mrbr_UI_Bootstrap_Controls_ControlConfig } from "../controls/ControlConfig";
-import { MrbrEventHandler } from "../controls/MrbrEventHandler";
+import { Mrbr_UI_Controls_Control } from "../../controls/control";
+import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
+import { Mrbr_UI_Controls_EventHandler } from "../controls/EventHandler";
 import { Mrbr_UI_Bootstrap_Forms_ControlBox } from "./controlBox";
 import { Mrbr_UI_Bootstrap_Forms_ControlBox$Event } from "./controlBox$Event";
 import { Mrbr_UI_Bootstrap_Forms_ControlBox$Events } from "./controlBox$Events";
 import { Mrbr_UI_Bootstrap_Forms_Dialog$Handles } from "./Dialog$Handles";
 import { Mrbr_UI_Bootstrap_Forms_Dialog$States } from "./Dialog$States";
+import { Mrbr_UI_Controls_Handles_Drag } from "../../controls/handles/drag";
 
 type MrbrDialogParameters = {
     host: HTMLElement;
 }
-export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_Control {
-    _position: Mrbr_Geometry_Point2d = new Mrbr_Geometry_Point2d(0, 0);
-    _newPosition: Mrbr_Geometry_Point2d = new Mrbr_Geometry_Point2d(0, 0);
+export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
+    _bounds: Mrbr_Geometry_Bounds2d = new Mrbr_Geometry_Bounds2d(0, 0, 640, 480);
+    _newBounds: Mrbr_Geometry_Bounds2d = new Mrbr_Geometry_Bounds2d(0, 0, 640, 480);
     _lastPosition: Mrbr_Geometry_Point2d = new Mrbr_Geometry_Point2d(0, 0);
-    //_x: number = 0;
-    //_y: number = 0;
-    _startX: number = 0;
-    _startY: number = 0;
-    _width: number = 0;
-    _height: number = 0;
-    _startWidth: number = 0;
-    _startHeight: number = 0;
+    _startBounds: Mrbr_Geometry_Bounds2d = new Mrbr_Geometry_Bounds2d(0, 0, 0, 0)
+    _parentBounds: Mrbr_Geometry_Bounds2d = new Mrbr_Geometry_Bounds2d(0, 0, 0, 0);
+    _minBounds: Mrbr_Geometry_Bounds2d = new Mrbr_Geometry_Bounds2d(0, 0, 320, 240);
+    _lastBounds: Mrbr_Geometry_Bounds2d = new Mrbr_Geometry_Bounds2d(0, 0, 0, 0);
+    _dragStart: Mrbr_Geometry_Point2d = new Mrbr_Geometry_Point2d(0, 0)
     _activeHandle: HTMLElement;
     _resizeDialog: boolean = false;
     _moveDialog: boolean = false;
-    _minWidth: number = 320;
-    _minHeight: number = 240;
-    _defaultWidth: number = 640;
-    _defaultHeight: number = 480;
     _animationFrame: number = 0;
     _config: MrbrDialogParameters;
-    _minX: number = 0;
-    _minY: number = 0;
-    _maxX: number = 0;
-    _maxY: number = 0;
-    _sHandleHeight: number = 0;
-    _eHandleWidth: number = 0;
+    _horizontalHandleHeight: number = 0;
+    _verticalHandleWidth: number = 0;
     _controlBox: Mrbr_UI_Bootstrap_Forms_ControlBox;
     _windowState: Mrbr_UI_Bootstrap_Forms_Dialog$States = Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal;
     _isDragging: boolean = false;
@@ -47,66 +38,66 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
         const self = this;
         self.createDialog();
         const dialogContainer = self.rootElement,
-            titleBar = self.elements["titleBar"],
-            handleW = self.elements["mrbr-dialog-handle-w"],
-            handleN = self.elements["mrbr-dialog-handle-n"];
+            titleBar = self.elements["titleBar"];
         config.host.appendChild(dialogContainer);
         self._config = config;
-        self._maxX = config.host.clientWidth;
-        self._maxY = config.host.clientHeight;
-        let computedHostStyle = getComputedStyle(config.host),
-            computedHandleWStyle = getComputedStyle(handleW),
-            computedHandleNStyle = getComputedStyle(handleN);
-        self._minX = parseFloat(computedHostStyle.getPropertyValue('border-left-width')) + Math.ceil(parseFloat(computedHandleWStyle.getPropertyValue('left')) + parseFloat(computedHandleWStyle.getPropertyValue('width')));
-        self._minY = parseFloat(computedHostStyle.getPropertyValue('border-top-width')) + Math.ceil(parseFloat(getComputedStyle(handleN).getPropertyValue('top')) + parseFloat(getComputedStyle(handleN).getPropertyValue('height')));
-        self.position.x = parseFloat(computedHostStyle.getPropertyValue('border-left-width')) + Math.ceil(parseFloat(computedHandleWStyle.getPropertyValue('left')) + parseFloat(computedHandleWStyle.getPropertyValue('width'))) + self._minX;
-        self.position.y = parseFloat(computedHostStyle.getPropertyValue('border-top-width')) + Math.ceil(parseFloat(computedHandleNStyle.getPropertyValue('top')) + parseFloat(computedHandleNStyle.getPropertyValue('height'))) + this._minY;
-        self.width = self._defaultWidth;
-        self.height = self._defaultHeight;
+        self.setParentBounds();
+        self.newBounds.setXY(
+            self._parentBounds.x,
+            self._parentBounds.y
+        )
         self._resizeDialog = true;
         self._moveDialog = true;
-        self.events["titlebar_mousedown"] = <MrbrEventHandler>{
-            eventName: "mousedown",
-            eventTarget: titleBar,
-            event: self.titleBarMouseDown,
-            context: self
-        }
         if (!self._drawDialog) { self._drawDialog = self.drawDialog.bind(self) }
-        self.events["controlBoxClick"] = <MrbrEventHandler>{
+        self.events["controlBoxClick"] = <Mrbr_UI_Controls_EventHandler>{
             context: self,
             eventName: Mrbr_UI_Bootstrap_Forms_ControlBox.controlBoxClickEventName,
             eventTarget: self._controlBox,
             event: self.controlBoxClick
         }
         self.drawDialog();
+
+
+        self.controls["titleDrag"] = new Mrbr_UI_Controls_Handles_Drag(self.elements["titleBar"], dialogContainer, self._config.host);
+        self.controls["titleDrag"].addEventListener("dragging", (event) => {
+            console.log(event.detail);
+            let bounds = (<Mrbr_Geometry_Bounds2d>event.detail);
+            self.newBounds.setBounds(
+                bounds.x,
+                bounds.y,
+                bounds.width,
+                bounds.height
+            )
+            self._moveDialog = true;
+            if (self._animationFrame === 0) { self._animationFrame = window.requestAnimationFrame(self._drawDialog); }
+
+        })
+
     }
     get titleBar(): HTMLElement { return this.elements["titleBar"]; }
     get contentContainer(): HTMLElement { return this.elements["contentContainer"]; }
     get footer(): HTMLElement { return this.elements["footer"]; }
+    get bounds(): Mrbr_Geometry_Bounds2d { return this._bounds; }
+    get newBounds(): Mrbr_Geometry_Bounds2d { return this._newBounds; }
     _drawDialog: () => any;
-    get width(): number { return this._width }
-    set width(value: number) { this._width = value; }
-    get height(): number { return this._height }
-    set height(value: number) { this._height = value; }
-    //get x(): number { return this._x }
-    //set x(value: number) { this._x = value; }
-    //get y(): number { return this._y }
-    //set y(value: number) { this._y = value; }
-    get position(): Mrbr_Geometry_Point2d { return this._position; }
-    get newPosition(): Mrbr_Geometry_Point2d { return this._newPosition; }
     controlBoxClick_handler: (event: CustomEvent) => any;
-    _lastTransform: string;
-    _lastWidth: number;
-    _lastHeight: number;
-    _lastX: number;
-    _lastY: number;
+    setParentBounds() {
+        const self = this;
+        self._parentBounds.setBounds(
+            0,
+            0,
+            self._config.host.clientWidth,
+            self._config.host.clientHeight)
+    }
     resizeAnimation(xDelta: number, yDelta: number, widthDelta: number, heightDelta: number) {
         const self = this,
             denominator = 5;
-        self.newPosition.x += Math.ceil(xDelta / denominator)
-        self.newPosition.y += Math.ceil(yDelta / denominator);
-        self._height += Math.floor(heightDelta / denominator)
-        self._width += Math.floor(widthDelta / denominator);
+        self.newBounds.setBounds(
+            self.newBounds.x += Math.floor(xDelta / denominator),
+            self.newBounds.y += Math.floor(yDelta / denominator),
+            self.newBounds.width += Math.ceil(widthDelta / denominator),
+            self.newBounds.height += Math.ceil(heightDelta / denominator)
+        )
         self._resizeDialog = true;
         self._moveDialog = true;
         self.drawDialog();
@@ -118,20 +109,30 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
         if (controlBoxEvents.maximise.toString() === controlBoxEvents[detail].toString() && self.windowState !== Mrbr_UI_Bootstrap_Forms_Dialog$States.Maximised) {
             self.windowState = Mrbr_UI_Bootstrap_Forms_Dialog$States.Maximised;
             self.attributes(self._controlBox.elements["maxButton_image"], { src: "/htmlTest/images/forms/restoreWindow.svg" });
-            self._lastWidth = self._width;
-            self._lastHeight = self._height;
-            self._lastX = self.position.x;
-            self._lastY = self.position.y;
-            const growthWidth = self._maxX - 5,//  self._config.host.clientWidth,
-                growthHeight = self._maxY - 5,// self._config.host.clientHeight,
-                growthLeft = 0,//self._minX,
-                growthTop = 0,//self._minY,
-                endTime = Date.now() + 1000,
+            self._lastBounds.setBounds(
+                self.bounds.x,
+                self.bounds.y,
+                self.bounds.width,
+                self.bounds.height
+            );
+            self.setParentBounds();
+            const endTime = Date.now() + Math.floor(500 / 60) * 60,
                 runAnimation = () => {
                     if (Date.now() < endTime) {
-                        self.resizeAnimation((growthLeft - self.position.x), (growthTop - self.position.y), (growthWidth - self._width), (growthHeight - self._height));
+                        self.resizeAnimation((self._parentBounds.x - self.newBounds.x), (self._parentBounds.y - self.newBounds.y), (self._parentBounds.width - self.newBounds.width - self.newBounds.x), (self._parentBounds.height - self.newBounds.height - self.newBounds.y));
                         requestAnimationFrame(runAnimation);
-                    };
+                    }
+                    else {
+                        self.newBounds.setBounds(
+                            self._parentBounds.x,
+                            self._parentBounds.y,
+                            self._parentBounds.width - self._parentBounds.x,
+                            self._parentBounds.height - self._parentBounds.y
+                        );
+                        self._moveDialog = true;
+                        self._resizeDialog = true;
+                        self.drawDialog();
+                    }
                 }
             requestAnimationFrame(runAnimation);
         }
@@ -141,25 +142,34 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
                 endTime = Date.now() + 1000,
                 runAnimation = () => {
                     if (Date.now() < endTime) {
-                        self.resizeAnimation((self._lastX - self.position.x), (self._lastY - self.position.y), self._lastWidth - self._width, self._lastHeight - self._height);
+                        self.resizeAnimation((self._lastBounds.x - self.bounds.x), (self._lastBounds.y - self.bounds.y), self._lastBounds.width - self.newBounds.width, self._lastBounds.height - self.newBounds.height);
                         requestAnimationFrame(runAnimation);
-                    };
+                    }
+                    else {
+                        self.newBounds.setBounds(
+                            self._lastBounds.x,
+                            self._lastBounds.y,
+                            self._lastBounds.width,
+                            self._lastBounds.height);
+                        self._moveDialog = true;
+                        self._resizeDialog = true;
+                        self.drawDialog();
+                    }
                 }
             requestAnimationFrame(runAnimation);
             self.windowState = Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal;
             self.attributes(self._controlBox.elements["maxButton_image"], { src: "/htmlTest/images/forms/maximise.svg" });
-            //self.rootElement.style.transform = self._lastTransform
         }
     }
     createDialog(): HTMLElement {
         const self = this;
         self._controlBox = new Mrbr_UI_Bootstrap_Forms_ControlBox("controlBox");
-        const ctrlCfg = Mrbr_UI_Bootstrap_Controls_ControlConfig,
-            handles: (Mrbr_UI_Bootstrap_Controls_ControlConfig | HTMLElement)[] = self.createHandles(),
+        const ctrlCfg = Mrbr_UI_Controls_ControlConfig,
+            handles: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[] = self.createHandles(),
             dialog = <HTMLElement>this.createElement(new ctrlCfg(this.rootElementName, "div",
                 {
                     classes: ["border", "shadow", "d-flex", "flex-column", "border-1", "border-dark"],
-                    styles: { transform: `translate(${this.position.x}px,${this.position.y}px)`, position: "absolute", top: "0px", left: "0px", width: `${self._defaultWidth}px`, height: `${self._defaultHeight}` },
+                    styles: { transform: `translate(${this.bounds.x}px,${this.bounds.y}px)`, position: "absolute", top: "0px", left: "0px", width: `${self.bounds.width}px`, height: `${self.bounds.height}` },
                     children: [
                         new ctrlCfg("titleBar", "div", {
                             classes: ["mrbr-dialog-handle-drag", "container-fluid", "bg-dark", "d-flex", "user-select-none"],
@@ -175,9 +185,9 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
                         }),
                         new ctrlCfg("contentContainer", "div", {
                             classes: ["container-fluid", "h-100", "p-1", "bg-light"],
-                            styles: { "minHeight": `${self._minHeight / 2}px` }
+                            styles: { "minHeight": `${self._minBounds.height / 2}px` }
                         }),
-                        new Mrbr_UI_Bootstrap_Controls_ControlConfig("footer", "div", {
+                        new Mrbr_UI_Controls_ControlConfig("footer", "div", {
                             classes: ["container-fluid", "bg-dark", "d-flex", "p-4"],
                             styles: { height: "3rem" }
                         }),
@@ -186,89 +196,13 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
                 }));
         return dialog;
     }
-    _dragXStart: number = 0;
-    _dragYStart: number = 0;
-    titleBarMouseDown(mouseEvent: MouseEvent) {
-        mouseEvent.stopPropagation();
-        const self = this,
-            dialogContainer = this.rootElement;
-        if (self.windowState !== Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal || self._isDragging === true) { return; }
-        //console.log(`self.elements["maxButton_image"]: `, self.elements["maxButton_image"])
-        self._isDragging = true;
-        self._dragXStart = mouseEvent.pageX;
-        self._dragYStart = mouseEvent.pageY;
-        self._startX = this.position.x;
-        self._startY = this.position.y;
-        self._resizeDialog = false;
-        self._moveDialog = false;
-        self._sHandleHeight = parseFloat(getComputedStyle(self.elements["mrbr-dialog-handle-s"]).getPropertyValue('bottom')) + parseFloat(getComputedStyle(self.elements["mrbr-dialog-handle-s"]).getPropertyValue('height'));
-        self._eHandleWidth = parseFloat(getComputedStyle(self.elements["mrbr-dialog-handle-e"]).getPropertyValue('right')) + parseFloat(getComputedStyle(self.elements["mrbr-dialog-handle-e"]).getPropertyValue('width'));
-        self.events["window_drag_mousemove"] = <MrbrEventHandler>{
-            eventName: "mousemove",
-            eventTarget: window,
-            context: self,
-            event: self.dragMouseMove
-        }
-        self.events["dialogcontainer_mousemove"] = <MrbrEventHandler>{
-            eventName: "mousemove",
-            eventTarget: dialogContainer,
-            context: self,
-            event: self.dragMouseMove
-        }
-        self.events["window_drag_mouseup"] = <MrbrEventHandler>{
-            eventName: "mouseup",
-            eventTarget: window,
-            context: self,
-            event: self.dragMouseUp
-        }
-        self.events["dialogcontainer_mouseup"] = <MrbrEventHandler>{
-            eventName: "mouseup",
-            eventTarget: dialogContainer,
-            context: self,
-            event: self.dragMouseUp
-        }
-        self.events["titlebar_mousedown"].remove();
-    }
-    dragMouseMove(mouseEvent: MouseEvent) {
-        const self = this,
-            dialog = this.rootElement,
-            offsetX = mouseEvent.pageX - self._dragXStart,
-            offsetY = mouseEvent.pageY - self._dragYStart,
-            _minY = self._minY,
-            _minX = self._minX;
-        self.newPosition.x = this._startX + offsetX;
-        self.newPosition.y = this._startY + offsetY;
-        if (self.newPosition.y < _minY) { self.newPosition.y = _minY; }
-        if (self.newPosition.y + dialog.offsetHeight > self._config.host.clientHeight) { self.newPosition.y = self._config.host.clientHeight - dialog.offsetHeight - self._sHandleHeight }
-        if (self.newPosition.x < _minX) { self.newPosition.x = _minX; }
-        if (self.newPosition.x + dialog.offsetWidth > self._config.host.clientWidth) { self.newPosition.x = self._config.host.clientWidth - dialog.offsetWidth - self._eHandleWidth }
-        self._moveDialog = true;
-        if (self._animationFrame === 0) { self._animationFrame = window.requestAnimationFrame(self._drawDialog); }
-    }
-    dragMouseUp(event: MouseEvent) {
-        const self = this,
-            titleBar = this.elements["titleBar"];
-        if (self._isDragging === false) { return; }
-        self._isDragging = false;
-        self.events["window_drag_mousemove"].remove();
-        self.events["window_drag_mouseup"].remove();
-        self.events["dialogcontainer_mousemove"].remove();
-        self.events["dialogcontainer_mouseup"].remove();
-        self.events["titlebar_mousedown"] = ({
-            eventName: "mousedown",
-            eventTarget: titleBar,
-            event: self.titleBarMouseDown,
-            context: self
-        } as MrbrEventHandler)
-        self._isDragging = false;
-    }
     createHandles(): Array<HTMLElement> {
         const self = this,
             dialogHandles = Mrbr_UI_Bootstrap_Forms_Dialog$Handles;
         let handles =
             Object.keys(dialogHandles)
                 .map(handle => {
-                    const controlHandle = <HTMLElement>self.createElement(new Mrbr_UI_Bootstrap_Controls_ControlConfig(`mrbr-dialog-handle-${handle}`, "div", {
+                    const controlHandle = <HTMLElement>self.createElement(new Mrbr_UI_Controls_ControlConfig(`mrbr-dialog-handle-${handle}`, "div", {
                         data: {
                             handle: handle,
                             lat: handle.includes(dialogHandles.n) ? dialogHandles.n : (handle.includes(dialogHandles.s) ? dialogHandles.s : ""),
@@ -277,13 +211,13 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
                         classes: [`mrbr-dialog-handle`, `mrbr-dialog-handle-${handle}`],
                         properties: { draggable: false }
                     }))
-                    self.events[`mrbr-dialog-handle-${handle}_mousedown`] = <MrbrEventHandler>{
+                    self.events[`mrbr-dialog-handle-${handle}_mousedown`] = <Mrbr_UI_Controls_EventHandler>{
                         event: self.handleMouseDown,
                         eventName: "mousedown",
                         context: self,
                         eventTarget: controlHandle
                     }
-                    self.events[`mrbr-dialog-handle-${handle}_touchstart`] = <MrbrEventHandler>{
+                    self.events[`mrbr-dialog-handle-${handle}_touchstart`] = <Mrbr_UI_Controls_EventHandler>{
                         event: self.handleTouchDown,
                         eventName: "touchstart",
                         context: self,
@@ -303,20 +237,20 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
 
         if (self._windowState === Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal) {
             this.rootElement.classList.add("mrbr-dialog-handle-drag")
-            self.events["window_touchmove"] = <MrbrEventHandler>{
+            self.events["window_touchmove"] = <Mrbr_UI_Controls_EventHandler>{
                 event: self.touchMove,
                 eventName: "touchmove",
                 context: self,
                 eventTarget: window
             };
-            self.events[`window_touchend`] = <MrbrEventHandler>{
+            self.events[`window_touchend`] = <Mrbr_UI_Controls_EventHandler>{
                 event: self.handleTouchDown,
                 eventName: "touchend",
                 context: self,
                 eventTarget: window
             }
-            self.newPosition.x = touch.pageX;
-            self.newPosition.y = touch.pageY;
+            self.newBounds.x = touch.pageX;
+            self.newBounds.y = touch.pageY;
             self._activeHandle = (<HTMLElement>touchEvent.target);
             self.focus();
         }
@@ -328,40 +262,42 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
         mouseEvent.preventDefault();
         if (self._activeHandle) { return; }
         if (self._windowState === Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal) {
+            self.setParentBounds();
             self._activeHandle = (<HTMLElement>mouseEvent.target);
-            self._startX = mouseEvent.pageX;
-            self._startY = mouseEvent.pageY;
-            self._startHeight = dialogContainer.offsetHeight;
-
-            self._startWidth = dialogContainer.offsetWidth;
+            self._startBounds.setBounds(
+                mouseEvent.pageX,
+                mouseEvent.pageY,
+                dialogContainer.offsetWidth,
+                dialogContainer.offsetHeight
+            )
             self._resizeDialog = false;
             self._moveDialog = false;
-            self.events[`window_handle_mousemove`] = <MrbrEventHandler>{
+            self.events[`window_handle_mousemove`] = <Mrbr_UI_Controls_EventHandler>{
                 event: self.handleMouseMove,
                 eventName: "mousemove",
                 context: self,
                 eventTarget: window
             }
-            self.events[`window_handle_mouseup`] = <MrbrEventHandler>{
+            self.events[`window_handle_mouseup`] = <Mrbr_UI_Controls_EventHandler>{
                 event: self.handleMouseUp,
                 eventName: "mouseup",
                 context: self,
                 eventTarget: window
             }
-            self.events["container_handle_mousemove"] = <MrbrEventHandler>{
+            self.events["container_handle_mousemove"] = <Mrbr_UI_Controls_EventHandler>{
                 event: self.handleMouseMove,
                 eventName: "mousemove",
                 context: self,
                 eventTarget: self.rootElement
             }
-            self.events[`activehandle_mouseup`] = <MrbrEventHandler>{
+            self.events[`activehandle_mouseup`] = <Mrbr_UI_Controls_EventHandler>{
                 event: self.handleMouseUp,
                 eventName: "mouseup",
                 context: self,
                 eventTarget: self._activeHandle
             }
             self.focus();
-            self.createElement(new Mrbr_UI_Bootstrap_Controls_ControlConfig("contentContainer_overlay", "div", {
+            self.createElement(new Mrbr_UI_Controls_ControlConfig("contentContainer_overlay", "div", {
                 classes: "w-100 h-100",
                 styles: { position: "absolute", backgroundColor: "transparent", top: "0", left: "0", zIndex: "2000" }
             }))
@@ -375,45 +311,45 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
     handleMouseMove(event: MouseEvent) {
         const self = this;
         if (!self._activeHandle) { return; }
-        const offsetX = event.pageX - self._startX,
-            offsetY = event.pageY - self._startY,
+        const offsetX = event.pageX - self._startBounds.x,
+            offsetY = event.pageY - self._startBounds.y,
             latitide = self._activeHandle.dataset.lat,
             longitude = self._activeHandle.dataset.long,
-            dialogHandles = Mrbr_UI_Bootstrap_Forms_Dialog$Handles,
-            _minY = self._minY,
-            _minX = self._minX,
-            lastY = self.newPosition.y,
-            lastX = self.newPosition.x;
+            dialogHandles = Mrbr_UI_Bootstrap_Forms_Dialog$Handles;
+        self._lastBounds.setXY(
+            self.newBounds.x,
+            self.newBounds.y
+        )
         if (latitide === dialogHandles.n) {
-            self.newPosition.y = (self._startY + offsetY <= _minY) ? _minY : self._startY + offsetY;
-            self._height += (lastY - self.newPosition.y)
-            if (self._height <= self._minHeight) {
-                let heightDelta = self._minHeight - self._height;
-                self.newPosition.y = self._startY + offsetY - heightDelta;
-                self._height = self._minHeight;
+            self.newBounds.y = (self._startBounds.y + offsetY <= self._parentBounds.y) ? self._parentBounds.y : self._startBounds.y + offsetY;
+            self.newBounds.height += (self._lastBounds.y - self.newBounds.y)
+            if (self.newBounds.height <= self._minBounds.height) {
+                let heightDelta = self._minBounds.height - self.newBounds.height;
+                self.newBounds.y = self._startBounds.y + offsetY - heightDelta;
+                self.newBounds.height = self._minBounds.height;
             }
         }
         else if (latitide === dialogHandles.s) {
-            self._height = Math.max(self._startHeight + offsetY, self._minHeight)
-            if (self._height + self.newPosition.y > self._config.host.clientHeight - self._sHandleHeight) {
-                self._height = self._config.host.clientHeight - self._sHandleHeight - self.newPosition.y;
+            self.newBounds.height = Math.max(self._startBounds.height + offsetY, self._minBounds.height)
+            if (self.newBounds.height + self.newBounds.y > self._parentBounds.height - self._horizontalHandleHeight) {
+                self.newBounds.height = self._parentBounds.height - self._horizontalHandleHeight - self.newBounds.y;
             }
         }
 
 
         if (longitude === dialogHandles.w) {
-            self.newPosition.x = (self._startX + offsetX <= _minX) ? _minX : self._startX + offsetX;
-            self._width += (lastX - self.newPosition.x)
-            if (self._width <= self._minWidth) {
-                let widthDelta = self._minWidth - self._width;
-                self.newPosition.x = self._startX + offsetX - widthDelta;
-                self._width = self._minWidth;
+            self.newBounds.x = (self._startBounds.x + offsetX <= self._parentBounds.x) ? self._parentBounds.x : self._startBounds.x + offsetX;
+            self.newBounds.width += (self._lastBounds.x - self.newBounds.x)
+            if (self.newBounds.width <= self._minBounds.width) {
+                let widthDelta = self._minBounds.width - self.newBounds.width;
+                self.newBounds.x = self._startBounds.x + offsetX - widthDelta;
+                self.newBounds.width = self._minBounds.width;
             }
         }
         else if (longitude === dialogHandles.e) {
-            self._width = Math.max(self._startWidth + offsetX, self._minWidth)
-            if (self._width + self.newPosition.x > self._config.host.clientWidth - self._eHandleWidth) {
-                self._width = self._config.host.clientWidth - self._eHandleWidth - self.newPosition.x;
+            self.newBounds.width = Math.max(self._startBounds.width + offsetX, self._minBounds.width)
+            if (self.newBounds.width + self.newBounds.x > self._parentBounds.width - self._verticalHandleWidth) {
+                self.newBounds.width = self._parentBounds.width - self._verticalHandleWidth - self.newBounds.x;
             }
         }
         self._resizeDialog = true;
@@ -425,17 +361,19 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Bootstrap_Controls_C
         const self = this,
             dialog = this.rootElement;
         if (self._resizeDialog === false && self._moveDialog === false) { self._animationFrame = 0; return; }
-        self.position.x = self.newPosition.x
-        self.position.y = self.newPosition.y
-        self.height = self._height;
-        self.width = self._width;
+        self.bounds.setBounds(
+            self.newBounds.x,
+            self.newBounds.y,
+            self.newBounds.width,
+            self.newBounds.height
+        )
 
         if (self._moveDialog === true) {
-            dialog.style.transform = `translate(${this.position.x}px,${this.position.y}px)`
+            dialog.style.transform = `translate(${this.bounds.x}px,${this.bounds.y}px)`
         }
         if (self._resizeDialog === true) {
-            dialog.style.width = `${self.width}px`
-            dialog.style.height = `${self.height}px`
+            dialog.style.width = `${self.bounds.width}px`
+            dialog.style.height = `${self.bounds.height}px`
         }
         self._resizeDialog = false;
         self._moveDialog = false;

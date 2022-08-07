@@ -1,8 +1,8 @@
 import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../../controls/classActions";
-import { Mrbr_UI_Bootstrap_Controls_Control } from "../../controls/control";
-import { Mrbr_UI_Bootstrap_Controls_ControlConfig } from "../../controls/ControlConfig";
+import { Mrbr_UI_Controls_Control } from "../../../controls/control";
+import { Mrbr_UI_Controls_ControlConfig } from "../../../controls/ControlConfig";
 
-export class Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu extends Mrbr_UI_Bootstrap_Controls_Control {
+export class Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu extends Mrbr_UI_Controls_Control {
     _backdrop: HTMLElement;
     _menuId: string;
     constructor(rootElementName: string) {
@@ -41,8 +41,8 @@ export class Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu extends Mrbr_UI_Bootstr
 
 
 
-        self._menuId = Mrbr_UI_Bootstrap_Controls_Control.createId("mainMenu");
-        const ctrlCfg = Mrbr_UI_Bootstrap_Controls_ControlConfig;
+        self._menuId = Mrbr_UI_Controls_Control.createId("mainMenu");
+        const ctrlCfg = Mrbr_UI_Controls_ControlConfig;
         self.createElement(new ctrlCfg(rootElementName, "div", {
             classes: "offcanvas offcanvas-start text-bg-white",
             attributes: { tabindex: "-1", id: self.menuId, "aria-labelledby": "offcanvasDarkLabel" },
