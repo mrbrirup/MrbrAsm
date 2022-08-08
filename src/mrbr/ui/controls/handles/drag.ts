@@ -5,7 +5,7 @@ import { Mrbr_UI_Controls_Control } from "../control";
 import { Mrbr_UI_Controls_ControlConfig } from "../ControlConfig";
 
 export class Mrbr_UI_Controls_Handles_Drag extends Mrbr_UI_Controls_Control {
-    DRAGGING_EVENT_NAME: string = "dragging";
+    static DRAGGING_EVENT_NAME: string = "dragging";
     _newBounds: Mrbr_Geometry_Bounds2d = new Mrbr_Geometry_Bounds2d(0, 0, 640, 480);
     _startBounds: Mrbr_Geometry_Bounds2d = new Mrbr_Geometry_Bounds2d(0, 0, 0, 0)
     _dragStart: Mrbr_Geometry_Point2d = new Mrbr_Geometry_Point2d(0, 0)
@@ -94,17 +94,15 @@ export class Mrbr_UI_Controls_Handles_Drag extends Mrbr_UI_Controls_Control {
     dragTarget_mouseMove(mouseEvent: MouseEvent) {
         const self = this,
             dialog = self.dragTarget;
-        console.log("self.newBounds.setXY: ", self._startBounds)
         self.newBounds.setXY(
             self._startBounds.x + mouseEvent.pageX - self._dragStart.x,
             self._startBounds.y + mouseEvent.pageY - self._dragStart.y
         )
-        console.log("self.newBounds.setXY 2: ", self._startBounds)
         if (self.newBounds.y < 0) { self.newBounds.y = 0; }
         if (self.newBounds.y + dialog.offsetHeight > self.parentElement.clientHeight) { self.newBounds.y = self.parentElement.clientHeight - dialog.offsetHeight }
         if (self.newBounds.x < 0) { self.newBounds.x = 0; }
         if (self.newBounds.x + dialog.offsetWidth > self.parentElement.clientWidth) { self.newBounds.x = self.parentElement.clientWidth - dialog.offsetWidth }
-        self.dispatchEvent(new CustomEvent(self.DRAGGING_EVENT_NAME, { detail: self.newBounds }));
+        self.dispatchEvent(new CustomEvent(Mrbr_UI_Controls_Handles_Drag.DRAGGING_EVENT_NAME, { detail: self.newBounds }));
     }
     dragHandle_mouseUp(event: MouseEvent) {
         const self = this;

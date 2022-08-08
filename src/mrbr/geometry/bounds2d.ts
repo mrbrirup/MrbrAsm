@@ -33,6 +33,12 @@ export class Mrbr_Geometry_Bounds2d {
     public set width(value: number) {
         this._width = value;
     }
+    setFromBounds(bounds: Mrbr_Geometry_Bounds2d) {
+        this.x = bounds.x;
+        this._y = bounds.y;
+        this.width = bounds.width;
+        this.height = bounds.height;
+    }
     setBounds(x: number, y: number, width: number, height: number) {
         this.x = x;
         this._y = y;
