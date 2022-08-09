@@ -9,8 +9,8 @@ type NavigationButtons = {
 
 export class Mrbr_UI_Bootstrap_Forms_UrlDialog extends Mrbr_UI_Bootstrap_Forms_Dialog {
     _history: Array<string> = [];
-    constructor(rootElementName: string, config) {
-        super(rootElementName, config);
+    constructor(rootElementName: string) {
+        super(rootElementName);
         const self = this,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig;
 
@@ -95,7 +95,9 @@ export class Mrbr_UI_Bootstrap_Forms_UrlDialog extends Mrbr_UI_Bootstrap_Forms_D
         self._iframe_popstate_handler = self.iFramePopState.bind(self);
         self._iframe_load_handler = self.iFrameLoaded(self);
 
-        this.contentContainer.appendChild(browserPanel);
+        //this.contentContainer.appendChild(browserPanel);
+
+
         // self.iFrame.contentWindow.addEventListener("loadstart",self._iframe_loadStart_handler )
         // self.iFrame.contentWindow.addEventListener("message",self._iframe_loadStart_handler )
         // self.iFrame.contentDocument.body.addEventListener("beforeunload",self._iframe_loadStart_handler )

@@ -51,13 +51,11 @@ export class Mrbr_UI_Controls_Handles_Drag extends Mrbr_UI_Controls_Control {
         const self = this,
             dragTarget = self.dragTarget;
         //if (mouseEvent.target !== self.dragHandle ) { return mouseEvent; }
-        if ((<HTMLElement>(mouseEvent.target)).id !== (<HTMLElement>(self.dragHandle)).id) {
+        //if ((<HTMLElement>(mouseEvent.target)).id !== (<HTMLElement>(self.dragHandle)).id) {
+        if (mouseEvent.target !== self.dragHandle) {
             mouseEvent.preventDefault();
             return;
         }
-        //if (mouseEvent.target !== mouseEvent.currentTarget ) { return mouseEvent; }
-        //mouseEvent.stopPropagation();
-        debugger;
         if (self._isDragging === true) { return; }
         self._isDragging = true;
         self._dragStart.setPoint(mouseEvent.pageX, mouseEvent.pageY)

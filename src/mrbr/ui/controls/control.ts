@@ -14,7 +14,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget {
         self.rootElementName = rootElementName;
         self._elements = new Proxy(new Map<string, HTMLElement>(), {
             get(target, name) {
-                return (target.has(name as string)) ? target.get(name as string) : undefined;
+                return (target.has(name as string)) ? target.get(name as string) : null;
             },
             set(target, name: string, value) {
                 if (name === "delete") {
@@ -31,63 +31,80 @@ export class Mrbr_UI_Controls_Control extends EventTarget {
                     target.delete(name)
                 }
                 return true;
+            },
+            ownKeys(target) {
+                return Array.from(target.keys());
             }
         })
 
         this._controls = new Proxy(new Map<string, Mrbr_UI_Controls_Control>(), {
             get(target: Map<string, Mrbr_UI_Controls_Control>, name: string) {
-                return (target.has(name)) ? (target.get(name)) : undefined;
+                return (target.has(name)) ? (target.get(name)) : null;
             },
             set(target, name: string, value) {
                 target.set((name as string), value);
+                if (!value) {
+                    target.delete(name)
+                }
                 return true;
+            },
+            ownKeys(target) {
+                return Array.from(target.keys());
             }
 
         })
         self._events = new Proxy(new Map<string, Mrbr_System_Events_EventHandler>(), {
             get(target, name: string) {
-                return (target.has(name as string)) ? target.get(name as string) : undefined;
+                return (target.has(name as string)) ? target.get(name as string) : null;
             },
             set(target, name: string, value: Mrbr_System_Events_EventHandler) {
-                if (target.has(name)) {
+                if (target.has(name) && (value === undefined || value === null) === false) {
                     console.warn(`Duplicate event name: ${name}`)
                     return true;
                 }
-                if (!value.handler) {
-                    value.handler = value.event.bind((value.context || value.eventTarget));
-                    if (value.options !== undefined) {
-                        value.eventTarget.addEventListener(value.eventName, value.handler, value.options)
-                        console.log(value.options)
-                    }
-                    else {
-                        value.eventTarget.addEventListener(value.eventName, value.handler)
-                    }
-                }
-                value.remove = () => {
-                    if (target.has(name)) {
+                if (value) {
+
+                    if (!value.handler) {
+                        value.handler = value.event.bind((value.context || value.eventTarget));
                         if (value.options !== undefined) {
-                            value.eventTarget.removeEventListener(value.eventName, value.handler, value.options)
+                            value.eventTarget.addEventListener(value.eventName, value.handler, value.options)
+                            console.log(value.options)
                         }
                         else {
-                            value.eventTarget.removeEventListener(value.eventName, value.handler)
+                            value.eventTarget.addEventListener(value.eventName, value.handler)
                         }
-                        target.delete(name);
                     }
+                    value.remove = () => {
+                        if (target.has(name)) {
+                            if (value.options !== undefined) {
+                                value.eventTarget.removeEventListener(value.eventName, value.handler, value.options)
+                            }
+                            else {
+                                value.eventTarget.removeEventListener(value.eventName, value.handler)
+                            }
+                            target.delete(name);
+                        }
+                    }
+                    target.set(name, value);
+                } else {
+                    target.delete(name);
                 }
-                target.set(name, value);
                 return true;
+            }
+            , ownKeys(target) {
+                return Array.from(target.keys());
             }
         });
     }
-    createElement(config: Mrbr_UI_Controls_ControlConfig | HTMLElement | Array<Mrbr_UI_Controls_ControlConfig | Mrbr_UI_Controls_ControlConfig>): HTMLElement | Array<HTMLElement> {
+    createElement(controlConfig: Mrbr_UI_Controls_ControlConfig | HTMLElement | Array<Mrbr_UI_Controls_ControlConfig | Mrbr_UI_Controls_ControlConfig>): HTMLElement | Array<HTMLElement> {
         const self = this;
-        if (Array.isArray(config) === true) {
-            return (<Array<Mrbr_UI_Controls_ControlConfig>>config).map(entry => <HTMLElement>self.createElement(entry));
+        if (Array.isArray(controlConfig) === true) {
+            return (<Array<Mrbr_UI_Controls_ControlConfig>>controlConfig).map(entry => <HTMLElement>self.createElement(entry));
         }
-        let _config: Mrbr_UI_Controls_ControlConfig = <Mrbr_UI_Controls_ControlConfig>config;
+        let _config: Mrbr_UI_Controls_ControlConfig = <Mrbr_UI_Controls_ControlConfig>controlConfig;
 
-        if (config instanceof HTMLElement) {
-            return config;
+        if (controlConfig instanceof HTMLElement) {
+            return controlConfig;
         }
 
         let _element = document.createElement(_config.elementType);
@@ -101,7 +118,6 @@ export class Mrbr_UI_Controls_Control extends EventTarget {
         self.elements[_config.elementName] = _element;
         if (_config.children) {
             let children = _config.children.map(entry => self.createElement(entry));
-            //console.log(_config.elementName, children)
             if (Array.isArray(children)) {
                 (<Array<HTMLElement>>children).forEach(entry => { _element.appendChild(entry) })
             }
@@ -197,15 +213,30 @@ export class Mrbr_UI_Controls_Control extends EventTarget {
     }
     dispose() {
         const self = this;
-        let remainingEvents = Array.from(Object.keys(self._events));
-        remainingEvents.forEach(eventName => {
+        Array.from(Reflect.ownKeys(self._events))?.forEach(eventName => {
             try {
                 self.events[eventName].remove();
-                self.events.delete(eventName);
             } catch (error) {
-
+                console.log(error)
             }
         })
+        Array.from(Reflect.ownKeys(self._elements))?.forEach(element => {
+            try {
+                self.elements[element].remove();
+                self.elements[element] = null;
+            } catch (error) {
+                console.log(error)
+            }
+        });
+        Array.from(Reflect.ownKeys(self._controls))?.forEach(control => {
+            try {
+                self.controls[control].dispose();
+                self.controls[control] = null;
+            } catch (error) {
+
+                console.log(error)
+            }
+        });
     }
     static createId(prefix: string) { return `${prefix}_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`; }
 

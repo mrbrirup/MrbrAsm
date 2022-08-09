@@ -237,4 +237,8 @@ export class Mrbr_UI_Controls_Handles_Resize extends Mrbr_UI_Controls_Control {
     }
     touchMove() { }
     touchUp() { }
+    dispose() {
+        console.log("dispose")
+        super.dispose();
+    }
 }
