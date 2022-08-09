@@ -1,13 +1,13 @@
 import { Mrbr_UI_Html_StyleClasses } from "../html/StyleClasses";
 import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../bootstrap/controls/classActions";
 import { Mrbr_UI_Controls_ControlConfig } from "./ControlConfig";
-import { Mrbr_UI_Controls_EventHandler } from "../bootstrap/controls/EventHandler";
+import { Mrbr_System_Events_EventHandler } from "../../system/events/EventHandler";
 export class Mrbr_UI_Controls_Control extends EventTarget {
     _styleClasses = Mrbr_UI_Html_StyleClasses
     _rootElementName: string;
     _elements: Map<string, HTMLElement>
     _controls: Map<string, Mrbr_UI_Controls_Control>
-    _events: Map<string, Mrbr_UI_Controls_EventHandler>;
+    _events: Map<string, Mrbr_System_Events_EventHandler>;
     constructor(rootElementName: string) {
         super();
         const self = this;
@@ -44,29 +44,28 @@ export class Mrbr_UI_Controls_Control extends EventTarget {
             }
 
         })
-
-        self._events = new Proxy(new Map<string, Mrbr_UI_Controls_EventHandler>(), {
+        self._events = new Proxy(new Map<string, Mrbr_System_Events_EventHandler>(), {
             get(target, name: string) {
                 return (target.has(name as string)) ? target.get(name as string) : undefined;
             },
-            set(target, name: string, value: Mrbr_UI_Controls_EventHandler) {
+            set(target, name: string, value: Mrbr_System_Events_EventHandler) {
                 if (target.has(name)) {
                     console.warn(`Duplicate event name: ${name}`)
                     return true;
                 }
                 if (!value.handler) {
                     value.handler = value.event.bind((value.context || value.eventTarget));
-                    if (value.options) {
+                    if (value.options !== undefined) {
                         value.eventTarget.addEventListener(value.eventName, value.handler, value.options)
+                        console.log(value.options)
                     }
                     else {
                         value.eventTarget.addEventListener(value.eventName, value.handler)
                     }
                 }
-
                 value.remove = () => {
                     if (target.has(name)) {
-                        if (value.options) {
+                        if (value.options !== undefined) {
                             value.eventTarget.removeEventListener(value.eventName, value.handler, value.options)
                         }
                         else {
@@ -114,7 +113,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget {
     }
     get elements() { return this._elements }
     get controls() { return this._controls }
-    get events(): Map<string, Mrbr_UI_Controls_EventHandler> { return this._events }
+    get events(): Map<string, Mrbr_System_Events_EventHandler> { return this._events }
     get rootElementName(): string { return this._rootElementName; }
     set rootElementName(value: string) { this._rootElementName = value; }
     get rootElement(): HTMLElement { const self = this; return self.elements[self._rootElementName]; }

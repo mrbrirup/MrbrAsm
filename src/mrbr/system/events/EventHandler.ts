@@ -1,4 +1,4 @@
-export class Mrbr_UI_Controls_EventHandler {
+export class Mrbr_System_Events_EventHandler {
     constructor(eventName: string, eventTarget: EventTarget, event: Function) {
         const self = this;
         self.eventName = eventName;
@@ -8,8 +8,8 @@ export class Mrbr_UI_Controls_EventHandler {
     eventName: string;
     eventTarget: EventTarget;
     event: Function;
-    options?: object;
+    options?: any;
     handler?: EventListenerOrEventListenerObject;
     remove?: () => any;
-    context?: any;
+    context?: any
 };

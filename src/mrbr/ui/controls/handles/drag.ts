@@ -1,6 +1,6 @@
 import { Mrbr_Geometry_Bounds2d } from "../../../geometry/bounds2d";
 import { Mrbr_Geometry_Point2d } from "../../../geometry/point2d";
-import { Mrbr_UI_Controls_EventHandler } from "../../bootstrap/controls/EventHandler";
+import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { Mrbr_UI_Controls_Control } from "../control";
 import { Mrbr_UI_Controls_ControlConfig } from "../ControlConfig";
 
@@ -20,11 +20,13 @@ export class Mrbr_UI_Controls_Handles_Drag extends Mrbr_UI_Controls_Control {
         self.dragHandle = dragHandle;
         self.dragTarget = dragTarget;
         self.parentElement = parentElement;
-        self.events["draghandle_mousedown"] = <Mrbr_UI_Controls_EventHandler>{
+        self.events["draghandle_mousedown"] = <Mrbr_System_Events_EventHandler>{
             eventName: "mousedown",
             eventTarget: self.dragHandle,
             event: self.dragHandle_mouseDown,
             context: self
+            //,            options: false
+            //,            options: false
         }
     }
     public get dragHandle(): HTMLElement {
@@ -46,9 +48,16 @@ export class Mrbr_UI_Controls_Handles_Drag extends Mrbr_UI_Controls_Control {
         this._parentElement = value;
     }
     dragHandle_mouseDown(mouseEvent: MouseEvent) {
-        mouseEvent.stopPropagation();
         const self = this,
             dragTarget = self.dragTarget;
+        //if (mouseEvent.target !== self.dragHandle ) { return mouseEvent; }
+        if ((<HTMLElement>(mouseEvent.target)).id !== (<HTMLElement>(self.dragHandle)).id) {
+            mouseEvent.preventDefault();
+            return;
+        }
+        //if (mouseEvent.target !== mouseEvent.currentTarget ) { return mouseEvent; }
+        //mouseEvent.stopPropagation();
+        debugger;
         if (self._isDragging === true) { return; }
         self._isDragging = true;
         self._dragStart.setPoint(mouseEvent.pageX, mouseEvent.pageY)
@@ -65,25 +74,25 @@ export class Mrbr_UI_Controls_Handles_Drag extends Mrbr_UI_Controls_Control {
             self.dragTarget.offsetLeft + (match ? parseFloat(match?.groups?.xPos) : 0),
             self.dragTarget.offsetTop + (match ? parseFloat(match?.groups?.yPos) : 0)
         )
-        self.events["window_drag_mousemove"] = <Mrbr_UI_Controls_EventHandler>{
+        self.events["window_drag_mousemove"] = <Mrbr_System_Events_EventHandler>{
             eventName: "mousemove",
             eventTarget: window,
             context: self,
             event: self.dragTarget_mouseMove
         }
-        self.events["dragtarget_mousemove"] = <Mrbr_UI_Controls_EventHandler>{
+        self.events["dragtarget_mousemove"] = <Mrbr_System_Events_EventHandler>{
             eventName: "mousemove",
             eventTarget: dragTarget,
             context: self,
             event: self.dragTarget_mouseMove
         }
-        self.events["window_drag_mouseup"] = <Mrbr_UI_Controls_EventHandler>{
+        self.events["window_drag_mouseup"] = <Mrbr_System_Events_EventHandler>{
             eventName: "mouseup",
             eventTarget: window,
             context: self,
             event: self.dragHandle_mouseUp
         }
-        self.events["dragtarget_mouseup"] = <Mrbr_UI_Controls_EventHandler>{
+        self.events["dragtarget_mouseup"] = <Mrbr_System_Events_EventHandler>{
             eventName: "mouseup",
             eventTarget: dragTarget,
             context: self,
@@ -117,7 +126,7 @@ export class Mrbr_UI_Controls_Handles_Drag extends Mrbr_UI_Controls_Control {
             eventTarget: self.dragHandle,
             event: self.dragHandle_mouseDown,
             context: self
-        } as Mrbr_UI_Controls_EventHandler)
+        } as Mrbr_System_Events_EventHandler)
         self.dragTarget.removeChild(self.elements["contentContainer_overlay"])
         self.elements["contentContainer_overlay"] = null;
         self._isDragging = false;

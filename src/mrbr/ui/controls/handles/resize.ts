@@ -1,6 +1,6 @@
 import { Mrbr_Geometry_Bounds2d } from "../../../geometry/bounds2d";
 import { Mrbr_Geometry_Point2d } from "../../../geometry/point2d";
-import { Mrbr_UI_Controls_EventHandler } from "../../bootstrap/controls/EventHandler";
+import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { Mrbr_UI_Controls_Control } from "../control";
 import { Mrbr_UI_Controls_ControlConfig } from "../ControlConfig";
 
@@ -64,18 +64,17 @@ export class Mrbr_UI_Controls_Handles_Resize extends Mrbr_UI_Controls_Control {
                     classes: [`mrbr-dialog-handle`, `mrbr-dialog-handle-${handle}`],
                     properties: { draggable: false }
                 }))
-                self.events[`mrbr-dialog-handle-${handle}_mousedown`] = <Mrbr_UI_Controls_EventHandler>{
+                self.events[`mrbr-dialog-handle-${handle}_mousedown`] = <Mrbr_System_Events_EventHandler>{
                     event: self.handle_mouseDown,
                     eventName: "mousedown",
                     context: self,
                     eventTarget: controlHandle
                 }
-                self.events[`mrbr-dialog-handle-${handle}_touchstart`] = <Mrbr_UI_Controls_EventHandler>{
+                self.events[`mrbr-dialog-handle-${handle}_touchstart`] = <Mrbr_System_Events_EventHandler>{
                     event: self.handle_touchDown,
                     eventName: "touchstart",
                     context: self,
-                    eventTarget: controlHandle,
-                    options: { passive: true }
+                    eventTarget: controlHandle
                 }
                 self._resizeTarget.appendChild(controlHandle)
                 return controlHandle;
@@ -83,6 +82,7 @@ export class Mrbr_UI_Controls_Handles_Resize extends Mrbr_UI_Controls_Control {
     }
     handle_mouseDown(mouseEvent: MouseEvent) {
         const self = this;
+        //debugger;
         mouseEvent.stopPropagation();
         mouseEvent.preventDefault();
         if (self._activeHandle) { return; }
@@ -104,25 +104,25 @@ export class Mrbr_UI_Controls_Handles_Resize extends Mrbr_UI_Controls_Control {
             self.resizeTarget.offsetWidth,
             self.resizeTarget.offsetHeight
         )
-        self.events[`window_handle_mousemove`] = <Mrbr_UI_Controls_EventHandler>{
+        self.events[`window_handle_mousemove`] = <Mrbr_System_Events_EventHandler>{
             event: self.handle_mouseMove,
             eventName: "mousemove",
             context: self,
             eventTarget: window
         }
-        self.events[`window_handle_mouseup`] = <Mrbr_UI_Controls_EventHandler>{
+        self.events[`window_handle_mouseup`] = <Mrbr_System_Events_EventHandler>{
             event: self.handle_mouseUp,
             eventName: "mouseup",
             context: self,
             eventTarget: window
         }
-        self.events["container_handle_mousemove"] = <Mrbr_UI_Controls_EventHandler>{
+        self.events["container_handle_mousemove"] = <Mrbr_System_Events_EventHandler>{
             event: self.handle_mouseMove,
             eventName: "mousemove",
             context: self,
             eventTarget: self.resizeTarget
         }
-        self.events[`activehandle_mouseup`] = <Mrbr_UI_Controls_EventHandler>{
+        self.events[`activehandle_mouseup`] = <Mrbr_System_Events_EventHandler>{
             event: self.handle_mouseUp,
             eventName: "mouseup",
             context: self,
@@ -219,13 +219,13 @@ export class Mrbr_UI_Controls_Handles_Resize extends Mrbr_UI_Controls_Control {
         touchEvent.stopPropagation();
         touchEvent.cancelable && touchEvent.preventDefault();
         this.resizeTarget.classList.add("mrbr-dialog-handle-drag")
-        self.events["window_touchmove"] = <Mrbr_UI_Controls_EventHandler>{
+        self.events["window_touchmove"] = <Mrbr_System_Events_EventHandler>{
             event: self.touchMove,
             eventName: "touchmove",
             context: self,
             eventTarget: window
         };
-        self.events[`window_touchend`] = <Mrbr_UI_Controls_EventHandler>{
+        self.events[`window_touchend`] = <Mrbr_System_Events_EventHandler>{
             event: self.handle_touchDown,
             eventName: "touchend",
             context: self,

@@ -3,7 +3,7 @@ import { Mrbr_Geometry_Point2d } from "../../../geometry/point2d";
 import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
-import { Mrbr_UI_Controls_EventHandler } from "../controls/EventHandler";
+import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { Mrbr_UI_Bootstrap_Forms_ControlBox } from "./controlBox";
 import { Mrbr_UI_Bootstrap_Forms_ControlBox$Event } from "./controlBox$Event";
 import { Mrbr_UI_Bootstrap_Forms_ControlBox$Events } from "./controlBox$Events";
@@ -18,22 +18,15 @@ type MrbrDialogParameters = {
 export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     _bounds: Mrbr_Geometry_Bounds2d = new Mrbr_Geometry_Bounds2d(0, 0, 640, 480);
     _newBounds: Mrbr_Geometry_Bounds2d = new Mrbr_Geometry_Bounds2d(0, 0, 640, 480);
-    _lastPosition: Mrbr_Geometry_Point2d = new Mrbr_Geometry_Point2d(0, 0);
-    _startBounds: Mrbr_Geometry_Bounds2d = new Mrbr_Geometry_Bounds2d(0, 0, 0, 0)
     _parentBounds: Mrbr_Geometry_Bounds2d = new Mrbr_Geometry_Bounds2d(0, 0, 0, 0);
     _minBounds: Mrbr_Geometry_Bounds2d = new Mrbr_Geometry_Bounds2d(0, 0, 320, 240);
     _lastBounds: Mrbr_Geometry_Bounds2d = new Mrbr_Geometry_Bounds2d(0, 0, 0, 0);
-    _dragStart: Mrbr_Geometry_Point2d = new Mrbr_Geometry_Point2d(0, 0)
-    _activeHandle: HTMLElement;
     _resizeDialog: boolean = false;
     _moveDialog: boolean = false;
     _animationFrame: number = 0;
     _config: MrbrDialogParameters;
-    _horizontalHandleHeight: number = 0;
-    _verticalHandleWidth: number = 0;
     _controlBox: Mrbr_UI_Bootstrap_Forms_ControlBox;
     _windowState: Mrbr_UI_Bootstrap_Forms_Dialog$States = Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal;
-    _isDragging: boolean = false;
     constructor(rootElementName: string, config: MrbrDialogParameters) {
         super(rootElementName);
         const self = this;
@@ -50,13 +43,6 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
         self._resizeDialog = true;
         self._moveDialog = true;
         if (!self._drawDialog) { self._drawDialog = self.drawDialog.bind(self) }
-        self.events["controlBoxClick"] = <Mrbr_UI_Controls_EventHandler>{
-            context: self,
-            eventName: Mrbr_UI_Bootstrap_Forms_ControlBox.controlBoxClickEventName,
-            eventTarget: self._controlBox,
-            event: self.controlBoxClick
-        }
-        self.drawDialog();
 
 
         self.controls["titleDrag"] = new Mrbr_UI_Controls_Handles_Drag(self.elements["titleBar"], dialogContainer, self._config.host);
@@ -65,9 +51,14 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
             self.newBounds.setFromBounds(bounds)
             self._moveDialog = true;
             if (self._animationFrame === 0) { self._animationFrame = window.requestAnimationFrame(self._drawDialog); }
-
         })
-
+        self.events["controlBoxClick"] = <Mrbr_System_Events_EventHandler>{
+            context: self,
+            eventName: Mrbr_UI_Bootstrap_Forms_ControlBox.controlBoxClickEventName,
+            eventTarget: self._controlBox,
+            event: self.controlBoxClick
+        }
+        self.drawDialog();
     }
     get titleBar(): HTMLElement { return this.elements["titleBar"]; }
     get contentContainer(): HTMLElement { return this.elements["contentContainer"]; }
@@ -75,7 +66,6 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     get bounds(): Mrbr_Geometry_Bounds2d { return this._bounds; }
     get newBounds(): Mrbr_Geometry_Bounds2d { return this._newBounds; }
     _drawDialog: () => any;
-    controlBoxClick_handler: (event: CustomEvent) => any;
     setParentBounds() {
         const self = this;
         self._parentBounds.setBounds(
@@ -97,7 +87,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
         self._moveDialog = true;
         self.drawDialog();
     }
-    controlBoxClick(event: CustomEvent) {
+    controlBoxClick(event: Mrbr_UI_Bootstrap_Forms_ControlBox$Event) {
         const self = this,
             controlBoxEvents = Mrbr_UI_Bootstrap_Forms_ControlBox$Events;
         const detail = event.detail;
@@ -170,6 +160,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
                                 new ctrlCfg("titleText", "span",
                                     {
                                         classes: ["row", "justify-content-left", "align-self-center", "text-light", "py-1", "pe-1", "ps-3", "flex-fill"],
+                                        styles: { "pointerEvents": "none" },
                                         properties: { textContent: "Title Text" }
                                     })
                                 ,
@@ -187,20 +178,26 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
                     ]
                 }));
         self.controls["resizeHandles"] = new Mrbr_UI_Controls_Handles_Resize(dialog, self._config.host);
-        self.controls["resizeHandles"].addEventListener(Mrbr_UI_Controls_Handles_Resize.RESIZING_EVENT_NAME, (event) => {
-            let bounds = (<Mrbr_Geometry_Bounds2d>event.detail);
-            self.newBounds.setBounds(
-                bounds.x,
-                bounds.y,
-                bounds.width,
-                bounds.height
-            )
-            self._resizeDialog = true;
-            self._moveDialog = true;
-            if (self._animationFrame === 0) { self._animationFrame = window.requestAnimationFrame(self._drawDialog); }
-
-        })
+        self.events["resizeHandle_resizing"] = <Mrbr_System_Events_EventHandler>{
+            eventName: Mrbr_UI_Controls_Handles_Resize.RESIZING_EVENT_NAME,
+            eventTarget: self.controls["resizeHandles"],
+            event: self.resizeHandle_resizing,
+            context: self
+        }
         return dialog;
+    }
+    resizeHandle_resizing(event: CustomEvent) {
+        const self = this;
+        let bounds = (<Mrbr_Geometry_Bounds2d>event.detail);
+        self.newBounds.setBounds(
+            bounds.x,
+            bounds.y,
+            bounds.width,
+            bounds.height
+        )
+        self._resizeDialog = true;
+        self._moveDialog = true;
+        if (self._animationFrame === 0) { self._animationFrame = window.requestAnimationFrame(self._drawDialog); }
     }
     drawDialog() {
         const self = this,

@@ -1,7 +1,7 @@
 import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
-import { Mrbr_UI_Controls_EventHandler } from "../controls/EventHandler";
+import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { Mrbr_UI_Bootstrap_Forms_ControlBox$Event } from "./controlBox$Event";
 import { Mrbr_UI_Bootstrap_Forms_ControlBox$Events } from "./controlBox$Events";
 type ControlBoxControl = {
@@ -11,7 +11,7 @@ type ControlBoxControl = {
     order: number
 }
 export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control {
-    static controlBoxClickEventName: string = "controlBox_click";
+    static controlBoxClickEventName: string = "controlbox_click";
     constructor(rootElementName: string) {
         super(rootElementName);
         this.createControls();
@@ -47,26 +47,28 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
                                     src: controlBoxControl.src
                                 },
                                 classes: ["w-100", "h-100", "mrbr-invert-color"],
-
+                                styles: { "pointerEvents": "none" }
                             })
                     ]
                 }));
-            self.events[`${controlBoxControl.name}_click`] = <Mrbr_UI_Controls_EventHandler>{
-                eventName: `click`,
-                eventTarget: controlBoxControlElement,
-                event: self.controlBoxClick.bind(self),
-                context: self
-            };
-            this.rootElement.appendChild(controlBoxControlElement);
+            self.rootElement.appendChild(controlBoxControlElement);
         })
 
         controlBoxControls.sort((a: ControlBoxControl, b: ControlBoxControl) => - a.order + b.order).forEach(element => self.rootElement.appendChild(self.elements[element.name]))
+
+
+        self.events[`controlbox_click`] = <Mrbr_System_Events_EventHandler>{
+            eventName: "click",
+            eventTarget: self.rootElement,
+            event: self.controlBoxClick,
+            context: self
+        };
+
+
     }
-    _controlBoxClickHandler: (mouseEvent: MouseEvent) => any;
     controlBoxClick(mouseEvent: MouseEvent) {
         let eventTypeName = (<HTMLElement>(mouseEvent.target)).dataset.eventType || (<HTMLElement>(mouseEvent.currentTarget)).dataset.eventType;
         if (!eventTypeName) { return; }
-        mouseEvent.preventDefault();
         mouseEvent.stopImmediatePropagation();
         let eventType = Mrbr_UI_Bootstrap_Forms_ControlBox$Events[Object.keys(Mrbr_UI_Bootstrap_Forms_ControlBox$Events).find(key => eventTypeName === key)]
         let event = new Mrbr_UI_Bootstrap_Forms_ControlBox$Event(Mrbr_UI_Bootstrap_Forms_ControlBox.controlBoxClickEventName, eventType);
