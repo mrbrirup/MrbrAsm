@@ -23,6 +23,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     public static CONTROL_BOX_CONTROL_NAME: string = "controlBox";
     public static CONTENT_CONTAINER_CONTROL_NAME: string = "contentContainer";
     public static FOOTER_CONTROL_NAME: string = "footer";
+    public static DIALOG_FULLSCREEN_EVENT_NAME: string = "footer";
 
     protected _rootElementConfig(): Mrbr_UI_Controls_ControlConfig {
         const self = this,
@@ -137,8 +138,23 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
             controlBoxEvents = Mrbr_UI_Bootstrap_Forms_ControlBox$Events;
         const detail = event.detail;
         if (controlBoxEvents.maximise.toString() === controlBoxEvents[detail].toString()) { self.maximiseDialog(event); }
-        else if (controlBoxEvents.fullScreen.toString() === controlBoxEvents[detail].toString()) { self.fullScreenDialog(); }
+        else if (controlBoxEvents.fullScreen.toString() === controlBoxEvents[detail].toString()) {
+            self.fullScreenDialog();
+            self.events[Mrbr_UI_Bootstrap_Forms_Dialog.DIALOG_FULLSCREEN_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
+                eventName: "fullscreenchange",
+                eventTarget: document,
+                context: self,
+                event: self.exitFullScreenHandler
+            }
+        }
 
+    }
+    exitFullScreenHandler(event: Event) {
+        const self = this;
+        if (!document.fullscreenElement) {
+            self.dialogState = Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal;
+            self.events[Mrbr_UI_Bootstrap_Forms_Dialog.DIALOG_FULLSCREEN_EVENT_NAME].remove();
+        }
     }
     fullScreenDialog() {
         const self = this;

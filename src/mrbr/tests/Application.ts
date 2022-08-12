@@ -37,13 +37,13 @@ export class Mrbr_Tests_Application {
                             form.controlBox = false;
                             setTimeout(() => {
                                 form.controlBox = true;
-                            }, 5000);
+                            }, 500);
 
-                        }, 5000);
+                        }, 500);
 
-                    }, 5000);
+                    }, 500);
 
-                }, 5000);
+                }, 500);
                 form.show();
                 //form.dispose();
             })

@@ -84,7 +84,7 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
             ctrlCfg = Mrbr_UI_Controls_ControlConfig,
             eventTypes = Mrbr_UI_Bootstrap_Forms_ControlBox$Events,
             ctrlBoxControls = Mrbr_UI_Bootstrap_Forms_ControlBox.controlBoxControls;
-            self.createControlBox();
+        self.createControlBox();
         self.maximiseBox = self.maximiseBox;
         self.minimiseBox = self.minimiseBox;
         self.fullScreenBox = self.fullScreenBox;
@@ -218,7 +218,6 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
                 break;
             case states.Normal:
                 if (self.elements["maximise"]) { self.attributes(self.elements["maximise_image"], { src: `${rootPath}mrbr/images/forms/maximise.svg` }); }
-
                 if (self.elements["fullscreen"]) { self.attributes(self.elements["fullscreen_image"], { src: `${rootPath}mrbr/images/forms/fullscreen.svg` }); }
                 setTimeout(() => {
                     if (self.elements["maximise"]) { self.classes(self.elements["maximise"], classActions.Remove, "d-none"); }
@@ -227,7 +226,4 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
                 break;
         }
     }
-
-
-
 }
