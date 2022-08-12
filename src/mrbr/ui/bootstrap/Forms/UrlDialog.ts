@@ -9,108 +9,33 @@ type NavigationButtons = {
 
 export class Mrbr_UI_Bootstrap_Forms_UrlDialog extends Mrbr_UI_Bootstrap_Forms_Dialog {
     _history: Array<string> = [];
+    public static IFRAME_ELEMENT_NAME: string = "iframeBrowserPanel";
+    public static BROWSER_ELEMENT_NAME: string = "iframeBrowserPanel";
     constructor(rootElementName: string) {
         super(rootElementName);
+    }
+    protected _iFrameConfig(): Mrbr_UI_Controls_ControlConfig {
         const self = this,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-
-        let inputTextId = Mrbr_UI_Bootstrap_Forms_UrlDialog.createId("textBox");
-        let iFrameId = Mrbr_UI_Bootstrap_Forms_UrlDialog.createId("iFrame");
-        /*let navigationButtons = ([
-            { name: "navigationBack", src: "/htmlTest/images/forms/close.svg", eventType: "back", order: 1 },
-            { name: "navigationForwards", src: "/htmlTest/images/forms/minimise.svg", eventType: "forwards", order: 2 },
-            { name: "navigationGo", src: "/htmlTest/images/forms/maximise.svg", eventType: "go", order: 3 }
-        ] as Array<NavigationButtons>)
-            .map(navigationButton => {
-                let navigationButtonElement = <HTMLElement>self.createElement(new ctrlCfg(navigationButton.name, "button",
-                    {
-                        classes: ["btn", "btn-transparent border-1"],
-                        attributes: { type: "button" },
-                        children: [
-                            new ctrlCfg(`${navigationButton.name}_image`, "img",
-                                {
-                                    attributes: {
-                                        src: navigationButton.src
-                                    },
-                                    classes: ["mrbr-invert-color"],
-                                    data: {
-                                        eventType: navigationButton.eventType.toString(),
-                                        order: navigationButton.order.toString()
-                                    }
-
-                                })
-                        ]
-                    }));
-                return navigationButtonElement;                    
-            })
-        */
-
-
-
-        let browserPanel = <HTMLElement>this.createElement(new ctrlCfg("browserPanel", "div",
+        return new ctrlCfg(Mrbr_UI_Bootstrap_Forms_UrlDialog.BROWSER_ELEMENT_NAME, "div",
             {
                 classes: "h-100 w-100",
                 children: [
-                    // new ctrlCfg("navigationContainer", "div",
-                    //     {
-                    //         classes: "/*d-flex*/ flex-row border-0 bg-dark text-light p-1",
-                    //         children: [
-                    //             // new ctrlCfg("buttonBar", "div", {
-                    //             //     classes: ["btn-group p-0"],
-                    //             //     children: [...navigationButtons]
-                    //             // }),
-                    //             // new ctrlCfg("formGroupRow", "div", {
-                    //             //     classes: "input-group input-group-sm py-0 my-0 ms-2 ps-3",
-                    //             //     children: [
-                    //             //         new ctrlCfg("span1", "span", {
-                    //             //             classes: "input-group-text py-0 my-0 w-100 px-1",
-                    //             //             properties: { textContent: "URL: ", id: inputTextId },
-                    //             //             children: [
-
-                    //             //                 new ctrlCfg("url", "input", {
-                    //             //                     properties: {
-                    //             //                         type: "text",
-                    //             //                         "aria-label": "sizing",
-                    //             //                         "aria-describedby": inputTextId
-                    //             //                     },
-                    //             //                     classes: "form-control ms-2"
-
-                    //             //                 })
-                    //             //             ]
-                    //             //         })
-                    //             //     ]
-                    //             // }),
-                    //         ]
-                    //     }),
-                    new ctrlCfg("iframeContainer", "iframe", {
-                        classes: ["w-100 h-100"],
-                        properties: {
-                            id: iFrameId
-                        }
+                    new ctrlCfg(Mrbr_UI_Bootstrap_Forms_UrlDialog.IFRAME_ELEMENT_NAME, "iframe", {
+                        classes: ["w-100 h-100"]
                     })
-
                 ]
-            }));
-        self._iframe_loadStart_handler = self.iFrameLoadStart.bind(self);
-        self._iframe_popstate_handler = self.iFramePopState.bind(self);
-        self._iframe_load_handler = self.iFrameLoaded(self);
-
-        //this.contentContainer.appendChild(browserPanel);
-
-
-        // self.iFrame.contentWindow.addEventListener("loadstart",self._iframe_loadStart_handler )
-        // self.iFrame.contentWindow.addEventListener("message",self._iframe_loadStart_handler )
-        // self.iFrame.contentDocument.body.addEventListener("beforeunload",self._iframe_loadStart_handler )
-        // self.iFrame.contentDocument.body.addEventListener("message",self._iframe_loadStart_handler )
-        // window.document.addEventListener("load", self._iframe_load_handler)
-        // self.iFrame.contentDocument.body.addEventListener("popstate",self._iframe_popstate_handler )
-        // //self._controlBoxClickHandler = self.controlBoxClick.bind(self);
-
-        self.iFrame.src = "https://en.wikipedia.org/wiki/Avocado";        
+            });
     }
-    _iframe_loadStart_handler;
-    _iframe_load_handler;
-    _iframe_popstate_handler;
+
+    private _url: string = "";
+    public get url(): string {
+        return this._url;
+    }
+    public set url(value: string) {
+        this._url = value;
+    }
+
     iFrameLoadStart(event) {
         console.log("loadStart:", "event")
     }
@@ -135,5 +60,38 @@ export class Mrbr_UI_Bootstrap_Forms_UrlDialog extends Mrbr_UI_Bootstrap_Forms_D
     }
     public set iFrame(value: HTMLIFrameElement) {
         this.elements["iframeContainer"] = value;
+    }
+    initialiseControl() {
+        super.initialiseControl();
+        const self = this;
+        self.createElement(self._iFrameConfig());
+        self
+            .elements[Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME]
+            .appendChild(self.elements[Mrbr_UI_Bootstrap_Forms_UrlDialog.IFRAME_ELEMENT_NAME])
+        self.elements[Mrbr_UI_Bootstrap_Forms_UrlDialog.IFRAME_ELEMENT_NAME].src = self.url;
+    }
+    drawDialog() {
+        const self = this;
+        super.drawDialog();
+
+    }
+    show() {
+        const self = this;
+        super.show()
+    }
+    showDialog() {
+        super.show()
+    }
+    createTitleBar() {
+        const self = this;
+        if (self.titleBar !== true) { return; }
+        let titleBarConfig = self.titleBarConfig;
+        Object.assign(titleBarConfig.styles, { backgroundColor: "red" })
+        const index = titleBarConfig.classes.indexOf("bg-dark");
+        if (index > -1) { 
+            (titleBarConfig.classes as Array<string>).splice(index, 1);
+        }
+            self.createElement(titleBarConfig)
+        self.elements[Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME].prepend(self.elements[Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME]);
     }
 }

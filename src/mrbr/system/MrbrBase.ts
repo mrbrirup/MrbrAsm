@@ -78,6 +78,10 @@ export class MrbrBase extends EventTarget {
         if (config?.paths) {
             Object.keys(config.paths).forEach(key => self_paths.set(key, config.paths[key]));
         }
+        const mrbrCss: HTMLStyleElement = document.createElement("style");        
+        mrbrCss.textContent = `:root { --mrbr-root-folder :"${self.paths.get("Mrbr")}";}`;
+        document.head.appendChild(mrbrCss);
+
         promise.resolve(self);
         return promise.promise;
     }
@@ -145,6 +149,7 @@ export class MrbrBase extends EventTarget {
             root = self.paths.get(file.root) || "",
             componentPath = Mrbr_IO_Path.join([root, file.fileName], false) + `.${file.extension}`,
             promise = self._promise();
+
         mrbrFetch.fetch(componentPath, {})
             .then(result => {
                 result.text()
