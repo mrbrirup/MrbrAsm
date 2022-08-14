@@ -39,18 +39,18 @@
     </style>
     <script>
         class MrbrAssembly extends Map {
-            static MRBR_ASSEMBLY_NAMESPACE = "__ma_namespace__";
-            static MRBR_ASSEMBLY_SIZE = "__ma_namespace__size__";
-            static MRBR_ASSEMBLY_TARGET = "__ma_namespace__target__";
-            static MRBR_ASSEMBLY_NAME = "__ma_namespace__name__";
-            static MRBR_ASSEMBLY_PARENT = "__ma_namespace__parent__";
-            __ma_namespace__ = true;
-            __ma_namespace__name__ = null;
-            __ma_namespace__parent__ = null;
+            static MRBR_ASSEMBLY_NAMESPACE = Symbol("__ma_namespace__");
+            static MRBR_ASSEMBLY_SIZE = Symbol("__ma_namespace__size__");
+            static MRBR_ASSEMBLY_TARGET = Symbol("__ma_namespace__target__");
+            static MRBR_ASSEMBLY_NAME = Symbol("__ma_namespace__name__");
+            static MRBR_ASSEMBLY_PARENT = Symbol("__ma_namespace__parent__");
+            static MRBR_ASSEMBLY_TO_STRING = Symbol("__ma_namespace__tostring__");
             constructor(parent, name) {
                 super((parent && !(typeof parent[Symbol.iterator]) ? parent : null), name)
-                this.__ma_namespace__parent__ = parent;
-                this.__ma_namespace__name__ = name;
+                const self = this;
+                self[MrbrAssembly.MRBR_ASSEMBLY_PARENT] = parent;
+                self[MrbrAssembly.MRBR_ASSEMBLY_NAME] = name;
+                self[MrbrAssembly.MRBR_ASSEMBLY_NAMESPACE] = true;
                 return new Proxy(this, MrbrAssembly.PROXY_HANDLER);
             }
             static PROXY_HANDLER = {
@@ -61,6 +61,16 @@
                         case MrbrAssembly.MRBR_ASSEMBLY_TARGET: return target;
                         case MrbrAssembly.MRBR_ASSEMBLY_NAME: return target[MrbrAssembly.MRBR_ASSEMBLY_NAME];
                         case MrbrAssembly.MRBR_ASSEMBLY_PARENT: return target[MrbrAssembly.MRBR_ASSEMBLY_PARENT];
+                        case MrbrAssembly.MRBR_ASSEMBLY_TO_STRING: {
+                            let namespace = [target[MrbrAssembly.MRBR_ASSEMBLY_NAME]]
+                            let parent = target[MrbrAssembly.MRBR_ASSEMBLY_PARENT];
+                            if (parent) { namespace.push(parent[MrbrAssembly.MRBR_ASSEMBLY_NAME]) }
+                            while (parent) {
+                                parent = parent[MrbrAssembly.MRBR_ASSEMBLY_PARENT];
+                                if (parent) { namespace.push(parent[MrbrAssembly.MRBR_ASSEMBLY_NAME]) }
+                            }
+                            return namespace.reverse().join(".");
+                        }
                         default:
                             if (target.has(name) === false) {
                                 target.set(name, new MrbrAssembly(target, name))
@@ -98,8 +108,12 @@
                     }
                 }
             }
+            static createAssembly(parent, name){
+                parent[name] = new MrbrAssembly(parent,name);
+                return parent[name];
+            }
         }
-        let Mrbr = new MrbrAssembly(null, "Mrbr");
+        MrbrAssembly.createAssembly(window, "Mrbr");
     </script>
 </head>
 
