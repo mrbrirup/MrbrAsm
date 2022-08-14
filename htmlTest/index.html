@@ -46,7 +46,7 @@
             static MRBR_ASSEMBLY_PARENT = Symbol("__ma_namespace__parent__");
             static MRBR_ASSEMBLY_TO_STRING = Symbol("__ma_namespace__tostring__");
             constructor(parent, name) {
-                super((parent && !(typeof parent[Symbol.iterator]) ? parent : null), name)
+                super()
                 const self = this;
                 self[MrbrAssembly.MRBR_ASSEMBLY_PARENT] = parent;
                 self[MrbrAssembly.MRBR_ASSEMBLY_NAME] = name;

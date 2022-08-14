@@ -1,4 +1,5 @@
 /// <mrbr manifest="false" />
+import { Mrbr_Assembly_Namespace } from '../assembly/Namespace';
 import { Mrbr_Assembly_MrbrConfig } from '../assembly/mrbrConfig'
 import { Mrbr_IO_Fetch } from '../io/Fetch';
 import { Mrbr_IO_File } from '../io/File';
@@ -29,7 +30,7 @@ export class MrbrBase extends EventTarget {
     static get mrbrInstance(): MrbrBase { return MrbrBase._mrbr; }
     constructor(assemblyEntries: Object) {
         super();
-
+        Mrbr_Assembly_Namespace.createAssembly(window, "Mrbr")
         const self = this,
             assembly = self.assembly;
         self._entries = new Proxy(assembly, {
@@ -78,7 +79,7 @@ export class MrbrBase extends EventTarget {
         if (config?.paths) {
             Object.keys(config.paths).forEach(key => self_paths.set(key, config.paths[key]));
         }
-        const mrbrCss: HTMLStyleElement = document.createElement("style");        
+        const mrbrCss: HTMLStyleElement = document.createElement("style");
         mrbrCss.textContent = `:root { --mrbr-root-folder :"${self.paths.get("Mrbr")}";}`;
         document.head.appendChild(mrbrCss);
 
