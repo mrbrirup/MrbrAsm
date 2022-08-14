@@ -21,7 +21,6 @@
     <link href="./style/mrbrDefaults.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <style>
-
         @keyframes FadeIn {
             0% {
                 opacity: 0;
@@ -38,6 +37,70 @@
             transition-timing-function: ease-in;
         }
     </style>
+    <script>
+        class MrbrAssembly extends Map {
+            static MRBR_ASSEMBLY_NAMESPACE = "__ma_namespace__";
+            static MRBR_ASSEMBLY_SIZE = "__ma_namespace__size__";
+            static MRBR_ASSEMBLY_TARGET = "__ma_namespace__target__";
+            static MRBR_ASSEMBLY_NAME = "__ma_namespace__name__";
+            static MRBR_ASSEMBLY_PARENT = "__ma_namespace__parent__";
+            __ma_namespace__ = true;
+            __ma_namespace__name__ = null;
+            __ma_namespace__parent__ = null;
+            constructor(parent, name) {
+                super((parent && !(typeof parent[Symbol.iterator]) ? parent : null), name)
+                this.__ma_namespace__parent__ = parent;
+                this.__ma_namespace__name__ = name;
+                return new Proxy(this, MrbrAssembly.PROXY_HANDLER);
+            }
+            static PROXY_HANDLER = {
+                get(target, name) {
+                    switch (name) {
+                        case MrbrAssembly.MRBR_ASSEMBLY_NAMESPACE: return target[MrbrAssembly.MRBR_ASSEMBLY_NAMESPACE];
+                        case MrbrAssembly.MRBR_ASSEMBLY_SIZE: return target.size;
+                        case MrbrAssembly.MRBR_ASSEMBLY_TARGET: return target;
+                        case MrbrAssembly.MRBR_ASSEMBLY_NAME: return target[MrbrAssembly.MRBR_ASSEMBLY_NAME];
+                        case MrbrAssembly.MRBR_ASSEMBLY_PARENT: return target[MrbrAssembly.MRBR_ASSEMBLY_PARENT];
+                        default:
+                            if (target.has(name) === false) {
+                                target.set(name, new MrbrAssembly(target, name))
+                            }
+                    }
+                    return (target.has(name)) ? (target.get(name)) : null;
+                },
+                set(target, name, value) {
+                    if (name === MrbrAssembly.MRBR_ASSEMBLY_NAME ||
+                        name === MrbrAssembly.MRBR_ASSEMBLY_NAMESPACE ||
+                        name === MrbrAssembly.MRBR_ASSEMBLY_PARENT) {
+                        return target
+                    }
+                    else if (target[MrbrAssembly.MRBR_ASSEMBLY_SIZE] === 0 &&
+                        target[MrbrAssembly.MRBR_ASSEMBLY_NAMESPACE] === true) {
+                        target.set(name, value);
+                        return target;
+                    }
+                    let namedTarget = target.get(name);
+                    if (
+                        !namedTarget ||
+                        (namedTarget instanceof Map === false) ||
+                        (namedTarget instanceof Map &&
+                            namedTarget[MrbrAssembly.MRBR_ASSEMBLY_NAMESPACE] === false) ||
+                        (namedTarget instanceof Map &&
+                            namedTarget[MrbrAssembly.MRBR_ASSEMBLY_SIZE] === 0 &&
+                            namedTarget[MrbrAssembly.MRBR_ASSEMBLY_NAMESPACE] === true)) {
+                        target.set(name, value);
+                        return target;
+                    }
+                    if (namedTarget instanceof Map &&
+                        namedTarget[MrbrAssembly.MRBR_ASSEMBLY_SIZE] > 0 &&
+                        namedTarget[MrbrAssembly.MRBR_ASSEMBLY_NAMESPACE] === true) {
+                        throw new Error(`${namedTarget[MrbrAssembly.MRBR_ASSEMBLY_NAME]} is not an empty Namespace`);
+                    }
+                }
+            }
+        }
+        let Mrbr = new MrbrAssembly(null, "Mrbr");
+    </script>
 </head>
 
 <body>
