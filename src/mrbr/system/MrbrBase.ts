@@ -1,6 +1,5 @@
 /// <mrbr manifest="false" />
-import { Mrbr_Assembly_Namespace } from '../assembly/Namespace';
-import { Mrbr_Assembly_MrbrConfig } from '../assembly/mrbrConfig'
+import { Mrbr_Assembly_MrbrConfig } from '../assembly/mrbrConfig';
 import { Mrbr_IO_Fetch } from '../io/Fetch';
 import { Mrbr_IO_File } from '../io/File';
 import { Mrbr_IO_FileType } from '../io/FileType';
@@ -14,6 +13,89 @@ type mrbrPromise = {
     resolve: Function;
 }
 export class MrbrBase extends EventTarget {
+    static Namespace = class extends Map<string, any> {
+        static MRBR_ASSEMBLY_NAMESPACE = Symbol("__ma_namespace__");
+        static MRBR_ASSEMBLY_SIZE = Symbol("__ma_namespace__size__");
+        static MRBR_ASSEMBLY_TARGET = Symbol("__ma_namespace__target__");
+        static MRBR_ASSEMBLY_NAME = Symbol("__ma_namespace__name__");
+        static MRBR_ASSEMBLY_PARENT = Symbol("__ma_namespace__parent__");
+        static MRBR_ASSEMBLY_TO_STRING = Symbol("__ma_namespace__tostring__");
+        constructor(parent: any, name: string) {
+            super()
+            const self = this;
+            self[MrbrBase.Namespace.MRBR_ASSEMBLY_PARENT] = parent;
+            self[MrbrBase.Namespace.MRBR_ASSEMBLY_NAME] = name;
+            self[MrbrBase.Namespace.MRBR_ASSEMBLY_NAMESPACE] = true;
+            return new Proxy(self, MrbrBase.Namespace.PROXY_HANDLER);
+        }
+        static PROXY_HANDLER: ProxyHandler<any> = {
+            get(target: Map<string, any>, name: string | Symbol) {
+                switch (name) {
+                    case MrbrBase.Namespace.MRBR_ASSEMBLY_NAMESPACE: return target[MrbrBase.Namespace.MRBR_ASSEMBLY_NAMESPACE];
+                    case MrbrBase.Namespace.MRBR_ASSEMBLY_SIZE: return target.size;
+                    case MrbrBase.Namespace.MRBR_ASSEMBLY_TARGET: return target;
+                    case MrbrBase.Namespace.MRBR_ASSEMBLY_NAME: return target[MrbrBase.Namespace.MRBR_ASSEMBLY_NAME];
+                    case MrbrBase.Namespace.MRBR_ASSEMBLY_PARENT: return target[MrbrBase.Namespace.MRBR_ASSEMBLY_PARENT];
+                    case MrbrBase.Namespace.MRBR_ASSEMBLY_TO_STRING: {
+                        let namespace = [target[MrbrBase.Namespace.MRBR_ASSEMBLY_NAME]]
+                        let parent = target[MrbrBase.Namespace.MRBR_ASSEMBLY_PARENT];
+                        if (parent) { namespace.push(parent[MrbrBase.Namespace.MRBR_ASSEMBLY_NAME]) }
+                        while (parent) {
+                            parent = parent[MrbrBase.Namespace.MRBR_ASSEMBLY_PARENT];
+                            if (parent) { namespace.push(parent[MrbrBase.Namespace.MRBR_ASSEMBLY_NAME]) }
+                        }
+                        return namespace.reverse().join(".");
+                    }
+                    default:
+                        if (target.has(<string>name) === false) {
+                            target.set(<string>name, new MrbrBase.Namespace(target, <string>name))
+                        }
+                }
+                return (target.has(<string>name)) ? (target.get(<string>name)) : null;
+            },
+            set(target: Map<string, any>, name: string | Symbol, value: any) {
+                switch (name) {
+                    case MrbrBase.Namespace.MRBR_ASSEMBLY_NAMESPACE:
+                    case MrbrBase.Namespace.MRBR_ASSEMBLY_SIZE:
+                    case MrbrBase.Namespace.MRBR_ASSEMBLY_TARGET:
+                    case MrbrBase.Namespace.MRBR_ASSEMBLY_NAME:
+                    case MrbrBase.Namespace.MRBR_ASSEMBLY_PARENT:
+                    case MrbrBase.Namespace.MRBR_ASSEMBLY_TO_STRING:
+                        return true
+                }
+                if (target[MrbrBase.Namespace.MRBR_ASSEMBLY_SIZE] === 0 &&
+                    target[MrbrBase.Namespace.MRBR_ASSEMBLY_NAMESPACE] === true) {
+                    target.set(<string>name, value);
+                    return true;
+                }
+                let namedTarget = target.get(<string>name);
+                if (
+                    !namedTarget ||
+                    (namedTarget instanceof Map === false) ||
+                    (namedTarget instanceof Map &&
+                        namedTarget[MrbrBase.Namespace.MRBR_ASSEMBLY_NAMESPACE] === false) ||
+                    (namedTarget instanceof Map &&
+                        namedTarget[MrbrBase.Namespace.MRBR_ASSEMBLY_SIZE] === 0 &&
+                        namedTarget[MrbrBase.Namespace.MRBR_ASSEMBLY_NAMESPACE] === true)) {
+                    target.set(<string>name, value);
+                    return true;
+                }
+                if (namedTarget instanceof Map &&
+                    namedTarget[MrbrBase.Namespace.MRBR_ASSEMBLY_SIZE] > 0 &&
+                    namedTarget[MrbrBase.Namespace.MRBR_ASSEMBLY_NAMESPACE] === true) {
+                    throw new Error(`${namedTarget[MrbrBase.Namespace.MRBR_ASSEMBLY_NAME]} is not an empty Namespace`);
+                }
+                return false;
+            }
+        }
+        static createAssembly(parent, name): typeof MrbrBase.Namespace {
+            parent[name] = new MrbrBase.Namespace(parent, name);
+            return parent[name];
+        }
+    }
+
+
+
     static cacheTimeOut: number = 5000;
     static temporaryObjectTimeOut: number = 5000;
     config: Mrbr_Assembly_MrbrConfig;
@@ -30,7 +112,6 @@ export class MrbrBase extends EventTarget {
     static get mrbrInstance(): MrbrBase { return MrbrBase._mrbr; }
     constructor(assemblyEntries: Object) {
         super();
-        Mrbr_Assembly_Namespace.createAssembly(window, "Mrbr")
         const self = this,
             assembly = self.assembly;
         self._entries = new Proxy(assembly, {
@@ -59,6 +140,7 @@ export class MrbrBase extends EventTarget {
             })
         assemblyEntries = null;
         self.mrbr = this;
+        MrbrBase.Namespace.createAssembly(window, "Mrbr")
     }
     _assembly: Map<string, any> = new Map<string, any>();
     get paths(): Map<string, string> {
@@ -305,4 +387,4 @@ export class MrbrBase extends EventTarget {
         return phraseEntries.reduce((prevous, current) => prevous + current);
     }
 }
-let mrbr: MrbrBase;
+var mrbr: MrbrBase = new MrbrBase({});
