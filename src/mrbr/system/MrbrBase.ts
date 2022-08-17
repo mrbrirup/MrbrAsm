@@ -20,6 +20,7 @@ export class MrbrBase extends EventTarget {
         static MRBR_ASSEMBLY_NAME = Symbol("__ma_namespace__name__");
         static MRBR_ASSEMBLY_PARENT = Symbol("__ma_namespace__parent__");
         static MRBR_ASSEMBLY_TO_STRING = Symbol("__ma_namespace__tostring__");
+        //static MRBR_ASSEMBLY_ASSIGNABLE = Symbol("__ma_namespace__assignable__");
         constructor(parent: any, name: string) {
             super()
             const self = this;
@@ -36,6 +37,7 @@ export class MrbrBase extends EventTarget {
                     case MrbrBase.Namespace.MRBR_ASSEMBLY_TARGET: return target;
                     case MrbrBase.Namespace.MRBR_ASSEMBLY_NAME: return target[MrbrBase.Namespace.MRBR_ASSEMBLY_NAME];
                     case MrbrBase.Namespace.MRBR_ASSEMBLY_PARENT: return target[MrbrBase.Namespace.MRBR_ASSEMBLY_PARENT];
+                    //case MrbrBase.Namespace.MRBR_ASSEMBLY_ASSIGNABLE: { return false; }
                     case MrbrBase.Namespace.MRBR_ASSEMBLY_TO_STRING: {
                         let namespace = [target[MrbrBase.Namespace.MRBR_ASSEMBLY_NAME]]
                         let parent = target[MrbrBase.Namespace.MRBR_ASSEMBLY_PARENT];
@@ -61,6 +63,7 @@ export class MrbrBase extends EventTarget {
                     case MrbrBase.Namespace.MRBR_ASSEMBLY_NAME:
                     case MrbrBase.Namespace.MRBR_ASSEMBLY_PARENT:
                     case MrbrBase.Namespace.MRBR_ASSEMBLY_TO_STRING:
+                        //case MrbrBase.Namespace.MRBR_ASSEMBLY_ASSIGNABLE:
                         return true
                 }
                 if (target[MrbrBase.Namespace.MRBR_ASSEMBLY_SIZE] === 0 &&

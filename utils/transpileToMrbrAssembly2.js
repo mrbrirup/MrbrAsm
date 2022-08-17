@@ -188,20 +188,10 @@ function createMrbrBaseFile(sourceFileName) {
     estraverse.traverse(ast, {
         enter: function (node, parent) {
             //if (expressionTypes.indexOf(node.type) < 0) { return estraverse.VisitorOption.Skip; }
-            if (node.type === "CallExpression") {
-                if (//node.callee.type === "Super" ||
-                    node.type === "Literal"
-                ) {
-                    return estraverse.VisitorOption.Skip;
-                }
-            }
-
+            if (node.type !== "Program") { return estraverse.VisitorOption.Skip; }
         },
         leave: function (node, parent) {
             if (node.type === "Program") {
-                //let programKeys = Object.keys(node)
-                console.log("Program")
-                //console.log(programKeys);
                 traverseNodes(node)
             }
             return node;
@@ -212,52 +202,10 @@ function createMrbrBaseFile(sourceFileName) {
     function traverseNodes(node) {
         //if (expressionTypes.indexOf(node.type) < 0) { return; }
         if (!node) { return; }
-        if (!node?.type) {
-            console.log(node)
-            //debugger
-        }
         switch (node.type) {
-            case "Program":
-                node.body.forEach(bodyNode => traverseNodes(bodyNode));
-                break;
-            case "VariableDeclaration":
-                node.declarations.forEach(declaration => { traverseNodes(declaration) })
-                break;
-            case "VariableDeclarator":
-                console.log("id and init: ", node.id, node.init)
-                traverseNodes(node.id)
-                traverseNodes(node.init)
-                break;
-            case "AssignmentExpression":
-                traverseNodes(node.left)
-                traverseNodes(node.right)
-                break;
-            case "ExpressionStatement":
-                //console.log("ExpressionStatement")
-                traverseNodes(node.expression)
-                break;
             case "Identifier":
                 if (replaceNames.indexOf(node.name) >= 0) { node.name = node.name.replace(/_/g, ".") }
                 break;
-            case "MemberExpression":
-                traverseNodes(node.object)
-                traverseNodes(node.property)
-                break;
-            case "ClassDeclaration":
-                traverseNodes(node.id)
-                traverseNodes(node.body);
-                break;
-            case "ClassBody":
-                node.body.forEach(body => { traverseNodes(body) })
-                break;
-            case "MethodDefinition":
-                traverseNodes(node.key);
-                traverseNodes(node.value);
-                traverseNodes(node.params);
-                break;
-            // case "BlockStatement":
-            //     node.body.forEach(body => { traverseNodes(body) })
-            //     break;
             default:
                 let keys = Object.keys(node)
                 keys.forEach(key => {
@@ -277,28 +225,7 @@ function createMrbrBaseFile(sourceFileName) {
                 })
                 break;
         }
-
-
-        // //if (node.type)            let nodeKeys = Object.keys(node);
-        // nodeKeys?.forEach(nodeEntry => {
-        //     if (Array.isArray(node[nodeEntry])) {
-        //         node[nodeEntry].forEach(nodeEntryItem => traverseNodes(nodeEntryItem))
-        //         //node[nodeEntry].forEach(nodeEntryItem => console.log(nodeEntryItem))
-        //         //console.log("Array", node)
-        //     }
-        //     else {
-        //         //console.log(node, nodeKeys.join(","))
-        //         console.log("Single", nodeEntry)
-        //         //traverseNodes(node[nodeEntry])
-        //     }
-        // })
-
     }
-
-
-
-
-
 
     let code = escodegen.generate(ast)
 
