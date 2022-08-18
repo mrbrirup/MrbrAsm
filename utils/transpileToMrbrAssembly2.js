@@ -7,20 +7,16 @@ const args = require("yargs").argv;
 const typescriptFileExtension = ".ts";
 const { generateManifest } = require("./mrbrTranspileFunctions/generateManifest");
 var UglifyJS = require("uglify-js");
-
-
-let { findStartAndEndInFile } = require("./mrbrTranspileFunctions/findObjectStartAndEndInFile");
-const { isTemplateExpression } = require("typescript");
-const { tokeniseTextBlocks } = require("./mrbrTranspileFunctions/tokeniseTextBlocks");
+const esprima = require('esprima'),
+    estraverse = require("estraverse"),
+    escodegen = require("escodegen");
 
 /*
     Get Paths
 */
 
-let sourceFolder = args.source || "./src";
-let destinationFolder = args.dest || "./dist";
-//let sourceFolder = args.source || null;
-//let destinationFolder = args.dest || null;
+let sourceFolder = args.source;
+let destinationFolder = args.dest;
 if (sourceFolder === null || destinationFolder == null) {
     console.log("Source and destination folders must be specified.")
     console.log(`Source: ${sourceFolder}`);
@@ -46,13 +42,16 @@ if (
 }
 console.info(`transpile from ${resolvedSourceFolder} to ${resolvedDestinationFolder}`);
 
+
+const sourceFiles = [],
+    mrbrJSRootFile = path.join(destinationFolder, "asm/mrbr.js"),
+    mrbrBaseSourceFile = "MrbrBase.ts";
+RecurseFolders(resolvedSourceFolder, sourceFiles);
+createMrbrBaseFile(mrbrBaseSourceFile);
+
 /*
     Get all files to transpile to MrbrAssembly
 */
-
-const sourceFiles = [];
-RecurseFolders(resolvedSourceFolder, sourceFiles);
-
 function RecurseFolders(folder, files) {
     fs.readdirSync(folder).forEach(file => {
         const sourceAbsoluteFileName = path.join(folder, file);
@@ -76,181 +75,61 @@ function RecurseFolders(folder, files) {
         }
     });
 }
-const mrbrBaseName = "MrbrBase"
 
-const splice = function (text, start, delCount, newSubStr) {
-    return text.slice(0, start) + newSubStr + text.slice(start + Math.abs(delCount));
-};
-const mrbrJSRootFile = path.join(destinationFolder, "asm/mrbr.js")
-let mrbrBaseSourceFile = "MrbrBase.ts";
-let fileCreated = false;
-// let sourceFile = sourceFiles.find(sourceFile => sourceFile.shortSourceFileName.substring(sourceFile.shortSourceFileName.length - sourceFileName.length).toLowerCase() === sourceFileName.toLowerCase());
-// let sourceContent = fs.readFileSync(sourceFile.longSourceFileName, "utf8")
-// console.log(tokeniseTextBlocks(sourceContent).tokens.length);
-// let res = tokeniseTextBlocks(sourceContent).tokens
-// let counter = 0;
-// let lastToken = res[counter]
-// while (counter < res.length) {
-//     counter++;
-//     let thisToken = res[counter]
-//     console.log(lastToken.blockType,`###${sourceContent.substring(lastToken.index, thisToken.index + 1)}###`)
-//     //console.log(lastToken.blockType, lastToken.index, thisToken.index)
-//     counter++;
-//     lastToken = res[counter]
-// }
-var esprima = require('esprima')
-var estraverse = require("estraverse")
-let escodegen = require("escodegen");
-let expressionTypes = [
-    "ThisExpression", "Identifier ", "Literal", "ArrayExpression", "ObjectExpression",
-    "FunctionExpression", "ArrowFunctionExpression", "ClassExpression", "TaggedTemplateExpression",
-    "MemberExpression", "Super", "MetaProperty", "NewExpression", "CallExpression", "UpdateExpression",
-    "AwaitExpression", "UnaryExpression", "BinaryExpression", "LogicalExpression", "ConditionalExpression",
-    "YieldExpression", "AssignmentExpression", "SequenceExpression",
-]
-createMrbrBaseFile(mrbrBaseSourceFile);
 function createMrbrBaseFile(sourceFileName) {
-    //debugger
-    let sourceFile = sourceFiles.find(sourceFile => sourceFile.shortSourceFileName.substring(sourceFile.shortSourceFileName.length - sourceFileName.length).toLowerCase() === sourceFileName.toLowerCase());
-    const importedReferences = [];
-    const regex = /(^(?<import>import)\s*\{*\s*(?<assembly>\S*?)\s*\}*\s*from\s*(?<fileName>'.*?'|".*?")[\s;]*?(\s*?|(\s*\/{2}\s*?(?<exclude>exclude)))$)/gm
-    //console.log("sourceFile.longSourceFileName: ", sourceFile.longSourceFileName)
-    let sourceContent = fs.readFileSync(sourceFile.longSourceFileName, "utf8")
-    let importMatch;
-    while ((importMatch = regex.exec(sourceContent)) !== null) {
-        if (importMatch.index === regex.lastIndex) { regex.lastIndex++; }
-        let assembly, exclude
-        if (importMatch?.groups?.import) { assembly = importMatch?.groups?.assembly }
-        exclude = importMatch?.groups?.exclude === "exclude";
-        importedReferences.push({ assembly: assembly, exclude: exclude })
+    const sourceFile = sourceFiles.find(sourceFile => sourceFile.shortSourceFileName.substring(sourceFile.shortSourceFileName.length - sourceFileName.length).toLowerCase() === sourceFileName.toLowerCase()),
+        importedReferences = [],
+        importReferenceRegex = /(^(?<import>import)\s*\{*\s*(?<assembly>\S*?)\s*\}*\s*from\s*(?<fileName>'.*?'|".*?")[\s;]*?(\s*?|(\s*\/{2}\s*?(?<exclude>exclude)))$)/gm,
+        sourceContent = fs.readFileSync(sourceFile.longSourceFileName, "utf8"),
+        classDeclarationRegex = /(?<exportStatement>(?<export>export\s+)(?<exportType>(class|enum))\s+(?<exportName>(\S[\S_$]+)?)(?<genericType>\<\s*\S+\s*\>)*(?<extends>\s+extends\s+)*(?<baseClass>\S[\S_]*)?(?<end>\s*?){)/gm;
+    while ((importMatch = importReferenceRegex.exec(sourceContent)) !== null) {
+        if (importMatch.index === importReferenceRegex.lastIndex) { importReferenceRegex.lastIndex++; }
+        importedReferences.push({ assembly: importMatch?.groups?.assembly, exclude: importMatch?.groups?.exclude === "exclude" })
     }
-    sourceContent = null;
-    //let outputFileName = path.join(resolvedDestinationFolder, "mrbr\\mrbr.js")
-    let classDeclarationRegex = /(?<exportStatement>(?<export>export\s+)(?<exportType>(class|enum))\s+(?<exportName>(\S[\S_$]+)?)(?<genericType>\<\s*\S+\s*\>)*(?<extends>\s+extends\s+)*(?<baseClass>\S[\S_]*)?(?<end>\s*?){)/gm;
-
-    let destinationContent = fs.readFileSync(sourceFile.longDestinationFileName, "utf-8")
-
-    let classDeclarationMatch = classDeclarationRegex.exec(destinationContent)
-
-    destinationContent = destinationContent.substring(classDeclarationRegex.lastIndex - 1)
-    let exportType = classDeclarationMatch?.groups?.exportType,
-        startPosition = classDeclarationMatch?.index;
-    let includeClassExtension = "\r\n";
+    const destinationContent = fs.readFileSync(sourceFile.longDestinationFileName, "utf-8"),
+        classDeclarationMatch = classDeclarationRegex.exec(destinationContent),
+        exportType = classDeclarationMatch?.groups?.exportType,
+        includeClassExtension = (classDeclarationMatch?.groups?.extends && classDeclarationMatch?.groups?.baseClass) ? (`var mrbrClassExtension = (${classDeclarationMatch?.groups?.baseClass});\r\n`) : "";
     if (!classDeclarationMatch) {
         //console.log("!classDeclarationMatchs:", sourceFileName)
         return
     }
-    if (classDeclarationMatch.groups?.extends && classDeclarationMatch.groups?.baseClass) {
-        let baseClass = classDeclarationMatch.groups?.baseClass;
-        if (importedReferences.map(importedReference => importedReference.assembly).indexOf(baseClass) > -1) {
-            includeClassExtension = (`var mrbrClassExtension = (${classDeclarationMatch.groups?.baseClass});\r\n`);
-            //includeClassExtension = (`var mrbrClassExtension = (${classDeclarationMatch.groups?.baseClass.replace(/_/gm, '.')});\r\n`);
-        }
-        else {
-            includeClassExtension = (`var mrbrClassExtension = (${classDeclarationMatch.groups?.baseClass});\r\n`);
-        }
-    }
-    else {
-        includeClassExtension = "";
-    }
-    if (includeClassExtension.length > 0) {
-        classExtension = (` extends mrbrClassExtension `);
-    } else {
-        classExtension = "";
-    }
-    exportName = classDeclarationMatch?.groups?.exportName;
-    let replaceText;
-    if (sourceFileName === mrbrBaseSourceFile) {
-        replaceText = `${includeClassExtension}let ${exportName} = ${exportType} ${classExtension}`.replace(/ {2}/, " ")
-    }
-    else {
-        replaceText = `${includeClassExtension}${exportName} = ${exportType} ${classExtension}`.replace(/ {2}/, " ")
-    }
-    let outputTextArray = [
-        //"Hello",
-        replaceText,
-        destinationContent
-    ]
+    const classExtension = (includeClassExtension.length > 0) ? (` extends mrbrClassExtension `) : "",
+        exportName = classDeclarationMatch?.groups?.exportName,
+        outputTextArray = [
+            `${includeClassExtension} ${((sourceFileName === mrbrBaseSourceFile) ? "let" : "")} ${exportName} = ${exportType} ${classExtension}`.replace(/ {2}/, " "), ,
+            destinationContent.substring(classDeclarationRegex.lastIndex - 1),
+            ...((sourceFileName === mrbrBaseSourceFile) ? [`MrbrBase.Namespace.createAssembly(window, "Mrbr");`] : [])
+        ],
+        code = generateCode(outputTextArray.join("\r\n"), importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
+    (sourceFileName === mrbrBaseSourceFile) ? fs.writeFileSync(mrbrJSRootFile, code + "\r\n") : fs.appendFileSync(mrbrJSRootFile, "\r\n" + code + "\r\n");
+    importedReferences.forEach(importedReference => createMrbrBaseFile(`${importedReference.assembly.replace(/_/g, "\\")}.ts`));
+}
 
-    if (fileCreated === false) {
-        outputTextArray.push(`MrbrBase.Namespace.createAssembly(window, "Mrbr");`)
-        //outputTextArray.push(`let Mrbr = new MrbrBase({});`)
-
-    }
-    let outputText = "\r\n" + outputTextArray.join("\r\n") + "\r\n";
-
-    const ast = esprima.parseScript(outputText)
-
-
-    let replaceNames = importedReferences.map(importedReference => importedReference.assembly).concat([exportName])
-    console.log(replaceNames);
-    let set1 = new Set();
+function generateCode(text, replaceNames) {
+    if (!replaceNames || replaceNames.length === 0) { return text; }
+    const ast = esprima.parseScript(text)
     estraverse.traverse(ast, {
-        enter: function (node, parent) {
-            //if (expressionTypes.indexOf(node.type) < 0) { return estraverse.VisitorOption.Skip; }
-            if (node.type !== "Program") { return estraverse.VisitorOption.Skip; }
-        },
+        enter: function (node, parent) { if (node.type !== "Program") { return estraverse.VisitorOption.Skip; } },
         leave: function (node, parent) {
-            if (node.type === "Program") {
-                traverseNodes(node)
-            }
+            if (node.type === "Program") { traverseNodes(node, replaceNames) }
             return node;
         }
     });
-
-
-    function traverseNodes(node) {
-        //if (expressionTypes.indexOf(node.type) < 0) { return; }
-        if (!node) { return; }
-        switch (node.type) {
-            case "Identifier":
-                if (replaceNames.indexOf(node.name) >= 0) { node.name = node.name.replace(/_/g, ".") }
-                break;
-            default:
-                let keys = Object.keys(node)
-                keys.forEach(key => {
-                    if (Array.isArray(node[key]) === false) {
-                        if (node[key]?.hasOwnProperty("type") === true) {
-                            traverseNodes(node[key]);
-                        }
-                    }
-                    else {
-                        let nodeArray = node[key];
-                        nodeArray.forEach(nodeItem => {
-                            if (nodeItem?.hasOwnProperty("type") === true) {
-                                traverseNodes(nodeItem);
-                            }
-                        })
-                    }
-                })
-                break;
-        }
-    }
-
-    let code = escodegen.generate(ast)
-
-    if (fileCreated === false) {
-        fs.writeFileSync(mrbrJSRootFile, code);
-        fileCreated = true
-    }
-    else {
-        fs.appendFileSync(mrbrJSRootFile, "\r\n" + code + "\r\n");
-    }
-    //    console.log(set1)
-    //});
-    if (1 < 2) {
-
-        importedReferences.forEach(importedReference => {
-            let importedFileName = `${importedReference.assembly.replace(/_/g, "\\")}.ts`
-            //console.log("importedFileName: ", importedFileName)
-            createMrbrBaseFile(importedFileName);
-        });
-
-    }
-
-
+    return escodegen.generate(ast)
 }
-
-
-
-
+function traverseNodes(node, replaceNames) {
+    if (!node) { return; }
+    if (node.type === "Identifier") {
+        if (replaceNames.indexOf(node.name) >= 0) { node.name = node.name.replace(/_/g, ".") }
+        return;
+    }
+    Object.keys(node).forEach(key => {
+        if (Array.isArray(node[key]) === false) {
+            if (node[key]?.hasOwnProperty("type") === true) { traverseNodes(node[key], replaceNames) }
+        }
+        else {
+            node[key].forEach(nodeItem => { if (nodeItem?.hasOwnProperty("type") === true) { traverseNodes(nodeItem, replaceNames); } })
+        }
+    })
+}
