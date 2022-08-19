@@ -1,4 +1,5 @@
 let cfg = {
+    // paths: { "Mrbr": "http://127.0.0.1:5500/dist/mrbr/" }
     paths: { "Mrbr": "http://127.0.0.1:5500/dist/asm/" }
 };
 function runRes(result) {

@@ -348,46 +348,5 @@ export class MrbrBase extends EventTarget {
                 })()
         })
     }
-    lzwEncode(text: string) {
-        const dictionary = new Map<string, number>(),
-            phraseEntries = [],
-            textLength = text.length;
-        let phrase = text.charAt(0),
-            code = 256;
-        for (let textCounter = 1; textCounter < textLength; textCounter++) {
-            const currentCharacter = text.charAt(textCounter),
-                phraseAndCurrentChar = phrase + currentCharacter;
-            if (dictionary.get(phraseAndCurrentChar)) {
-                phrase += currentCharacter;
-                continue;
-            }
-            phraseEntries.push(phrase.length > 1 ? dictionary.get(phrase) : phrase.charCodeAt(0));
-            dictionary.set(phraseAndCurrentChar, code);
-            code++;
-            phrase = currentCharacter;
-        }
-        phraseEntries.push(phrase.length > 1 ? dictionary.get(phrase) : phrase.charCodeAt(0));
-        return phraseEntries.map(entry => String.fromCharCode(entry)).reduce((prevous, current) => prevous + current);
-    }
-    lzwDecode(text: string) {
-        const dictionary = new Map<number, string>(),
-            textLength = text.length;
-        let currentCharacter = text.charAt(0),
-            lastPhrase = currentCharacter,
-            phraseEntries = [currentCharacter],
-            code = 256,
-            phrase;
-        for (let textCounter = 1; textCounter < textLength; textCounter++) {
-            const currentCode = text.charCodeAt(textCounter);
-            let currentDictionaryEntry = dictionary.get(currentCode);
-            phrase = (currentCode < 256) ? text.charAt(textCounter) : currentDictionaryEntry ? currentDictionaryEntry : (lastPhrase + currentCharacter);
-            phraseEntries.push(phrase);
-            currentCharacter = phrase.charAt(0);
-            dictionary.set(code, lastPhrase + currentCharacter);
-            code++;
-            lastPhrase = phrase;
-        }
-        return phraseEntries.reduce((prevous, current) => prevous + current);
-    }
 }
 var mrbr: MrbrBase = new MrbrBase({});
