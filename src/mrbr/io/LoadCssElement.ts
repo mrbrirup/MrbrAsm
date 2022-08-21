@@ -10,7 +10,7 @@ export function Mrbr_IO_LoadCssElement(file: Mrbr_IO_File): Promise<any> {
             rejectResult = reject;
         });
     let mrbrFetch = new Mrbr_IO_Fetch();
-    file.fileName = file.entryName.replace(/_/g, "/")
+    file.fileName = file.entry.replace(/_/g, "/")
 
     if (file.attributes) {
         Object.keys(file.attributes)

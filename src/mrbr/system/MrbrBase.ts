@@ -3,6 +3,11 @@ import { Mrbr_Assembly_MrbrConfig } from '../assembly/mrbrConfig';
 import { Mrbr_IO_Fetch } from '../io/Fetch';
 import { Mrbr_IO_File } from '../io/File';
 import { Mrbr_IO_FileType } from '../io/FileType';
+import { Mrbr_IO_LoadCssElement } from '../io/LoadCssElement';//exclude
+import { Mrbr_IO_LoadCssLink } from '../io/LoadCssLink';//exclude
+import { Mrbr_IO_LoadScript } from '../io/LoadScript';//exclude
+import { Mrbr_IO_LoadScriptElement } from '../io/LoadScriptElement';//exclude
+import { Mrbr_IO_LoadScriptLink } from '../io/LoadScriptLink';//exclude
 import { Mrbr_IO_Path } from '../io/Path';
 
 type nullFunction = (file: Mrbr_IO_File) => Promise<any> | null;
@@ -14,60 +19,117 @@ type mrbrPromise = {
 }
 export class MrbrBase extends EventTarget {
     static Namespace = class extends Map<string, any> {
-        static MRBR_ASSEMBLY_NAMESPACE = Symbol("__ma_namespace__");
-        static MRBR_ASSEMBLY_SIZE = Symbol("__ma_namespace__size__");
-        static MRBR_ASSEMBLY_TARGET = Symbol("__ma_namespace__target__");
-        static MRBR_ASSEMBLY_NAME = Symbol("__ma_namespace__name__");
-        static MRBR_ASSEMBLY_PARENT = Symbol("__ma_namespace__parent__");
-        static MRBR_ASSEMBLY_TO_STRING = Symbol("__ma_namespace__tostring__");
-        //static MRBR_ASSEMBLY_ASSIGNABLE = Symbol("__ma_namespace__assignable__");
+        static IS_NAMESPACE = Symbol("__ma_namespace__");
+        static SIZE = Symbol("__ma_namespace__size__");
+        static TARGET = Symbol("__ma_namespace__target__");
+        static NAME = Symbol("__ma_namespace__name__");
+        static PARENT = Symbol("__ma_namespace__parent__");
+        static TO_STRING = Symbol("__ma_namespace__tostring__");
+        static ASSIGNABLE = Symbol("__ma_namespace__assignable__");
+        static ROOT = Symbol("__ma_namespace__root__");
+        static BIND = Symbol("__ma_namespace__bind__");
+        static TO_OBJECT = Symbol("__ma_namespace__toobject__");
         constructor(parent: any, name: string) {
             super()
             const self = this;
-            self[MrbrBase.Namespace.MRBR_ASSEMBLY_PARENT] = parent;
-            self[MrbrBase.Namespace.MRBR_ASSEMBLY_NAME] = name;
-            self[MrbrBase.Namespace.MRBR_ASSEMBLY_NAMESPACE] = true;
-            return new Proxy(self, MrbrBase.Namespace.PROXY_HANDLER);
+            const ns = MrbrBase.Namespace;
+            self[ns.PARENT] = parent;
+            self[ns.NAME] = name;
+            self[ns.IS_NAMESPACE] = true;
+            return new Proxy(self, ns.PROXY_HANDLER);
+        }
+        static toObject(target: any){
+            return target[MrbrBase.Namespace.TO_OBJECT]
+        }
+        static isNamespace(target: any) {
+            return target[MrbrBase.Namespace.IS_NAMESPACE]
+        }
+        static isAssignable(target: any) {
+            return target[MrbrBase.Namespace.ASSIGNABLE]
+        }
+        static namespace(target: any) {
+            return target[MrbrBase.Namespace.TO_STRING]
         }
         static PROXY_HANDLER: ProxyHandler<any> = {
             get(target: Map<string, any>, name: string | Symbol) {
+                const ns = MrbrBase.Namespace;
                 switch (name) {
-                    case MrbrBase.Namespace.MRBR_ASSEMBLY_NAMESPACE: return target[MrbrBase.Namespace.MRBR_ASSEMBLY_NAMESPACE];
-                    case MrbrBase.Namespace.MRBR_ASSEMBLY_SIZE: return target.size;
-                    case MrbrBase.Namespace.MRBR_ASSEMBLY_TARGET: return target;
-                    case MrbrBase.Namespace.MRBR_ASSEMBLY_NAME: return target[MrbrBase.Namespace.MRBR_ASSEMBLY_NAME];
-                    case MrbrBase.Namespace.MRBR_ASSEMBLY_PARENT: return target[MrbrBase.Namespace.MRBR_ASSEMBLY_PARENT];
-                    //case MrbrBase.Namespace.MRBR_ASSEMBLY_ASSIGNABLE: { return false; }
-                    case MrbrBase.Namespace.MRBR_ASSEMBLY_TO_STRING: {
-                        let namespace = [target[MrbrBase.Namespace.MRBR_ASSEMBLY_NAME]]
-                        let parent = target[MrbrBase.Namespace.MRBR_ASSEMBLY_PARENT];
-                        if (parent) { namespace.push(parent[MrbrBase.Namespace.MRBR_ASSEMBLY_NAME]) }
+                    case ns.TO_OBJECT: {
+
+                        let namespace = [target[ns.NAME]]
+                        let parent = target[ns.PARENT];
+                        if (parent) { namespace.push(parent[ns.NAME]) }
+                        let lastParent = null;
                         while (parent) {
-                            parent = parent[MrbrBase.Namespace.MRBR_ASSEMBLY_PARENT];
-                            if (parent) { namespace.push(parent[MrbrBase.Namespace.MRBR_ASSEMBLY_NAME]) }
+                            lastParent = parent;
+                            parent = parent[ns.PARENT];
+                            if (parent && parent[ns.NAME]) {
+                                namespace.push(parent[ns.NAME])
+                            }
+                        }
+
+                        namespace.reverse().forEach(value => {
+                            lastParent = lastParent[value];
+                        })
+                        return lastParent;
+                    }
+                    case ns.IS_NAMESPACE: {
+                        return target[ns.IS_NAMESPACE]
+                    };
+                    case ns.SIZE: return target.size;
+                    case ns.TARGET: return target;
+                    case ns.NAME: return target[ns.NAME];
+                    case ns.PARENT: return target[ns.PARENT];
+                    case ns.ASSIGNABLE: {
+                        if (!target[ns.IS_NAMESPACE]) { return false; }
+                        if (target[ns.SIZE] > 0) { return false; }
+                        return true;
+                    }
+                    case ns.ROOT: {
+                        let namespace = [target[ns.NAME]]
+                        let parent = target[ns.PARENT];
+                        let root = "";
+                        if (parent) { root = parent[ns.NAME]; }
+                        while (parent) {
+                            parent = parent[ns.PARENT];
+                            if (parent && parent[ns.NAME]) { root = parent[ns.NAME]; }
+                        }
+                        return root;
+                    }
+                    case ns.TO_STRING: {
+                        let namespace = [target[ns.NAME]]
+                        let parent = target[ns.PARENT];
+                        if (parent) { namespace.push(parent[ns.NAME]) }
+                        while (parent) {
+                            parent = parent[ns.PARENT];
+                            if (parent && parent[ns.NAME]) { namespace.push(parent[ns.NAME]) }
                         }
                         return namespace.reverse().join(".");
                     }
                     default:
                         if (target.has(<string>name) === false) {
-                            target.set(<string>name, new MrbrBase.Namespace(target, <string>name))
+                            target.set(<string>name, new ns(target, <string>name))
                         }
                 }
                 return (target.has(<string>name)) ? (target.get(<string>name)) : null;
             },
             set(target: Map<string, any>, name: string | Symbol, value: any) {
+                const ns = MrbrBase.Namespace;
                 switch (name) {
-                    case MrbrBase.Namespace.MRBR_ASSEMBLY_NAMESPACE:
-                    case MrbrBase.Namespace.MRBR_ASSEMBLY_SIZE:
-                    case MrbrBase.Namespace.MRBR_ASSEMBLY_TARGET:
-                    case MrbrBase.Namespace.MRBR_ASSEMBLY_NAME:
-                    case MrbrBase.Namespace.MRBR_ASSEMBLY_PARENT:
-                    case MrbrBase.Namespace.MRBR_ASSEMBLY_TO_STRING:
-                        //case MrbrBase.Namespace.MRBR_ASSEMBLY_ASSIGNABLE:
+                    case ns.IS_NAMESPACE:
+                    case ns.SIZE:
+                    case ns.TARGET:
+                    case ns.NAME:
+                    case ns.PARENT:
+                    case ns.TO_STRING:
+                    case ns.ASSIGNABLE:
+                    case ns.ROOT:
+                    case ns.BIND:
+                    case ns.TO_OBJECT:
                         return true
                 }
-                if (target[MrbrBase.Namespace.MRBR_ASSEMBLY_SIZE] === 0 &&
-                    target[MrbrBase.Namespace.MRBR_ASSEMBLY_NAMESPACE] === true) {
+                if (target[ns.SIZE] === 0 &&
+                    target[ns.IS_NAMESPACE] === true) {
                     target.set(<string>name, value);
                     return true;
                 }
@@ -76,17 +138,17 @@ export class MrbrBase extends EventTarget {
                     !namedTarget ||
                     (namedTarget instanceof Map === false) ||
                     (namedTarget instanceof Map &&
-                        namedTarget[MrbrBase.Namespace.MRBR_ASSEMBLY_NAMESPACE] === false) ||
+                        namedTarget[ns.IS_NAMESPACE] === false) ||
                     (namedTarget instanceof Map &&
-                        namedTarget[MrbrBase.Namespace.MRBR_ASSEMBLY_SIZE] === 0 &&
-                        namedTarget[MrbrBase.Namespace.MRBR_ASSEMBLY_NAMESPACE] === true)) {
+                        namedTarget[ns.SIZE] === 0 &&
+                        namedTarget[ns.IS_NAMESPACE] === true)) {
                     target.set(<string>name, value);
                     return true;
                 }
                 if (namedTarget instanceof Map &&
-                    namedTarget[MrbrBase.Namespace.MRBR_ASSEMBLY_SIZE] > 0 &&
-                    namedTarget[MrbrBase.Namespace.MRBR_ASSEMBLY_NAMESPACE] === true) {
-                    throw new Error(`${namedTarget[MrbrBase.Namespace.MRBR_ASSEMBLY_NAME]} is not an empty Namespace`);
+                    namedTarget[ns.SIZE] > 0 &&
+                    namedTarget[ns.IS_NAMESPACE] === true) {
+                    throw new Error(`${namedTarget[ns.NAME]} is not an empty Namespace`);
                 }
                 return false;
             }
@@ -117,6 +179,7 @@ export class MrbrBase extends EventTarget {
         super();
         const self = this,
             assembly = self.assembly;
+        MrbrBase.Namespace.createAssembly(window, 'Mrbr');
         self._entries = new Proxy(assembly, {
             get(target, name) {
                 return (target.has(name as string)) ? (target.get(name as string)).result : undefined;
@@ -172,10 +235,14 @@ export class MrbrBase extends EventTarget {
         return promise.promise;
     }
     loadManifest(manifest: Array<Mrbr_IO_File> | Mrbr_IO_File): Promise<any> {
-        let self = this,
-            promise = self._promise();
-        Promise.all((Array.isArray(manifest) ? manifest : [manifest]).map(manifestEntry => self.load(manifestEntry)))
-            .then(_ => promise.resolve(self))
+        const self = this,
+            promise = self._promise(),
+            manifestArray = Array.isArray(manifest) ? manifest : [manifest],
+            loadingManifestEntries = manifestArray.map(manifestEntry => self.load(manifestEntry));
+        Promise.all(loadingManifestEntries)
+            .then(_ => {
+                promise.resolve(manifestArray)
+            })
             .catch(err => promise.reject(err));
         return promise.promise;
     }
@@ -198,20 +265,50 @@ export class MrbrBase extends EventTarget {
     }
 
     load(file: Mrbr_IO_File): Promise<any> {
-        const self = this,
-            self_asm = self.asm;
-        if (self_asm[file.entryName]?.file?.loadingPromise) {
-            return self_asm[file.entryName].file.loadingPromise;
-        }
-        self.asm[file.entryName] = { file: file, result: null };
+        const self = this;//,
+        //self_asm = self.asm;
         let promise = self._promise();
-        if (!file.loadingPromise) {
-            file.loadingPromise = promise.promise;
+        if (file.fileType === Mrbr_IO_FileType.Component) {
+            self.loadComponent(file)
+                .then(component => {
+                    if (MrbrBase.Namespace.isNamespace(file.entry)) {
+                        let namespaceToObject = MrbrBase.Namespace.toObject(file.entry);
+                        //debugger
+                        if (namespaceToObject && !MrbrBase.Namespace.isNamespace(namespaceToObject) && namespaceToObject["manifest"]) {
+                            self.loadManifest(namespaceToObject.manifest)
+                                .then(_ => {
+                                    promise.resolve(component);
+                                })
+                        }
+                    }
+                    else {
+                        promise.resolve(component);
+                    }
+                    console.log(file.entry);
+                    //return promise.promise;
+                });
         }
-        self.loadFnMap.get(file.fileType)(file)
-            .then(result => promise.resolve(result))
-            .catch(err => promise.reject(err))
-        return file.loadingPromise;
+        else if (self.loadFnMap.has(file.fileType)) {
+            self.loadFnMap.get(file.fileType)(file)
+                .then(result => promise.resolve(result))
+                .catch(err => promise.reject(err))
+
+        }
+
+        return promise.promise;
+
+
+        // if (self_asm[file.entry]?.file?.loadingPromise) {
+        //     return self_asm[file.entry].file.loadingPromise;
+        // }
+        // self.asm[file.entry] = { file: file, result: null };
+        // if (!file.loadingPromise) {
+        //     file.loadingPromise = promise.promise;
+        // }
+        // self.loadFnMap.get(file.fileType)(file)
+        //     .then(result => promise.resolve(result))
+        //     .catch(err => promise.reject(err))
+        // return file.loadingPromise;
     }
     _loadScript: nullFunction = null;
     _loadScriptElement: nullFunction = null;
@@ -227,75 +324,145 @@ export class MrbrBase extends EventTarget {
         }
     }
 
-    loadComponent(file: Mrbr_IO_File) {
+    loadComponent(file: Mrbr_IO_File): Promise<any> {
         const self = this,
-            componentName = file.entryName;
-        file.fileName = file.entryName.replace(/_/g, "/")
+            //componentName = file.entry,
+            ns = MrbrBase.Namespace;
         let mrbrFetch = new Mrbr_IO_Fetch(),
-            root = self.paths.get(file.root) || "",
-            componentPath = Mrbr_IO_Path.join([root, file.fileName], false) + `.${file.extension}`,
+            //root = self.paths.get(file.root) || "",
+            //root = self.paths.get("Mrbr") || "",
             promise = self._promise();
+        if (!ns.isNamespace(file.entry)) {
+            promise.resolve(file);
+            return promise.promise;
+        }
 
-        mrbrFetch.fetch(componentPath, {})
+
+        // //  Is entry a Namespace?
+        // //  Convert Namespace to a file name
+        // if (ns.isNamespace(file.entry)) {
+        //     file.fileName = ns.namespace(file.entry).replace(/\./g, "/")
+        // }
+        // //  Is entry a string?
+        // //  Convert string to a file name
+        // else if (typeof file.entry === "string") {
+        //     file.fileName = file.entry.replace(/_/g, "/")
+        // }
+
+        //  Get absolute component path
+        //let componentPath = Mrbr_IO_Path.join([root, file.fileName], false) + `.${file.extension}`;
+        //self.dispatchEvent(new CustomEvent("loadComponent", { detail: { action: "componentPath", componentPath: componentPath } }))
+
+
+        self.dispatchEvent(new CustomEvent("loadComponent", { detail: { action: "start", file: file } }))
+        mrbrFetch
+            .fetch(file.fileName, {})
             .then(result => {
-                result.text()
+                result
+                    .text()
                     .then((txt: any) => {
-                        let completedPromise = self._promise();
-                        new Function("mrbr", "returnManifest", "data", "completedPromise", txt).bind(self)(mrbr, true, file.data, completedPromise);
-                        completedPromise.promise
-                            .then(result => {
-                                setTimeout(promise.resolve(result), 0);
-                            })
+                        new Function("mrbr", "data", txt).bind(self)(mrbr, file.data);
+                        setTimeout(promise.resolve(file), 0);
                     })
             })
-            .catch(err => promise.reject(err));
+            .catch(err => {
+                promise.reject(err)
+            });
+
+
+
+
+
+
+        // else {
+        //     if ((file.entryName as any).manifest && (file.entryName as any).manifest.length > 0) {
+        //         self.loadManifest((file.entryName as any).manifest)
+        //             .then(result => {
+        //                 promise.resolve(file.entryName)
+        //             })
+        //     }
+        //     else {
+        //         promise.resolve(file.entryName)
+        //     }
+        //     return promise.promise;
+        // }
+
         return promise.promise;
     }
     loadText() { }
     loadJson() { }
     loadScript(file: Mrbr_IO_File): Promise<any> {
         const self = this;
-        return self._loadScript ? self._loadScript(file) : self.addFileFunction(file, self, "_loadScript", "Mrbr_IO_LoadScript");
+        return self._loadScript ? self._loadScript(file) : self.addFileFunction(file, self, "_loadScript", Mrbr_IO_LoadScript);
     }
     loadScriptElement(file: Mrbr_IO_File): Promise<any> {
         const self = this;
-        return self._loadScriptElement ? self._loadScriptElement(file) : self.addFileFunction(file, self, "_loadScriptElement", "Mrbr_IO_LoadScriptElement");
+        return self._loadScriptElement ? self._loadScriptElement(file) : self.addFileFunction(file, self, "_loadScriptElement", Mrbr_IO_LoadScriptElement);
     }
     loadScriptLink(file: Mrbr_IO_File): Promise<any> {
         const self = this;
-        return self._loadScriptLink ? self._loadScriptLink(file) : self.addFileFunction(file, self, "_loadScriptLink", "Mrbr_IO_LoadScriptLink");
+        if (self._loadScriptLink) {
+            return self._loadScriptLink(file);
+        }
+        else {
+            let promise = self._promise();
+            self.addFileFunction(file, self, "_loadScriptLink", Mrbr_IO_LoadScriptLink)
+                .then(_ => {
+                    self._loadScriptLink = Mrbr_IO_LoadScriptLink.bind(self);
+                    promise.resolve(file);
+                    return self._loadScriptLink(file);
+                })
+            return promise.promise;
+        }
     }
     loadCssElement(file: Mrbr_IO_File): Promise<any> {
         const self = this;
-        return self._loadCssLink ? self._loadCssLink(file) : self.addFileFunction(file, self, "_loadCssElement", "Mrbr_IO_LoadCssElement");
+        return self._loadCssLink ? self._loadCssLink(file) : self.addFileFunction(file, self, "_loadCssElement", Mrbr_IO_LoadCssElement);
     }
     loadCssLink(file: Mrbr_IO_File): Promise<any> {
+
         const self = this;
-        return self._loadCssLink ? self._loadCssLink(file) : self.addFileFunction(file, self, "_loadCssLink", "Mrbr_IO_LoadCssLink");
+        if (self._loadCssLink) {
+            return self._loadCssLink(file);
+        }
+        else {
+            let promise = self._promise();
+            self.addFileFunction(file, self, "_loadCssLink", Mrbr_IO_LoadCssLink)
+                .then(_ => {
+                    self._loadCssLink = Mrbr_IO_LoadCssLink.bind(self);
+                    promise.resolve(file);
+                    return self._loadCssLink(file);
+                })
+            return promise.promise;
+        }
     }
     loadHtml() { }
     loadOther() { }
-    addFunction(target: any, targetFunctionName: string, newFunctionName: string, root?: string): Promise<any> {
+    addFunction(target: any, targetFunctionName: string, functionToLoad: any): Promise<any> {
         const self = this;
-        if (target[targetFunctionName]) { return Promise.resolve(); }
+        if (target[targetFunctionName]) { return Promise.resolve(target[targetFunctionName]); }
+        if (!MrbrBase.Namespace.isNamespace(functionToLoad)) {
+            target[targetFunctionName] = functionToLoad;
+            return Promise.resolve(functionToLoad);
+        }
         let promise = self._promise()
-        let manifest = new Mrbr_IO_File(Mrbr_IO_FileType.Component, null, newFunctionName, "js");
+        let manifest = Mrbr_IO_File.component(functionToLoad);
         self.loadManifest(manifest)
             .then(result => {
-                target[targetFunctionName] = mrbr._entries[newFunctionName].bind(target);
+                //target[targetFunctionName] = mrbr._entries[newFunctionName].bind(target);
+                //target[targetFunctionName] = functionToLoad.bind(target);
                 promise.resolve(target[targetFunctionName])
             })
             .catch(err => promise.reject(err));
         return promise.promise;
     }
-    addFileFunction(file: Mrbr_IO_File, target: any, targetFunctionName: string, newFunctionName: string, root?: string): Promise<any> {
+    addFileFunction(file: Mrbr_IO_File, target: any, targetFunctionName: string, functionToLoad: any): Promise<any> {
         const self = this;
         let promise = self._promise();
-        self.addFunction(target, targetFunctionName, newFunctionName)
+        self.addFunction(target, targetFunctionName, functionToLoad)
             .then(fn => {
-                fn(file)
-                    .then(result => { promise.resolve(result) })
-                    .catch(err => promise.reject(err))
+                console.log("addedFunction: ", targetFunctionName)
+                promise.resolve(fn)
             })
             .catch(err => promise.reject(err))
         return promise.promise;

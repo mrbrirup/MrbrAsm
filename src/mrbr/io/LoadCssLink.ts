@@ -12,7 +12,7 @@ export function Mrbr_IO_LoadCssLink(file: Mrbr_IO_File): Promise<any> {
     link.type = 'text/css';
 
 
-    link.href = file.entryName;
+    link.href = file.entry;
 
     if (file.attributes) {
         Object.keys(file.attributes)

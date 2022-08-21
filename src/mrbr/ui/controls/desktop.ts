@@ -1,4 +1,3 @@
-import { Mrbr_UI_Bootstrap_Containers_Container } from "../bootstrap/containers/container";
 import { Mrbr_UI_Bootstrap_Containers_Container$Breakpoints } from "../bootstrap/containers/container$breakpoints";
 import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../bootstrap/controls/classActions";
 import { Mrbr_UI_Controls_Control } from "./control";
@@ -6,6 +5,7 @@ import { Mrbr_UI_Controls_ControlConfig } from "./ControlConfig";
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Height } from "../bootstrap/utilities/sizing$height";
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Width } from "../bootstrap/utilities/sizing$width";
 import { Mrbr_UI_Controls_NavbarWindowManager } from "./navbarWindowManager";
+import { Mrbr_UI_Bootstrap_Containers_Container } from "../bootstrap/containers/container";
 
 export class Mrbr_UI_Controls_Desktop extends Mrbr_UI_Bootstrap_Containers_Container {
     navbar: Mrbr_UI_Controls_NavbarWindowManager;

@@ -50,10 +50,26 @@ const sourceFiles = [],
     writtenFiles = [];
 RecurseFolders(resolvedSourceFolder, sourceFiles);
 createMrbrBaseFile(mrbrBaseSourceFile);
+const mrbrJSRootDirectory = path.resolve(destinationFolder),
+    mrbrAsmRootDirectory = path.join(mrbrJSRootDirectory, "asm")
+console.log("mrbrAsmRootDirectory: ", mrbrAsmRootDirectory)
 writtenFiles.splice(0, writtenFiles.length);
 //let sf = sourceFiles.find(sourceFile => sourceFile.shortSourceFileName === "\\mrbr\\io\\File.ts")
 //createMrbrAssemblyFile(sf)
 sourceFiles.forEach(sourceFile => createMrbrAssemblyFile(sourceFile));
+
+//let sourceMrbrFolder = path.resolve(sourceFolder, "mrbr/system");
+
+// const mrbrJSRootFile = path.join(destinationFolder, "asm/mrbr.js")
+// const mrbrJSRootMiniFile = path.join(destinationFolder, "min/mrbr.min.js")
+// sourceMrbrFolder = path.resolve(sourceFolder)
+
+
+// let dName = sourceFile.shortSourceFileName.substring(sourceMrbrFolder.length);
+// console.log("dName: ", dName)
+
+
+
 /*
     Get all files to transpile to MrbrAssembly
 */
@@ -103,18 +119,36 @@ function createMrbrBaseFile(sourceFileName) {
                 `${includeClassExtension} ${((sourceFileName === mrbrBaseSourceFile) ? "let" : "")} ${exportName} = ${exportType} ${classExtension}`.replace(/ {2}/, " "), ,
                 destinationContent.substring(classDeclarationRegex.lastIndex - 1),
                 ...((sourceFileName === mrbrBaseSourceFile) ? [
-                    `MrbrBase.Namespace.createAssembly(window, "Mrbr");`
+                    `MrbrBase.Namespace.createAssembly(window, "Mrbr");`,
+                    `Mrbr.System.MrbrBase = MrbrBase;`
                 ] : [])
             ],
             code = generateCode(outputTextArray.join("\r\n"), importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
         (sourceFileName === mrbrBaseSourceFile) ? fs.writeFileSync(mrbrJSRootFile, code + "\r\n") : fs.appendFileSync(mrbrJSRootFile, "\r\n" + code + "\r\n");
-        importedReferences.forEach(importedReference => createMrbrBaseFile(`${importedReference.assembly.replace(/_/g, "\\")}.ts`));
+        console.log(importedReferences);
+        importedReferences.forEach(importedReference => {
+            if (importedReference.exclude === false) {
+                createMrbrBaseFile(`${importedReference.assembly.replace(/_/g, "\\")}.ts`);
+            }
+        });
     }
     else {
-        let functionRegex = /export\s+var\s+(?<assembly>[\w]+)\s*;\s*(?<function>\(function \s*\((\1)\)\s{)(?<text>[\s\S]+)\}\)\s*\(\1\s*[|]{2}\s*\(\1\s*=\s*\{\}\)\);\s*/gm
-        let match = functionRegex.exec(destinationContent)
-        if (match) {
+        // let functionRegex = /export\s+var\s+(?<assembly>[\w]+)\s*;\s*(?<function>\(function \s*\((\1)\)\s{)(?<text>[\s\S]+)\}\)\s*\(\1\s*[|]{2}\s*\(\1\s*=\s*\{\}\)\);\s*/gm
+        // let match = functionRegex.exec(destinationContent)
+        // if (match) {
+        //     code = generateCode(match.groups.text, [match.groups.assembly]);
+        //     fs.appendFileSync(mrbrJSRootFile, "\r\n" + code + "\r\n");
+        // }
+
+        let enumFunctionRegex = /export\s+var\s+(?<assembly>[\w$]+)\s*;\s*(?<function>\(function \s*\((\1)\)\s{)(?<text>[\s\S]+)\}\)\s*\(\1\s*[|]{2}\s*\(\1\s*=\s*\{\}\)\);\s*/gm,
+            functionRegex = /(?<fullMatch>(?<exportFunction>export\s+function\s+)(?<assembly>[\w]+)(?<parameters>\([\s\S]*?\))\s*\{)/gm;
+        let match = null;
+        if ((match = enumFunctionRegex.exec(destinationContent)) !== null) {
             code = generateCode(match.groups.text, [match.groups.assembly]);
+            fs.appendFileSync(mrbrJSRootFile, "\r\n" + code + "\r\n");
+        }
+        else if ((match = functionRegex.exec(destinationContent)) !== null) {
+            code = generateCode(`${match.groups.assembly} = function ${match.groups.parameters} { ${destinationContent.substring(functionRegex.lastIndex)}`, [match.groups.assembly]);
             fs.appendFileSync(mrbrJSRootFile, "\r\n" + code + "\r\n");
         }
         else {
@@ -137,34 +171,70 @@ function createMrbrAssemblyFile(sourceFile) {
     const destinationContent = fs.readFileSync(sourceFile.longDestinationFileName, "utf-8"),
         classDeclarationMatch = classDeclarationRegex.exec(destinationContent),
         exportType = classDeclarationMatch?.groups?.exportType,
-        includeClassExtension = (classDeclarationMatch?.groups?.extends && classDeclarationMatch?.groups?.baseClass) ? (`var mrbrClassExtension = (${classDeclarationMatch?.groups?.baseClass});\r\n`) : "";
+        includeClassExtension = "",//(classDeclarationMatch?.groups?.extends && classDeclarationMatch?.groups?.baseClass) ? (`var mrbrClassExtension = (${classDeclarationMatch?.groups?.baseClass});\r\n`) : "",
+        //includeClassExtension = (classDeclarationMatch?.groups?.extends && classDeclarationMatch?.groups?.baseClass) ? (`var mrbrClassExtension = (${classDeclarationMatch?.groups?.baseClass});\r\n`) : "",
+        destinationFileName = path.join(mrbrAsmRootDirectory, sourceFile.longDestinationFileName.substring(resolvedDestinationFolder.length));
+
+    let assemblyPath = path.dirname(destinationFileName);
+    !fs.existsSync(assemblyPath) && fs.mkdirSync(assemblyPath, { recursive: true });
+    let exportName;
     if (classDeclarationMatch) {
-        const classExtension = (includeClassExtension.length > 0) ? (` extends mrbrClassExtension `) : "",
-            exportName = classDeclarationMatch?.groups?.exportName,
-            outputTextArray = [
-                `${includeClassExtension}${exportName} = ${exportType} ${classExtension}`.replace(/ {2}/, " "), ,
-                destinationContent.substring(classDeclarationRegex.lastIndex - 1)
-            ];
+        const classExtension = ((classDeclarationMatch?.groups?.baseClass?.length || 0) > 0) ? (` extends ((${classDeclarationMatch?.groups?.baseClass}))`) : "";
+        exportName = classDeclarationMatch?.groups?.exportName;
+        let outputTextArray = [
+            `${includeClassExtension}${exportName} = ${exportType} ${classExtension}`.replace(/ {2}/, " "), ,
+            destinationContent.substring(classDeclarationRegex.lastIndex - 1)
+        ];
         let code = generateCode(outputTextArray.join("\r\n"), importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
-        fs.writeFileSync(sourceFile.longDestinationFileName, code + "\r\n")
+        if ((classDeclarationMatch?.groups?.baseClass?.length || 0) > 0) {
+            console.log("classDeclarationMatch?.groups?.baseClass?.length")
+            //code.replace(new RegExp(classDeclarationMatch?.groups?.baseClass.replace(/_/g, "."), ""), `(${classDeclarationMatch?.groups?.baseClass.replace(/_/g, ".")})`);
+
+            code = code.replace(new RegExp(classDeclarationMatch?.groups?.baseClass.replace(/_/g, "."), ""), `(${classDeclarationMatch?.groups?.baseClass.replace(/_/g, ".")})`);
+        }
+        fs.writeFileSync(destinationFileName, code + "\r\n")
     }
     else {
         let enumFunctionRegex = /export\s+var\s+(?<assembly>[\w$]+)\s*;\s*(?<function>\(function \s*\((\1)\)\s{)(?<text>[\s\S]+)\}\)\s*\(\1\s*[|]{2}\s*\(\1\s*=\s*\{\}\)\);\s*/gm,
             functionRegex = /(?<fullMatch>(?<exportFunction>export\s+function\s+)(?<assembly>[\w]+)(?<parameters>\([\s\S]*?\))\s*\{)/gm;
         let match = null;
-        if ((match = enumFunctionRegex.exec(destinationContent))) {
-            code = generateCode(match.groups.text, [match.groups.assembly]);
-            fs.writeFileSync(sourceFile.longDestinationFileName, code + "\r\n");
+        if ((match = enumFunctionRegex.exec(destinationContent)) !== null) {
+            exportName = match.groups.assembly;
+            code = generateCode(match.groups.text, importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
+            fs.writeFileSync(destinationFileName, code + "\r\n");
         }
-        else if ((match = functionRegex.exec(destinationContent))) {
-            code = generateCode(`${match.groups.assembly} = function ${match.groups.parameters} { ${destinationContent.substring(functionRegex.lastIndex)}`, [match.groups.assembly]);
-            fs.writeFileSync(sourceFile.longDestinationFileName, code + "\r\n");
+        else if ((match = functionRegex.exec(destinationContent)) !== null) {
+            exportName = match.groups.assembly;
+            code = generateCode(`${match.groups.assembly} = function ${match.groups.parameters} { ${destinationContent.substring(functionRegex.lastIndex)}`, importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
+            // if ((classDeclarationMatch?.groups?.baseClass?.length || 0) > 0) {
+            //     code.replace(new RegExp(classDeclarationMatch?.groups?.baseClass.replace(/_/g, "."), `(${classDeclarationMatch?.groups?.baseClass.replace(/_/g, ".")})`));
+            // }
+            fs.writeFileSync(destinationFileName, code + "\r\n");
         }
         else {
-            console.log(sourceFile)
+            //console.log(sourceFile, match)
             throw new Error(`No Class or Function definition`)
+
         }
     }
+
+    if (exportName) {
+        //console.log("exportName: ", exportName, destinationFileName, importedReferences.map(importedReference => importedReference.assembly).concat([exportName]).join(", "));
+        let manifest = []
+
+        if (importedReferences?.length > 0) {
+            //manifest.push(importedReferences.filter(entry => entry.exclude === false).map(include => (`    Mrbr.IO.File.component(${include.assembly})`))) //.join(",\r\n"));
+            manifest = manifest.concat(...[importedReferences.filter(entry => entry.exclude === false).map(include => (`${" ".repeat(8)}Mrbr.IO.File.component(${include.assembly.replace(/_/g, ".")})`))])
+        }
+        //manifest.push(`    ]`);
+        fs.appendFileSync(destinationFileName,
+            `${exportName.replace(/_/g, '.')}.manifest = [\r\n` +
+            `${manifest.join(",\r\n")}\r\n` +
+            `${" ".repeat(4)}];`
+        );
+
+    }
+
 }
 
 
@@ -175,7 +245,8 @@ function generateCode(text, replaceNames) {
         enter: function (node, parent) { if (node.type !== "Program") { return estraverse.VisitorOption.Skip; } },
         leave: function (node, parent) {
             if (node.type === "Program") { traverseNodes(node, replaceNames) }
-            return node;
+            //traverseNodes(node, replaceNames);
+            //return node;
         }
     });
     return escodegen.generate(ast);
@@ -184,7 +255,9 @@ function traverseNodes(node, replaceNames) {
     if (!node || (Array.isArray(node) === false && node instanceof Object === false)) { return; }
     if (node.type === "Identifier" && replaceNames.indexOf(node.name) >= 0) {
         node.name = node.name.replace(/_/g, ".")
-        return;
+    }
+    else if (node.hasOwnProperty("name") && replaceNames.indexOf(node.name) >= 0) {
+        node.name = node.name.replace(/_/g, ".")
     }
     for (const key in node) {
         const nodeKey = node[key];

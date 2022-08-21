@@ -8,7 +8,7 @@ export function Mrbr_IO_LoadScriptLink(file: Mrbr_IO_File): Promise<any> {
             resolveResult = resolve;
             rejectResult = reject;
         });
-    script.setAttribute('src', file.entryName);
+    script.setAttribute('src', file.entry);
     if (file.attributes) {
         Object.keys(file.attributes)
             .forEach(attributeName => {
