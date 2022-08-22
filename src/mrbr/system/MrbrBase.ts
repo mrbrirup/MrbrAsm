@@ -38,7 +38,7 @@ export class MrbrBase extends EventTarget {
             self[ns.IS_NAMESPACE] = true;
             return new Proxy(self, ns.PROXY_HANDLER);
         }
-        static toObject(target: any){
+        static toObject(target: any) {
             return target[MrbrBase.Namespace.TO_OBJECT]
         }
         static isNamespace(target: any) {
@@ -219,7 +219,7 @@ export class MrbrBase extends EventTarget {
     get files() { return this._files; }
     initialise(config: Mrbr_Assembly_MrbrConfig) {
         let self = this,
-            promise = self._promise(),
+            promise = self.createPromise(),
             self_paths = self._paths;
         self.config = config;
         let global: any; global = global || null;
@@ -236,12 +236,18 @@ export class MrbrBase extends EventTarget {
     }
     loadManifest(manifest: Array<Mrbr_IO_File> | Mrbr_IO_File): Promise<any> {
         const self = this,
-            promise = self._promise(),
-            manifestArray = Array.isArray(manifest) ? manifest : [manifest],
-            loadingManifestEntries = manifestArray.map(manifestEntry => self.load(manifestEntry));
+            promise = self.createPromise();
+        if (!manifest) { return Promise.resolve(); }
+        if (Array.isArray(manifest) && manifest.length === 0) { return Promise.resolve(); }
+        let manifestArray = Array.isArray(manifest) ? manifest : [manifest];
+        let loadingManifestEntries = [];
+        manifestArray.forEach(manifestEntry => loadingManifestEntries.push(self.load(manifestEntry)))
+        //manifestArray.map(manifestEntry => self.load(manifestEntry));
+        console.log("loadingManifestEntries: start")
         Promise.all(loadingManifestEntries)
-            .then(_ => {
-                promise.resolve(manifestArray)
+            .then(values => {
+                console.log("loadingManifestEntries: all")
+                promise.resolve(values)
             })
             .catch(err => promise.reject(err));
         return promise.promise;
@@ -267,55 +273,45 @@ export class MrbrBase extends EventTarget {
     load(file: Mrbr_IO_File): Promise<any> {
         const self = this;//,
         //self_asm = self.asm;
-        let promise = self._promise();
+        let promise = self.createPromise();
         if (file.fileType === Mrbr_IO_FileType.Component) {
             self.loadComponent(file)
                 .then(component => {
                     if (MrbrBase.Namespace.isNamespace(file.entry)) {
                         let namespaceToObject = MrbrBase.Namespace.toObject(file.entry);
-                        //debugger
                         if (namespaceToObject && !MrbrBase.Namespace.isNamespace(namespaceToObject) && namespaceToObject["manifest"]) {
                             self.loadManifest(namespaceToObject.manifest)
                                 .then(_ => {
-                                    promise.resolve(component);
+                                    console.log("namespaceToObject.manifest: completed ",)
+                                    promise.resolve(file);
                                 })
+                        }
+                        else {
+
+                            promise.resolve(file);
                         }
                     }
                     else {
                         promise.resolve(component);
                     }
-                    console.log(file.entry);
-                    //return promise.promise;
                 });
         }
         else if (self.loadFnMap.has(file.fileType)) {
             self.loadFnMap.get(file.fileType)(file)
                 .then(result => promise.resolve(result))
                 .catch(err => promise.reject(err))
-
         }
-
+        else {
+            throw new Error("not a file option");
+        }
         return promise.promise;
-
-
-        // if (self_asm[file.entry]?.file?.loadingPromise) {
-        //     return self_asm[file.entry].file.loadingPromise;
-        // }
-        // self.asm[file.entry] = { file: file, result: null };
-        // if (!file.loadingPromise) {
-        //     file.loadingPromise = promise.promise;
-        // }
-        // self.loadFnMap.get(file.fileType)(file)
-        //     .then(result => promise.resolve(result))
-        //     .catch(err => promise.reject(err))
-        // return file.loadingPromise;
     }
     _loadScript: nullFunction = null;
     _loadScriptElement: nullFunction = null;
     _loadScriptLink: nullFunction = null;
     _loadCssLink: nullFunction = null;
     _loadCssElement: nullFunction = null;
-    _promise(): mrbrPromise {
+    createPromise(): mrbrPromise {
         let _reject: Function, _resolve: Function;
         return {
             promise: new Promise((resolve, reject) => { _reject = reject, _resolve = resolve }),
@@ -323,7 +319,7 @@ export class MrbrBase extends EventTarget {
             resolve: _resolve
         }
     }
-
+    loadinComponents = new Map<string, any>();
     loadComponent(file: Mrbr_IO_File): Promise<any> {
         const self = this,
             //componentName = file.entry,
@@ -331,63 +327,43 @@ export class MrbrBase extends EventTarget {
         let mrbrFetch = new Mrbr_IO_Fetch(),
             //root = self.paths.get(file.root) || "",
             //root = self.paths.get("Mrbr") || "",
-            promise = self._promise();
+            promise = self.createPromise();
         if (!ns.isNamespace(file.entry)) {
             promise.resolve(file);
             return promise.promise;
         }
 
 
-        // //  Is entry a Namespace?
-        // //  Convert Namespace to a file name
-        // if (ns.isNamespace(file.entry)) {
-        //     file.fileName = ns.namespace(file.entry).replace(/\./g, "/")
-        // }
-        // //  Is entry a string?
-        // //  Convert string to a file name
-        // else if (typeof file.entry === "string") {
-        //     file.fileName = file.entry.replace(/_/g, "/")
-        // }
-
-        //  Get absolute component path
-        //let componentPath = Mrbr_IO_Path.join([root, file.fileName], false) + `.${file.extension}`;
-        //self.dispatchEvent(new CustomEvent("loadComponent", { detail: { action: "componentPath", componentPath: componentPath } }))
-
-
-        self.dispatchEvent(new CustomEvent("loadComponent", { detail: { action: "start", file: file } }))
+        let namespace = ns.namespace(file.entry);
+        if (this.loadinComponents.has(namespace)) {
+            file._loadingPromise = this.loadinComponents.get(namespace)._loadingPromise;
+            return file._loadingPromise.promise;
+        }
+        file._loadingPromise = {
+            promise: promise.promise,
+            reject: promise.reject,
+            resolve: promise.resolve
+        }
+        this.loadinComponents.set(ns.namespace(file.entry), file);
         mrbrFetch
             .fetch(file.fileName, {})
             .then(result => {
                 result
                     .text()
                     .then((txt: any) => {
-                        new Function("mrbr", "data", txt).bind(self)(mrbr, file.data);
-                        setTimeout(promise.resolve(file), 0);
+                        let loadedPromise = self.createPromise();
+                        new Function("mrbr", "data", "resolve", "reject", txt).bind(self)(mrbr, file.data, loadedPromise.resolve, loadedPromise.reject);
+                        loadedPromise.promise
+                            .then(entry => {
+                                this.loadinComponents.get(entry)._loadingPromise.resolve(file)
+                            })
+                            .catch(err => console.log(`error: `, err))
                     })
             })
             .catch(err => {
                 promise.reject(err)
             });
-
-
-
-
-
-
-        // else {
-        //     if ((file.entryName as any).manifest && (file.entryName as any).manifest.length > 0) {
-        //         self.loadManifest((file.entryName as any).manifest)
-        //             .then(result => {
-        //                 promise.resolve(file.entryName)
-        //             })
-        //     }
-        //     else {
-        //         promise.resolve(file.entryName)
-        //     }
-        //     return promise.promise;
-        // }
-
-        return promise.promise;
+        return this.loadinComponents.get(namespace)._loadingPromise.promise
     }
     loadText() { }
     loadJson() { }
@@ -405,7 +381,7 @@ export class MrbrBase extends EventTarget {
             return self._loadScriptLink(file);
         }
         else {
-            let promise = self._promise();
+            let promise = self.createPromise();
             self.addFileFunction(file, self, "_loadScriptLink", Mrbr_IO_LoadScriptLink)
                 .then(_ => {
                     self._loadScriptLink = Mrbr_IO_LoadScriptLink.bind(self);
@@ -426,7 +402,7 @@ export class MrbrBase extends EventTarget {
             return self._loadCssLink(file);
         }
         else {
-            let promise = self._promise();
+            let promise = self.createPromise();
             self.addFileFunction(file, self, "_loadCssLink", Mrbr_IO_LoadCssLink)
                 .then(_ => {
                     self._loadCssLink = Mrbr_IO_LoadCssLink.bind(self);
@@ -445,12 +421,12 @@ export class MrbrBase extends EventTarget {
             target[targetFunctionName] = functionToLoad;
             return Promise.resolve(functionToLoad);
         }
-        let promise = self._promise()
+        let promise = self.createPromise()
         let manifest = Mrbr_IO_File.component(functionToLoad);
+        console.log("addFunction: start")
         self.loadManifest(manifest)
             .then(result => {
-                //target[targetFunctionName] = mrbr._entries[newFunctionName].bind(target);
-                //target[targetFunctionName] = functionToLoad.bind(target);
+                console.log("addFunction: then")
                 promise.resolve(target[targetFunctionName])
             })
             .catch(err => promise.reject(err));
@@ -458,10 +434,10 @@ export class MrbrBase extends EventTarget {
     }
     addFileFunction(file: Mrbr_IO_File, target: any, targetFunctionName: string, functionToLoad: any): Promise<any> {
         const self = this;
-        let promise = self._promise();
+        let promise = self.createPromise();
         self.addFunction(target, targetFunctionName, functionToLoad)
             .then(fn => {
-                console.log("addedFunction: ", targetFunctionName)
+                //console.log("addedFunction: ", targetFunctionName)
                 promise.resolve(fn)
             })
             .catch(err => promise.reject(err))

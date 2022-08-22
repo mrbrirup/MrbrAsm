@@ -5,6 +5,7 @@ let cfg = {
 function runRes(result) {
     console.log("runRes")
     try {
+        console.log("Mrbr.Tests.Application: ", Mrbr.Tests.Application)
         let container = new Mrbr.Tests.Application()
         console.log(container);
     } catch (error) {
@@ -33,7 +34,7 @@ function onReady() {
         console.log("function onReady()")
         mrbr.loadManifest([
             Mrbr.IO.File.component(Mrbr.Tests.Application),
-            Mrbr.IO.File.component(Mrbr.System.MrbrBase),
+            //Mrbr.IO.File.component(Mrbr.System.MrbrBase),
             new Mrbr.IO.File(Mrbr.IO.FileType.ScriptLink, null, "https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js", "", {
                 integrity: "sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa",
                 crossorigin: "anonymous"

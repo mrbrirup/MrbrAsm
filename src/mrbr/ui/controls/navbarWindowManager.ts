@@ -29,7 +29,7 @@ export class Mrbr_UI_Controls_NavbarWindowManager extends Mrbr_UI_Bootstrap_Navi
             _mrbr = MrbrBase.mrbrInstance,
             self = this;
         MrbrBase.mrbrInstance.loadManifest([
-            Mrbr_IO_File.component("Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu")
+            Mrbr_IO_File.component(Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu)
         ])
             .then(_ => {
                 //var mrbr = _mrbr;

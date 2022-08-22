@@ -177,7 +177,8 @@ function createMrbrAssemblyFile(sourceFile) {
 
     let assemblyPath = path.dirname(destinationFileName);
     !fs.existsSync(assemblyPath) && fs.mkdirSync(assemblyPath, { recursive: true });
-    let exportName;
+    let exportName,
+        code;
     if (classDeclarationMatch) {
         const classExtension = ((classDeclarationMatch?.groups?.baseClass?.length || 0) > 0) ? (` extends ((${classDeclarationMatch?.groups?.baseClass}))`) : "";
         exportName = classDeclarationMatch?.groups?.exportName;
@@ -185,14 +186,14 @@ function createMrbrAssemblyFile(sourceFile) {
             `${includeClassExtension}${exportName} = ${exportType} ${classExtension}`.replace(/ {2}/, " "), ,
             destinationContent.substring(classDeclarationRegex.lastIndex - 1)
         ];
-        let code = generateCode(outputTextArray.join("\r\n"), importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
+        code = generateCode(outputTextArray.join("\r\n"), importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
         if ((classDeclarationMatch?.groups?.baseClass?.length || 0) > 0) {
             console.log("classDeclarationMatch?.groups?.baseClass?.length")
             //code.replace(new RegExp(classDeclarationMatch?.groups?.baseClass.replace(/_/g, "."), ""), `(${classDeclarationMatch?.groups?.baseClass.replace(/_/g, ".")})`);
 
             code = code.replace(new RegExp(classDeclarationMatch?.groups?.baseClass.replace(/_/g, "."), ""), `(${classDeclarationMatch?.groups?.baseClass.replace(/_/g, ".")})`);
         }
-        fs.writeFileSync(destinationFileName, code + "\r\n")
+        //fs.writeFileSync(destinationFileName, code + "\r\n")
     }
     else {
         let enumFunctionRegex = /export\s+var\s+(?<assembly>[\w$]+)\s*;\s*(?<function>\(function \s*\((\1)\)\s{)(?<text>[\s\S]+)\}\)\s*\(\1\s*[|]{2}\s*\(\1\s*=\s*\{\}\)\);\s*/gm,
@@ -201,7 +202,7 @@ function createMrbrAssemblyFile(sourceFile) {
         if ((match = enumFunctionRegex.exec(destinationContent)) !== null) {
             exportName = match.groups.assembly;
             code = generateCode(match.groups.text, importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
-            fs.writeFileSync(destinationFileName, code + "\r\n");
+            //fs.writeFileSync(destinationFileName, code + "\r\n");
         }
         else if ((match = functionRegex.exec(destinationContent)) !== null) {
             exportName = match.groups.assembly;
@@ -209,7 +210,7 @@ function createMrbrAssemblyFile(sourceFile) {
             // if ((classDeclarationMatch?.groups?.baseClass?.length || 0) > 0) {
             //     code.replace(new RegExp(classDeclarationMatch?.groups?.baseClass.replace(/_/g, "."), `(${classDeclarationMatch?.groups?.baseClass.replace(/_/g, ".")})`));
             // }
-            fs.writeFileSync(destinationFileName, code + "\r\n");
+            //fs.writeFileSync(destinationFileName, code + "\r\n");
         }
         else {
             //console.log(sourceFile, match)
@@ -226,12 +227,25 @@ function createMrbrAssemblyFile(sourceFile) {
             //manifest.push(importedReferences.filter(entry => entry.exclude === false).map(include => (`    Mrbr.IO.File.component(${include.assembly})`))) //.join(",\r\n"));
             manifest = manifest.concat(...[importedReferences.filter(entry => entry.exclude === false).map(include => (`${" ".repeat(8)}Mrbr.IO.File.component(${include.assembly.replace(/_/g, ".")})`))])
         }
-        //manifest.push(`    ]`);
-        fs.appendFileSync(destinationFileName,
-            `${exportName.replace(/_/g, '.')}.manifest = [\r\n` +
-            `${manifest.join(",\r\n")}\r\n` +
-            `${" ".repeat(4)}];`
-        );
+        //manifest.push(`    ]`);        
+        fs.writeFileSync(destinationFileName, `
+            ((mrbr, data, resolve, reject)=>{
+                ${manifest?.length ? "" : "//"}  let manifest = [${manifest.join(",\r\n")}];
+                ${manifest?.length ? "" : "//"}mrbr.loadManifest( manifest )\r\n
+                ${manifest?.length ? "" : "//"}.then(_ =>{
+                    ${code}\r\n
+                    //${exportName.replace(/_/g, '.')}.manifest = manifest;
+                    setTimeout(()=>{ resolve("${exportName.replace(/_/g, ".")}")},0)
+                    ${manifest?.length ? "" : "//"}})
+                    ${manifest?.length ? "" : "//"}.catch(err => reject(err))
+            })(mrbr, data, resolve, reject)
+        `)
+        // fs.writeFileSync(destinationFileName, code + "\r\n")
+        // fs.appendFileSync(destinationFileName,
+        //     `${exportName.replace(/_/g, '.')}.manifest = [\r\n` +
+        //     `${manifest.join(",\r\n")}\r\n` +
+        //     `${" ".repeat(4)}];`
+        // );
 
     }
 

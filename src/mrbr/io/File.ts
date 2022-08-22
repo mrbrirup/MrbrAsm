@@ -1,13 +1,18 @@
 import { MrbrBase } from "../system/MrbrBase";//exclude
 import { Mrbr_IO_FileType } from "./FileType";
 import { Mrbr_IO_Path } from "./Path";
+type FilePromise = {
+    promise: Promise<any>,
+    reject: any,
+    resolve: any
+}
 export class Mrbr_IO_File {
     _fileType: Mrbr_IO_FileType;
     _entry: any;
     _fileName: string;
     _id: string;
     _root: string;
-    _loadingPromise?: Promise<any>;
+    _loadingPromise?: FilePromise;
     _attributes: object
     _data?: object
     _extension: string;
@@ -60,8 +65,8 @@ export class Mrbr_IO_File {
     set id(value: string) { this._id = value; }
     get root(): string { return this._root; }
     set root(value: string) { this._root = value; }
-    get loadingPromise(): Promise<any> { return this._loadingPromise; }
-    set loadingPromise(value: Promise<any>) { this._loadingPromise = value; }
+    get loadingPromise(): FilePromise { return this._loadingPromise; }
+    set loadingPromise(value: FilePromise) { this._loadingPromise = value; }
     get attributes(): object { return this._attributes; }
     set attributes(value: object) { this._attributes = value; }
     get data(): object { return this._data; }
@@ -70,7 +75,7 @@ export class Mrbr_IO_File {
     setAttributes(value: object): Mrbr_IO_File { this.attributes = value; return this; }
     static createId(prefix: string) { return `${prefix}_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`; }
     static component(entry: any): Mrbr_IO_File {
-        let componentFile = new Mrbr_IO_File(Mrbr_IO_FileType.Component, null, entry, "js");        
+        let componentFile = new Mrbr_IO_File(Mrbr_IO_FileType.Component, null, entry, "js");
         return componentFile;
     }
 }
