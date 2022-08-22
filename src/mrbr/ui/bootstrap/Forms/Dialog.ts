@@ -137,8 +137,9 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
         const self = this,
             controlBoxEvents = Mrbr_UI_Bootstrap_Forms_ControlBox$Events;
         const detail = event.detail;
-        if (controlBoxEvents.maximise.toString() === controlBoxEvents[detail].toString()) { self.maximiseDialog(event); }
-        else if (controlBoxEvents.fullScreen.toString() === controlBoxEvents[detail].toString()) {
+        debugger
+        if (controlBoxEvents[controlBoxEvents.maximise] === controlBoxEvents[detail]) { self.maximiseDialog(event); }
+        else if (controlBoxEvents[controlBoxEvents.fullScreen] === controlBoxEvents[detail]) {
             self.fullScreenDialog();
             self.events[Mrbr_UI_Bootstrap_Forms_Dialog.DIALOG_FULLSCREEN_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
                 eventName: "fullscreenchange",

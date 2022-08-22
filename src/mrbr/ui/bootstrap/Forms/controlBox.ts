@@ -111,7 +111,7 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
         let eventTypeName = (<HTMLElement>(mouseEvent.target)).dataset.eventType || (<HTMLElement>(mouseEvent.currentTarget)).dataset.eventType;
         if (!eventTypeName) { return; }
         mouseEvent.stopImmediatePropagation();
-        let eventType = Mrbr_UI_Bootstrap_Forms_ControlBox$Events[Object.keys(Mrbr_UI_Bootstrap_Forms_ControlBox$Events).find(key => eventTypeName === key)]
+        let eventType = Mrbr_UI_Bootstrap_Forms_ControlBox$Events[MrbrBase.Namespace.KEY_ARRAY].find(key => eventTypeName === key);''
         let event = new Mrbr_UI_Bootstrap_Forms_ControlBox$Event(Mrbr_UI_Bootstrap_Forms_ControlBox.CONTROL_BOX_CLICK_EVENT_NAME, eventType);
         this.dispatchEvent(event);
     }

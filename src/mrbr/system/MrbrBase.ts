@@ -8,58 +8,301 @@ import { Mrbr_IO_LoadCssLink } from '../io/LoadCssLink';//exclude
 import { Mrbr_IO_LoadScript } from '../io/LoadScript';//exclude
 import { Mrbr_IO_LoadScriptElement } from '../io/LoadScriptElement';//exclude
 import { Mrbr_IO_LoadScriptLink } from '../io/LoadScriptLink';//exclude
-import { Mrbr_IO_Path } from '../io/Path';
 
+
+/**
+ * Null operation function as place holder for loading functions later
+ * @date 22/08/2022 - 19:59:37
+ *
+ * @typedef {nullFunction}
+ */
 type nullFunction = (file: Mrbr_IO_File) => Promise<any> | null;
+
+/**
+ * Loading Function delegate
+ * Replaced when Loading Function is loaded
+ * @date 22/08/2022 - 20:00:18
+ *
+ * @typedef {loadFunction}
+ */
 type loadFunction = (file: Mrbr_IO_File) => Promise<any> | null;
+
+/**
+ * Creates a Promise and returns the reslove and reject as separate parameters to be used outside of Promise block
+ * @date 22/08/2022 - 20:01:00
+ *
+ * @typedef {mrbrPromise}
+ */
 type mrbrPromise = {
     promise: Promise<any>;
     reject: Function;
     resolve: Function;
 }
+
+/**
+ * Base Class for all MrbrAssembly functions
+ * Created instance used for loading and recording all other functionality
+ * @date 22/08/2022 - 20:01:54
+ *
+ * @export
+ * @class MrbrBase
+ * @typedef {MrbrBase}
+ * @extends {EventTarget}
+ */
 export class MrbrBase extends EventTarget {
+    static cacheTimeOut: number = 5000;
+    static temporaryObjectTimeOut: number = 5000;
+    static defaultMrbrPath: string = "/mrbr/";
+    static componentParameters: string = "mrbr,data,resolve,reject";
+    static _mrbr: MrbrBase;
+    private _config: Mrbr_Assembly_MrbrConfig;
+    private _paths: Map<string, string> = new Map();
+    private _entries: any;
+    private _files: any;
+    private _index: any;
+    private _assembly: Map<string, any> = new Map<string, any>();
+    private _loadFunctionMap: Map<string, loadFunction> = null;
+    private _host: any;
+    _loadScript: nullFunction = null;
+    _loadScriptElement: nullFunction = null;
+    _loadScriptLink: nullFunction = null;
+    _loadCssLink: nullFunction = null;
+    _loadCssElement: nullFunction = null;
+    private componentFileReferences = new Map<string, any>();
+    /**
+     * Autogenerating Namespace from Proxied Maps to Authogenerate a class
+     * Any reference form the root that is not assigned to a different value creates a new level of the namespace
+     * The following line adds adds IO to Mrbr, File to IO and = class changes the last value of the Namespace to an object
+     * <code>
+     *      Mrbr.IO.File = class {} 
+     * </code>
+     * @date 22/08/2022 - 20:04:05
+     *
+     * @class
+     * @extends {Map<string, any>}
+     */
     static Namespace = class extends Map<string, any> {
-        static IS_NAMESPACE = Symbol("__ma_namespace__");
-        static SIZE = Symbol("__ma_namespace__size__");
-        static TARGET = Symbol("__ma_namespace__target__");
-        static NAME = Symbol("__ma_namespace__name__");
-        static PARENT = Symbol("__ma_namespace__parent__");
-        static TO_STRING = Symbol("__ma_namespace__tostring__");
-        static ASSIGNABLE = Symbol("__ma_namespace__assignable__");
-        static ROOT = Symbol("__ma_namespace__root__");
-        static BIND = Symbol("__ma_namespace__bind__");
-        static TO_OBJECT = Symbol("__ma_namespace__toobject__");
+
+        /**
+         * Checks if current object at the end of namespace is a Namespace object
+         * Uses Symbol as unique values to avoid namespace name clashes
+         * @date 22/08/2022 - 20:02:58
+         *
+         * @static
+         * @type {Symbol}
+         */
+        static IS_NAMESPACE = Symbol("__namespace__");
+
+        /**
+         * Gets the number of entries in a namespace
+         * Uses Symbol as unique values to avoid namespace name clashes
+         * @date 22/08/2022 - 20:08:21
+         *
+         * @static
+         * @type {Symbol}
+         */
+        static SIZE = Symbol("__size__");
+
+        /**
+         * Get the Target Map in the namespace
+         * Uses Symbol as unique values to avoid namespace name clashes
+         * @date 22/08/2022 - 20:08:58
+         *
+         * @static
+         * @type {*}
+         */
+        static TARGET = Symbol("__target__");
+
+        /**
+         * Get the Name of the target Map
+         * Uses Symbol as unique values to avoid namespace name clashes
+         * @date 22/08/2022 - 20:09:43
+         *
+         * @static
+         * @type {Symbol}
+         */
+        static NAME = Symbol("__name__");
+
+        /**
+         * Link to Parent object for navigation and getting full namespace names and root objects
+         * Uses Symbol as unique values to avoid namespace name clashes
+         * @date 22/08/2022 - 20:10:17
+         *
+         * @static
+         * @type {Symbol}
+         */
+        static PARENT = Symbol("__parent__");
+
+        /**
+         * Get the fullname of the Namespace
+         * Uses Symbol as unique values to avoid namespace name clashes
+         * @date 22/08/2022 - 20:10:51
+         *
+         * @static
+         * @type {Symbol}
+         */
+        static TO_STRING = Symbol("__tostring__");
+
+        /**
+         * Checks if a Namespace object is assignable
+         * If it is a namespace map and the Map has no entries then another value can be assigned to it
+         * Uses Symbol as unique values to avoid namespace name clashes
+         * @date 22/08/2022 - 20:11:18
+         *
+         * @static
+         * @type {Symbol}
+         */
+        static ASSIGNABLE = Symbol("__assignable__");
+
+        /**
+         * Get the root object for the namespace
+         * Mrbr.IO.File root is Mrbr.
+         * Used for getting paths for Mrbr Assembly files
+         * Uses Symbol as unique values to avoid namespace name clashes
+         * @date 22/08/2022 - 20:12:16
+         *
+         * @static
+         * @type {*}
+         */
+        static ROOT = Symbol("__root__");
+
+        /**
+         * Not used
+         * Reserved for setting binding comtexts
+         * Uses Symbol as unique values to avoid namespace name clashes
+         * @date 22/08/2022 - 20:13:50
+         *
+         * @static
+         * @type {Symbol}
+         */
+        static BIND = Symbol("__bind__");
+
+        /**
+         * Converts a Namespace into its current object
+         * Passing Mrbr.IO.File to a method and assigning a value to it
+         * will still have the Namespace as value
+         * Using 
+         * <code>
+         *   Mrbr.IO.File[MrbrBase.Namespace.TO_OBJECT] will return the File object assigned to the Mrbr.IO namespace
+         * </code>
+         * Uses Symbol as unique values to avoid namespace name clashes
+         * @date 22/08/2022 - 20:14:19
+         *
+         * @static
+         * @type {Symbol}
+         */
+        static TO_OBJECT = Symbol("__toobject__");
+
+        /**
+         * Returns the iterable collection of Keys for the Target
+         * Uses Symbol as unique values to avoid namespace name clashes
+         * @date 22/08/2022 - 20:17:01
+         *
+         * @static
+         * @type {Symbol}
+         */
+        static KEYS = Symbol("__keys__");
+
+        /**
+         * Returns collections of Keys for Target as an Array
+         * Uses Symbol as unique values to avoid namespace name clashes
+         * @date 22/08/2022 - 20:17:51
+         *
+         * @static
+         * @type {Symbol}
+         */
+        static KEY_ARRAY = Symbol("__keyarray__");
+
+        /**
+         * @date 22/08/2022 - 20:20:03
+         *
+         * @constructor
+         * @param {*} parent parent object that host the namespace object, e.g. Window
+         * @param {string} name name of the namespace part to create
+         */
         constructor(parent: any, name: string) {
             super()
-            const self = this;
-            const ns = MrbrBase.Namespace;
+            const self = this,
+                ns = MrbrBase.Namespace;
             self[ns.PARENT] = parent;
             self[ns.NAME] = name;
             self[ns.IS_NAMESPACE] = true;
+            /// returns this as a Proxied Map    
             return new Proxy(self, ns.PROXY_HANDLER);
         }
-        static toObject(target: any) {
+        /**
+         * 
+         * @param target Namespace to convert to Object
+         * @returns Object assigned to last part of the namespace or the namespace if nothing else has been assigned to it
+         */
+        static toObject(target: any): object {
             return target[MrbrBase.Namespace.TO_OBJECT]
         }
-        static isNamespace(target: any) {
+        /**
+         * Check if an object is a Namespace object
+         * @date 22/08/2022 - 20:23:09
+         *
+         * @static
+         * @param {object} target Object to be checked, true if Namespace
+         * @returns {boolean}
+         */
+        static isNamespace(target: any): boolean {
             return target[MrbrBase.Namespace.IS_NAMESPACE]
         }
-        static isAssignable(target: any) {
+
+        /**
+         * Can named part be assigned another Namespace part
+         * The object must be a Namespace and must have zero entries
+         * @date 22/08/2022 - 20:25:46
+         *
+         * @static
+         * @param {*} target
+         * @returns {boolean}
+         */
+        static isAssignable(target: any): boolean {
             return target[MrbrBase.Namespace.ASSIGNABLE]
         }
-        static namespace(target: any) {
+
+        /**
+         * Return full namespace name from Namespace
+         * @date 22/08/2022 - 20:27:53
+         *
+         * @static
+         * @param {*} target target object to check and return Namespace
+         * @returns {string} dot separated namespace name
+         */
+        static namespace(target: any): string {
             return target[MrbrBase.Namespace.TO_STRING]
         }
+
+        /**
+         * Proxy handler for Map to auto create Namespace parts 
+         * Each part is cheacked to see if it exists on the Map, if not it is created as a new Namespace 
+         * @date 22/08/2022 - 20:29:03
+         *
+         * @static
+         * @type {ProxyHandler<any>}
+         */
         static PROXY_HANDLER: ProxyHandler<any> = {
-            get(target: Map<string, any>, name: string | Symbol) {
+
+            /**
+             * Get the Namespace part values
+             * @date 22/08/2022 - 20:30:23
+             *
+             * @param {Map<string, any>} target Target Map Namespace
+             * @param {(string | Symbol)} name Part name of Namespace
+             * @returns {any} Namespace part, assigned value or value from static Symbols
+             */
+            get(target: Map<string, any>, name: string | Symbol): any {
                 const ns = MrbrBase.Namespace;
                 switch (name) {
+                    case ns.KEYS: return target.keys();
+                    case ns.KEY_ARRAY: return Array.from(target.keys());
                     case ns.TO_OBJECT: {
-
-                        let namespace = [target[ns.NAME]]
-                        let parent = target[ns.PARENT];
+                        let namespace = [target[ns.NAME]],
+                            parent = target[ns.PARENT],
+                            lastParent = null;
                         if (parent) { namespace.push(parent[ns.NAME]) }
-                        let lastParent = null;
                         while (parent) {
                             lastParent = parent;
                             parent = parent[ns.PARENT];
@@ -67,7 +310,6 @@ export class MrbrBase extends EventTarget {
                                 namespace.push(parent[ns.NAME])
                             }
                         }
-
                         namespace.reverse().forEach(value => {
                             lastParent = lastParent[value];
                         })
@@ -86,9 +328,8 @@ export class MrbrBase extends EventTarget {
                         return true;
                     }
                     case ns.ROOT: {
-                        let namespace = [target[ns.NAME]]
-                        let parent = target[ns.PARENT];
-                        let root = "";
+                        let parent = target[ns.PARENT],
+                            root = "";
                         if (parent) { root = parent[ns.NAME]; }
                         while (parent) {
                             parent = parent[ns.PARENT];
@@ -106,6 +347,7 @@ export class MrbrBase extends EventTarget {
                         }
                         return namespace.reverse().join(".");
                     }
+                    /// Create a new Namespace part in target Namespace
                     default:
                         if (target.has(<string>name) === false) {
                             target.set(<string>name, new ns(target, <string>name))
@@ -113,8 +355,19 @@ export class MrbrBase extends EventTarget {
                 }
                 return (target.has(<string>name)) ? (target.get(<string>name)) : null;
             },
+
+            /**
+             * Sets value for the Target Namespace Part
+             * @date 22/08/2022 - 20:32:34
+             *
+             * @param {Map<string, any>} target Namespace Part
+             * @param {(string | Symbol)} name Name of Namespace to get
+             * @param {*} value value to set the Namespace part to
+             * @returns {boolean} has value been set
+             */
             set(target: Map<string, any>, name: string | Symbol, value: any) {
                 const ns = MrbrBase.Namespace;
+                /// Static Symbols are returned with no action
                 switch (name) {
                     case ns.IS_NAMESPACE:
                     case ns.SIZE:
@@ -126,13 +379,17 @@ export class MrbrBase extends EventTarget {
                     case ns.ROOT:
                     case ns.BIND:
                     case ns.TO_OBJECT:
+                    case ns.KEYS:
+                    case ns.KEY_ARRAY:
                         return true
                 }
+                /// Set value of an empty Target Namespace
                 if (target[ns.SIZE] === 0 &&
                     target[ns.IS_NAMESPACE] === true) {
                     target.set(<string>name, value);
                     return true;
                 }
+                /// If the Namespace part has already been created check if the value can be assigne to it
                 let namedTarget = target.get(<string>name);
                 if (
                     !namedTarget ||
@@ -145,6 +402,7 @@ export class MrbrBase extends EventTarget {
                     target.set(<string>name, value);
                     return true;
                 }
+                /// Throw error if attempting to set a value for the Namespace Part that already has entries
                 if (namedTarget instanceof Map &&
                     namedTarget[ns.SIZE] > 0 &&
                     namedTarget[ns.IS_NAMESPACE] === true) {
@@ -153,29 +411,18 @@ export class MrbrBase extends EventTarget {
                 return false;
             }
         }
+        /**
+         * 
+         * @param parent Create a new Namespace object as child of Parent
+         * @param name Name of Namespace Part to create 
+         * @returns new empty Namespace object
+         */
         static createAssembly(parent, name): typeof MrbrBase.Namespace {
             parent[name] = new MrbrBase.Namespace(parent, name);
             return parent[name];
         }
     }
-
-
-
-    static cacheTimeOut: number = 5000;
-    static temporaryObjectTimeOut: number = 5000;
-    config: Mrbr_Assembly_MrbrConfig;
-
-    _paths: Map<string, string> = new Map();
-    static defaultMrbrPath: string = "/mrbr/";
-    host: any;
-    _entries: any;
-    _files: any;
-    _index: any;
-    static _mrbr: MrbrBase;
-    get mrbr(): MrbrBase { return MrbrBase._mrbr; }
-    set mrbr(value: MrbrBase) { MrbrBase._mrbr = value; }
-    static get mrbrInstance(): MrbrBase { return MrbrBase._mrbr; }
-    constructor(assemblyEntries: Object) {
+    constructor() {
         super();
         const self = this,
             assembly = self.assembly;
@@ -199,105 +446,207 @@ export class MrbrBase extends EventTarget {
                 return (target.has(name as string)) ? (target.get(name as string)).file : undefined;
             }
         })
-
-        Object.keys(assemblyEntries)
-            .forEach(property => {
-                self.asm[property] = { file: { loadingPromise: Promise.resolve() }, result: (assemblyEntries as any)[property] };
-            })
-        assemblyEntries = null;
-        self.mrbr = this;
+        MrbrBase._mrbr = this;
         MrbrBase.Namespace.createAssembly(window, "Mrbr")
     }
-    _assembly: Map<string, any> = new Map<string, any>();
+
+    /**
+     * Singleton for MrbrBase.
+     * Allows reference to instance through Class instead of having to add dummy reference to every file
+     * @date 22/08/2022 - 20:55:06
+     *
+     * @static
+     * @readonly
+     * @type {MrbrBase}
+     */
+    public static get mrbrInstance(): MrbrBase { return MrbrBase._mrbr; }
+
+    /**
+     * Configuration file passed to initialise function
+     * @date 22/08/2022 - 20:59:30
+     *
+     * @public
+     * @type {Mrbr_Assembly_MrbrConfig}
+     */
+    public get config(): Mrbr_Assembly_MrbrConfig {
+        return this._config;
+    }
+
+    /**
+     * Configuration file passed to initialise function
+     */
+    public set config(value: Mrbr_Assembly_MrbrConfig) {
+        this._config = value;
+    }
+
+
+    /**
+     * Paths to Mrbr Assembly and Mrbr Assembly compliant objects
+     * @date 22/08/2022 - 21:00:49
+     *
+     * @readonly
+     * @type {Map<string, string>}
+     */
     get paths(): Map<string, string> {
         return this._paths;
     }
+
+    /**
+     * Host object, usually a global object globalThis or Window 
+     * @date 22/08/2022 - 21:01:37
+     *
+     * @public
+     * @type {*}
+     */
+    public get host(): any {
+        return this._host;
+    }
+
+    /**
+     * Host object, usually a global object globalThis or Window
+     */
+    public set host(value: any) {
+        this._host = value;
+    }
+
+    /**
+     * Assembly refernces.
+     * Functionality to be reviewed
+     * @date 22/08/2022 - 21:03:22
+     *
+     * @type {Map<string, any>}
+     */
     get assembly(): Map<string, any> { return this._assembly; }
+
+    /**
+     * Assembly refernces.
+    Functionality to be reviewed
+     */
     set assembly(value: Map<string, any>) { this._assembly = value; }
+
+    /**
+     * Assembly references
+     * Functionality to be reviewed
+     * @date 22/08/2022 - 21:04:06
+     *
+     * @readonly
+     * @type {*}
+     */
     get asm() { return this._index; }
+
+    /**
+     * Assembly references
+     * Functionality to be reviewed
+     * @date 22/08/2022 - 21:04:28
+     *
+     * @readonly
+     * @type {*}
+     */
     get entries() { return this._entries; }
+
+    /**
+     * Files References
+     * Functionality to be reviewed
+     * @date 22/08/2022 - 21:04:53
+     *
+     * @readonly
+     * @type {*}
+     */
     get files() { return this._files; }
-    initialise(config: Mrbr_Assembly_MrbrConfig) {
-        let self = this,
+
+    /**
+     * Initialise MrbrBase
+     * @date 22/08/2022 - 21:05:27
+     *
+     * @param {Mrbr_Assembly_MrbrConfig} config
+     * @returns {Promise<any>} Promise for initialisation completed
+     */
+    initialise(config: Mrbr_Assembly_MrbrConfig): Promise<any> {
+        const self = this,
             promise = self.createPromise(),
             self_paths = self._paths;
         self.config = config;
-        let global: any; global = global || null;
+        var global: any = global || null;
         self.host = ((window as any) || (global) || (globalThis as any));
         if (config?.paths) {
             Object.keys(config.paths).forEach(key => self_paths.set(key, config.paths[key]));
         }
-        const mrbrCss: HTMLStyleElement = document.createElement("style");
-        mrbrCss.textContent = `:root { --mrbr-root-folder :"${self.paths.get("Mrbr")}";}`;
-        document.head.appendChild(mrbrCss);
+        /// If browser based
+        if (document) {
+            const mrbrCss: HTMLStyleElement = document.createElement("style");
+            mrbrCss.textContent = `:root { --mrbr-root-folder :"${self.paths.get("Mrbr")}";}`;
+            document.head.appendChild(mrbrCss);
+        }
 
         promise.resolve(self);
         return promise.promise;
     }
-    loadManifest(manifest: Array<Mrbr_IO_File> | Mrbr_IO_File): Promise<any> {
+
+    /**
+     * Load a manifest, a single or array of Mrbr.IO.File 
+     * @date 22/08/2022 - 21:13:01
+     *
+     * @public
+     * @param {(Array<Mrbr_IO_File> | Mrbr_IO_File)} manifest
+     * @returns {Promise<any>}
+     */
+    public loadManifest(manifest: Array<Mrbr_IO_File> | Mrbr_IO_File): Promise<any> {
+        if (!manifest || (Array.isArray(manifest) && manifest.length === 0)) { return Promise.resolve(); }
         const self = this,
             promise = self.createPromise();
-        if (!manifest) { return Promise.resolve(); }
-        if (Array.isArray(manifest) && manifest.length === 0) { return Promise.resolve(); }
-        let manifestArray = Array.isArray(manifest) ? manifest : [manifest];
-        let loadingManifestEntries = [];
-        manifestArray.forEach(manifestEntry => loadingManifestEntries.push(self.load(manifestEntry)))
-        //manifestArray.map(manifestEntry => self.load(manifestEntry));
-        console.log("loadingManifestEntries: start")
-        Promise.all(loadingManifestEntries)
+        Promise.all((Array.isArray(manifest) ? manifest : [manifest]).map(manifestEntry => self.load(manifestEntry)))
             .then(values => {
-                console.log("loadingManifestEntries: all")
                 promise.resolve(values)
             })
             .catch(err => promise.reject(err));
         return promise.promise;
     }
-    _loadFunctionMap: Map<string, loadFunction> = null;
-    get loadFnMap(): Map<string, loadFunction> {
+
+    /**
+     * Mapping to delgates for loading Mrbr.IO.FileTypes
+     * @date 22/08/2022 - 21:17:48
+     *
+     * @private
+     * @readonly
+     * @type {Map<string, loadFunction>}
+     */
+    private get loadFunctionMap(): Map<string, loadFunction> {
+        if (this._loadFunctionMap) { return this._loadFunctionMap; }
         const self = this,
-            mrbrIOFileType = Mrbr_IO_FileType
-        if (self._loadFunctionMap) { return self._loadFunctionMap }
-        self._loadFunctionMap = new Map<string, loadFunction>();
-        const self_loadFunctionMap = self._loadFunctionMap,
-            self_loadFunctionMapSet = self_loadFunctionMap.set.bind(self_loadFunctionMap)
-        self_loadFunctionMapSet(mrbrIOFileType.Script, self.loadScript.bind(self));
-        self_loadFunctionMapSet(mrbrIOFileType.ScriptElement, self.loadScriptElement.bind(self));
-        self_loadFunctionMapSet(mrbrIOFileType.ScriptLink, self.loadScriptLink.bind(self));
-        self_loadFunctionMapSet(mrbrIOFileType.CssElement, self.loadCssElement.bind(self));
-        self_loadFunctionMapSet(mrbrIOFileType.CssLink, self.loadCssLink.bind(self));
-        self_loadFunctionMapSet(mrbrIOFileType.Component, self.loadComponent.bind(self));
+            mif = Mrbr_IO_FileType;
+
+        const slf = self._loadFunctionMap = new Map<string, loadFunction>(),
+            slfsb = slf.set.bind(slf);
+        [[mif.Script, self.loadScript.bind(self)],
+        [mif.ScriptElement, self.loadScriptElement.bind(self)],
+        [mif.ScriptLink, self.loadScriptLink.bind(self)],
+        [mif.CssElement, self.loadCssElement.bind(self)],
+        [mif.CssLink, self.loadCssLink.bind(self)],
+        [mif.Component, self.loadComponent.bind(self)]
+        ].forEach(entry => slfsb(entry[0], entry[1]))
 
         return self._loadFunctionMap;
     }
 
+
+    /**
+     * Load a file based on its FileType
+     * @date 22/08/2022 - 21:29:22
+     *
+     * @param {Mrbr_IO_File} file
+     * @returns {Promise<any>} Promise fo Loading file
+     */
     load(file: Mrbr_IO_File): Promise<any> {
-        const self = this;//,
-        //self_asm = self.asm;
-        let promise = self.createPromise();
+        const self = this,
+            promise = self.createPromise();
         if (file.fileType === Mrbr_IO_FileType.Component) {
             self.loadComponent(file)
                 .then(component => {
-                    if (MrbrBase.Namespace.isNamespace(file.entry)) {
-                        let namespaceToObject = MrbrBase.Namespace.toObject(file.entry);
-                        if (namespaceToObject && !MrbrBase.Namespace.isNamespace(namespaceToObject) && namespaceToObject["manifest"]) {
-                            self.loadManifest(namespaceToObject.manifest)
-                                .then(_ => {
-                                    console.log("namespaceToObject.manifest: completed ",)
-                                    promise.resolve(file);
-                                })
-                        }
-                        else {
-
-                            promise.resolve(file);
-                        }
-                    }
-                    else {
-                        promise.resolve(component);
-                    }
+                    promise.resolve(component);
                 });
         }
-        else if (self.loadFnMap.has(file.fileType)) {
-            self.loadFnMap.get(file.fileType)(file)
+        else if (self.loadFunctionMap.has(file.fileType)) {
+            self.loadFunctionMap.get(file.fileType)(file)
                 .then(result => promise.resolve(result))
                 .catch(err => promise.reject(err))
         }
@@ -306,11 +655,13 @@ export class MrbrBase extends EventTarget {
         }
         return promise.promise;
     }
-    _loadScript: nullFunction = null;
-    _loadScriptElement: nullFunction = null;
-    _loadScriptLink: nullFunction = null;
-    _loadCssLink: nullFunction = null;
-    _loadCssElement: nullFunction = null;
+
+    /**
+     * Create a promise that externalises reject and resolve to avoid nesting in Promise
+     * @date 22/08/2022 - 21:30:21
+     *
+     * @returns {mrbrPromise}
+     */
     createPromise(): mrbrPromise {
         let _reject: Function, _resolve: Function;
         return {
@@ -319,32 +670,40 @@ export class MrbrBase extends EventTarget {
             resolve: _resolve
         }
     }
-    loadinComponents = new Map<string, any>();
+
+    /**
+     * Load an Mrbr Assembly compliant component
+     * @date 22/08/2022 - 21:31:16
+     *
+     * @param {Mrbr_IO_File} file
+     * @returns {Promise<any>} Promise of loading component
+     */
     loadComponent(file: Mrbr_IO_File): Promise<any> {
         const self = this,
-            //componentName = file.entry,
             ns = MrbrBase.Namespace;
-        let mrbrFetch = new Mrbr_IO_Fetch(),
-            //root = self.paths.get(file.root) || "",
-            //root = self.paths.get("Mrbr") || "",
-            promise = self.createPromise();
         if (!ns.isNamespace(file.entry)) {
-            promise.resolve(file);
-            return promise.promise;
+            return Promise.resolve(file);
         }
-
-
-        let namespace = ns.namespace(file.entry);
-        if (this.loadinComponents.has(namespace)) {
-            file._loadingPromise = this.loadinComponents.get(namespace)._loadingPromise;
+        const mrbrFetch = new Mrbr_IO_Fetch(),
+            promise = self.createPromise(),
+            namespace = ns.namespace(file.entry),
+            prms = MrbrBase.componentParameters,
+            instance = MrbrBase.mrbrInstance,
+            fn = Function;
+        //  If a file loading is already in progress for this Component as load requests can be in parallel
+        //  Get the promise from the first component load request
+        if (self.componentFileReferences.has(namespace)) {
+            file._loadingPromise = self.componentFileReferences.get(namespace)._loadingPromise;
             return file._loadingPromise.promise;
         }
+        //  Create a promise for a Component not previously requested
         file._loadingPromise = {
             promise: promise.promise,
             reject: promise.reject,
             resolve: promise.resolve
         }
-        this.loadinComponents.set(ns.namespace(file.entry), file);
+        self.componentFileReferences.set(ns.namespace(file.entry), file);
+        /// Fetch file
         mrbrFetch
             .fetch(file.fileName, {})
             .then(result => {
@@ -352,68 +711,125 @@ export class MrbrBase extends EventTarget {
                     .text()
                     .then((txt: any) => {
                         let loadedPromise = self.createPromise();
-                        new Function("mrbr", "data", "resolve", "reject", txt).bind(self)(mrbr, file.data, loadedPromise.resolve, loadedPromise.reject);
+                        fn(prms, txt).bind(self)(instance, file.data, loadedPromise.resolve, loadedPromise.reject);
                         loadedPromise.promise
-                            .then(entry => {
-                                this.loadinComponents.get(entry)._loadingPromise.resolve(file)
-                            })
+                            .then(entry => self.componentFileReferences.get(entry)._loadingPromise.resolve(file))
                             .catch(err => console.log(`error: `, err))
                     })
             })
             .catch(err => {
                 promise.reject(err)
             });
-        return this.loadinComponents.get(namespace)._loadingPromise.promise
+        return this.componentFileReferences.get(namespace)._loadingPromise.promise
     }
     loadText() { }
     loadJson() { }
+
+    /**
+     * Loads run script functionality on demand then loads script
+     * @date 22/08/2022 - 21:47:06
+     *
+     * @param {Mrbr_IO_File} file
+     * @returns {Promise<any>}
+     */
     loadScript(file: Mrbr_IO_File): Promise<any> {
         const self = this;
-        return self._loadScript ? self._loadScript(file) : self.addFileFunction(file, self, "_loadScript", Mrbr_IO_LoadScript);
+        return self._loadScript ? self._loadScript(file) : self.addFileFunction(self, "_loadScript", Mrbr_IO_LoadScript);
     }
+
+    /**
+     * Loads add script element functionality on demand then loads script
+     * @date 22/08/2022 - 21:47:58
+     *
+     * @param {Mrbr_IO_File} file
+     * @returns {Promise<any>}
+     */
     loadScriptElement(file: Mrbr_IO_File): Promise<any> {
         const self = this;
-        return self._loadScriptElement ? self._loadScriptElement(file) : self.addFileFunction(file, self, "_loadScriptElement", Mrbr_IO_LoadScriptElement);
+        return self._loadScriptElement ? self._loadScriptElement(file) : self.addFileFunction(self, "_loadScriptElement", Mrbr_IO_LoadScriptElement);
     }
+
+    /**
+     * Load add script link functionality on demand and adds to dom
+     * @date 22/08/2022 - 21:49:57
+     *
+     * @param {Mrbr_IO_File} file
+     * @returns {Promise<any>}
+     */
     loadScriptLink(file: Mrbr_IO_File): Promise<any> {
         const self = this;
         if (self._loadScriptLink) {
             return self._loadScriptLink(file);
         }
-        else {
-            let promise = self.createPromise();
-            self.addFileFunction(file, self, "_loadScriptLink", Mrbr_IO_LoadScriptLink)
-                .then(_ => {
-                    self._loadScriptLink = Mrbr_IO_LoadScriptLink.bind(self);
-                    promise.resolve(file);
-                    return self._loadScriptLink(file);
-                })
-            return promise.promise;
-        }
+        const promise = self.createPromise();
+        self.addFileFunction(self, "_loadScriptLink", Mrbr_IO_LoadScriptLink)
+            .then(_ => {
+                self._loadScriptLink = Mrbr_IO_LoadScriptLink.bind(self);
+                promise.resolve(file);
+                return self._loadScriptLink(file);
+            })
+        return promise.promise;
+
     }
+
+    /**
+     * Loads create css element on demand and adds css element
+     * @date 22/08/2022 - 21:51:09
+     *
+     * @param {Mrbr_IO_File} file
+     * @returns {Promise<any>}
+     */
     loadCssElement(file: Mrbr_IO_File): Promise<any> {
         const self = this;
-        return self._loadCssLink ? self._loadCssLink(file) : self.addFileFunction(file, self, "_loadCssElement", Mrbr_IO_LoadCssElement);
+        return self._loadCssElement ? self._loadCssElement(file) : self.addFileFunction(self, "_loadCssElement", Mrbr_IO_LoadCssElement);
     }
+
+    /**
+     * Loads create css element link on demand and adds link to dom
+     * @date 22/08/2022 - 21:52:12
+     *
+     * @param {Mrbr_IO_File} file
+     * @returns {Promise<any>}
+     */
     loadCssLink(file: Mrbr_IO_File): Promise<any> {
 
         const self = this;
         if (self._loadCssLink) {
             return self._loadCssLink(file);
         }
-        else {
-            let promise = self.createPromise();
-            self.addFileFunction(file, self, "_loadCssLink", Mrbr_IO_LoadCssLink)
-                .then(_ => {
-                    self._loadCssLink = Mrbr_IO_LoadCssLink.bind(self);
-                    promise.resolve(file);
-                    return self._loadCssLink(file);
-                })
-            return promise.promise;
-        }
+        const promise = self.createPromise();
+        self.addFileFunction(self, "_loadCssLink", Mrbr_IO_LoadCssLink)
+            .then(_ => {
+                self._loadCssLink = Mrbr_IO_LoadCssLink.bind(self);
+                promise.resolve(file);
+                return self._loadCssLink(file);
+            })
+        return promise.promise;
     }
-    loadHtml() { }
-    loadOther() { }
+
+    /**
+     * Loads load html functionality on demand
+     * Not implemented yet 
+     * @date 22/08/2022 - 21:53:06
+     */
+    loadHtml() { throw new Error("Load HTML not implemented"); }
+
+    /**
+     * Loads load other file type functionality on demand
+     * Not implemented yet
+     * @date 22/08/2022 - 21:53:49
+     */
+    loadOther() { throw new Error("Load other file type not implemented"); }
+
+    /**
+     * Loads a function on demand
+     * @date 22/08/2022 - 21:55:16
+     *
+     * @param {*} target
+     * @param {string} targetFunctionName
+     * @param {*} functionToLoad
+     * @returns {Promise<any>}
+     */
     addFunction(target: any, targetFunctionName: string, functionToLoad: any): Promise<any> {
         const self = this;
         if (target[targetFunctionName]) { return Promise.resolve(target[targetFunctionName]); }
@@ -421,57 +837,78 @@ export class MrbrBase extends EventTarget {
             target[targetFunctionName] = functionToLoad;
             return Promise.resolve(functionToLoad);
         }
-        let promise = self.createPromise()
-        let manifest = Mrbr_IO_File.component(functionToLoad);
-        console.log("addFunction: start")
-        self.loadManifest(manifest)
+        const promise = self.createPromise();
+        self.loadManifest(Mrbr_IO_File.component(functionToLoad))
             .then(result => {
-                console.log("addFunction: then")
                 promise.resolve(target[targetFunctionName])
             })
             .catch(err => promise.reject(err));
         return promise.promise;
     }
-    addFileFunction(file: Mrbr_IO_File, target: any, targetFunctionName: string, functionToLoad: any): Promise<any> {
-        const self = this;
-        let promise = self.createPromise();
+
+    /**
+     * On demand loading FileType functionality loading
+     * @date 22/08/2022 - 21:56:50
+     *
+     * @param {Mrbr_IO_File} file
+     * @param {*} target
+     * @param {string} targetFunctionName
+     * @param {*} functionToLoad
+     * @returns {Promise<any>}
+     */
+    addFileFunction(target: any, targetFunctionName: string, functionToLoad: any): Promise<any> {
+        const self = this,
+            promise = self.createPromise();
         self.addFunction(target, targetFunctionName, functionToLoad)
             .then(fn => {
-                //console.log("addedFunction: ", targetFunctionName)
                 promise.resolve(fn)
             })
             .catch(err => promise.reject(err))
         return promise.promise;
     }
+
+    /**
+     * Event Names for onReady
+     * @date 22/08/2022 - 21:59:41
+     *
+     * @static
+     * @type {{ DOMContentLoaded: string; load: string; readyStateChange: string; }}
+     */
     static eventNames = {
         DOMContentLoaded: "DOMContentLoaded",
         load: "load",
         readyStateChange: "readyStateChange"
     }
+
+    /**
+     * Document states for onReady
+     * @date 22/08/2022 - 22:00:27
+     *
+     * @static
+     * @type {{ complete: string; }}
+     */
     static documentStates = {
         complete: "complete"
     }
-    static readyStates = {
-        complete: "complete"
-    }
+
     /**
      * When run in the Browser provides an onReady function.
-     * Once Assembly.initialised is resolved events are set for when browser DOM is "ready"
-     * @returns {Promise} DOM is "ready"
+     * Once MrbrBase.initialised is resolved events are set for when browser DOM is ready
+     * @returns {Promise} DOM is ready
      */
-    onReady(config: any) {
-        const readyStateChange_Handler = readyStateChange;
-        let self = this,
-            fnResolve: Function,
+    onReady() {
+        let fnResolve: Function;
+        const readyStateChange_Handler = readyStateChange,
+            self = this,
             self_constructor = self.constructor,
             doc = document,
-            win = window;
-        const eventNames = (self_constructor as typeof MrbrBase).eventNames;
-        const fnReady = () => {
-            [doc, win].forEach(hostObject => [eventNames.DOMContentLoaded, eventNames.load].forEach(eventName => hostObject.removeEventListener(eventName, fnReady)));
-            doc.removeEventListener(eventNames.readyStateChange, readyStateChange_Handler)
-            fnResolve(self)
-        }
+            win = window,
+            eventNames = (self_constructor as typeof MrbrBase).eventNames,
+            fnReady = () => {
+                [doc, win].forEach(hostObject => [eventNames.DOMContentLoaded, eventNames.load].forEach(eventName => hostObject.removeEventListener(eventName, fnReady)));
+                doc.removeEventListener(eventNames.readyStateChange, readyStateChange_Handler)
+                fnResolve(self)
+            }
         function readyStateChange() {
             if (doc.readyState === (self_constructor as typeof MrbrBase).documentStates.complete) {
                 doc.removeEventListener(eventNames.readyStateChange, readyStateChange_Handler)
@@ -492,4 +929,11 @@ export class MrbrBase extends EventTarget {
         })
     }
 }
-var mrbr: MrbrBase = new MrbrBase({});
+
+/**
+ * Create global MrbrBase instance
+ * @date 22/08/2022 - 22:03:23
+ *
+ * @type {MrbrBase}
+ */
+var mrbr: MrbrBase = new MrbrBase();
