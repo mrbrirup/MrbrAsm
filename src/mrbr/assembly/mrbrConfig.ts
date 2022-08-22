@@ -1,3 +1,8 @@
+/*
+The MIT License (MIT)
+Copyright © 2022 mrbrirup
+https://github.com/mrbrirup/MrbrAsm/blob/add-license-1/LICENSE
+*/
 /**
  * Configuration file for MrbrBase
  * @date 22/08/2022 - 22:07:42
