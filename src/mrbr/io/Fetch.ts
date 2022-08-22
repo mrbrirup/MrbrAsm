@@ -1,27 +1,58 @@
+/*
+The MIT License (MIT)
+Copyright © 2022 mrbrirup
+https://github.com/mrbrirup/MrbrAsm/blob/main/LICENSE
+*/
 import { Mrbr_IO_FetchProgress } from "./FetchProgress";
 
+/**
+ * Provides Fetch functionlity with Progress Events
+ * @date 22/08/2022 - 22:49:00
+ *
+ * @export
+ * @class Mrbr_IO_Fetch
+ * @typedef {Mrbr_IO_Fetch}
+ * @extends {EventTarget}
+ */
 export class Mrbr_IO_Fetch extends EventTarget {
-    static emptyString: string = "";
-    static loadProgressEvent: string = "fetch_loadProgress";
-    static messageEvent: string = "fetch_message";
-    static contentEncodingHeaderName: string = "content-encoding";
-    static contentLengthHeaderName: string = "content-length";
-    static customFileSizeHeaderName: string = "x-file-size";
-    static cancelRequestRejectMessage: string = `Cancel requested before server response.`;
-    static readableStreamNotSupportedMessage: string = `ReadableStream not supported in browser`;
-    static cancellingDownloadRequestMessage: string = "Cancel download requested";
-    static cancellingDownloadMessage: string = "Cancelling current download";
-    static cancellingReadMessage: string = "Canceling read";
+    private static emptyString: string = "";
+    private static contentEncodingHeaderName: string = "content-encoding";
+    private static contentLengthHeaderName: string = "content-length";
+    private static customFileSizeHeaderName: string = "x-file-size";
+    private static cancelRequestRejectMessage: string = `Cancel requested before server response.`;
+    private static readableStreamNotSupportedMessage: string = `ReadableStream not supported in browser`;
+    private static cancellingDownloadRequestMessage: string = "Cancel download requested";
+    private static cancellingDownloadMessage: string = "Cancelling current download";
+    private static cancellingReadMessage: string = "Canceling read";
+    public static loadProgressEvent: string = "fetch_loadProgress";
+    public static messageEvent: string = "fetch_message";
+    private cancelRequested: boolean = false;
+    private reader: ReadableStreamDefaultReader<Uint8Array>;
+    private contentSizeAvailable: boolean = false;
+    private fetchResponse: Promise<any>;
+    private reject: Function;
+    private resolve: Function;
+
+    /**
+     * Creates an instance of Mrbr_IO_Fetch.
+     * @date 22/08/2022 - 22:48:50
+     *
+     * @constructor
+     */
     constructor() {
         super();
     }
-    cancelRequested: boolean = false;
-    reader: ReadableStreamDefaultReader<Uint8Array>;
-    contentSizeAvailable: boolean = false;
-    fetchResponse: Promise<any>;
-    reject: Function;
-    resolve: Function;
-    fetch(input: any, config: any): Promise<any> {
+
+    /**
+     * Fetch a file
+     * @date 22/08/2022 - 22:49:49
+     *
+     * @public
+     * @param {*} input Url or Fetch Request
+     * @param {*} config optional configuration for Fetch
+     * @returns {Promise<any>}
+     */
+    public fetch(input: any, config?: any): Promise<any> {
         const self = this,
             request = (input instanceof Request) ? input : new Request(input),
             mrbrIOFetch = Mrbr_IO_Fetch,
@@ -43,7 +74,6 @@ export class Mrbr_IO_Fetch extends EventTarget {
                     // HTTP error server response
                     throw Error(`Server response ${response.status} ${response.statusText}`);
                 }
-
 
                 // to access headers, server must send CORS header "Access-Control-Expose-Headers: content-encoding, content-length x-file-size"
                 // server must send custom x-file-size header if gzip or other content-encoding is used
@@ -98,7 +128,14 @@ export class Mrbr_IO_Fetch extends EventTarget {
     }
 
 
-    cancel(): Promise<any> {
+    /**
+     * Cancel Fetch request
+     * @date 22/08/2022 - 22:50:59
+     *
+     * @public
+     * @returns {Promise<any>}
+     */
+    public cancel(): Promise<any> {
         const self = this,
             mrbrIOFetch = Mrbr_IO_Fetch,
             customEvent = CustomEvent;;

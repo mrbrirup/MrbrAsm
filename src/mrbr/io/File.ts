@@ -1,3 +1,8 @@
+/*
+The MIT License (MIT)
+Copyright © 2022 mrbrirup
+https://github.com/mrbrirup/MrbrAsm/blob/main/LICENSE
+*/
 import { MrbrBase } from "../system/MrbrBase";//exclude
 import { Mrbr_IO_FileType } from "./FileType";
 import { Mrbr_IO_Path } from "./Path";
