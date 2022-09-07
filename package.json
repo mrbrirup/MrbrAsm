@@ -1,9 +1,9 @@
 {
   "name": "mrbr-assembly",
-  "version": "0.0.20",
+  "version": "0.0.29",
   "description": "MrbrAssembly",
-  "main": "./_dist/mrbr/assembly/mrbr.js",
-  "types": "./types/",
+  "main": ".dist/mrbr/system/mrbrbase.js",
+  "types": "dist/types",
   "author": "",
   "scripts": {
     "build": "tsc --build",
@@ -23,7 +23,8 @@
     "registry": "http://localhost:4873"
   },
   "files": [
-    "./_dist/mrbr"
+    "dist",
+    "utils"
   ],
   "dependencies": {
     "yargs": "^17.5.1"

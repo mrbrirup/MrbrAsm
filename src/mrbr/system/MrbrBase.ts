@@ -694,8 +694,13 @@ export class MrbrBase extends EventTarget {
     loadComponent(file: Mrbr_IO_File): Promise<any> {
         const self = this,
             ns = MrbrBase.Namespace;
-        if (!ns.isNamespace(file.entry)) {
-            return Promise.resolve(file);
+            if (!ns.isNamespace(file.entry)) {
+                //console.log(file.entry);
+                return Promise.resolve(file);
+            }        
+            if(file.entry[ns.NAME].toLocaleLowerCase().includes("mrbrbase")){
+            //console.log(file.entry[ns.NAME] )
+            debugger
         }
         const mrbrFetch = new Mrbr_IO_Fetch(),
             promise = self.createPromise(),

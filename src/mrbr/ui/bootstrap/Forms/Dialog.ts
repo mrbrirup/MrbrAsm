@@ -12,9 +12,7 @@ import { Mrbr_UI_Bootstrap_Forms_Dialog$States } from "./Dialog$States";
 import { Mrbr_UI_Controls_Handles_Drag } from "../../controls/handles/drag";
 import { Mrbr_UI_Controls_Handles_Resize } from "../../controls/handles/resize";
 
-type MrbrDialogParameters = {
-    host: HTMLElement;
-}
+type AnyOp = (...args) => void;
 export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     public static TITLEBAR_CONTROL_NAME: string = "titlebar";
     public static TITLE_TEXT_CONTROL_NAME: string = "titleText";
@@ -24,7 +22,6 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     public static CONTENT_CONTAINER_CONTROL_NAME: string = "contentContainer";
     public static FOOTER_CONTROL_NAME: string = "footer";
     public static DIALOG_FULLSCREEN_EVENT_NAME: string = "footer";
-
     protected _rootElementConfig(): Mrbr_UI_Controls_ControlConfig {
         const self = this,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig;
@@ -47,10 +44,14 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
         return new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME, "div", {
             classes: ["mrbr-dialog-handle-drag", "container-fluid", "bg-dark", "d-flex", "user-select-none", "pe-0"],
             styles: { height: "3rem" },
+            lightTheme:"bg-light",
+            darkTheme:"bg-dark",
             children: [
                 new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.TITLE_TEXT_CONTROL_NAME, "span",
                     {
                         classes: ["row", "justify-content-left", "align-self-center", "text-light", "py-1", "pe-1", "ps-3", "flex-fill"],
+                        lightTheme:"text-dark",
+                        darkTheme: "text-light",
                         styles: { "pointerEvents": "none" },
                         properties: { textContent: self.title }
                     })
@@ -168,41 +169,52 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
             self.dialogState = Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal;
         }
     }
-    maximiseDialog(event: Mrbr_UI_Bootstrap_Forms_ControlBox$Event) {
-
+    private defaultMaximise(event: Mrbr_UI_Bootstrap_Forms_ControlBox$Event) {
         const self = this;
-        const
-            endTime = Date.now() + 1000;
-        self.setParentBounds();
+        self.newBounds.setBounds(self._parentBounds.x, self._parentBounds.y, self._parentBounds.width - self._parentBounds.x, self._parentBounds.height - self._parentBounds.y);
+        self._moveDialog = self._resizeDialog = true;
+        self.drawDialog();
+    }
+    private defaultRestoreFromMaximised(event: Mrbr_UI_Bootstrap_Forms_ControlBox$Event) {
+        const self = this;
+        self.dialogState = Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal;
+        (<Mrbr_UI_Bootstrap_Forms_ControlBox>self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.CONTROL_BOX_CONTROL_NAME]).dialogState = self.dialogState;
+        debugger
+        self.newBounds.setFromBounds(self._lastBounds);
+        self._moveDialog = true;
+        self._resizeDialog = true;
+        self.drawDialog();
+    }
+    private _customMaximise: AnyOp;
+    public get customMaximise(): AnyOp {
+        return this._customMaximise;
+    }
+    public set customMaximise(value: AnyOp) {
+        const self = this;
+        self._customMaximise = value.bind(self);
+    }
+    maximiseDialog(event: Mrbr_UI_Bootstrap_Forms_ControlBox$Event) {
+        const self = this;
+        var a = 1, b = a / (a - a);
+        debugger;
         if (self.dialogState !== Mrbr_UI_Bootstrap_Forms_Dialog$States.Maximised) {
             self.dialogState = Mrbr_UI_Bootstrap_Forms_Dialog$States.Maximised;
             (<Mrbr_UI_Bootstrap_Forms_ControlBox>self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.CONTROL_BOX_CONTROL_NAME]).dialogState = self.dialogState;
             self._lastBounds.setBounds(self.bounds.x, self.bounds.y, self.bounds.width, self.bounds.height);
-            const runAnimation = () => {
-                if (Date.now() < endTime) {
-                    self.resizeAnimation((self._parentBounds.x - self.newBounds.x), (self._parentBounds.y - self.newBounds.y), (self._parentBounds.width - self.newBounds.width - self.newBounds.x), (self._parentBounds.height - self.newBounds.height - self.newBounds.y));
-                    requestAnimationFrame(runAnimation);
-                    return;
-                }
-                self.newBounds.setBounds(self._parentBounds.x, self._parentBounds.y, self._parentBounds.width - self._parentBounds.x, self._parentBounds.height - self._parentBounds.y);
-                self._moveDialog = self._resizeDialog = true;
-                self.drawDialog();
-            }
-            requestAnimationFrame(runAnimation);
-            return;
+            self.customMaximise ? self.customMaximise(event) : self.defaultMaximise(event);
         }
-        const runAnimation = () => {
-            if (self.dialogState !== Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal) { self.dialogState = Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal; }
-            if (Date.now() < endTime) {
-                self.resizeAnimation((self._lastBounds.x - self.bounds.x), (self._lastBounds.y - self.bounds.y), self._lastBounds.width - self.newBounds.width, self._lastBounds.height - self.newBounds.height);
-                requestAnimationFrame(runAnimation);
-                return;
-            }
-            self.newBounds.setBounds(self._lastBounds.x, self._lastBounds.y, self._lastBounds.width, self._lastBounds.height); self._moveDialog = true;
-            self._moveDialog = self._resizeDialog = true;
-            self.drawDialog();
+        else if (self.dialogState === Mrbr_UI_Bootstrap_Forms_Dialog$States.Maximised) {
+            // debugger
+            // self.dialogState = Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal;
+            // (<Mrbr_UI_Bootstrap_Forms_ControlBox>self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.CONTROL_BOX_CONTROL_NAME]).dialogState = self.dialogState;
+            // self.bounds.setFromBounds(self._lastBounds);
+            // self._moveDialog = true;
+            // self._resizeDialog = true;
+            // self.drawDialog();
+            //self._lastBounds.setBounds(self.bounds.x, self.bounds.y, self.bounds.width, self.bounds.height);
+            //self.customMaximise ? self.customMaximise(event) : self.defaultMaximise(event);
+            self.defaultRestoreFromMaximised(event);
         }
-        requestAnimationFrame(runAnimation);
     }
     createRootElement() {
         const self = this;

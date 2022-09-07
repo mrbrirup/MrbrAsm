@@ -7,8 +7,7 @@ class MrbrTranspileFile {
     assemblyFileName;
     static sourceFolder;
     static destinationFolder;
-    constructor(longSourceFileName, longDestinationFileName, matchedFiles, resolvedSourceFolder, resolvedDestinationFolder,assemblyFileName) {
-        //console.log(resolvedSourceFolder, resolvedDestinationFolder);
+    constructor(longSourceFileName, longDestinationFileName, matchedFiles, resolvedSourceFolder, resolvedDestinationFolder, assemblyFileName) {
         this.longSourceFileName = longSourceFileName;
         this.longDestinationFileName = longDestinationFileName;
         this.matchedFiles = matchedFiles;

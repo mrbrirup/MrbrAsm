@@ -5,7 +5,9 @@ type Mrbr_UI_Controls_ControlConfig$OptionalParameters = {
     data?: object;
     properties?: object;
     styles?: object;
-    children?: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[]
+    children?: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[],
+    lightTheme?: Array<string> | string;
+    darkTheme?: Array<string> | string;
 }
 export class Mrbr_UI_Controls_ControlConfig {
     private _elementName: string;
@@ -14,9 +16,11 @@ export class Mrbr_UI_Controls_ControlConfig {
     private _classes: Array<string> | string;
     private _attributes: object;
     private _data: object;
-    private _children:  (Mrbr_UI_Controls_ControlConfig | HTMLElement)[];
+    private _children: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[];
     private _properties: object;
     private _styles: object;
+    private _darkTheme: Array<string> = [];
+    private _lightTheme: Array<string> = [];
     constructor(elementName: string, elementType: string, optionalParameters?: Mrbr_UI_Controls_ControlConfig$OptionalParameters) {
         const self = this;
         self.elementName = elementName;
@@ -27,8 +31,15 @@ export class Mrbr_UI_Controls_ControlConfig {
         self.data = optionalParameters?.data;
         self.properties = optionalParameters?.properties;
         self.styles = optionalParameters?.styles
-        self.children = optionalParameters?.children
+        self.children = optionalParameters?.children;
+        self.lightTheme = optionalParameters?.lightTheme;
+        self.darkTheme = optionalParameters?.darkTheme;
+
     }
+    public get darkTheme(): Array<string> { return this._darkTheme; }
+    public set darkTheme(value: Array<string> | string) { let _value = value || ""; this._darkTheme = Array.isArray(_value) ? _value : this._darkTheme = _value.split(" ").map(_val => _val.trim()); }
+    public get lightTheme(): Array<string> { return this._lightTheme; }
+    public set lightTheme(value: Array<string> | string) { let _value = value || ""; this._lightTheme = Array.isArray(_value) ? _value : this._lightTheme = _value.split(" ").map(_val => _val.trim()); }
     public get styles(): object {
         return this._styles;
     }
@@ -77,10 +88,10 @@ export class Mrbr_UI_Controls_ControlConfig {
     public set data(value: object) {
         this._data = value;
     }
-    public get children():  (Mrbr_UI_Controls_ControlConfig | HTMLElement)[] {
+    public get children(): (Mrbr_UI_Controls_ControlConfig | HTMLElement)[] {
         return this._children;
     }
-    public set children(value:  (Mrbr_UI_Controls_ControlConfig | HTMLElement)[]) {
+    public set children(value: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[]) {
         this._children = value;
     }
 }

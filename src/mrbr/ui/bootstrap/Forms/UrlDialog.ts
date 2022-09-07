@@ -86,11 +86,11 @@ export class Mrbr_UI_Bootstrap_Forms_UrlDialog extends Mrbr_UI_Bootstrap_Forms_D
         const self = this;
         if (self.titleBar !== true) { return; }
         let titleBarConfig = self.titleBarConfig;
-        Object.assign(titleBarConfig.styles, { backgroundColor: "red" })
-        const index = titleBarConfig.classes.indexOf("bg-dark");
-        if (index > -1) { 
-            (titleBarConfig.classes as Array<string>).splice(index, 1);
-        }
+        //Object.assign(titleBarConfig.styles, { backgroundColor: "red" })
+        // const index = titleBarConfig.classes.indexOf("bg-dark");
+        // if (index > -1) { 
+        //     (titleBarConfig.classes as Array<string>).splice(index, 1);
+        // }
             self.createElement(titleBarConfig)
         self.elements[Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME].prepend(self.elements[Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME]);
     }

@@ -1,14 +1,14 @@
-const fs = require("fs");
-const path = require("path");
-const { exit, getMaxListeners } = require("process");
-const { MrbrTranspileFile } = require("./MrbrTranspileFile");
-const args = require("yargs").argv;
-const typescriptFileExtension = ".ts";
-const UglifyJS = require("uglify-js");
-const esprima = require('esprima'),
+const
+    fs = require("fs"),
+    path = require("path"),
+    { exit } = require("process"),
+    { MrbrTranspileFile } = require("./MrbrTranspileFile"),
+    args = require("yargs").argv,
+    typescriptFileExtension = ".ts",
+    UglifyJS = require("uglify-js"),
+    esprima = require('esprima'),
     estraverse = require("estraverse"),
     escodegen = require("escodegen");
-const { match } = require("assert");
 
 /*
     Get Paths
@@ -109,6 +109,8 @@ function createMrbrBaseFile(sourceFileName) {
                 ] : [])
             ],
             code = generateCode(outputTextArray.join("\r\n"), importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
+            let assemblyPath = path.dirname(mrbrJSRootFile);
+            !fs.existsSync(assemblyPath) && fs.mkdirSync(assemblyPath, { recursive: true });
         (sourceFileName === mrbrBaseSourceFile) ? fs.writeFileSync(mrbrJSRootFile, code + "\r\n") : fs.appendFileSync(mrbrJSRootFile, "\r\n" + code + "\r\n");
         //console.log(importedReferences);
         importedReferences.forEach(importedReference => {
@@ -139,6 +141,8 @@ function createMrbrBaseFile(sourceFileName) {
 
 function createMrbrAssemblyFile(sourceFile) {
     if (writtenFiles.indexOf(sourceFile.shortSourceFileName) >= 0) { return; }
+    console.log("sourceFile.longDestinationFileName: ", sourceFile.longDestinationFileName)
+    console.log("sourceFile.shortSourceFileName: ", sourceFile.shortSourceFileName)
     writtenFiles.push(sourceFile.shortSourceFileName);
     const importedReferences = [],
         importReferenceRegex = /(^(?<import>import)\s*\{*\s*(?<assembly>\S*?)\s*\}*\s*from\s*(?<fileName>'.*?'|".*?")[\s;]*?(\s*?|(\s*\/{2}\s*?(?<exclude>exclude)))$)/gm,
@@ -187,9 +191,9 @@ function createMrbrAssemblyFile(sourceFile) {
             throw new Error(`No Class or Function definition`)
         }
     }
-    console.log(exportName);
     if (exportName) {
         let manifest = []
+        console.log(exportName, destinationFileName);
 
         if (importedReferences?.length > 0) {
             manifest = manifest.concat(...[importedReferences.filter(entry => entry.exclude === false).map(include => (`${" ".repeat(8)}miofc(${include.assembly.replace(/_/g, ".")})`))])

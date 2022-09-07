@@ -11,5 +11,6 @@ export class Mrbr_System_Events_EventHandler {
     options?: any;
     handler?: EventListenerOrEventListenerObject;
     remove?: () => any;
-    context?: any
+    context?: any;
+    count?: number = 0; 
 };

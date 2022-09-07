@@ -5,9 +5,7 @@ let cfg = {
 function runRes(result) {
     console.log("runRes")
     try {
-        console.log("Mrbr.Tests.Application: ", Mrbr.Tests.Application)
         let container = new Mrbr.Tests.Application()
-        console.log(container);
     } catch (error) {
         console.log(error)
     }
