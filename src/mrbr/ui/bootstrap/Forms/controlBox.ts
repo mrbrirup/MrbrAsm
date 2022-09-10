@@ -6,6 +6,7 @@ import { Mrbr_UI_Bootstrap_Forms_ControlBox$Event } from "./controlBox$Event";
 import { Mrbr_UI_Bootstrap_Forms_ControlBox$Events } from "./controlBox$Events";
 import { Mrbr_UI_Bootstrap_Forms_Dialog$States } from "./Dialog$States";
 import { MrbrBase } from "../../../system/MrbrBase";
+import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 type ControlBoxControl = {
     name: string,
     src: string,
@@ -36,9 +37,10 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
     protected _controlBoxConfig(): Mrbr_UI_Controls_ControlConfig {
         const self = this,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-        return new ctrlCfg(this.rootElementName, "div", {
-            classes: ["btn-group p-1"]
-        });
+        return new ctrlCfg(this.rootElementName, "div",
+            new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                .Classes(["btn-group p-1"])
+        );
     }
 
     protected _controlButtonConfig(): Mrbr_UI_Controls_ControlConfig {
@@ -46,11 +48,10 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
             ctrlCfg = Mrbr_UI_Controls_ControlConfig;
 
         return new ctrlCfg("", "button",
-            {
-                classes: ["btn", "btn-dark", "px-1"],
-                attributes: { type: "button" },
-            });
-
+            new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                .Classes(["btn", "btn-dark", "px-1"])
+                .Attributes({ type: "button" })
+        );
     }
 
 
@@ -59,10 +60,10 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
             ctrlCfg = Mrbr_UI_Controls_ControlConfig;
 
         return new ctrlCfg("", "img",
-            {
-                classes: ["w-100", "h-100", "mrbr-invert-color", "p-1"],
-                styles: { "pointerEvents": "none" }
-            });
+            new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                .Classes(["w-100", "h-100", "mrbr-invert-color", "p-1"])
+                .Styles({ "pointerEvents": "none" })
+        );
     }
 
 
@@ -111,7 +112,7 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
         let eventTypeName = (<HTMLElement>(mouseEvent.target)).dataset.eventType || (<HTMLElement>(mouseEvent.currentTarget)).dataset.eventType;
         if (!eventTypeName) { return; }
         mouseEvent.stopImmediatePropagation();
-        let eventType = Mrbr_UI_Bootstrap_Forms_ControlBox$Events[MrbrBase.Namespace.KEY_ARRAY].find(key => eventTypeName === key);''
+        let eventType = Mrbr_UI_Bootstrap_Forms_ControlBox$Events[MrbrBase.Namespace.KEY_ARRAY].find(key => eventTypeName === key); ''
         let event = new Mrbr_UI_Bootstrap_Forms_ControlBox$Event(Mrbr_UI_Bootstrap_Forms_ControlBox.CONTROL_BOX_CLICK_EVENT_NAME, eventType);
         this.dispatchEvent(event);
     }

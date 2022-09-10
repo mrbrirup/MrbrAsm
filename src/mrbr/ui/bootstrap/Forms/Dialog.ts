@@ -11,6 +11,7 @@ import { Mrbr_UI_Bootstrap_Forms_Dialog$Handles } from "./Dialog$Handles";
 import { Mrbr_UI_Bootstrap_Forms_Dialog$States } from "./Dialog$States";
 import { Mrbr_UI_Controls_Handles_Drag } from "../../controls/handles/drag";
 import { Mrbr_UI_Controls_Handles_Resize } from "../../controls/handles/resize";
+import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 
 type AnyOp = (...args) => void;
 export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
@@ -22,49 +23,69 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     public static CONTENT_CONTAINER_CONTROL_NAME: string = "contentContainer";
     public static FOOTER_CONTROL_NAME: string = "footer";
     public static DIALOG_FULLSCREEN_EVENT_NAME: string = "footer";
+    // public static DIALOG_ROOT_ELEMENT: Mrbr_UI_Controls_ControlConfig$OptionalParameters =
+    //     new Mrbr_UI_Controls_ControlConfig$OptionalParameters()
+    //         .Classes(["border", "shadow", "d-flex", "flex-column", "border-1", "border-dark", "d-none"])
+    //         .Styles({ transform: `translate(${100}px,${100}px)`, position: "absolute", top: "0px", left: "0px", width: `${640}px`, height: `${480}px` })
+    //         .Children([
+    //             new Mrbr_UI_Controls_ControlConfig(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME, "div",
+    //                 new Mrbr_UI_Controls_ControlConfig$OptionalParameters()
+    //                     .Classes(["container-fluid", "h-100", "p-1", "bg-light", "d-flex", "flex-column"])
+    //                     .Styles({ "minHeight": `${640 / 2}px` })
+    //             )
+    //         ])
     protected _rootElementConfig(): Mrbr_UI_Controls_ControlConfig {
         const self = this,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig;
         return new ctrlCfg(this.rootElementName, "div",
-            {
-                classes: ["border", "shadow", "d-flex", "flex-column", "border-1", "border-dark", "d-none"],
-                styles: { transform: `translate(${this.bounds.x}px,${this.bounds.y}px)`, position: "absolute", top: "0px", left: "0px", width: `${self.bounds.width}px`, height: `${self.bounds.height}` },
-                children: [
-                    new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME, "div", {
-                        classes: ["container-fluid", "h-100", "p-1", "bg-light", "d-flex", "flex-column"],
-                        styles: { "minHeight": `${this._minBounds.height / 2}px` }
-                    })
-                ]
-            })
+            new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                .Classes(["border", "shadow", "d-flex", "flex-column", "border-1", "border-dark", "d-none"])
+                .Styles({ transform: `translate(${this.bounds.x}px,${this.bounds.y}px)`, position: "absolute", top: "0px", left: "0px", width: `${self.bounds.width}px`, height: `${self.bounds.height}` })
+                .Children([
+                    new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME, "div",
+                        new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                            .Classes(["container-fluid", "h-100", "p-1", "bg-light", "d-flex", "flex-column"])
+                            .Styles({ "minHeight": `${this._minBounds.height / 2}px` })
+                    )
+                ])
+        )
     }
 
     protected _titleBarConfig(): Mrbr_UI_Controls_ControlConfig {
         const self = this,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-        return new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME, "div", {
-            classes: ["mrbr-dialog-handle-drag", "container-fluid", "bg-dark", "d-flex", "user-select-none", "pe-0"],
-            styles: { height: "3rem" },
-            lightTheme:"bg-light",
-            darkTheme:"bg-dark",
-            children: [
-                new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.TITLE_TEXT_CONTROL_NAME, "span",
-                    {
-                        classes: ["row", "justify-content-left", "align-self-center", "text-light", "py-1", "pe-1", "ps-3", "flex-fill"],
-                        lightTheme:"text-dark",
-                        darkTheme: "text-light",
-                        styles: { "pointerEvents": "none" },
-                        properties: { textContent: self.title }
-                    })
-            ]
-        })
+        const retval = new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME, "div",
+            new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                .Classes(["mrbr-dialog-handle-drag", "container-fluid", "bg-dark", "d-flex", "user-select-none", "pe-0"])
+                .Styles({ height: "3rem" })
+                .LightTheme("bg-light")
+                .DarkTheme("bg-dark")
+                .Children([
+                    new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.TITLE_TEXT_CONTROL_NAME, "span",
+                        new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                            .Classes(["row", "justify-content-left", "align-self-center", "text-light", "py-1", "pe-1", "ps-3", "flex-fill"])
+                            .LightTheme("text-dark")
+                            .DarkTheme("text-light")
+                            .Styles({ "pointerEvents": "none" })
+                            .Properties({ textContent: self.title })
+
+                    )
+                ])
+        )
+
+        console.log(retval)
+        return retval;
     }
+
+
     protected _footerConfig(): Mrbr_UI_Controls_ControlConfig {
         const self = this,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-        return new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.FOOTER_CONTROL_NAME, "div", {
-            classes: ["container-fluid", "bg-dark", "d-flex", "p-4"],
-            styles: { height: "3rem" }
-        })
+        return new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.FOOTER_CONTROL_NAME, "div",
+            new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                .Classes(["container-fluid", "bg-dark", "d-flex", "p-4"])
+                .Styles({ height: "3rem" })
+        )
     }
 
     public get footerConfig() {
@@ -106,6 +127,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     protected _resizable: boolean = false;
     constructor(rootElementName: string) {
         super(rootElementName);
+        debugger;
         const self = this;
         if (!self._drawDialog) { self._drawDialog = self.drawDialog.bind(self) }
     }
@@ -303,6 +325,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     }
     initialiseControl() {
         const self = this
+        debugger;
         self.createRootElement();
         self.createTitleBar();
         self.createFooter();

@@ -31,6 +31,7 @@ export class Mrbr_UI_Controls_NavbarWindowManager extends Mrbr_UI_Bootstrap_Navi
         MrbrBase.mrbrInstance.loadManifest([
             Mrbr_IO_File.component(Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu)
         ])
+            .promise
             .then(_ => {
                 //var mrbr = _mrbr;
                 let id = Mrbr_UI_Controls_NavbarWindowManager.createId("mainMenu");

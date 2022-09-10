@@ -1,13 +1,11 @@
+import { MrbrBase } from "../system/MrbrBase";
 import { Mrbr_IO_File } from "./File";
+import { Mrbr_IO_FilePromise } from "./FilePromise";
 
-export function Mrbr_IO_LoadCssLink(file: Mrbr_IO_File): Promise<any> {
-    let resolveResult: Function,
-        rejectResult: Function;
+export function Mrbr_IO_LoadCssLink(file: Mrbr_IO_File): Mrbr_IO_FilePromise {
     let link = document.createElement('link'),
-        loadResultPromise = new Promise((resolve, reject) => {
-            resolveResult = resolve;
-            rejectResult = reject;
-        });
+        instance = MrbrBase.mrbrInstance,
+        loadResultPromise = Mrbr_IO_FilePromise.CreateFilePromise("function:Mrbr_IO_LoadScript", file);
     link.rel = 'stylesheet';
     link.type = 'text/css';
 
@@ -20,16 +18,16 @@ export function Mrbr_IO_LoadCssLink(file: Mrbr_IO_File): Promise<any> {
                 link.setAttribute(attributeName, file.attributes[attributeName])
             })
     }
-    if(!link.id) { link.id = Mrbr_IO_File.createId("link")}
+    if (!link.id) { link.id = Mrbr_IO_File.createId("link") }
     function scriptLoad_Handler() {
         link.removeEventListener("load", scriptLoad_Handler);
         link.removeEventListener("error", scriptError_Handler);
-        setTimeout(() => { resolveResult(file); }, 0);
+        setTimeout(() => { loadResultPromise.resolve(); }, 0);
     }
     function scriptError_Handler() {
         link.removeEventListener("load", scriptLoad_Handler);
         link.removeEventListener("error", scriptError_Handler);
-        rejectResult(file);
+        loadResultPromise.reject(file);
     }
 
     link.addEventListener("load", scriptLoad_Handler, { once: true })

@@ -1,4 +1,5 @@
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
+import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 import { Mrbr_UI_Bootstrap_Forms_Dialog } from "./Dialog";
 type NavigationButtons = {
     name: string,
@@ -18,16 +19,15 @@ export class Mrbr_UI_Bootstrap_Forms_UrlDialog extends Mrbr_UI_Bootstrap_Forms_D
         const self = this,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig;
         return new ctrlCfg(Mrbr_UI_Bootstrap_Forms_UrlDialog.BROWSER_ELEMENT_NAME, "div",
-            {
-                classes: "h-100 w-100",
-                children: [
-                    new ctrlCfg(Mrbr_UI_Bootstrap_Forms_UrlDialog.IFRAME_ELEMENT_NAME, "iframe", {
-                        classes: ["w-100 h-100"]
-                    })
-                ]
-            });
+            new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                .Classes("h-100 w-100")
+                .Children([
+                    new ctrlCfg(Mrbr_UI_Bootstrap_Forms_UrlDialog.IFRAME_ELEMENT_NAME, "iframe",
+                        new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                            .Classes(["w-100 h-100"]))
+                ])
+        )
     }
-
     private _url: string = "";
     public get url(): string {
         return this._url;
@@ -91,7 +91,7 @@ export class Mrbr_UI_Bootstrap_Forms_UrlDialog extends Mrbr_UI_Bootstrap_Forms_D
         // if (index > -1) { 
         //     (titleBarConfig.classes as Array<string>).splice(index, 1);
         // }
-            self.createElement(titleBarConfig)
+        self.createElement(titleBarConfig)
         self.elements[Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME].prepend(self.elements[Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME]);
     }
 }

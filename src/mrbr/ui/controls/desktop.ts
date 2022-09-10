@@ -6,6 +6,7 @@ import { Mrbr_UI_Bootstrap_Utilities_Sizing$Height } from "../bootstrap/utilitie
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Width } from "../bootstrap/utilities/sizing$width";
 import { Mrbr_UI_Controls_NavbarWindowManager } from "./navbarWindowManager";
 import { Mrbr_UI_Bootstrap_Containers_Container } from "../bootstrap/containers/container";
+import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "./ControlConfigOptionalParameters";
 
 export class Mrbr_UI_Controls_Desktop extends Mrbr_UI_Bootstrap_Containers_Container {
     navbar: Mrbr_UI_Controls_NavbarWindowManager;
@@ -17,11 +18,12 @@ export class Mrbr_UI_Controls_Desktop extends Mrbr_UI_Bootstrap_Containers_Conta
         self.height = Mrbr_UI_Bootstrap_Utilities_Sizing$Height.viewHeight100;
         self.width = Mrbr_UI_Bootstrap_Utilities_Sizing$Width.viewWidth100;
         self.classes(self.rootElement, classActions.Add, ["container-fluid", "px-0", "d-flex", "flex-column"]);
-        self.createElement(new Mrbr_UI_Controls_ControlConfig("windowContainer", "div", {
-            classes: ["h-100", "w-100", "overflow-hidden"],
-            styles: { position: "relative" },
-            attributes:{id :Mrbr_UI_Controls_Control.createId("windowContainer")}
-        }))
+        self.createElement(new Mrbr_UI_Controls_ControlConfig("windowContainer", "div",
+            new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                .Classes(["h-100", "w-100", "overflow-hidden"])
+                .Styles({ position: "relative" })
+                .Attributes({ id: Mrbr_UI_Controls_Control.createId("windowContainer") })
+        ))
         let windowContainer = self.windowContainer;
         self.navbar = new Mrbr_UI_Controls_NavbarWindowManager(Mrbr_UI_Controls_Control.createId("navbar"))
         self.rootElement.appendChild(windowContainer)

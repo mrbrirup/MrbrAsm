@@ -34,6 +34,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget {
         );
     constructor(rootElementName: string) {
         super();
+        debugger
         const self = this;
         self.rootElementName = rootElementName;
 

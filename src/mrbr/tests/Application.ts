@@ -13,6 +13,7 @@ export class Mrbr_Tests_Application {
         MrbrBase.mrbrInstance.loadManifest([
             Mrbr_IO_File.component(Mrbr_UI_Bootstrap_Forms_UrlDialog)
         ])
+            .promise
             .then(_ => {
                 //console.log("Mrbr_UI_Bootstrap_Forms_Dialog: ", Mrbr_UI_Bootstrap_Forms_UrlDialog)
                 let form = new Mrbr_UI_Bootstrap_Forms_UrlDialog(

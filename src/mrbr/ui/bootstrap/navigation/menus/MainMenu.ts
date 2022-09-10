@@ -1,6 +1,7 @@
 import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../../controls/control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../../controls/ControlConfig";
+import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../../controls/ControlConfigOptionalParameters";
 
 export class Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu extends Mrbr_UI_Controls_Control {
     _backdrop: HTMLElement;
@@ -37,52 +38,47 @@ export class Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu extends Mrbr_UI_Control
         //body.appendChild(text)
         //mainMenu.appendChild(body)
         //self.dataset(button, { bsDismiss: "offcanvas" })
-
-
-
-
         self._menuId = Mrbr_UI_Controls_Control.createId("mainMenu");
         const ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-        self.createElement(new ctrlCfg(rootElementName, "div", {
-            classes: "offcanvas offcanvas-start text-bg-white",
-            attributes: { tabindex: "-1", id: self.menuId, "aria-labelledby": "offcanvasDarkLabel" },
-            children: [
-                new ctrlCfg("header", "h5",
-                    {
-                        classes: "offcanvas-header",
-                        properties: { textContent: "OffCanvas" },
-                        children: [
-                            new ctrlCfg("title", "div", {
-                                classes: "offcanvas-title",
-                                id: "offcanvasDarkLabel"
-                            }),
-                            new ctrlCfg("button", "button", {
-                                classes: "btn-close btn-close-dark",
-                                attributes: { type: "button" },
-                                properties: { ariaLabel: "Close" },
-                                data: { bsDismiss: "offcanvas" }
-                            })
-                        ]
-                    }),
-                new ctrlCfg("body", "div", {
-                    classes: "offcanvas-body",
-                    children: [
-                        new ctrlCfg("text", "p",
-                            {
-                                properties: { innerText: "Place offcanvas content here." }
-                            })
-                    ]
-                })
-            ]
-        }))
+        self.createElement(new ctrlCfg(rootElementName, "div",
+            new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                .Classes("offcanvas offcanvas-start text-bg-white")
+                .Attributes({ tabindex: "-1", id: self.menuId, "aria-labelledby": "offcanvasDarkLabel" })
+                .Children([
+                    new ctrlCfg("header", "h5",
+                        new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                            .Classes("offcanvas-header")
+                            .Properties({ textContent: "OffCanvas" })
+                            .Children([
+                                new ctrlCfg("title", "div",
+                                    new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                                        .Classes("offcanvas-title")
+                                        .ID("offcanvasDarkLabel")
+                                ),
+                                new ctrlCfg("button", "button",
+                                    new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                                        .Classes("btn-close btn-close-dark")
+                                        .Attributes({ type: "button" })
+                                        .Properties({ ariaLabel: "Close" })
+                                        .Data({ bsDismiss: "offcanvas" })
+                                )
+                            ])
+                    ),
+                    new ctrlCfg("body", "div",
+                        new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                            .Classes("offcanvas-body")
+                            .Children([
+                                new ctrlCfg("text", "p",
+                                    new Mrbr_UI_Controls_ControlConfigOptionalParameters()
 
-
+                                        .Properties({ innerText: "Place offcanvas content here." })
+                                )
+                            ])
+                    )
+                ])
+        )
+        )
         document.body.appendChild(self.rootElement);
-
-
-
-
-
     }
     get menuId(): string { return this._menuId }
     set menuId(value: string) { this._menuId = value; }

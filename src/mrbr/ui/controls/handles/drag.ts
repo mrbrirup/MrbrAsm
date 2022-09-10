@@ -3,6 +3,7 @@ import { Mrbr_Geometry_Point2d } from "../../../geometry/point2d";
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { Mrbr_UI_Controls_Control } from "../control";
 import { Mrbr_UI_Controls_ControlConfig } from "../ControlConfig";
+import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../ControlConfigOptionalParameters";
 
 export class Mrbr_UI_Controls_Handles_Drag extends Mrbr_UI_Controls_Control {
     static DRAGGING_EVENT_NAME: string = "dragging";
@@ -59,10 +60,11 @@ export class Mrbr_UI_Controls_Handles_Drag extends Mrbr_UI_Controls_Control {
         if (self._isDragging === true) { return; }
         self._isDragging = true;
         self._dragStart.setPoint(mouseEvent.pageX, mouseEvent.pageY)
-        self.createElement(new Mrbr_UI_Controls_ControlConfig("contentContainer_overlay", "div", {
-            classes: "w-100 h-100",
-            styles: { position: "absolute", backgroundColor: "transparent", top: "0", left: "0", zIndex: "2000" }
-        }))
+        self.createElement(new Mrbr_UI_Controls_ControlConfig("contentContainer_overlay", "div",
+            new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                .Classes("w-100 h-100")
+                .Styles({ position: "absolute", backgroundColor: "transparent", top: "0", left: "0", zIndex: "2000" })
+        ))
         self.dragTarget.appendChild(self.elements["contentContainer_overlay"])
         const
             transform = self.dragTarget.style.transform || "",

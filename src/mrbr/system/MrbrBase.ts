@@ -15,21 +15,24 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 import { Mrbr_Assembly_MrbrConfig } from '../assembly/mrbrConfig';
 import { Mrbr_IO_Fetch } from '../io/Fetch';
 import { Mrbr_IO_File } from '../io/File';
+import { Mrbr_IO_FilePromise } from '../io/FilePromise';
 import { Mrbr_IO_FileType } from '../io/FileType';
 import { Mrbr_IO_LoadCssElement } from '../io/LoadCssElement';//exclude
 import { Mrbr_IO_LoadCssLink } from '../io/LoadCssLink';//exclude
 import { Mrbr_IO_LoadScript } from '../io/LoadScript';//exclude
 import { Mrbr_IO_LoadScriptElement } from '../io/LoadScriptElement';//exclude
 import { Mrbr_IO_LoadScriptLink } from '../io/LoadScriptLink';//exclude
+import { Mrbr_IO_ManifestPromise } from '../io/ManifestPromise';
+import { Mrbr_System_MrbrPromise } from './MrbrPromise';
 
 
 /**
  * Null operation function as place holder for loading functions later
  * @date 22/08/2022 - 19:59:37
  *
- * @typedef {nullFunction}
+ * @typedef {nullFileFunction}
  */
-type nullFunction = (file: Mrbr_IO_File) => Promise<any> | null;
+type nullFileFunction = (file: Mrbr_IO_File) => Mrbr_IO_FilePromise;
 
 /**
  * Loading Function delegate
@@ -38,19 +41,7 @@ type nullFunction = (file: Mrbr_IO_File) => Promise<any> | null;
  *
  * @typedef {loadFunction}
  */
-type loadFunction = (file: Mrbr_IO_File) => Promise<any> | null;
-
-/**
- * Creates a Promise and returns the reslove and reject as separate parameters to be used outside of Promise block
- * @date 22/08/2022 - 20:01:00
- *
- * @typedef {mrbrPromise}
- */
-type mrbrPromise = {
-    promise: Promise<any>;
-    reject: Function;
-    resolve: Function;
-}
+type loadFunction = (file: Mrbr_IO_File) => Mrbr_IO_FilePromise;
 
 /**
  * Base Class for all MrbrAssembly functions
@@ -63,10 +54,11 @@ type mrbrPromise = {
  * @extends {EventTarget}
  */
 export class MrbrBase extends EventTarget {
+    public static MRBR_COMPONENT_NAME: any = Symbol("mrbr_component_name");
     static cacheTimeOut: number = 5000;
     static temporaryObjectTimeOut: number = 5000;
     static defaultMrbrPath: string = "/mrbr/";
-    static componentParameters: string = "mrbr,data,resolve,reject";
+    static componentParameters: string = "mrbr,data,resolve,reject,objectName";
     static _mrbr: MrbrBase;
     private _config: Mrbr_Assembly_MrbrConfig;
     private _paths: Map<string, string> = new Map();
@@ -76,12 +68,12 @@ export class MrbrBase extends EventTarget {
     private _assembly: Map<string, any> = new Map<string, any>();
     private _loadFunctionMap: Map<string, loadFunction> = null;
     private _host: any;
-    _loadScript: nullFunction = null;
-    _loadScriptElement: nullFunction = null;
-    _loadScriptLink: nullFunction = null;
-    _loadCssLink: nullFunction = null;
-    _loadCssElement: nullFunction = null;
-    private componentFileReferences = new Map<string, any>();
+    _loadScript: nullFileFunction = null;
+    _loadScriptElement: nullFileFunction = null;
+    _loadScriptLink: nullFileFunction = null;
+    _loadCssLink: nullFileFunction = null;
+    _loadCssElement: nullFileFunction = null;
+    //private componentFileReferences = new Map<string, Mrbr_IO_FilePromise>();
     /**
      * Autogenerating Namespace from Proxied Maps to Authogenerate a class
      * Any reference form the root that is not assigned to a different value creates a new level of the namespace
@@ -574,9 +566,9 @@ export class MrbrBase extends EventTarget {
      * @param {Mrbr_Assembly_MrbrConfig} config
      * @returns {Promise<any>} Promise for initialisation completed
      */
-    initialise(config: Mrbr_Assembly_MrbrConfig): Promise<any> {
+    initialise(config: Mrbr_Assembly_MrbrConfig): Mrbr_System_MrbrPromise<any> {
         const self = this,
-            promise = self.createPromise(),
+            promise = Mrbr_System_MrbrPromise.CreateMrbrPromise("MrbrBase.initialise"),
             self_paths = self._paths;
         self.config = config;
         var global: any = global || null;
@@ -592,7 +584,7 @@ export class MrbrBase extends EventTarget {
         }
 
         promise.resolve(self);
-        return promise.promise;
+        return promise;
     }
 
     /**
@@ -603,16 +595,35 @@ export class MrbrBase extends EventTarget {
      * @param {(Array<Mrbr_IO_File> | Mrbr_IO_File)} manifest
      * @returns {Promise<any>}
      */
-    public loadManifest(manifest: Array<Mrbr_IO_File> | Mrbr_IO_File): Promise<any> {
-        if (!manifest || (Array.isArray(manifest) && manifest.length === 0)) { return Promise.resolve(); }
+    public loadManifest(manifest: Array<Mrbr_IO_File> | Mrbr_IO_File): Mrbr_IO_ManifestPromise {
+        if (!manifest || (Array.isArray(manifest) && manifest.length === 0)) {
+            let retValPromise = Mrbr_IO_ManifestPromise.CreateManifestPromise("MrbrBase.loadManifest", []);
+            retValPromise.resolve();
+            return retValPromise;
+        }
         const self = this,
-            promise = self.createPromise();
-        Promise.all((Array.isArray(manifest) ? manifest : [manifest]).map(manifestEntry => self.load(manifestEntry)))
+            _manifest = (Array.isArray(manifest) ? manifest : [manifest]),
+            promise = Mrbr_IO_ManifestPromise.CreateManifestPromise("MrbrBase.loadManifest", _manifest),
+            loadFilePromises = _manifest.map(manifestEntry => self.load(manifestEntry).promise);
+        // _manifest
+        //     .forEach(manifestEntry => {
+        //         loadPromises.push(self.load(manifestEntry).promise);
+        //     })
+
+        //Promise.all((Array.isArray(manifest) ? manifest : [manifest]).map(manifestEntry => self.load(manifestEntry).promise))
+        //debugger
+        const allFilePromises = Promise.all(loadFilePromises);
+        //debugger
+        allFilePromises
             .then(values => {
-                promise.resolve(values)
+                debugger
+                promise.resolve()
             })
-            .catch(err => promise.reject(err));
-        return promise.promise;
+            .catch(err => {
+                //debugger;
+                promise.reject(err)
+            });
+        return promise;
     }
 
     /**
@@ -649,24 +660,44 @@ export class MrbrBase extends EventTarget {
      * @param {Mrbr_IO_File} file
      * @returns {Promise<any>} Promise fo Loading file
      */
-    load(file: Mrbr_IO_File): Promise<any> {
-        const self = this,
-            promise = self.createPromise();
+    load(file: Mrbr_IO_File): Mrbr_IO_FilePromise {
+        const self = this;
+        //let promise : = Mrbr_IO_FilePromise.CreateFilePromise("MrbrBase.load", file);
+        let promise: Mrbr_IO_FilePromise;
         if (file.fileType === Mrbr_IO_FileType.Component) {
-            self.loadComponent(file)
+            debugger
+            promise = self.loadComponent(file);
+            //debugger;
+            //var p1 = filePromise.promise;
+            //debugger;
+            //var p2 = p1.promise;
+            //debugger;
+            //p2
+            promise
                 .then(component => {
-                    promise.resolve(component);
+                    promise.resolve();
+                })
+                .catch(err => {
+                    console.log(err)
+                    promise.reject(err);
                 });
         }
+        else if (file.fileType === Mrbr_IO_FileType.ScriptLink) {
+            promise = self.loadScriptLink(file)
+        }
+        else if (file.fileType === Mrbr_IO_FileType.CssLink) {
+            promise = self.loadCssLink(file)
+        }
         else if (self.loadFunctionMap.has(file.fileType)) {
-            self.loadFunctionMap.get(file.fileType)(file)
-                .then(result => promise.resolve(result))
-                .catch(err => promise.reject(err))
+            // self.loadFunctionMap.get(file.fileType)(file)
+            //     .then(result => promise.resolve())
+            //     .catch(err => promise.reject(err))
         }
         else {
             throw new Error("not a file option");
         }
-        return promise.promise;
+        //promise.reference = "MrbrBase.load:" + file.fileName;
+        return promise;
     }
 
     /**
@@ -675,14 +706,9 @@ export class MrbrBase extends EventTarget {
      *
      * @returns {mrbrPromise}
      */
-    createPromise(): mrbrPromise {
-        let _reject: Function, _resolve: Function;
-        return {
-            promise: new Promise((resolve, reject) => { _reject = reject, _resolve = resolve }),
-            reject: _reject,
-            resolve: _resolve
-        }
-    }
+    // createPromise(reference: string): Mrbr_System_MrbrPromise {
+    //     return Mrbr_System_MrbrPromise.CreateMrbrPromise(reference);
+    // }
 
     /**
      * Load an Mrbr Assembly compliant component
@@ -691,36 +717,58 @@ export class MrbrBase extends EventTarget {
      * @param {Mrbr_IO_File} file
      * @returns {Promise<any>} Promise of loading component
      */
-    loadComponent(file: Mrbr_IO_File): Promise<any> {
+    loadComponent(file: Mrbr_IO_File): Mrbr_IO_FilePromise {
         const self = this,
             ns = MrbrBase.Namespace;
-            if (!ns.isNamespace(file.entry)) {
-                //console.log(file.entry);
-                return Promise.resolve(file);
-            }        
-            if(file.entry[ns.NAME].toLocaleLowerCase().includes("mrbrbase")){
-            //console.log(file.entry[ns.NAME] )
+        if (file.entry && Object.keys(file.entry).indexOf(MrbrBase.MRBR_COMPONENT_NAME) >= 0) {
+            debugger
+            if(Mrbr_IO_FilePromise.Promises.has(file.entry[MrbrBase.MRBR_COMPONENT_NAME])){
+                file.loadingPromise = Mrbr_IO_FilePromise.Promises.get(file.entry[MrbrBase.MRBR_COMPONENT_NAME])
+                file.loadingPromise.resolve();
+                return file.loadingPromise;
+            }
+
+            let dummyFile = new Mrbr_IO_File(Mrbr_IO_FileType.Component, "", "", "");
+            dummyFile.fileName = file.entry[MrbrBase.MRBR_COMPONENT_NAME];// `dummy_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`;
+            Mrbr_IO_FilePromise.Promises.get(file.entry[MrbrBase.MRBR_COMPONENT_NAME])
+            file.loadingPromise = Mrbr_IO_FilePromise.CreateFilePromise("MrbrBase:loadComponent", dummyFile);
+            //file.loadingPromise = retvalFilePromise;
+            //let retvalFilePromise = new Mrbr_IO_FilePromise(file);
+            file.loadingPromise.resolve();
+            return file.loadingPromise;
+        }
+        if (!ns.isNamespace(file.entry)) {
+            if(Mrbr_IO_FilePromise.Promises.has(file.entry[MrbrBase.MRBR_COMPONENT_NAME])){
+                file.loadingPromise = Mrbr_IO_FilePromise.Promises.get(file.entry[MrbrBase.MRBR_COMPONENT_NAME])
+                file.loadingPromise.resolve();
+                return file.loadingPromise;
+            }
+            let dummyFile = new Mrbr_IO_File(Mrbr_IO_FileType.Component, "", "", "");
+            dummyFile.fileName = `dummy_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`;
+            file.loadingPromise = Mrbr_IO_FilePromise.CreateFilePromise("MrbrBase:loadComponent", dummyFile);
+            //file.loadingPromise = retvalFilePromise;
+            //let retvalFilePromise = new Mrbr_IO_FilePromise(file);
+            file.loadingPromise.resolve();
+            return file.loadingPromise;
+        }
+        if (file.entry[ns.NAME].toLocaleLowerCase().includes("mrbrbase")) {
             debugger
         }
+        //  If a file loading is already in progress for this Component as load requests can be in parallel
+        //  Get the promise from the first component load request
+        if (Mrbr_IO_FilePromise.Promises.has(file.fileName)) {
+            return Mrbr_IO_FilePromise.Promises.get(file.fileName);
+        }
+        if (ns.isNamespace(file.entry) && Mrbr_IO_FilePromise.Promises.has(ns.namespace(file.entry))) {
+            return Mrbr_IO_FilePromise.Promises.get(ns.namespace(file.entry));
+        }
         const mrbrFetch = new Mrbr_IO_Fetch(),
-            promise = self.createPromise(),
-            namespace = ns.namespace(file.entry),
+            //mrbrNamespace = ns.namespace(file.entry),
             prms = MrbrBase.componentParameters,
             instance = MrbrBase.mrbrInstance,
             fn = Function;
-        //  If a file loading is already in progress for this Component as load requests can be in parallel
-        //  Get the promise from the first component load request
-        if (self.componentFileReferences.has(namespace)) {
-            file._loadingPromise = self.componentFileReferences.get(namespace)._loadingPromise;
-            return file._loadingPromise.promise;
-        }
         //  Create a promise for a Component not previously requested
-        file._loadingPromise = {
-            promise: promise.promise,
-            reject: promise.reject,
-            resolve: promise.resolve
-        }
-        self.componentFileReferences.set(ns.namespace(file.entry), file);
+        Mrbr_IO_FilePromise.CreateFilePromise("MrbrBase:loadComponent:" + ns.namespace(file.entry), file);
         /// Fetch file
         mrbrFetch
             .fetch(file.fileName, {})
@@ -728,17 +776,44 @@ export class MrbrBase extends EventTarget {
                 result
                     .text()
                     .then((txt: any) => {
-                        let loadedPromise = self.createPromise();
-                        fn(prms, txt).bind(self)(instance, file.data, loadedPromise.resolve, loadedPromise.reject);
-                        loadedPromise.promise
-                            .then(entry => self.componentFileReferences.get(entry)._loadingPromise.resolve(file))
-                            .catch(err => console.log(`error: `, err))
+                        let loadedPromise = Mrbr_System_MrbrPromise.CreateMrbrPromise<any>("mrbrFetch");
+                        fn(prms, txt).bind(self)(instance, file.data, loadedPromise.executor.resolve, loadedPromise.executor.reject, MrbrBase.MRBR_COMPONENT_NAME);
+                        loadedPromise
+                            .then(entry => {
+                                debugger
+                                //let cmp = ns.toObject(file.entry);
+                                // Object.defineProperty(cmp, Symbol.for("mrbr_component_name"), {
+                                //     get: ()=> cmp[Symbol.for("mrbr_component_name")]
+                                // });
+                                //(cmp as any)[MrbrBase.MRBR_COMPONENT_NAME] = MrbrBase.Namespace.namespace(file.entry);
+                                //console.log(cmp[MrbrBase.MRBR_COMPONENT_NAME]);
+                                debugger
+                                //if (cmp && Object.keys(cmp).indexOf("manifest") >= 0 && (cmp as any).hasOwnProperty("manifest") && (cmp as any).manifest.length) {
+                                if (entry && Object.keys(entry).indexOf("manifest") >= 0 && (entry as any).hasOwnProperty("manifest") && (entry as any).manifest.length) {
+                                    debugger
+                                    console.log("manifest started: ", (entry as any).manifest)
+                                    self.loadManifest((entry as any).manifest)
+                                        .then(manifest => {
+                                            console.log("manifest loaded: ", manifest)
+                                            file.loadingPromise.resolve()
+                                            Mrbr_IO_FilePromise.Promises.get(entry[MrbrBase.MRBR_COMPONENT_NAME]).resolve();
+                                        })
+                                }
+                                else {
+                                    file.loadingPromise.resolve()
+                                }
+                                //file.loadingPromise.resolve()
+                            })
+                            .catch(err => {
+                                console.log(`error: `, err);
+                                file.loadingPromise.reject({ error: err, file: file })
+                            })
                     })
             })
             .catch(err => {
-                promise.reject(err)
+                file.loadingPromise.reject(err)
             });
-        return this.componentFileReferences.get(namespace)._loadingPromise.promise
+        return file.loadingPromise;
     }
     loadText() { }
     loadJson() { }
@@ -750,7 +825,7 @@ export class MrbrBase extends EventTarget {
      * @param {Mrbr_IO_File} file
      * @returns {Promise<any>}
      */
-    loadScript(file: Mrbr_IO_File): Promise<any> {
+    loadScript(file: Mrbr_IO_File): Mrbr_IO_FilePromise | Mrbr_System_MrbrPromise<any> {
         const self = this;
         return self._loadScript ? self._loadScript(file) : self.addFileFunction(self, "_loadScript", Mrbr_IO_LoadScript);
     }
@@ -762,45 +837,11 @@ export class MrbrBase extends EventTarget {
      * @param {Mrbr_IO_File} file
      * @returns {Promise<any>}
      */
-    loadScriptElement(file: Mrbr_IO_File): Promise<any> {
+    loadScriptElement(file: Mrbr_IO_File): Mrbr_IO_FilePromise | Mrbr_System_MrbrPromise<any> {
         const self = this;
         return self._loadScriptElement ? self._loadScriptElement(file) : self.addFileFunction(self, "_loadScriptElement", Mrbr_IO_LoadScriptElement);
     }
 
-    /**
-     * Load add script link functionality on demand and adds to dom
-     * @date 22/08/2022 - 21:49:57
-     *
-     * @param {Mrbr_IO_File} file
-     * @returns {Promise<any>}
-     */
-    loadScriptLink(file: Mrbr_IO_File): Promise<any> {
-        const self = this;
-        if (self._loadScriptLink) {
-            return self._loadScriptLink(file);
-        }
-        const promise = self.createPromise();
-        self.addFileFunction(self, "_loadScriptLink", Mrbr_IO_LoadScriptLink)
-            .then(_ => {
-                self._loadScriptLink = Mrbr_IO_LoadScriptLink.bind(self);
-                promise.resolve(file);
-                return self._loadScriptLink(file);
-            })
-        return promise.promise;
-
-    }
-
-    /**
-     * Loads create css element on demand and adds css element
-     * @date 22/08/2022 - 21:51:09
-     *
-     * @param {Mrbr_IO_File} file
-     * @returns {Promise<any>}
-     */
-    loadCssElement(file: Mrbr_IO_File): Promise<any> {
-        const self = this;
-        return self._loadCssElement ? self._loadCssElement(file) : self.addFileFunction(self, "_loadCssElement", Mrbr_IO_LoadCssElement);
-    }
 
     /**
      * Loads create css element link on demand and adds link to dom
@@ -809,20 +850,77 @@ export class MrbrBase extends EventTarget {
      * @param {Mrbr_IO_File} file
      * @returns {Promise<any>}
      */
-    loadCssLink(file: Mrbr_IO_File): Promise<any> {
-
+    loadCssLink(file: Mrbr_IO_File): Mrbr_IO_FilePromise {
         const self = this;
-        if (self._loadCssLink) {
-            return self._loadCssLink(file);
-        }
-        const promise = self.createPromise();
-        self.addFileFunction(self, "_loadCssLink", Mrbr_IO_LoadCssLink)
+        if (self._loadCssLink) { return self._loadCssLink(file); }
+        const filePromise = Mrbr_IO_FilePromise.CreateFilePromise("MrbrBase.loadCssLink", file);
+        self.loadComponent(Mrbr_IO_File.component(Mrbr_IO_LoadCssLink))
             .then(_ => {
-                self._loadCssLink = Mrbr_IO_LoadCssLink.bind(self);
-                promise.resolve(file);
-                return self._loadCssLink(file);
+                self._loadCssLink = Mrbr_IO_LoadCssLink.bind(self)
+                self.loadCssLink(file)
+                    .then(_ => {
+                        //debugger;
+                        filePromise.resolve();
+                    })
             })
-        return promise.promise;
+        return filePromise;
+    }
+
+
+    /**
+     * Load add script link functionality on demand and adds to dom
+     * @date 22/08/2022 - 21:49:57
+     *
+     * @param {Mrbr_IO_File} file
+     * @returns {Promise<any>}
+     */
+    loadScriptLink(file: Mrbr_IO_File): Mrbr_IO_FilePromise {
+        const self = this;
+        if (self._loadScriptLink) { return self._loadScriptLink(file); }
+        const filePromise: Mrbr_IO_FilePromise = Mrbr_IO_FilePromise.CreateFilePromise("MrbrBase.loadScriptLink", file);
+
+        self.loadComponent(Mrbr_IO_File.component(Mrbr_IO_LoadScriptLink))
+            .then(_ => {
+                self._loadScriptLink = Mrbr_IO_LoadScriptLink.bind(self)
+                self.loadScriptLink(file)
+                    .then(_ => {
+                        //debugger;
+                        filePromise.resolve();
+                    })
+            })
+        return filePromise;
+    }
+    /**
+     * On demand loading FileType functionality loading
+     * @date 22/08/2022 - 21:56:50
+     *
+     * @param {Mrbr_IO_File} file
+     * @param {*} target
+     * @param {string} targetFunctionName
+     * @param {*} functionToLoad
+     * @returns {Promise<any>}
+     */
+    addFileFunction(target: any, targetFunctionName: string, functionToLoad: any): Mrbr_System_MrbrPromise<any> {
+        const self = this,
+            promise = Mrbr_System_MrbrPromise.CreateMrbrPromise("MrbrBase.addFileFunction");
+        self.addFunction(target, targetFunctionName, functionToLoad)
+            .then(fn => {
+                //debugger
+                promise.resolve(fn)
+            })
+            .catch(err => promise.reject(err))
+        return promise;
+    }
+    /**
+     * Loads create css element on demand and adds css element
+     * @date 22/08/2022 - 21:51:09
+     *
+     * @param {Mrbr_IO_File} file
+     * @returns {Promise<any>}
+     */
+    loadCssElement(file: Mrbr_IO_File): Mrbr_IO_FilePromise | Mrbr_System_MrbrPromise<any> {
+        const self = this;
+        return self._loadCssElement ? self._loadCssElement(file) : self.addFileFunction(self, "_loadCssElement", Mrbr_IO_LoadCssElement);
     }
 
     /**
@@ -848,42 +946,35 @@ export class MrbrBase extends EventTarget {
      * @param {*} functionToLoad
      * @returns {Promise<any>}
      */
-    addFunction(target: any, targetFunctionName: string, functionToLoad: any): Promise<any> {
+    addFunction(target: any, targetFunctionName: string, functionToLoad: any): Mrbr_System_MrbrPromise<any> {
         const self = this;
-        if (target[targetFunctionName]) { return Promise.resolve(target[targetFunctionName]); }
+        if (target[targetFunctionName]) {
+            let retVal = Mrbr_System_MrbrPromise.CreateMrbrPromise<any>("MrbrBase.addFunction")
+            retVal.resolve(target[targetFunctionName])
+            return retVal;
+        }
+        //debugger
         if (!MrbrBase.Namespace.isNamespace(functionToLoad)) {
             target[targetFunctionName] = functionToLoad;
-            return Promise.resolve(functionToLoad);
+
+
+            let retVal = Mrbr_System_MrbrPromise.CreateMrbrPromise<any>("MrbrBase.addFunction")
+            retVal.resolve(functionToLoad)
+            return retVal;
         }
-        const promise = self.createPromise();
-        self.loadManifest(Mrbr_IO_File.component(functionToLoad))
+        //debugger
+        //const promise = self.createPromise("MrbrBase.addFunction");
+        let promise: Mrbr_IO_ManifestPromise = self.loadManifest(Mrbr_IO_File.component(functionToLoad));
+        promise
             .then(result => {
-                promise.resolve(target[targetFunctionName])
+                promise.resolve()
+                //promise.resolve(target[targetFunctionName])
             })
             .catch(err => promise.reject(err));
-        return promise.promise;
+        return promise;
     }
 
-    /**
-     * On demand loading FileType functionality loading
-     * @date 22/08/2022 - 21:56:50
-     *
-     * @param {Mrbr_IO_File} file
-     * @param {*} target
-     * @param {string} targetFunctionName
-     * @param {*} functionToLoad
-     * @returns {Promise<any>}
-     */
-    addFileFunction(target: any, targetFunctionName: string, functionToLoad: any): Promise<any> {
-        const self = this,
-            promise = self.createPromise();
-        self.addFunction(target, targetFunctionName, functionToLoad)
-            .then(fn => {
-                promise.resolve(fn)
-            })
-            .catch(err => promise.reject(err))
-        return promise.promise;
-    }
+
 
     /**
      * Event Names for onReady

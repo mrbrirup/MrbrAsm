@@ -105,12 +105,13 @@ function createMrbrBaseFile(sourceFileName) {
                 destinationContent.substring(classDeclarationRegex.lastIndex - 1),
                 ...((sourceFileName === mrbrBaseSourceFile) ? [
                     `MrbrBase.Namespace.createAssembly(window, "Mrbr");`,
-                    `Mrbr.System.MrbrBase = MrbrBase;`
+                    `Mrbr.System.MrbrBase = MrbrBase;`,
+                    `Mrbr.System.MrbrBase[MrbrBase.MRBR_COMPONENT_NAME] = "Mrbr.System.MrbrBase";`
                 ] : [])
             ],
             code = generateCode(outputTextArray.join("\r\n"), importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
-            let assemblyPath = path.dirname(mrbrJSRootFile);
-            !fs.existsSync(assemblyPath) && fs.mkdirSync(assemblyPath, { recursive: true });
+        let assemblyPath = path.dirname(mrbrJSRootFile);
+        !fs.existsSync(assemblyPath) && fs.mkdirSync(assemblyPath, { recursive: true });
         (sourceFileName === mrbrBaseSourceFile) ? fs.writeFileSync(mrbrJSRootFile, code + "\r\n") : fs.appendFileSync(mrbrJSRootFile, "\r\n" + code + "\r\n");
         //console.log(importedReferences);
         importedReferences.forEach(importedReference => {
@@ -119,7 +120,8 @@ function createMrbrBaseFile(sourceFileName) {
             }
         });
         let sourceCode = fs.readFileSync(mrbrJSRootFile, "utf8")
-        fs.writeFileSync(mrbrJSRootFile, prettify(sourceCode, true))
+        let namespaceNames = importedReferences.filter(importedReference => importedReference.exclude === false).map(importedReference => `${importedReference.assembly.replace(/_/g, ".")}[MrbrBase.MRBR_COMPONENT_NAME] = "${importedReference.assembly.replace(/_/g, ".")}"`);
+        fs.writeFileSync(mrbrJSRootFile, prettify(`${sourceCode}\r\n${namespaceNames.join(";\r\n")}\r\n`, true))
     }
     else {
         let enumFunctionRegex = /export\s+var\s+(?<assembly>[\w$]+)\s*;\s*(?<function>\(function \s*\((\1)\)\s{)(?<text>[\s\S]+)\}\)\s*\(\1\s*[|]{2}\s*\(\1\s*=\s*\{\}\)\);\s*/gm,
@@ -161,9 +163,17 @@ function createMrbrAssemblyFile(sourceFile) {
     let assemblyPath = path.dirname(destinationFileName);
     !fs.existsSync(assemblyPath) && fs.mkdirSync(assemblyPath, { recursive: true });
     let exportName,
-        code;
+        code,
+        preloadAssembly = "";
     if (classDeclarationMatch) {
         const classExtension = ((classDeclarationMatch?.groups?.baseClass?.length || 0) > 0) ? (` extends ((${classDeclarationMatch?.groups?.baseClass}))`) : "";
+        preloadAssembly = classDeclarationMatch?.groups?.baseClass || "";
+        if(preloadAssembly.indexOf("_")>0 ){
+            preloadAssembly = preloadAssembly.replace(/_/g,".");
+        }
+        else{
+            preloadAssembly = "";
+        }
         exportName = classDeclarationMatch?.groups?.exportName;
         let outputTextArray = [
             `${includeClassExtension}${exportName} = ${exportType} ${classExtension}`.replace(/ {2}/, " "), ,
@@ -196,33 +206,38 @@ function createMrbrAssemblyFile(sourceFile) {
         console.log(exportName, destinationFileName);
 
         if (importedReferences?.length > 0) {
+
             manifest = manifest.concat(...[importedReferences.filter(entry => entry.exclude === false).map(include => (`${" ".repeat(8)}miofc(${include.assembly.replace(/_/g, ".")})`))])
         }
-        let source = prettify(`((mrbr, data, resolve, reject)=>{
-            ${manifest?.length ? "const miofc = Mrbr.IO.File.component, manifest = [ " + manifest.join(",\r\n") + "]" : ""}
-            ${manifest?.length ? "mrbr.loadManifest( manifest )\r\n" : ""}
-            ${manifest?.length ? ".then(_ =>{" : ""}
-                ${code}\r\n
-                ${manifest?.length ? exportName.replace(/_/g, '.') + ".manifest = manifest" : ""}
-                setTimeout(()=>{ resolve("${exportName.replace(/_/g, ".")}")},0)
-                ${manifest?.length ? "})" : ""}
-                ${manifest?.length ? ".catch(err => reject(err))" : ""}
-        })(mrbr, data, resolve, reject)
+        let source = prettify(`((mrbr, data, resolve, reject, objectName)=>{
+            ${manifest?.length ? "const miofc = Mrbr.IO.File.component;\r\n" : ""}
+            ${preloadAssembly?.length ? `mrbr.loadManifest( miofc(${preloadAssembly}) )\r\n` : ""}
+            ${preloadAssembly?.length ? ".then(_ =>{" : ""}
+            ${code}\r\n
+                ${manifest?.length ? exportName.replace(/_/g, '.') + ".manifest = [ " + manifest.join(",\r\n") + "]" : ""}                
+                ${exportName.replace(/_/g, '.')}[objectName] = "${exportName.replace(/_/g, '.')}";
+                setTimeout(()=>{ resolve(${exportName.replace(/_/g, ".")})},0)
+                ${preloadAssembly?.length ? "})" : ""}
+                ${preloadAssembly?.length ? ".catch(err => reject(err))" : ""}
+        })(mrbr, data, resolve, reject, objectName)
     `, true)
         fs.writeFileSync(destinationFileName, source)
     }
 }
 
 function prettify(code, beautify = false) {
-    var options = {
-        compress: true,
-        mangle: false,
-        output: {
-            beautify: beautify
-        }
-    };
-    var result = UglifyJS.minify(code, options);
-    return result.code;
+    return code;
+    // var options = {
+    //     compress: {
+    //         drop_debugger: false
+    //       },
+    //     mangle: false,
+    //     output: {
+    //         beautify: beautify
+    //     }
+    // };
+    // var result = UglifyJS.minify(code, options);
+    // return result.code;
 }
 
 function generateCode(text, replaceNames) {

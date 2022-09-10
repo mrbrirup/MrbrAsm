@@ -5,6 +5,7 @@ let cfg = {
 function runRes(result) {
     console.log("runRes")
     try {
+
         let container = new Mrbr.Tests.Application()
     } catch (error) {
         console.log(error)
@@ -30,8 +31,12 @@ mrbr
 function onReady() {
     try {
         console.log("function onReady()")
-        mrbr.loadManifest([
+        window["mrbrLoadManifest"] = 
+        [
             Mrbr.IO.File.component(Mrbr.Tests.Application),
+            //Mrbr.IO.File.component(Mrbr.UI.Controls.NavBar),
+            //Mrbr.IO.File.component(Mrbr.UI.Controls.ControlConfigOptionalParameters),
+            //Mrbr.IO.File.component(Mrbr.UI.Bootstrap.Forms.Dialog),
             //Mrbr.IO.File.component(Mrbr.System.MrbrBase),
             new Mrbr.IO.File(Mrbr.IO.FileType.ScriptLink, null, "https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js", "", {
                 integrity: "sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa",
@@ -50,9 +55,16 @@ function onReady() {
             new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].ScriptElement, null, "http://127.0.0.1:5500/htmlTest/scripts/altercopy.js", null, false, false),
             new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].ScriptLink, null, "http://127.0.0.1:5500/htmlTest/scripts/altercopy2.js", null, false, false),
             */
-        ])
-            .then(result => { runRes(result); })
-            .catch(err => { console.log(err) });
+        ];
+        mrbr.loadManifest(window.mrbrLoadManifest)
+            .then(result => { 
+                debugger;
+                runRes(result); 
+            })
+            .catch(err => { 
+                debugger;
+                console.log(err) 
+            });
     } catch (error) {
         console.log(error);
     }

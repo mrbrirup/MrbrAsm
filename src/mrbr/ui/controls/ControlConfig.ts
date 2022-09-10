@@ -1,14 +1,5 @@
-type Mrbr_UI_Controls_ControlConfig$OptionalParameters = {
-    id?: string;
-    classes?: Array<string> | string;
-    attributes?: object;
-    data?: object;
-    properties?: object;
-    styles?: object;
-    children?: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[],
-    lightTheme?: Array<string> | string;
-    darkTheme?: Array<string> | string;
-}
+import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "./ControlConfigOptionalParameters";
+
 export class Mrbr_UI_Controls_ControlConfig {
     private _elementName: string;
     private _elementType: string;
@@ -21,8 +12,9 @@ export class Mrbr_UI_Controls_ControlConfig {
     private _styles: object;
     private _darkTheme: Array<string> = [];
     private _lightTheme: Array<string> = [];
-    constructor(elementName: string, elementType: string, optionalParameters?: Mrbr_UI_Controls_ControlConfig$OptionalParameters) {
+    constructor(elementName: string, elementType: string, optionalParameters?: Mrbr_UI_Controls_ControlConfigOptionalParameters) {
         const self = this;
+        console.log(elementName, optionalParameters)
         self.elementName = elementName;
         self.elementType = elementType;
         self.id = optionalParameters?.id;

@@ -3,6 +3,7 @@ import { Mrbr_Geometry_Point2d } from "../../../geometry/point2d";
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { Mrbr_UI_Controls_Control } from "../control";
 import { Mrbr_UI_Controls_ControlConfig } from "../ControlConfig";
+import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../ControlConfigOptionalParameters";
 
 export class Mrbr_UI_Controls_Handles_Resize extends Mrbr_UI_Controls_Control {
     static RESIZING_EVENT_NAME: string = "resizing";
@@ -55,15 +56,16 @@ export class Mrbr_UI_Controls_Handles_Resize extends Mrbr_UI_Controls_Control {
             resizeHandles = Mrbr_UI_Controls_Handles_Resize.resizeHandles;
         Object.keys(resizeHandles)
             .forEach(handle => {
-                const controlHandle = <HTMLElement>self.createElement(new Mrbr_UI_Controls_ControlConfig(`mrbr-dialog-handle-${handle}`, "div", {
-                    data: {
-                        handle: handle,
-                        lat: handle.includes(resizeHandles.n) ? resizeHandles.n : (handle.includes(resizeHandles.s) ? resizeHandles.s : ""),
-                        long: handle.includes(resizeHandles.e) ? resizeHandles.e : (handle.includes(resizeHandles.w) ? resizeHandles.w : "")
-                    },
-                    classes: [`mrbr-dialog-handle`, `mrbr-dialog-handle-${handle}`],
-                    properties: { draggable: false }
-                }))
+                const controlHandle = <HTMLElement>self.createElement(new Mrbr_UI_Controls_ControlConfig(`mrbr-dialog-handle-${handle}`, "div",
+                    new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                        .Data({
+                            handle: handle,
+                            lat: handle.includes(resizeHandles.n) ? resizeHandles.n : (handle.includes(resizeHandles.s) ? resizeHandles.s : ""),
+                            long: handle.includes(resizeHandles.e) ? resizeHandles.e : (handle.includes(resizeHandles.w) ? resizeHandles.w : "")
+                        })
+                        .Classes([`mrbr-dialog-handle`, `mrbr-dialog-handle-${handle}`])
+                        .Properties({ draggable: false })
+                ))
                 self.events[`mrbr-dialog-handle-${handle}_mousedown`] = <Mrbr_System_Events_EventHandler>{
                     event: self.handle_mouseDown,
                     eventName: "mousedown",
@@ -128,10 +130,11 @@ export class Mrbr_UI_Controls_Handles_Resize extends Mrbr_UI_Controls_Control {
             context: self,
             eventTarget: self._activeHandle
         }
-        self.createElement(new Mrbr_UI_Controls_ControlConfig("contentContainer_overlay", "div", {
-            classes: "w-100 h-100",
-            styles: { position: "absolute", backgroundColor: "transparent", top: "0", left: "0", zIndex: "2000" }
-        }))
+        self.createElement(new Mrbr_UI_Controls_ControlConfig("contentContainer_overlay", "div",
+            new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                .Classes("w-100 h-100")
+                .Styles({ position: "absolute", backgroundColor: "transparent", top: "0", left: "0", zIndex: "2000" })
+        ))
         self.resizeTarget.appendChild(self.elements["contentContainer_overlay"])
     }
     setParentBounds() {
