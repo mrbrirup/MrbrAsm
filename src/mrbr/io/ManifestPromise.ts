@@ -23,11 +23,6 @@ export class Mrbr_IO_ManifestPromise extends Mrbr_System_MrbrPromise<Mrbr_IO_Fil
 
     public static CreateManifestPromise(reference: string, files: Mrbr_IO_File[]): Mrbr_IO_ManifestPromise {
         const id: string = `promise_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`;
-        
-        
-        
-        
-        
         let mrbrManifestPromise: Mrbr_IO_ManifestPromise = new Mrbr_IO_ManifestPromise(files);
         mrbrManifestPromise.promise = new Promise((resolve, reject) => {
             mrbrManifestPromise.executor = {

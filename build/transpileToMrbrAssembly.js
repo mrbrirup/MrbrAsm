@@ -168,10 +168,10 @@ function createMrbrAssemblyFile(sourceFile) {
     if (classDeclarationMatch) {
         const classExtension = ((classDeclarationMatch?.groups?.baseClass?.length || 0) > 0) ? (` extends ((${classDeclarationMatch?.groups?.baseClass}))`) : "";
         preloadAssembly = classDeclarationMatch?.groups?.baseClass || "";
-        if(preloadAssembly.indexOf("_")>0 ){
-            preloadAssembly = preloadAssembly.replace(/_/g,".");
+        if (preloadAssembly.indexOf("_") > 0) {
+            preloadAssembly = preloadAssembly.replace(/_/g, ".");
         }
-        else{
+        else {
             preloadAssembly = "";
         }
         exportName = classDeclarationMatch?.groups?.exportName;
@@ -207,19 +207,20 @@ function createMrbrAssemblyFile(sourceFile) {
 
         if (importedReferences?.length > 0) {
 
-            manifest = manifest.concat(...[importedReferences.filter(entry => entry.exclude === false).map(include => (`${" ".repeat(8)}miofc(${include.assembly.replace(/_/g, ".")})`))])
+            manifest = manifest.concat(...[importedReferences.filter(entry => entry.exclude === false).filter(entry => entry.assembly?.name?.toLowerCase() !== "mrbrbase").map(include => (`${" ".repeat(8)}miofc(${include.assembly.replace(/_/g, ".")})`))])
         }
-        let source = prettify(`((mrbr, data, resolve, reject, objectName)=>{
+        let source = prettify(`((mrbr, data, resolve, reject, symbols)=>{
+            ${!(classDeclarationMatch) ? "if (MrbrBase.Namespace.isNamespace(" + exportName.replace(/_/g, '.') + ")){" + exportName.replace(/_/g, '.') + " = {}; } " : ""}
             ${manifest?.length ? "const miofc = Mrbr.IO.File.component;\r\n" : ""}
             ${preloadAssembly?.length ? `mrbr.loadManifest( miofc(${preloadAssembly}) )\r\n` : ""}
             ${preloadAssembly?.length ? ".then(_ =>{" : ""}
             ${code}\r\n
-                ${manifest?.length ? exportName.replace(/_/g, '.') + ".manifest = [ " + manifest.join(",\r\n") + "]" : ""}                
-                ${exportName.replace(/_/g, '.')}[objectName] = "${exportName.replace(/_/g, '.')}";
+                ${manifest?.length ? exportName.replace(/_/g, '.') + "[symbols.manifest] = [ " + manifest.join(",\r\n") + "]" : ""}                
+                ${exportName.replace(/_/g, '.')}[symbols.componentName] = "${exportName.replace(/_/g, '.')}";
                 setTimeout(()=>{ resolve(${exportName.replace(/_/g, ".")})},0)
                 ${preloadAssembly?.length ? "})" : ""}
                 ${preloadAssembly?.length ? ".catch(err => reject(err))" : ""}
-        })(mrbr, data, resolve, reject, objectName)
+        })(mrbr, data, resolve, reject, symbols)
     `, true)
         fs.writeFileSync(destinationFileName, source)
     }

@@ -14,7 +14,6 @@ export class Mrbr_UI_Controls_ControlConfig {
     private _lightTheme: Array<string> = [];
     constructor(elementName: string, elementType: string, optionalParameters?: Mrbr_UI_Controls_ControlConfigOptionalParameters) {
         const self = this;
-        console.log(elementName, optionalParameters)
         self.elementName = elementName;
         self.elementType = elementType;
         self.id = optionalParameters?.id;

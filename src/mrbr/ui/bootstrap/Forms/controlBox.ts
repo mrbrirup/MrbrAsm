@@ -16,11 +16,11 @@ type ControlBoxControl = {
 }
 export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control {
     static CONTROL_BOX_CLICK_EVENT_NAME: string = "controlbox_click";
-    public static controlBoxControls: object = {
-        close: { name: "close_button", imageName: "close_image", src: `mrbr/images/forms/close.svg`, eventType: 4, order: 1 },
-        minimise: { name: "minimise_button", imageName: "minimise_image", src: "mrbr/images/forms/minimise.svg", eventType: 2, order: 2 },
-        maximise: { name: "maximise_button", imageName: "maximise_image", src: "mrbr/images/forms/maximise.svg", eventType: 1, order: 3 },
-        fullscreen: { name: "fullscreen_button", imageName: "fullscreen_image", src: "mrbr/images/forms/fullscreen.svg", eventType: 3, order: 4 }
+    public controlBoxControls: object = {
+        close: { name: "close_button", imageName: "close_image", src: `mrbr/images/forms/close.svg`, eventType: Mrbr_UI_Bootstrap_Forms_ControlBox$Events.close, order: 1 },
+        minimise: { name: "minimise_button", imageName: "minimise_image", src: "mrbr/images/forms/minimise.svg", eventType: Mrbr_UI_Bootstrap_Forms_ControlBox$Events.minimise, order: 2 },
+        maximise: { name: "maximise_button", imageName: "maximise_image", src: "mrbr/images/forms/maximise.svg", eventType: Mrbr_UI_Bootstrap_Forms_ControlBox$Events.maximise, order: 3 },
+        fullscreen: { name: "fullscreen_button", imageName: "fullscreen_image", src: "mrbr/images/forms/fullscreen.svg", eventType: Mrbr_UI_Bootstrap_Forms_ControlBox$Events.fullScreen, order: 4 }
     }
     private _dialogState: Mrbr_UI_Bootstrap_Forms_Dialog$States;
     private _lastDialogState: Mrbr_UI_Bootstrap_Forms_Dialog$States;
@@ -84,7 +84,7 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
         const self = this,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig,
             eventTypes = Mrbr_UI_Bootstrap_Forms_ControlBox$Events,
-            ctrlBoxControls = Mrbr_UI_Bootstrap_Forms_ControlBox.controlBoxControls;
+            ctrlBoxControls = self.controlBoxControls;
         self.createControlBox();
         self.maximiseBox = self.maximiseBox;
         self.minimiseBox = self.minimiseBox;
@@ -100,7 +100,7 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
 
     sortControlBoxControls() {
         const self = this,
-            controlBoxControls = Mrbr_UI_Bootstrap_Forms_ControlBox.controlBoxControls;
+            controlBoxControls = self.controlBoxControls;
         Object.keys(controlBoxControls).map(key => {
             return controlBoxControls[key]
         }).sort((a: ControlBoxControl, b: ControlBoxControl) => - a.order + b.order).forEach(element => {
@@ -109,10 +109,11 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
     }
     controlBoxClick(mouseEvent: MouseEvent) {
         console.log(mouseEvent);
-        let eventTypeName = (<HTMLElement>(mouseEvent.target)).dataset.eventType || (<HTMLElement>(mouseEvent.currentTarget)).dataset.eventType;
+        let eventTypeName = Mrbr_UI_Bootstrap_Forms_ControlBox$Events[parseInt((<HTMLElement>(mouseEvent.target)).dataset.eventType || (<HTMLElement>(mouseEvent.currentTarget)).dataset.eventType)];
         if (!eventTypeName) { return; }
         mouseEvent.stopImmediatePropagation();
-        let eventType = Mrbr_UI_Bootstrap_Forms_ControlBox$Events[MrbrBase.Namespace.KEY_ARRAY].find(key => eventTypeName === key); ''
+        debugger;
+        let eventType = Mrbr_UI_Bootstrap_Forms_ControlBox$Events[Object.keys(Mrbr_UI_Bootstrap_Forms_ControlBox$Events).find(key => eventTypeName === key)];
         let event = new Mrbr_UI_Bootstrap_Forms_ControlBox$Event(Mrbr_UI_Bootstrap_Forms_ControlBox.CONTROL_BOX_CLICK_EVENT_NAME, eventType);
         this.dispatchEvent(event);
     }
@@ -127,7 +128,7 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
             self.classes(self.elements[name], Mrbr_UI_Bootstrap_Controls_ClassActions.Remove, "d-none")
             return;
         }
-        const controlBoxControl: ControlBoxControl = Mrbr_UI_Bootstrap_Forms_ControlBox.controlBoxControls[name],
+        const controlBoxControl: ControlBoxControl = self.controlBoxControls[name],
             imageConfig = self.controlImageConfig,
             buttonConfig: Mrbr_UI_Controls_ControlConfig = self.controlButtonConfig,
             buttonData = buttonConfig.data || {};

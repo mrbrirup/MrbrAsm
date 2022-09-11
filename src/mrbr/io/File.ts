@@ -37,9 +37,6 @@ export class Mrbr_IO_File {
                     let rootPath = MrbrBase.mrbrInstance.paths.get(self.root) || "";
                     self.fileName = Mrbr_IO_Path.join([rootPath, fileName], false) + `.${self.extension}`;
                 }
-                else{
-                    debugger
-                }
                 // const componentToFileNameRegex = /[._]/g,
                 // ns = MrbrBase.Namespace;
                 // if (ns.isNamespace(self.entryName)) {

@@ -24,36 +24,21 @@ export class Mrbr_IO_FilePromise extends Mrbr_System_MrbrPromise<Mrbr_IO_File> {
     }
 
     public static CreateFilePromise(reference: string, file: Mrbr_IO_File): Mrbr_IO_FilePromise {
-        //const id: string = `promise_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`;
-        //const id: string = file.fileName;// || `file_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`
         let id: string;
-
-        if (file.fileType === Mrbr_IO_FileType.Component) {
-            //debugger
-            id = MrbrBase.Namespace.namespace(file.entry);
-        }
-        else {
-        }
-        if(!id){
-            id = file.fileName || file.entry || `file_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`
-            //debugger
-        }
-        console.log(id);
+        (file.fileType === Mrbr_IO_FileType.Component) && (_ => id = MrbrBase.Namespace.namespace(file.entry))();
+        (!id) && (_ => id = file.fileName || file.entry || `file_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`)();
         if (Mrbr_IO_FilePromise.Promises.has(id) === true) {
             file.loadingPromise = Mrbr_IO_FilePromise.Promises.get(id);
             return file.loadingPromise;
         }
-        let mrbrFilePromise: Mrbr_IO_FilePromise = new Mrbr_IO_FilePromise(file);
+        const mrbrFilePromise: Mrbr_IO_FilePromise = new Mrbr_IO_FilePromise(file);
         mrbrFilePromise.promise = new Promise((resolve, reject) => {
             mrbrFilePromise.executor = {
                 reject: (reason: any) => {
-                    //Mrbr_IO_FilePromise.Promises.delete(id);
                     mrbrFilePromise.rejected = true;
                     reject(reason);
                 },
                 resolve: _ => {
-                    console.log("file resolved: ", id)
-                    //Mrbr_IO_FilePromise.Promises.delete(id);
                     mrbrFilePromise.fulfilled = true;
                     resolve(mrbrFilePromise.file);
                 }

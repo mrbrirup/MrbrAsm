@@ -25,6 +25,7 @@ import { Mrbr_IO_LoadScriptLink } from '../io/LoadScriptLink';//exclude
 import { Mrbr_IO_ManifestPromise } from '../io/ManifestPromise';
 import { Mrbr_System_MrbrPromise } from './MrbrPromise';
 
+type fileLoaderDelegate = (file: Mrbr_IO_File) => Mrbr_IO_FilePromise;
 
 /**
  * Null operation function as place holder for loading functions later
@@ -55,10 +56,10 @@ type loadFunction = (file: Mrbr_IO_File) => Mrbr_IO_FilePromise;
  */
 export class MrbrBase extends EventTarget {
     public static MRBR_COMPONENT_NAME: any = Symbol("mrbr_component_name");
+    public static MRBR_COMPONENT_MANIFEST: any = Symbol("mrbr_component_manifest");
     static cacheTimeOut: number = 5000;
     static temporaryObjectTimeOut: number = 5000;
     static defaultMrbrPath: string = "/mrbr/";
-    static componentParameters: string = "mrbr,data,resolve,reject,objectName";
     static _mrbr: MrbrBase;
     private _config: Mrbr_Assembly_MrbrConfig;
     private _paths: Map<string, string> = new Map();
@@ -218,6 +219,19 @@ export class MrbrBase extends EventTarget {
          */
         static KEY_ARRAY = Symbol("__keyarray__");
 
+
+
+
+        /**
+         * Namespace Component Name          
+         * @date 10/09/2022 - 23:53:24
+         *
+         * @static
+         * @type {string}
+         */
+        static NAMESPACE_COMPONENT_NAME: string = "Mrbr.System.MrbrBase.Namespace";
+
+
         /**
          * @date 22/08/2022 - 20:20:03
          *
@@ -232,6 +246,8 @@ export class MrbrBase extends EventTarget {
             self[ns.PARENT] = parent;
             self[ns.NAME] = name;
             self[ns.IS_NAMESPACE] = true;
+            self[MrbrBase.MRBR_COMPONENT_NAME] = "Mrbr.System.MrbrBase.Namespace";
+            self[MrbrBase.MRBR_COMPONENT_MANIFEST] = null;
             /// returns this as a Proxied Map    
             return new Proxy(self, ns.PROXY_HANDLER);
         }
@@ -251,9 +267,8 @@ export class MrbrBase extends EventTarget {
          * @param {object} target Object to be checked, true if Namespace
          * @returns {boolean}
          */
-        static isNamespace(target: any): boolean {
-            return target[MrbrBase.Namespace.IS_NAMESPACE]
-        }
+        static isNamespace(target: any): boolean { return target[MrbrBase.Namespace.IS_NAMESPACE]; }
+
 
         /**
          * Can named part be assigned another Namespace part
@@ -307,56 +322,45 @@ export class MrbrBase extends EventTarget {
                         let namespace = [target[ns.NAME]],
                             parent = target[ns.PARENT],
                             lastParent = null;
-                        if (parent) { namespace.push(parent[ns.NAME]) }
+                        parent && namespace.push(parent[ns.NAME])
                         while (parent) {
                             lastParent = parent;
                             parent = parent[ns.PARENT];
-                            if (parent && parent[ns.NAME]) {
-                                namespace.push(parent[ns.NAME])
-                            }
+                            (parent && parent[ns.NAME]) && namespace.push(parent[ns.NAME]);
                         }
-                        namespace.reverse().forEach(value => {
-                            lastParent = lastParent[value];
-                        })
+                        namespace.reverse().forEach(value => lastParent = lastParent[value])
                         return lastParent;
                     }
-                    case ns.IS_NAMESPACE: {
-                        return target[ns.IS_NAMESPACE]
-                    };
+                    case ns.IS_NAMESPACE: return target[ns.IS_NAMESPACE];
                     case ns.SIZE: return target.size;
                     case ns.TARGET: return target;
                     case ns.NAME: return target[ns.NAME];
                     case ns.PARENT: return target[ns.PARENT];
-                    case ns.ASSIGNABLE: {
-                        if (!target[ns.IS_NAMESPACE]) { return false; }
-                        if (target[ns.SIZE] > 0) { return false; }
-                        return true;
-                    }
+                    case ns.ASSIGNABLE: return !(!target[ns.IS_NAMESPACE] || (target[ns.SIZE] > 0));
                     case ns.ROOT: {
                         let parent = target[ns.PARENT],
                             root = "";
-                        if (parent) { root = parent[ns.NAME]; }
+                        parent && (() => root = parent[ns.NAME])()
                         while (parent) {
                             parent = parent[ns.PARENT];
-                            if (parent && parent[ns.NAME]) { root = parent[ns.NAME]; }
+                            (parent && parent[ns.NAME]) && (() => root = parent[ns.NAME])();
                         }
                         return root;
                     }
                     case ns.TO_STRING: {
-                        let namespace = [target[ns.NAME]]
-                        let parent = target[ns.PARENT];
-                        if (parent) { namespace.push(parent[ns.NAME]) }
+                        let namespace = [target[ns.NAME]],
+                            parent = target[ns.PARENT];
+                        parent && namespace.push(parent[ns.NAME]);
                         while (parent) {
                             parent = parent[ns.PARENT];
-                            if (parent && parent[ns.NAME]) { namespace.push(parent[ns.NAME]) }
+                            (parent && parent[ns.NAME]) && namespace.push(parent[ns.NAME]);
                         }
                         return namespace.reverse().join(".");
                     }
                     /// Create a new Namespace part in target Namespace
                     default:
-                        if (target.has(<string>name) === false) {
-                            target.set(<string>name, new ns(target, <string>name))
-                        }
+                        !target.has(<string>name) && target.set(<string>name, new ns(target, <string>name));
+
                 }
                 return (target.has(<string>name)) ? (target.get(<string>name)) : null;
             },
@@ -427,21 +431,22 @@ export class MrbrBase extends EventTarget {
             return parent[name];
         }
     }
-    constructor() {
+    constructor(host?: any) {
         super();
         const self = this,
             assembly = self.assembly;
+        host && (_ => self.host = host)();
         MrbrBase.Namespace.createAssembly(window, 'Mrbr');
         self._entries = new Proxy(assembly, {
-            get(target, name) {
+            get(target, name): any {
                 return (target.has(name as string)) ? (target.get(name as string)).result : undefined;
             }
         })
         self._index = new Proxy(assembly, {
-            get(target, name) {
+            get(target, name): any {
                 return (target.has(name as string)) ? target.get(name as string) : undefined;
             },
-            set(target, name, value) {
+            set(target, name, value): true {
                 target.set((name as string), value);
                 return true;
             }
@@ -452,7 +457,7 @@ export class MrbrBase extends EventTarget {
             }
         })
         MrbrBase._mrbr = this;
-        MrbrBase.Namespace.createAssembly(window, "Mrbr")
+        MrbrBase.Namespace.createAssembly(self.host, "Mrbr")
     }
 
     /**
@@ -571,18 +576,17 @@ export class MrbrBase extends EventTarget {
             promise = Mrbr_System_MrbrPromise.CreateMrbrPromise("MrbrBase.initialise"),
             self_paths = self._paths;
         self.config = config;
-        var global: any = global || null;
-        self.host = ((window as any) || (global) || (globalThis as any));
-        if (config?.paths) {
-            Object.keys(config.paths).forEach(key => self_paths.set(key, config.paths[key]));
-        }
+        !(self.host) && (_ => {
+            var global: any = global || null;
+            self.host = ((window as any) || (global) || (globalThis as any));
+        })();
+        (config?.paths) && Object.keys(config.paths).forEach(key => self_paths.set(key, config.paths[key]));
         /// If browser based
-        if (document) {
+        (document) && (_ => {
             const mrbrCss: HTMLStyleElement = document.createElement("style");
             mrbrCss.textContent = `:root { --mrbr-root-folder :"${self.paths.get("Mrbr")}";}`;
             document.head.appendChild(mrbrCss);
-        }
-
+        })()
         promise.resolve(self);
         return promise;
     }
@@ -596,33 +600,18 @@ export class MrbrBase extends EventTarget {
      * @returns {Promise<any>}
      */
     public loadManifest(manifest: Array<Mrbr_IO_File> | Mrbr_IO_File): Mrbr_IO_ManifestPromise {
-        if (!manifest || (Array.isArray(manifest) && manifest.length === 0)) {
-            let retValPromise = Mrbr_IO_ManifestPromise.CreateManifestPromise("MrbrBase.loadManifest", []);
+        const mifp = Mrbr_IO_ManifestPromise,
+            mifpCreate = mifp.CreateManifestPromise;
+        (!manifest || (Array.isArray(manifest) && manifest.length === 0)) && (_ => {
+            let retValPromise = mifpCreate("MrbrBase.loadManifest", []);
             retValPromise.resolve();
             return retValPromise;
-        }
+        })();
         const self = this,
-            _manifest = (Array.isArray(manifest) ? manifest : [manifest]),
-            promise = Mrbr_IO_ManifestPromise.CreateManifestPromise("MrbrBase.loadManifest", _manifest),
-            loadFilePromises = _manifest.map(manifestEntry => self.load(manifestEntry).promise);
-        // _manifest
-        //     .forEach(manifestEntry => {
-        //         loadPromises.push(self.load(manifestEntry).promise);
-        //     })
-
-        //Promise.all((Array.isArray(manifest) ? manifest : [manifest]).map(manifestEntry => self.load(manifestEntry).promise))
-        //debugger
-        const allFilePromises = Promise.all(loadFilePromises);
-        //debugger
-        allFilePromises
-            .then(values => {
-                debugger
-                promise.resolve()
-            })
-            .catch(err => {
-                //debugger;
-                promise.reject(err)
-            });
+            promise = mifpCreate("MrbrBase.loadManifest", (Array.isArray(manifest) ? manifest : [manifest]));
+        Promise.all(promise.files.map(manifestEntry => self.load(manifestEntry).promise))
+            .then(_ => promise.resolve())
+            .catch(err => promise.reject(err));
         return promise;
     }
 
@@ -661,54 +650,35 @@ export class MrbrBase extends EventTarget {
      * @returns {Promise<any>} Promise fo Loading file
      */
     load(file: Mrbr_IO_File): Mrbr_IO_FilePromise {
-        const self = this;
-        //let promise : = Mrbr_IO_FilePromise.CreateFilePromise("MrbrBase.load", file);
-        let promise: Mrbr_IO_FilePromise;
-        if (file.fileType === Mrbr_IO_FileType.Component) {
-            debugger
-            promise = self.loadComponent(file);
-            //debugger;
-            //var p1 = filePromise.promise;
-            //debugger;
-            //var p2 = p1.promise;
-            //debugger;
-            //p2
-            promise
-                .then(component => {
-                    promise.resolve();
-                })
-                .catch(err => {
-                    console.log(err)
-                    promise.reject(err);
-                });
+        const self = this,
+            mift = Mrbr_IO_FileType;
+        switch (file.fileType) {
+            case mift.Component:
+                return self.loadComponent(file);
+            case mift.ScriptLink:
+                return self.loadScriptLink(file)
+            case mift.CssLink:
+                return self.loadCssLink(file)
+            case mift.CssElement:
+            case mift.Html:
+            case mift.Json:
+            case mift.Other:
+            case mift.Resource:
+            case mift.Script:
+            case mift.ScriptElement:
+            case mift.Text:
+                throw new Error("File Operation Not Implemented");
+            default:
+                throw new Error("not a file option");
         }
-        else if (file.fileType === Mrbr_IO_FileType.ScriptLink) {
-            promise = self.loadScriptLink(file)
-        }
-        else if (file.fileType === Mrbr_IO_FileType.CssLink) {
-            promise = self.loadCssLink(file)
-        }
-        else if (self.loadFunctionMap.has(file.fileType)) {
-            // self.loadFunctionMap.get(file.fileType)(file)
-            //     .then(result => promise.resolve())
-            //     .catch(err => promise.reject(err))
-        }
-        else {
-            throw new Error("not a file option");
-        }
-        //promise.reference = "MrbrBase.load:" + file.fileName;
-        return promise;
     }
 
-    /**
-     * Create a promise that externalises reject and resolve to avoid nesting in Promise
-     * @date 22/08/2022 - 21:30:21
-     *
-     * @returns {mrbrPromise}
-     */
-    // createPromise(reference: string): Mrbr_System_MrbrPromise {
-    //     return Mrbr_System_MrbrPromise.CreateMrbrPromise(reference);
-    // }
+
+
+
+
+    _loadComponentMemo: fileLoaderDelegate;
+
 
     /**
      * Load an Mrbr Assembly compliant component
@@ -718,102 +688,86 @@ export class MrbrBase extends EventTarget {
      * @returns {Promise<any>} Promise of loading component
      */
     loadComponent(file: Mrbr_IO_File): Mrbr_IO_FilePromise {
-        const self = this,
-            ns = MrbrBase.Namespace;
-        if (file.entry && Object.keys(file.entry).indexOf(MrbrBase.MRBR_COMPONENT_NAME) >= 0) {
-            debugger
-            if(Mrbr_IO_FilePromise.Promises.has(file.entry[MrbrBase.MRBR_COMPONENT_NAME])){
-                file.loadingPromise = Mrbr_IO_FilePromise.Promises.get(file.entry[MrbrBase.MRBR_COMPONENT_NAME])
-                file.loadingPromise.resolve();
-                return file.loadingPromise;
-            }
 
-            let dummyFile = new Mrbr_IO_File(Mrbr_IO_FileType.Component, "", "", "");
-            dummyFile.fileName = file.entry[MrbrBase.MRBR_COMPONENT_NAME];// `dummy_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`;
-            Mrbr_IO_FilePromise.Promises.get(file.entry[MrbrBase.MRBR_COMPONENT_NAME])
-            file.loadingPromise = Mrbr_IO_FilePromise.CreateFilePromise("MrbrBase:loadComponent", dummyFile);
-            //file.loadingPromise = retvalFilePromise;
-            //let retvalFilePromise = new Mrbr_IO_FilePromise(file);
-            file.loadingPromise.resolve();
-            return file.loadingPromise;
-        }
-        if (!ns.isNamespace(file.entry)) {
-            if(Mrbr_IO_FilePromise.Promises.has(file.entry[MrbrBase.MRBR_COMPONENT_NAME])){
-                file.loadingPromise = Mrbr_IO_FilePromise.Promises.get(file.entry[MrbrBase.MRBR_COMPONENT_NAME])
-                file.loadingPromise.resolve();
-                return file.loadingPromise;
-            }
-            let dummyFile = new Mrbr_IO_File(Mrbr_IO_FileType.Component, "", "", "");
-            dummyFile.fileName = `dummy_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`;
-            file.loadingPromise = Mrbr_IO_FilePromise.CreateFilePromise("MrbrBase:loadComponent", dummyFile);
-            //file.loadingPromise = retvalFilePromise;
-            //let retvalFilePromise = new Mrbr_IO_FilePromise(file);
-            file.loadingPromise.resolve();
-            return file.loadingPromise;
-        }
-        if (file.entry[ns.NAME].toLocaleLowerCase().includes("mrbrbase")) {
-            debugger
-        }
-        //  If a file loading is already in progress for this Component as load requests can be in parallel
-        //  Get the promise from the first component load request
-        if (Mrbr_IO_FilePromise.Promises.has(file.fileName)) {
-            return Mrbr_IO_FilePromise.Promises.get(file.fileName);
-        }
-        if (ns.isNamespace(file.entry) && Mrbr_IO_FilePromise.Promises.has(ns.namespace(file.entry))) {
-            return Mrbr_IO_FilePromise.Promises.get(ns.namespace(file.entry));
-        }
-        const mrbrFetch = new Mrbr_IO_Fetch(),
-            //mrbrNamespace = ns.namespace(file.entry),
-            prms = MrbrBase.componentParameters,
+        const self = this;
+        if (self._loadComponentMemo) { return self._loadComponentMemo(file); }
+        const ns = MrbrBase.Namespace,
+            nsNamespace = ns.namespace,
+            nsIsNamespace = ns.isNamespace,
+            moif = Mrbr_IO_FilePromise,
+            moifCreate = moif.CreateFilePromise,
+            mif = Mrbr_IO_File,
+            _compName = MrbrBase.MRBR_COMPONENT_NAME,
+            _compManifest = MrbrBase.MRBR_COMPONENT_MANIFEST,
+            mift = Mrbr_IO_FileType,
+            namespaceComponentName: string = MrbrBase.Namespace.NAMESPACE_COMPONENT_NAME,
+            componentParameters: string = "mrbr,data,resolve,reject,symbols",
             instance = MrbrBase.mrbrInstance,
             fn = Function;
-        //  Create a promise for a Component not previously requested
-        Mrbr_IO_FilePromise.CreateFilePromise("MrbrBase:loadComponent:" + ns.namespace(file.entry), file);
-        /// Fetch file
-        mrbrFetch
-            .fetch(file.fileName, {})
-            .then(result => {
-                result
-                    .text()
-                    .then((txt: any) => {
-                        let loadedPromise = Mrbr_System_MrbrPromise.CreateMrbrPromise<any>("mrbrFetch");
-                        fn(prms, txt).bind(self)(instance, file.data, loadedPromise.executor.resolve, loadedPromise.executor.reject, MrbrBase.MRBR_COMPONENT_NAME);
-                        loadedPromise
-                            .then(entry => {
-                                debugger
-                                //let cmp = ns.toObject(file.entry);
-                                // Object.defineProperty(cmp, Symbol.for("mrbr_component_name"), {
-                                //     get: ()=> cmp[Symbol.for("mrbr_component_name")]
-                                // });
-                                //(cmp as any)[MrbrBase.MRBR_COMPONENT_NAME] = MrbrBase.Namespace.namespace(file.entry);
-                                //console.log(cmp[MrbrBase.MRBR_COMPONENT_NAME]);
-                                debugger
-                                //if (cmp && Object.keys(cmp).indexOf("manifest") >= 0 && (cmp as any).hasOwnProperty("manifest") && (cmp as any).manifest.length) {
-                                if (entry && Object.keys(entry).indexOf("manifest") >= 0 && (entry as any).hasOwnProperty("manifest") && (entry as any).manifest.length) {
-                                    debugger
-                                    console.log("manifest started: ", (entry as any).manifest)
-                                    self.loadManifest((entry as any).manifest)
-                                        .then(manifest => {
-                                            console.log("manifest loaded: ", manifest)
-                                            file.loadingPromise.resolve()
-                                            Mrbr_IO_FilePromise.Promises.get(entry[MrbrBase.MRBR_COMPONENT_NAME]).resolve();
-                                        })
-                                }
-                                else {
-                                    file.loadingPromise.resolve()
-                                }
-                                //file.loadingPromise.resolve()
-                            })
-                            .catch(err => {
-                                console.log(`error: `, err);
-                                file.loadingPromise.reject({ error: err, file: file })
-                            })
-                    })
-            })
-            .catch(err => {
-                file.loadingPromise.reject(err)
-            });
-        return file.loadingPromise;
+        self._loadComponentMemo = (file => {
+            const fileEntry = file.entry;
+            if (fileEntry && Object.keys(fileEntry).indexOf(_compName) >= 0) {
+                if (moif.Promises.has(fileEntry[_compName])) {
+                    file.loadingPromise = moif.Promises.get(fileEntry[_compName])
+                    file.loadingPromise.resolve();
+                    return file.loadingPromise;
+                }
+                const dummyFile = new mif(mift.Component, "", "", "");
+                dummyFile.fileName = fileEntry[_compName];
+                moif.Promises.get(fileEntry[_compName])
+                file.loadingPromise = moifCreate("MrbrBase:loadComponent", dummyFile);
+                file.loadingPromise.resolve();
+                return file.loadingPromise;
+            }
+            if (!nsIsNamespace(fileEntry)) {
+                if (moif.Promises.has(fileEntry[_compName])) {
+                    file.loadingPromise = moif.Promises.get(fileEntry[_compName])
+                    file.loadingPromise.resolve();
+                    return file.loadingPromise;
+                }
+                let dummyFile = new mif(mift.Component, "", "", "");
+                dummyFile.fileName = `dummy_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`;
+                file.loadingPromise = moifCreate("MrbrBase:loadComponent", dummyFile);
+                file.loadingPromise.resolve();
+                return file.loadingPromise;
+            }
+            //  If a file loading is already in progress for this Component as load requests can be in parallel
+            //  Get the promise from the first component load request
+            if (moif.Promises.has(file.fileName)) {
+                return moif.Promises.get(file.fileName);
+            }
+            if (nsIsNamespace(file.entry) && moif.Promises.has(nsNamespace(fileEntry))) {
+                return moif.Promises.get(nsNamespace(fileEntry));
+            }
+            //  Create a promise for a Component not previously requested
+            moifCreate("MrbrBase:loadComponent:" + nsNamespace(fileEntry), file);
+            /// Fetch file
+            new Mrbr_IO_Fetch()
+                .fetch(file.fileName, {})
+                .then(result => {
+                    result
+                        .text()
+                        .then((componentText: string) => {
+                            let loadedPromise = Mrbr_System_MrbrPromise.CreateMrbrPromise<any>(`mrbrFetch:${file.fileName}`);
+                            fn(componentParameters, componentText).bind(self)(instance, file.data, loadedPromise.executor.resolve, loadedPromise.executor.reject, { componentName: _compName, manifest: _compManifest });
+                            loadedPromise
+                                .then(entry => {
+                                    let entryManifest = ((entry && entry[_compName] !== namespaceComponentName && (entry as any)[_compManifest]))
+                                    entryManifest &&
+                                        (_ => self.loadManifest(entryManifest)
+                                            .then(_ => file.loadingPromise.resolve())
+                                            .catch(err => file.loadingPromise.reject({ error: err, manifest: entryManifest })))() ||
+                                        (_ => file.loadingPromise.resolve())();
+                                })
+                                .catch(err => file.loadingPromise.reject({ error: err, file: file }))
+                        })
+                })
+                .catch(err => {
+                    file.loadingPromise.reject(err)
+                });
+            return file.loadingPromise;
+        });
+        return self.loadComponent(file);
     }
     loadText() { }
     loadJson() { }
@@ -858,10 +812,8 @@ export class MrbrBase extends EventTarget {
             .then(_ => {
                 self._loadCssLink = Mrbr_IO_LoadCssLink.bind(self)
                 self.loadCssLink(file)
-                    .then(_ => {
-                        //debugger;
-                        filePromise.resolve();
-                    })
+                    .then(_ => filePromise.resolve())
+                    .catch(err => filePromise.reject(err))
             })
         return filePromise;
     }
@@ -883,10 +835,8 @@ export class MrbrBase extends EventTarget {
             .then(_ => {
                 self._loadScriptLink = Mrbr_IO_LoadScriptLink.bind(self)
                 self.loadScriptLink(file)
-                    .then(_ => {
-                        //debugger;
-                        filePromise.resolve();
-                    })
+                    .then(_ => filePromise.resolve())
+                    .catch(err => filePromise.reject(err))
             })
         return filePromise;
     }
@@ -904,10 +854,7 @@ export class MrbrBase extends EventTarget {
         const self = this,
             promise = Mrbr_System_MrbrPromise.CreateMrbrPromise("MrbrBase.addFileFunction");
         self.addFunction(target, targetFunctionName, functionToLoad)
-            .then(fn => {
-                //debugger
-                promise.resolve(fn)
-            })
+            .then(fn => promise.resolve(fn))
             .catch(err => promise.reject(err))
         return promise;
     }
@@ -953,7 +900,6 @@ export class MrbrBase extends EventTarget {
             retVal.resolve(target[targetFunctionName])
             return retVal;
         }
-        //debugger
         if (!MrbrBase.Namespace.isNamespace(functionToLoad)) {
             target[targetFunctionName] = functionToLoad;
 
@@ -962,14 +908,10 @@ export class MrbrBase extends EventTarget {
             retVal.resolve(functionToLoad)
             return retVal;
         }
-        //debugger
         //const promise = self.createPromise("MrbrBase.addFunction");
         let promise: Mrbr_IO_ManifestPromise = self.loadManifest(Mrbr_IO_File.component(functionToLoad));
         promise
-            .then(result => {
-                promise.resolve()
-                //promise.resolve(target[targetFunctionName])
-            })
+            .then(_ => promise.resolve())
             .catch(err => promise.reject(err));
         return promise;
     }
@@ -1045,4 +987,4 @@ export class MrbrBase extends EventTarget {
  *
  * @type {MrbrBase}
  */
-var mrbr: MrbrBase = new MrbrBase();
+var mrbr: MrbrBase = new MrbrBase(this);
