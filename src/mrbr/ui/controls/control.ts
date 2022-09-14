@@ -4,17 +4,28 @@ import { Mrbr_UI_Controls_ControlConfig } from "./ControlConfig";
 import { Mrbr_System_Events_EventHandler } from "../../system/events/EventHandler";
 import { Mrbr_UI_Controls_Themes } from "./themes";
 import { Mrbr_UI_Controls_ThemeChangeEvent } from "./themeChangeEvent";
-export class Mrbr_UI_Controls_Control extends EventTarget {
-    _styleClasses = Mrbr_UI_Html_StyleClasses
-    _rootElementName: string;
-    _elements: Map<string, HTMLElement>
-    _controls: Map<string, Mrbr_UI_Controls_Control>
-    _events: Map<string, Mrbr_System_Events_EventHandler>;
+import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "./ControlConfigOptionalParameters";
+import { Mrbr_UI_Controls_IControl } from "./IControl";
+import { Mrbr_System_MrbrPromise } from "../../system/MrbrPromise";
+type Mrbr_UI_Controls_ControlDefaultsCollection = {
+    [key: string]: Mrbr_UI_Controls_ControlConfig;
+}
+export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Controls_IControl {
+    private _styleClasses = Mrbr_UI_Html_StyleClasses
+    private _rootElementName: string;
+    private _defaultContainerElementName: string;
+    private _elements: Map<string, HTMLElement>
+    private _controls: Map<string, Mrbr_UI_Controls_Control>
+    protected _defaultConfiguration: { [key: string]: Mrbr_UI_Controls_ControlConfigOptionalParameters };
+    protected _customConfiguration: { [key: string]: Mrbr_UI_Controls_ControlConfigOptionalParameters };
+    private _events: Map<string, Mrbr_System_Events_EventHandler>;
+    private _updateTheme: boolean = false;
     private static themeMediaMatch = "(prefers-color-scheme: dark)";
     private static windowThemeChangeEventName: string = "change";
     private static get _theme() { return window.matchMedia(Mrbr_UI_Controls_Control.themeMediaMatch).matches ? Mrbr_UI_Controls_Themes.dark : Mrbr_UI_Controls_Themes.light; }
     private static _controlEvents = new EventTarget();
     private _themedElements: Set<HTMLElement> = new Set<HTMLElement>();
+    public static DELETE_ENTRY: symbol = Symbol("delete_entry");
     public get themedElements() {
         return this._themedElements;
     }
@@ -34,7 +45,6 @@ export class Mrbr_UI_Controls_Control extends EventTarget {
         );
     constructor(rootElementName: string) {
         super();
-        debugger
         const self = this;
         self.rootElementName = rootElementName;
 
@@ -43,19 +53,13 @@ export class Mrbr_UI_Controls_Control extends EventTarget {
                 return (target.has(name as string)) ? target.get(name as string) : null;
             },
             set(target, name: string, value) {
-                if (name === "delete") {
-                    throw new Error("Delete is a function and cannot be used as a key")
-
-                }
                 if (value instanceof HTMLElement) {
                     if (value && !value?.dataset?.id) {
                         value.dataset.id = <string>name;
                     }
                 }
                 target.set((name as string), value);
-                if (!value) {
-                    target.delete(name)
-                }
+                if (value === Mrbr_UI_Controls_Control.DELETE_ENTRY) { target.delete(name); }
                 return true;
             },
             ownKeys(target) {
@@ -63,7 +67,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget {
             }
         })
 
-        this._controls = new Proxy(new Map<string, Mrbr_UI_Controls_Control>(), {
+        self._controls = new Proxy(new Map<string, Mrbr_UI_Controls_Control>(), {
             get(target: Map<string, Mrbr_UI_Controls_Control>, name: string) {
                 return (target.has(name)) ? (target.get(name)) : null;
             },
@@ -77,7 +81,6 @@ export class Mrbr_UI_Controls_Control extends EventTarget {
             ownKeys(target) {
                 return Array.from(target.keys());
             }
-
         })
         self._events = new Proxy(new Map<string, Mrbr_System_Events_EventHandler>(), {
             get(target, name: string) {
@@ -90,39 +93,27 @@ export class Mrbr_UI_Controls_Control extends EventTarget {
                     target.set(name, value);
                     return true;
                 }
-                if (value) {
-
-                    if (!value.handler) {
-                        value.handler = value.event.bind((value.context || value.eventTarget));
-                        if (value.options !== undefined) {
-                            value.eventTarget.addEventListener(value.eventName, value.handler, value.options)
-                            console.log(value.options)
+                if (!value) { return target.delete(name); }
+                if (!value.handler) {
+                    value.handler = value.event.bind((value.context || value.eventTarget));
+                    (value.options !== undefined) ?
+                        value.eventTarget.addEventListener(value.eventName, value.handler, value.options) :
+                        value.eventTarget.addEventListener(value.eventName, value.handler);
+                }
+                value.remove = () => {
+                    if (target.has(name)) {
+                        if (value.count > 1) {
+                            target.get(name as string).count--;
                         }
                         else {
-                            value.eventTarget.addEventListener(value.eventName, value.handler)
+                            (value.options !== undefined) ?
+                                value.eventTarget.removeEventListener(value.eventName, value.handler, value.options) :
+                                value.eventTarget.removeEventListener(value.eventName, value.handler);
+                            target.delete(name);
                         }
                     }
-                    value.remove = () => {
-                        if (target.has(name)) {
-                            if (value.count > 1) {
-                                target.get(name as string).count++;
-                            }
-                            else {
-
-                                if (value.options !== undefined) {
-                                    value.eventTarget.removeEventListener(value.eventName, value.handler, value.options)
-                                }
-                                else {
-                                    value.eventTarget.removeEventListener(value.eventName, value.handler)
-                                }
-                                target.delete(name);
-                            }
-                        }
-                    }
-                    target.set(name, value);
-                } else {
-                    target.delete(name);
                 }
+                target.set(name, value);
                 return true;
             }
             , ownKeys(target) {
@@ -136,8 +127,14 @@ export class Mrbr_UI_Controls_Control extends EventTarget {
             event: self.themeChanged
         }
     }
+    initialise(...args: any[]): Mrbr_System_MrbrPromise<any> {
+        let resolve,
+            retval = Mrbr_System_MrbrPromise.CreateMrbrPromise("");
+            retval.resolve(null);
+        return retval;
+    }
 
-    private _updateTheme: boolean = false;
+
     private themeChanged(event: Mrbr_UI_Controls_ThemeChangeEvent): void {
         const self = this;
         if (self._updateTheme === false) {
@@ -235,12 +232,40 @@ export class Mrbr_UI_Controls_Control extends EventTarget {
         }
         return _element;
     }
+    public get defaultContainerElement(): HTMLElement {
+        const self = this;
+        return self.elements[self._defaultContainerElementName]
+    }
+    public set defaultContainerElement(value: HTMLElement) {
+        const self = this;
+        self.elements[self._defaultContainerElementName] = value;
+    }
+    public get defaultContainerElementName(): string {
+        return this._defaultContainerElementName;
+    }
+    public set defaultContainerElementName(value: string) {
+        this._defaultContainerElementName = value;
+    }
+    public get defaultConfiguration(): { [key: string]: Mrbr_UI_Controls_ControlConfigOptionalParameters } {
+        return this._defaultConfiguration;
+    }
+    public set defaultConfiguration(value: { [key: string]: Mrbr_UI_Controls_ControlConfigOptionalParameters }) {
+        this._defaultConfiguration = value;
+    }
+    public get customConfiguration(): { [key: string]: Mrbr_UI_Controls_ControlConfigOptionalParameters } {
+        return this._customConfiguration;
+    }
+    public set customConfiguration(value: { [key: string]: Mrbr_UI_Controls_ControlConfigOptionalParameters }) {
+        this._customConfiguration = value;
+    }
+
     get elements() { return this._elements }
     get controls() { return this._controls }
     get events(): Map<string, Mrbr_System_Events_EventHandler> { return this._events }
     get rootElementName(): string { return this._rootElementName; }
     set rootElementName(value: string) { this._rootElementName = value; }
     get rootElement(): HTMLElement { const self = this; return self.elements[self._rootElementName]; }
+    set rootElement(value: HTMLElement) { const self = this; self.elements[self._rootElementName] = value; }
     classes(targetElement: string | HTMLElement, action: Mrbr_UI_Bootstrap_Controls_ClassActions, value: Array<string> | string, styleType?: Object): HTMLElement {
         const self = this,
             styleClasses = self._styleClasses,

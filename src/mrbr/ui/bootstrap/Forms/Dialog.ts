@@ -14,6 +14,9 @@ import { Mrbr_UI_Controls_Handles_Resize } from "../../controls/handles/resize";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 
 type AnyOp = (...args) => void;
+type Mrbr_UI_Controls_ControlDefaultsCollection = {
+    [key: string]: Mrbr_UI_Controls_ControlConfig;
+}
 export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     public static TITLEBAR_CONTROL_NAME: string = "titlebar";
     public static TITLE_TEXT_CONTROL_NAME: string = "titleText";
@@ -23,6 +26,10 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     public static CONTENT_CONTAINER_CONTROL_NAME: string = "contentContainer";
     public static FOOTER_CONTROL_NAME: string = "footer";
     public static DIALOG_FULLSCREEN_EVENT_NAME: string = "footer";
+    protected _customConfiguration: { [key: string]: Mrbr_UI_Controls_ControlConfigOptionalParameters } = {
+        "1": new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+    }
+
     // public static DIALOG_ROOT_ELEMENT: Mrbr_UI_Controls_ControlConfig$OptionalParameters =
     //     new Mrbr_UI_Controls_ControlConfig$OptionalParameters()
     //         .Classes(["border", "shadow", "d-flex", "flex-column", "border-1", "border-dark", "d-none"])
@@ -40,12 +47,15 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
         return new ctrlCfg(this.rootElementName, "div",
             new Mrbr_UI_Controls_ControlConfigOptionalParameters()
                 .Classes(["border", "shadow", "d-flex", "flex-column", "border-1", "border-dark", "d-none"])
-                .Styles({ transform: `translate(${this.bounds.x}px,${this.bounds.y}px)`, position: "absolute", top: "0px", left: "0px", width: `${self.bounds.width}px`, height: `${self.bounds.height}` })
+                .Styles({
+                    transform: `translate(${this.bounds.x}px,${this.bounds.y}px)`, position: "absolute", top: "0px", left: "0px", width: `${self.bounds.width}px`, height: `${self.bounds.height}`,
+                    "minHeight": `${this._minBounds.height / 2}px`
+                })
                 .Children([
                     new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME, "div",
                         new Mrbr_UI_Controls_ControlConfigOptionalParameters()
                             .Classes(["container-fluid", "h-100", "p-1", "bg-light", "d-flex", "flex-column"])
-                            .Styles({ "minHeight": `${this._minBounds.height / 2}px` })
+                        // .Styles({ "minHeight": `${this._minBounds.height / 2}px` })
                     )
                 ])
         )
