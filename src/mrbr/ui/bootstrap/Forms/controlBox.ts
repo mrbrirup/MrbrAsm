@@ -7,6 +7,7 @@ import { Mrbr_UI_Bootstrap_Forms_ControlBox$Events } from "./controlBox$Events";
 import { Mrbr_UI_Bootstrap_Forms_Dialog$States } from "./Dialog$States";
 import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
+import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
 type ControlBoxControl = {
     name: string,
     src: string,
@@ -29,8 +30,14 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
 
         //this.createControls();
     }
-    public initialiseControl() {
-        this.createControls();
+    initialise(...args): Mrbr_System_MrbrPromise<any> {
+        const retval = Mrbr_System_MrbrPromise.CreateMrbrPromise("");
+        super.initialise(args)
+            .then(_ => {
+                this.createControls();
+                retval.resolve(this);
+            })
+        return retval;
     }
 
 
@@ -112,7 +119,6 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
         let eventTypeName = Mrbr_UI_Bootstrap_Forms_ControlBox$Events[parseInt((<HTMLElement>(mouseEvent.target)).dataset.eventType || (<HTMLElement>(mouseEvent.currentTarget)).dataset.eventType)];
         if (!eventTypeName) { return; }
         mouseEvent.stopImmediatePropagation();
-        debugger;
         let eventType = Mrbr_UI_Bootstrap_Forms_ControlBox$Events[Object.keys(Mrbr_UI_Bootstrap_Forms_ControlBox$Events).find(key => eventTypeName === key)];
         let event = new Mrbr_UI_Bootstrap_Forms_ControlBox$Event(Mrbr_UI_Bootstrap_Forms_ControlBox.CONTROL_BOX_CLICK_EVENT_NAME, eventType);
         this.dispatchEvent(event);

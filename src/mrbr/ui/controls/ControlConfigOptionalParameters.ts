@@ -12,7 +12,6 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     private _darkTheme?: Array<string> | string;
     constructor() {
         super();
-        console.log("Mrbr_UI_Controls_ControlConfig$OptionalParameters")
     }
     public ID(id: string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
         this.id = id;

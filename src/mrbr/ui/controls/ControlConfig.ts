@@ -25,7 +25,6 @@ export class Mrbr_UI_Controls_ControlConfig {
         self.children = optionalParameters?.children;
         self.lightTheme = optionalParameters?.lightTheme;
         self.darkTheme = optionalParameters?.darkTheme;
-
     }
     public get darkTheme(): Array<string> { return this._darkTheme; }
     public set darkTheme(value: Array<string> | string) { let _value = value || ""; this._darkTheme = Array.isArray(_value) ? _value : this._darkTheme = _value.split(" ").map(_val => _val.trim()); }
@@ -84,5 +83,49 @@ export class Mrbr_UI_Controls_ControlConfig {
     }
     public set children(value: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[]) {
         this._children = value;
+    }
+    public DarkTheme(value: Array<string> | string): Mrbr_UI_Controls_ControlConfig {
+        let _value = value || ""; this._darkTheme = Array.isArray(_value) ? _value : this._darkTheme = _value.split(" ").map(_val => _val.trim());
+        return this;
+    }
+    public LightTheme(value: Array<string> | string): Mrbr_UI_Controls_ControlConfig {
+        let _value = value || ""; this._lightTheme = Array.isArray(_value) ? _value : this._lightTheme = _value.split(" ").map(_val => _val.trim());
+        return this;
+    }
+    public Styles(value: object): Mrbr_UI_Controls_ControlConfig {
+        this._styles = value;
+        return this;
+    }
+    public Properties(value: object): Mrbr_UI_Controls_ControlConfig {
+        this._properties = value;
+        return this;
+    }
+    public ElementName(value: string): Mrbr_UI_Controls_ControlConfig {
+        this._elementName = value;
+        return this;
+    }
+    public ElementType(value: string): Mrbr_UI_Controls_ControlConfig {
+        this._elementType = value;
+        return this;
+    }
+    public Id(value: string): Mrbr_UI_Controls_ControlConfig {
+        this._id = value;
+        return this;
+    }
+    public Classes(value: Array<string> | string): Mrbr_UI_Controls_ControlConfig {
+        this._classes = value;
+        return this;
+    }
+    public Attributes(value: object): Mrbr_UI_Controls_ControlConfig {
+        this._attributes = value;
+        return this;
+    }
+    public Data(value: object): Mrbr_UI_Controls_ControlConfig {
+        this._data = value;
+        return this;
+    }
+    public Children(value: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[]): Mrbr_UI_Controls_ControlConfig {
+        this._children = value;
+        return this;
     }
 }

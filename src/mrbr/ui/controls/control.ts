@@ -4,20 +4,18 @@ import { Mrbr_UI_Controls_ControlConfig } from "./ControlConfig";
 import { Mrbr_System_Events_EventHandler } from "../../system/events/EventHandler";
 import { Mrbr_UI_Controls_Themes } from "./themes";
 import { Mrbr_UI_Controls_ThemeChangeEvent } from "./themeChangeEvent";
-import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "./ControlConfigOptionalParameters";
 import { Mrbr_UI_Controls_IControl } from "./IControl";
 import { Mrbr_System_MrbrPromise } from "../../system/MrbrPromise";
-type Mrbr_UI_Controls_ControlDefaultsCollection = {
-    [key: string]: Mrbr_UI_Controls_ControlConfig;
-}
+import { Mrbr_UI_Controls_ControlDefaultsCollection } from "./ControlDefaultsCollection";
+import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "./ControlConfigOptionalParameters";
 export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Controls_IControl {
     private _styleClasses = Mrbr_UI_Html_StyleClasses
     private _rootElementName: string;
     private _defaultContainerElementName: string;
     private _elements: Map<string, HTMLElement>
     private _controls: Map<string, Mrbr_UI_Controls_Control>
-    protected _defaultConfiguration: { [key: string]: Mrbr_UI_Controls_ControlConfigOptionalParameters };
-    protected _customConfiguration: { [key: string]: Mrbr_UI_Controls_ControlConfigOptionalParameters };
+    protected _defaultConfiguration: Mrbr_UI_Controls_ControlDefaultsCollection;
+    protected _customConfiguration: Mrbr_UI_Controls_ControlDefaultsCollection;
     private _events: Map<string, Mrbr_System_Events_EventHandler>;
     private _updateTheme: boolean = false;
     private static themeMediaMatch = "(prefers-color-scheme: dark)";
@@ -26,18 +24,6 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     private static _controlEvents = new EventTarget();
     private _themedElements: Set<HTMLElement> = new Set<HTMLElement>();
     public static DELETE_ENTRY: symbol = Symbol("delete_entry");
-    public get themedElements() {
-        return this._themedElements;
-    }
-    public set themedElements(value) {
-        this._themedElements = value;
-    }
-    public get controlEvents() {
-        return Mrbr_UI_Controls_Control._controlEvents;
-    }
-    public set controlEvents(value) {
-        Mrbr_UI_Controls_Control._controlEvents = value;
-    }
     private static _themeChangeHandle = window.matchMedia(Mrbr_UI_Controls_Control.themeMediaMatch)
         .addEventListener(
             Mrbr_UI_Controls_Control.windowThemeChangeEventName,
@@ -47,7 +33,8 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         super();
         const self = this;
         self.rootElementName = rootElementName;
-
+        this._defaultConfiguration = new Mrbr_UI_Controls_ControlDefaultsCollection();
+        this._customConfiguration = new Mrbr_UI_Controls_ControlDefaultsCollection();
         self._elements = new Proxy(new Map<string, HTMLElement>(), {
             get(target, name) {
                 return (target.has(name as string)) ? target.get(name as string) : null;
@@ -128,12 +115,22 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         }
     }
     initialise(...args: any[]): Mrbr_System_MrbrPromise<any> {
-        let resolve,
-            retval = Mrbr_System_MrbrPromise.CreateMrbrPromise("");
-            retval.resolve(null);
+        let retval = Mrbr_System_MrbrPromise.CreateMrbrPromise("");
+        retval.resolve(this);
         return retval;
     }
-
+    public get themedElements() {
+        return this._themedElements;
+    }
+    public set themedElements(value) {
+        this._themedElements = value;
+    }
+    public get controlEvents() {
+        return Mrbr_UI_Controls_Control._controlEvents;
+    }
+    public set controlEvents(value) {
+        Mrbr_UI_Controls_Control._controlEvents = value;
+    }
 
     private themeChanged(event: Mrbr_UI_Controls_ThemeChangeEvent): void {
         const self = this;
@@ -148,16 +145,9 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     changeElementTheme(element: HTMLElement, theme: Mrbr_UI_Controls_Themes) {
         const self = this;
         const currentTheme = theme;// Mrbr_UI_Controls_Control._theme;
-        //console.log("currentTheme: start: ", theme, element)
-        //self.themedElements.forEach((themedElement: HTMLElement) => HTMLElement = function (themedElement: HTMLElement) {
-
-        //if (themedElement) {
         try {
             let toRemove = currentTheme === Mrbr_UI_Controls_Themes.dark ? element.dataset["lightTheme"] : element.dataset["darkTheme"],
                 toAdd = currentTheme === Mrbr_UI_Controls_Themes.dark ? element.dataset["darkTheme"] : element.dataset["lightTheme"];
-            if (toRemove || toAdd) {
-                console.log("elementTheme: ", theme, toAdd, toRemove)
-            }
             if (toRemove && toRemove.length > 0) {
                 self.classes(element, Mrbr_UI_Bootstrap_Controls_ClassActions.Remove, toRemove);
             }
@@ -246,19 +236,23 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     public set defaultContainerElementName(value: string) {
         this._defaultContainerElementName = value;
     }
-    public get defaultConfiguration(): { [key: string]: Mrbr_UI_Controls_ControlConfigOptionalParameters } {
+    public get defaultConfiguration(): Mrbr_UI_Controls_ControlDefaultsCollection {
         return this._defaultConfiguration;
     }
-    public set defaultConfiguration(value: { [key: string]: Mrbr_UI_Controls_ControlConfigOptionalParameters }) {
+    public set defaultConfiguration(value: Mrbr_UI_Controls_ControlDefaultsCollection) {
         this._defaultConfiguration = value;
     }
-    public get customConfiguration(): { [key: string]: Mrbr_UI_Controls_ControlConfigOptionalParameters } {
+    public get customConfiguration(): Mrbr_UI_Controls_ControlDefaultsCollection {
         return this._customConfiguration;
     }
-    public set customConfiguration(value: { [key: string]: Mrbr_UI_Controls_ControlConfigOptionalParameters }) {
+    public set customConfiguration(value: Mrbr_UI_Controls_ControlDefaultsCollection) {
         this._customConfiguration = value;
     }
-
+    protected configuration(key: string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
+        let retVal = this.customConfiguration.index[key] || this.defaultConfiguration.index[key];
+        if (retVal) { return retVal; }
+        throw new Error(`Configuration ${key} not found`)
+    }
     get elements() { return this._elements }
     get controls() { return this._controls }
     get events(): Map<string, Mrbr_System_Events_EventHandler> { return this._events }

@@ -1,4 +1,4 @@
-import { Mrbr_IO_File } from "../io/File"; 
+import { Mrbr_IO_File } from "../io/File";
 import { MrbrBase } from "../system/MrbrBase"; //exclude
 import { Mrbr_UI_Bootstrap_Forms_Dialog } from "../ui/bootstrap/Forms/Dialog";
 import { Mrbr_UI_Bootstrap_Forms_UrlDialog } from "../ui/bootstrap/Forms/UrlDialog";
@@ -9,15 +9,9 @@ export class Mrbr_Tests_Application {
     desktop: Mrbr_UI_Controls_Desktop
     constructor() {
         this.desktop = new Mrbr_UI_Controls_Desktop("desktop");
-        console.log("Mrbr_UI_Bootstrap_Forms_Dialog: ", Mrbr_UI_Bootstrap_Forms_Dialog)
-        MrbrBase.mrbrInstance.loadManifest([
-            Mrbr_IO_File.component(Mrbr_UI_Bootstrap_Forms_UrlDialog)
-        ])
-            .promise
-            .then(_ => {
-                //console.log("Mrbr_UI_Bootstrap_Forms_Dialog: ", Mrbr_UI_Bootstrap_Forms_UrlDialog)
+        MrbrBase.mrbrInstance.loadManifest(Mrbr_IO_File.component(Mrbr_UI_Bootstrap_Forms_UrlDialog))
+            .then(async _ => {
                 let form = new Mrbr_UI_Bootstrap_Forms_UrlDialog(
-                    // let form = new Mrbr_UI_Bootstrap_Forms_Dialog(
                     "newDialog1");
                 form.parentElement = this.desktop.windowContainer;
                 form.resizable = true;
@@ -25,6 +19,7 @@ export class Mrbr_Tests_Application {
                 form.title = "title1";
                 form.maximiseBox = true;
                 form.url = "https://en.wikipedia.org/wiki/Avocado";
+                await form.initialise();
                 setTimeout(() => {
                     form.draggable = false;
                     form.resizable = false;
@@ -44,10 +39,8 @@ export class Mrbr_Tests_Application {
                         }, 500);
 
                     }, 500);
-
                 }, 500);
                 form.show();
-                //form.dispose();
             })
     }
 }

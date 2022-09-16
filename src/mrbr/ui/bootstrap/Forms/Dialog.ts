@@ -1,5 +1,4 @@
 import { Mrbr_Geometry_Bounds2d } from "../../../geometry/bounds2d";
-import { Mrbr_Geometry_Point2d } from "../../../geometry/point2d";
 import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
@@ -7,16 +6,14 @@ import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHan
 import { Mrbr_UI_Bootstrap_Forms_ControlBox } from "./controlBox";
 import { Mrbr_UI_Bootstrap_Forms_ControlBox$Event } from "./controlBox$Event";
 import { Mrbr_UI_Bootstrap_Forms_ControlBox$Events } from "./controlBox$Events";
-import { Mrbr_UI_Bootstrap_Forms_Dialog$Handles } from "./Dialog$Handles";
 import { Mrbr_UI_Bootstrap_Forms_Dialog$States } from "./Dialog$States";
 import { Mrbr_UI_Controls_Handles_Drag } from "../../controls/handles/drag";
 import { Mrbr_UI_Controls_Handles_Resize } from "../../controls/handles/resize";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
+import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
 
 type AnyOp = (...args) => void;
-type Mrbr_UI_Controls_ControlDefaultsCollection = {
-    [key: string]: Mrbr_UI_Controls_ControlConfig;
-}
+
 export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     public static TITLEBAR_CONTROL_NAME: string = "titlebar";
     public static TITLE_TEXT_CONTROL_NAME: string = "titleText";
@@ -26,88 +23,6 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     public static CONTENT_CONTAINER_CONTROL_NAME: string = "contentContainer";
     public static FOOTER_CONTROL_NAME: string = "footer";
     public static DIALOG_FULLSCREEN_EVENT_NAME: string = "footer";
-    protected _customConfiguration: { [key: string]: Mrbr_UI_Controls_ControlConfigOptionalParameters } = {
-        "1": new Mrbr_UI_Controls_ControlConfigOptionalParameters()
-    }
-
-    // public static DIALOG_ROOT_ELEMENT: Mrbr_UI_Controls_ControlConfig$OptionalParameters =
-    //     new Mrbr_UI_Controls_ControlConfig$OptionalParameters()
-    //         .Classes(["border", "shadow", "d-flex", "flex-column", "border-1", "border-dark", "d-none"])
-    //         .Styles({ transform: `translate(${100}px,${100}px)`, position: "absolute", top: "0px", left: "0px", width: `${640}px`, height: `${480}px` })
-    //         .Children([
-    //             new Mrbr_UI_Controls_ControlConfig(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME, "div",
-    //                 new Mrbr_UI_Controls_ControlConfig$OptionalParameters()
-    //                     .Classes(["container-fluid", "h-100", "p-1", "bg-light", "d-flex", "flex-column"])
-    //                     .Styles({ "minHeight": `${640 / 2}px` })
-    //             )
-    //         ])
-    protected _rootElementConfig(): Mrbr_UI_Controls_ControlConfig {
-        const self = this,
-            ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-        return new ctrlCfg(this.rootElementName, "div",
-            new Mrbr_UI_Controls_ControlConfigOptionalParameters()
-                .Classes(["border", "shadow", "d-flex", "flex-column", "border-1", "border-dark", "d-none"])
-                .Styles({
-                    transform: `translate(${this.bounds.x}px,${this.bounds.y}px)`, position: "absolute", top: "0px", left: "0px", width: `${self.bounds.width}px`, height: `${self.bounds.height}`,
-                    "minHeight": `${this._minBounds.height / 2}px`
-                })
-                .Children([
-                    new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME, "div",
-                        new Mrbr_UI_Controls_ControlConfigOptionalParameters()
-                            .Classes(["container-fluid", "h-100", "p-1", "bg-light", "d-flex", "flex-column"])
-                        // .Styles({ "minHeight": `${this._minBounds.height / 2}px` })
-                    )
-                ])
-        )
-    }
-
-    protected _titleBarConfig(): Mrbr_UI_Controls_ControlConfig {
-        const self = this,
-            ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-        const retval = new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME, "div",
-            new Mrbr_UI_Controls_ControlConfigOptionalParameters()
-                .Classes(["mrbr-dialog-handle-drag", "container-fluid", "bg-dark", "d-flex", "user-select-none", "pe-0"])
-                .Styles({ height: "3rem" })
-                .LightTheme("bg-light")
-                .DarkTheme("bg-dark")
-                .Children([
-                    new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.TITLE_TEXT_CONTROL_NAME, "span",
-                        new Mrbr_UI_Controls_ControlConfigOptionalParameters()
-                            .Classes(["row", "justify-content-left", "align-self-center", "text-light", "py-1", "pe-1", "ps-3", "flex-fill"])
-                            .LightTheme("text-dark")
-                            .DarkTheme("text-light")
-                            .Styles({ "pointerEvents": "none" })
-                            .Properties({ textContent: self.title })
-
-                    )
-                ])
-        )
-
-        console.log(retval)
-        return retval;
-    }
-
-
-    protected _footerConfig(): Mrbr_UI_Controls_ControlConfig {
-        const self = this,
-            ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-        return new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.FOOTER_CONTROL_NAME, "div",
-            new Mrbr_UI_Controls_ControlConfigOptionalParameters()
-                .Classes(["container-fluid", "bg-dark", "d-flex", "p-4"])
-                .Styles({ height: "3rem" })
-        )
-    }
-
-    public get footerConfig() {
-        return this._footerConfig();
-    }
-    public get rootElementConfig() {
-        return this._rootElementConfig();
-    }
-    public get titleBarConfig() {
-        return this._titleBarConfig();
-    }
-
     protected _bounds: Mrbr_Geometry_Bounds2d = new Mrbr_Geometry_Bounds2d(0, 0, 640, 480);
     protected _newBounds: Mrbr_Geometry_Bounds2d = new Mrbr_Geometry_Bounds2d(0, 0, 640, 480);
     protected _parentBounds: Mrbr_Geometry_Bounds2d = new Mrbr_Geometry_Bounds2d(0, 0, 0, 0);
@@ -137,10 +52,101 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     protected _resizable: boolean = false;
     constructor(rootElementName: string) {
         super(rootElementName);
-        debugger;
-        const self = this;
+        const self = this
         if (!self._drawDialog) { self._drawDialog = self.drawDialog.bind(self) }
     }
+
+    initialise(...args): Mrbr_System_MrbrPromise<any> {
+        const self = this,
+            muccop = Mrbr_UI_Controls_ControlConfigOptionalParameters,
+            retval = Mrbr_System_MrbrPromise.CreateMrbrPromise("");
+        super.initialise(args)
+            .then(async _ => {
+                if (!self._drawDialog) { self._drawDialog = self.drawDialog.bind(self) }
+                !self.defaultConfiguration.has(self.rootElementName) && self.defaultConfiguration.add(self.rootElementName, new muccop()
+                    .Classes(["border", "shadow", "d-flex", "flex-column", "border-1", "border-dark", "d-none"])
+                    .Styles({
+                        transform: `translate(${self.bounds.x}px,${self.bounds.y}px)`, position: "absolute", top: "0px", left: "0px", width: `${self.bounds.width}px`, height: `${self.bounds.height}`
+                    }));
+                !self.defaultConfiguration.has(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME) &&
+                    self.defaultConfiguration.add(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME, new muccop()
+                        .Classes(["container-fluid", "h-100", "p-1", "bg-light", "d-flex", "flex-column"])
+                        .Styles({ "minHeight": `${self._minBounds.height / 2}px` })
+                    )
+                !self.defaultConfiguration.has(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME) &&
+                    self.defaultConfiguration.add(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME,
+                        new muccop()
+                            .Classes(["mrbr-dialog-handle-drag", "container-fluid", "bg-dark", "d-flex", "user-select-none", "pe-0"])
+                            .Styles({ height: "3rem" })
+                            .LightTheme("bg-light")
+                            .DarkTheme("bg-dark")
+                    );
+                !self.defaultConfiguration.has(Mrbr_UI_Bootstrap_Forms_Dialog.TITLE_TEXT_CONTROL_NAME) &&
+                    self.defaultConfiguration.add(Mrbr_UI_Bootstrap_Forms_Dialog.TITLE_TEXT_CONTROL_NAME,
+                        new muccop()
+                            .Classes(["row", "justify-content-left", "align-self-center", "text-light", "py-1", "pe-1", "ps-3", "flex-fill"])
+                            .LightTheme("text-dark")
+                            .DarkTheme("text-light")
+                            .Styles({ "pointerEvents": "none" })
+                            .Properties({ textContent: self.title })
+                    )
+                !self.defaultConfiguration.has(Mrbr_UI_Bootstrap_Forms_Dialog.FOOTER_CONTROL_NAME) &&
+                    self.defaultConfiguration.add(Mrbr_UI_Bootstrap_Forms_Dialog.FOOTER_CONTROL_NAME,
+                        new muccop()
+                            .Classes(["container-fluid", "bg-dark", "d-flex", "p-4"])
+                            .Styles({ height: "3rem" })
+                            .LightTheme("bg-light")
+                            .DarkTheme("bg-dark")
+                    )
+
+                self.createRootElement();
+                self.createTitleBar();
+                self.createFooter();
+                await self.createControlBox();
+                self.addDragHandle();
+                self.addResizeHandles();
+                self.setParentBounds();
+                self.newBounds.setXY(
+                    self.parentBounds.x,
+                    self.parentBounds.y
+                )
+                self._resizeDialog = true;
+                self._moveDialog = true;
+                retval.resolve(this);
+
+            })
+        return retval;
+    }
+
+    protected _rootElementConfig(): Mrbr_UI_Controls_ControlConfig {
+        const self = this,
+            ctrlCfg = Mrbr_UI_Controls_ControlConfig;
+        return new ctrlCfg(this.rootElementName, "div", self.configuration(this.rootElementName))
+            .Children([new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME, "div", self.configuration(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME))]);
+    }
+
+    protected _titleBarConfig(): Mrbr_UI_Controls_ControlConfig {
+        const self = this,
+            ctrlCfg = Mrbr_UI_Controls_ControlConfig;
+        return new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME, "div", self.configuration(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME))
+            .Children([new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.TITLE_TEXT_CONTROL_NAME, "span", self.configuration(Mrbr_UI_Bootstrap_Forms_Dialog.TITLE_TEXT_CONTROL_NAME))]);
+    }
+    protected _footerConfig(): Mrbr_UI_Controls_ControlConfig {
+        const self = this,
+            ctrlCfg = Mrbr_UI_Controls_ControlConfig;
+        return new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.FOOTER_CONTROL_NAME, "div", self.configuration(Mrbr_UI_Bootstrap_Forms_Dialog.FOOTER_CONTROL_NAME))
+    }
+
+    public get footerConfig() {
+        return this._footerConfig();
+    }
+    public get rootElementConfig() {
+        return this._rootElementConfig();
+    }
+    public get titleBarConfig() {
+        return this._titleBarConfig();
+    }
+
     get contentContainer(): HTMLElement { return this.elements[Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME]; }
     get bounds(): Mrbr_Geometry_Bounds2d { return this._bounds; }
     get newBounds(): Mrbr_Geometry_Bounds2d { return this._newBounds; }
@@ -170,7 +176,6 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
         const self = this,
             controlBoxEvents = Mrbr_UI_Bootstrap_Forms_ControlBox$Events;
         const detail: Mrbr_UI_Bootstrap_Forms_ControlBox$Events = event.detail;
-        debugger
         if (controlBoxEvents.maximise === detail) { self.maximiseDialog(event); }
         else if (controlBoxEvents.fullScreen === detail) {
             self.fullScreenDialog();
@@ -211,7 +216,6 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
         const self = this;
         self.dialogState = Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal;
         (<Mrbr_UI_Bootstrap_Forms_ControlBox>self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.CONTROL_BOX_CONTROL_NAME]).dialogState = self.dialogState;
-        debugger
         self.newBounds.setFromBounds(self._lastBounds);
         self._moveDialog = true;
         self._resizeDialog = true;
@@ -227,8 +231,6 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     }
     maximiseDialog(event: Mrbr_UI_Bootstrap_Forms_ControlBox$Event) {
         const self = this;
-        var a = 1, b = a / (a - a);
-        debugger;
         if (self.dialogState !== Mrbr_UI_Bootstrap_Forms_Dialog$States.Maximised) {
             self.dialogState = Mrbr_UI_Bootstrap_Forms_Dialog$States.Maximised;
             (<Mrbr_UI_Bootstrap_Forms_ControlBox>self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.CONTROL_BOX_CONTROL_NAME]).dialogState = self.dialogState;
@@ -236,7 +238,6 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
             self.customMaximise ? self.customMaximise(event) : self.defaultMaximise(event);
         }
         else if (self.dialogState === Mrbr_UI_Bootstrap_Forms_Dialog$States.Maximised) {
-            // debugger
             // self.dialogState = Mrbr_UI_Bootstrap_Forms_Dialog$States.Normal;
             // (<Mrbr_UI_Bootstrap_Forms_ControlBox>self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.CONTROL_BOX_CONTROL_NAME]).dialogState = self.dialogState;
             // self.bounds.setFromBounds(self._lastBounds);
@@ -266,7 +267,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
         self.rootElement.append(self.elements[Mrbr_UI_Bootstrap_Forms_Dialog.FOOTER_CONTROL_NAME]);
     }
 
-    createControlBox() {
+    async createControlBox() {
         const self = this;
         if (self.titleBar !== true || self.controlBox !== true) { return; }
         const controlBox = self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.CONTROL_BOX_CONTROL_NAME] = new Mrbr_UI_Bootstrap_Forms_ControlBox(Mrbr_UI_Bootstrap_Forms_Dialog.CONTROL_BOX_CONTROL_NAME);
@@ -274,7 +275,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
         controlBox.maximiseBox = self.maximiseBox;
         controlBox.closeBox = self.closeBox;
         controlBox.fullScreenBox = self.fullScreenBox;
-        controlBox.initialiseControl();
+        await controlBox.initialise();
         self.elements[Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME].appendChild(self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.CONTROL_BOX_CONTROL_NAME].rootElement)
         self.events[Mrbr_UI_Bootstrap_Forms_ControlBox.CONTROL_BOX_CLICK_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
             context: self,
@@ -333,23 +334,26 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
         self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.RESIZE_HANDLE_CONTROL_NAME]?.dispose();
         self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.RESIZE_HANDLE_CONTROL_NAME] = null;
     }
-    initialiseControl() {
-        const self = this
-        debugger;
-        self.createRootElement();
-        self.createTitleBar();
-        self.createFooter();
-        self.createControlBox();
-        self.addDragHandle();
-        self.addResizeHandles();
-        self.setParentBounds();
-        self.newBounds.setXY(
-            self.parentBounds.x,
-            self.parentBounds.y
-        )
-        self._resizeDialog = true;
-        self._moveDialog = true;
-    }
+    // async initialise(...args: any): Mrbr_System_MrbrPromise<any> {
+    //     const self = this
+    //     const retval = Mrbr_System_MrbrPromise.CreateMrbrPromise("");
+    //     await super.initialise(args);
+    //     self.createRootElement();
+    //     self.createTitleBar();
+    //     self.createFooter();
+    //     await self.createControlBox();
+    //     self.addDragHandle();
+    //     self.addResizeHandles();
+    //     self.setParentBounds();
+    //     self.newBounds.setXY(
+    //         self.parentBounds.x,
+    //         self.parentBounds.y
+    //     )
+    //     self._resizeDialog = true;
+    //     self._moveDialog = true;
+    //     retval.resolve(this);
+    //     return retval;
+    // }
     resizeHandle_resizing(event: CustomEvent) {
         const self = this;
         let bounds = (<Mrbr_Geometry_Bounds2d>event.detail);
@@ -396,14 +400,14 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     }
     show() {
         const self = this;
-        self.initialiseControl();
+        //self.initialise();
         self.parentElement.appendChild(self.rootElement);
         self.drawDialog();
         self.classes(this.rootElement, Mrbr_UI_Bootstrap_Controls_ClassActions.Remove, "d-none")
     }
     showDialog() {
         const self = this;
-        self.initialiseControl()
+        //await self.initialise()
         self.parentElement.appendChild(self.rootElement);
         self.drawDialog();
         self.classes(this.rootElement, Mrbr_UI_Bootstrap_Controls_ClassActions.Remove, "d-none")

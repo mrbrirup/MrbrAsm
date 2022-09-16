@@ -70,3 +70,7 @@ function onReady() {
     }
 
 }
+var toLowerCase = Symbol("replace");
+String.prototype[toLowerCase] = function (str) {    
+    return this + "s";
+}
