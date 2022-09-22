@@ -24,7 +24,7 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
         const self = this,
             mubcai = Mrbr_UI_Bootstrap_Controls_AccordionItem,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig,
-            initialisePromise = Mrbr_System_MrbrPromise.CreateMrbrPromise("");
+            initialisePromise = Mrbr_System_MrbrPromise.CreateMrbrPromise("Mrbr_UI_Bootstrap_Controls_AccordionItem:initialise");
 
 
         super.initialise(args)
@@ -33,7 +33,6 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
 
                 const accordionItemHeadingId = Mrbr_UI_Controls_Control.createId("accordion_item_heading");
                 const accordionCollapsableId = Mrbr_UI_Controls_Control.createId("accordion_collapsable");
-                const accordionItemId = Mrbr_UI_Controls_Control.createId("accordion_item");
                 self.createElement(new ctrlCfg(self.rootElementName, "div", self.configuration(mubcai.ACCORDION_ITEM))
                     .Children([
                         <HTMLElement>self.createElement(new ctrlCfg(mubcai.ACCORDION_HEADER_NAME, "h2", self.configuration(mubcai.ACCORDION_HEADER_NAME))
@@ -76,16 +75,17 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
             collapseElement = self.elements[Mrbr_UI_Bootstrap_Controls_AccordionItem.ACCORDION_COLLAPSE];
 
         if (collapseElement.classList.contains("collapse")) {
-            new (host.bootstrap as any).Collapse(collapseElement);
+            const collapse = (host.bootstrap as any).Collapse.getOrCreateInstance(collapseElement);
+            collapse.show();
         }
     }
     public collapse() {
         const self = this,
             host = MrbrBase.mrbrInstance.host,
             collapseElement = self.elements[Mrbr_UI_Bootstrap_Controls_AccordionItem.ACCORDION_COLLAPSE];
-            console.log('collapseElement.classList.contains("collapse") === false')
-        if (collapseElement.classList.contains("collapse") && collapseElement.classList.contains("show") ) {
-            new (host.bootstrap as any).Collapse(collapseElement);
+        if (collapseElement.classList.contains("collapse") && collapseElement.classList.contains("show")) {
+            const collapse = (host.bootstrap as any).Collapse.getOrCreateInstance(collapseElement);
+            collapse.hide();
         }
 
     }

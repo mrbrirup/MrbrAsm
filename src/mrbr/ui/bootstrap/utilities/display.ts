@@ -1,4 +1,6 @@
-export enum Mrbr_UI_Bootstrap_Controls_Utilities_Display {
+export enum Mrbr_UI_Bootstrap_Utilities_Display {
+
+    none = "d-none",
 
     xsNone = "d-none",
     xsInline = "d-inline",

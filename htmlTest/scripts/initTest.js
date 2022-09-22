@@ -5,7 +5,7 @@ let cfg = {
 function runRes(result) {
     console.log("runRes", result)
     try {
-        let container = new Mrbr.Tests.Application()
+        let container = new Mrbr.Tests.Application$Alert()
     } catch (error) {
         console.log(error)
     }
@@ -24,7 +24,7 @@ async function onReady() {
         console.log("function onReady()")
         window["mrbrLoadManifest"] =
             [
-                Mrbr.IO.File.component(Mrbr.Tests.Application),
+                Mrbr.IO.File.component(Mrbr.Tests.Application$Alert),
                 new Mrbr.IO.File(Mrbr.IO.FileType.ScriptLink, null, "https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js", "", {
                     integrity: "sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa",
                     crossorigin: "anonymous"
