@@ -1,4 +1,4 @@
-import { Mrbr_UI_Bootstrap_Controls_ClassActions } from '../../controls/classActions';
+import { Mrbr_UI_Controls_ClassActions } from '../../../controls/classActions';
 import { Mrbr_UI_Controls_Control } from '../../../controls/control';
 import { Mrbr_UI_Controls_ControlConfig } from '../../../controls/ControlConfig';
 import { Mrbr_UI_Bootstrap_Utilities_Backgrounds } from '../../utilities/backgrounds';
@@ -17,7 +17,7 @@ export class Mrbr_UI_Bootstrap_Navigation_NavBar_NavBar extends Mrbr_UI_Controls
             navStyles.navbarDark,
             bgStyles.dark
         ];
-        this.classes(navbar, Mrbr_UI_Bootstrap_Controls_ClassActions.Add, styles)
+        this.classes(navbar, Mrbr_UI_Controls_ClassActions.Add, styles)
         document.body.appendChild(self.rootElement);
     }
 }

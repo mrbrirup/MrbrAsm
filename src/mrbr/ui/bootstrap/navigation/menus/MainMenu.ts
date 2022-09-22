@@ -1,4 +1,4 @@
-import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../../controls/classActions";
+import { Mrbr_UI_Controls_ClassActions } from "../../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../../controls/control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../../controls/ControlConfig";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../../controls/ControlConfigOptionalParameters";
@@ -84,11 +84,11 @@ export class Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu extends Mrbr_UI_Control
     set menuId(value: string) { this._menuId = value; }
     show() {
         this._backdrop = document.createElement("div");
-        this.classes(this._backdrop, Mrbr_UI_Bootstrap_Controls_ClassActions.Add, "modal-backdrop fade show");
+        this.classes(this._backdrop, Mrbr_UI_Controls_ClassActions.Add, "modal-backdrop fade show");
         document.body.appendChild(this._backdrop);
     }
     hide() {
-        this.classes(this._backdrop, Mrbr_UI_Bootstrap_Controls_ClassActions.Swap, ["show", "hide"]);
+        this.classes(this._backdrop, Mrbr_UI_Controls_ClassActions.Swap, ["show", "hide"]);
     }
     dispose() {
         document.body.removeChild(this._backdrop);

@@ -7,11 +7,16 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     private _data?: object;
     private _properties?: object;
     private _styles?: object;
+    private _aria?: object;
     private _children?: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[];
     private _lightTheme?: Array<string> | string;
     private _darkTheme?: Array<string> | string;
     constructor() {
         super();
+    }
+    public Aria(aria: object): Mrbr_UI_Controls_ControlConfigOptionalParameters {
+        this.aria = aria;
+        return this;
     }
     public ID(id: string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
         this.id = id;
@@ -49,7 +54,12 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
         this.darkTheme = value;
         return this;
     }
-
+    public get aria(): object {
+        return this._aria;
+    }
+    public set aria(value: object) {
+        this._aria = value;
+    }
     public get id(): string {
         return this._id;
     }

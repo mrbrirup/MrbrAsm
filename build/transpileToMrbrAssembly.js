@@ -55,6 +55,15 @@ writtenFiles.splice(0, writtenFiles.length);
 sourceFiles.forEach(sourceFile => createMrbrAssemblyFile(sourceFile));
 
 
+
+const extensionsForCopyFiles = [
+    "css",
+    "svg"
+]
+
+extensionsForCopyFiles.forEach(extension => CopyFilesRecursively(resolvedSourceFolder, `${mrbrAsmRootDirectory}`, `.${extension}`));
+
+
 /*
     Get all files to transpile to MrbrAssembly
 */
@@ -116,18 +125,18 @@ function createMrbrBaseFile(sourceFileName) {
     const destinationContent = fs.readFileSync(sourceFile.longDestinationFileName, "utf-8"),
         classDeclarationMatch = classDeclarationRegex.exec(destinationContent),
         exportType = classDeclarationMatch?.groups?.exportType,
-        includeClassExtension = (classDeclarationMatch?.groups?.extends && classDeclarationMatch?.groups?.baseClass) ? (` extends (${classDeclarationMatch?.groups?.baseClass.replace(/_/g, ".")}) `) : "";
+        includeClassExtension = (classDeclarationMatch?.groups?.extends && classDeclarationMatch?.groups?.baseClass) ? (` extends(${classDeclarationMatch?.groups?.baseClass.replace(/_/g, ".")}) `) : "";
     if (classDeclarationMatch) {
         const //classExtension = (includeClassExtension.length > 0) ? (` extends mrbrClassExtension `) : "",
             exportName = classDeclarationMatch?.groups?.exportName,
             outputTextArray = [
-                //`${includeClassExtension} ${((sourceFileName === mrbrBaseSourceFile) ? "let" : "")} ${exportName} = ${exportType} ${includeClassExtension}`.replace(/ {2}/, " "), ,
-                `${((sourceFileName === mrbrBaseSourceFile) ? "let" : "")} ${exportName} = ${exportType} ${includeClassExtension}`.replace(/ {2}/, " "), ,
+                //`${ includeClassExtension } ${ ((sourceFileName === mrbrBaseSourceFile) ? "let" : "") } ${ exportName } = ${ exportType } ${ includeClassExtension } `.replace(/ {2}/, " "), ,
+                `${((sourceFileName === mrbrBaseSourceFile) ? "let" : "")} ${exportName} = ${exportType} ${includeClassExtension} `.replace(/ {2}/, " "), ,
                 destinationContent.substring(classDeclarationRegex.lastIndex - 1),
                 ...((sourceFileName === mrbrBaseSourceFile) ? [
-                    `MrbrBase.Namespace.createAssembly(window, "Mrbr");`,
-                    `Mrbr.System.MrbrBase = MrbrBase;`,
-                    `Mrbr.System.MrbrBase[MrbrBase.MRBR_COMPONENT_NAME] = "Mrbr.System.MrbrBase";`
+                    `MrbrBase.Namespace.createAssembly(window, "Mrbr"); `,
+                    `Mrbr.System.MrbrBase = MrbrBase; `,
+                    `Mrbr.System.MrbrBase[MrbrBase.MRBR_COMPONENT_NAME] = "Mrbr.System.MrbrBase"; `
                 ] : [])
             ],
             code = generateCode(outputTextArray.join("\r\n"), importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
@@ -141,8 +150,8 @@ function createMrbrBaseFile(sourceFileName) {
             }
         });
         let sourceCode = fs.readFileSync(mrbrJSRootFile, "utf8")
-        let namespaceNames = importedReferences.filter(importedReference => importedReference.exclude === false).map(importedReference => `${importedReference.assembly.replace(/_/g, ".")}[MrbrBase.MRBR_COMPONENT_NAME] = "${importedReference.assembly.replace(/_/g, ".")}"`);
-        fs.writeFileSync(mrbrJSRootFile, prettify(`${sourceCode}\r\n${namespaceNames.join(";\r\n")}\r\n`, true))
+        let namespaceNames = importedReferences.filter(importedReference => importedReference.exclude === false).map(importedReference => `${importedReference.assembly.replace(/_/g, ".")} [MrbrBase.MRBR_COMPONENT_NAME] = "${importedReference.assembly.replace(/_/g, ".")}"`);
+        fs.writeFileSync(mrbrJSRootFile, prettify(`${sourceCode} \r\n${namespaceNames.join(";\r\n")} \r\n`, true))
     }
     else {
         let enumFunctionRegex = /export\s+var\s+(?<assembly>[\w$]+)\s*;\s*(?<function>\(function \s*\((\1)\)\s{)(?<text>[\s\S]+)\}\)\s*\(\1\s*[|]{2}\s*\(\1\s*=\s*\{\}\)\);\s*/gm,
@@ -153,7 +162,7 @@ function createMrbrBaseFile(sourceFileName) {
             fs.appendFileSync(mrbrJSRootFile, "\r\n" + code + "\r\n");
         }
         else if ((match = functionRegex.exec(destinationContent)) !== null) {
-            code = generateCode(`${match.groups.assembly} = function ${match.groups.parameters} { ${destinationContent.substring(functionRegex.lastIndex)}`, [match.groups.assembly]);
+            code = generateCode(`${match.groups.assembly} = function ${match.groups.parameters} { ${destinationContent.substring(functionRegex.lastIndex)} `, [match.groups.assembly]);
             fs.appendFileSync(mrbrJSRootFile, "\r\n" + code + "\r\n");
         }
         else {
@@ -237,7 +246,7 @@ function createMrbrAssemblyFile(sourceFile) {
         }
         exportName = classDeclarationMatch?.groups?.exportName;
         let outputTextArray = [
-            `${includeClassExtension}${exportName} = ${exportType} ${classExtension}`.replace(/ {2}/, " "), ,
+            `${includeClassExtension}${exportName} = ${exportType} ${classExtension} `.replace(/ {2}/, " "), ,
             destinationContent.substring(classDeclarationRegex.lastIndex - 1)
         ];
         code = generateCode(outputTextArray.join("\r\n"), importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
@@ -256,7 +265,7 @@ function createMrbrAssemblyFile(sourceFile) {
         }
         else if ((match = functionRegex.exec(destinationContent)) !== null) {
             exportName = match.groups.assembly;
-            code = generateCode(`${match.groups.assembly} = function ${match.groups.parameters} { ${destinationContent.substring(functionRegex.lastIndex)}`, importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
+            code = generateCode(`${match.groups.assembly} = function ${match.groups.parameters} { ${destinationContent.substring(functionRegex.lastIndex)} `, importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
         }
         else {
             throw new Error(`No Class or Function definition`)
@@ -268,21 +277,21 @@ function createMrbrAssemblyFile(sourceFile) {
 
         if (importedReferences?.length > 0) {
 
-            manifest = manifest.concat(...[importedReferences.filter(entry => entry.exclude === false).filter(entry => entry.assembly?.name?.toLowerCase() !== "mrbrbase").map(include => (`${" ".repeat(8)}miofc(${include.assembly.replace(/_/g, ".")})`))])
+            manifest = manifest.concat(...[importedReferences.filter(entry => entry.exclude === false).filter(entry => entry.assembly?.name?.toLowerCase() !== "mrbrbase").map(include => (`${" ".repeat(8)} miofc(${include.assembly.replace(/_/g, ".")})`))])
         }
-        let source = prettify(`((mrbr, data, resolve, reject, symbols)=>{
+        let source = prettify(`((mrbr, data, resolve, reject, symbols) => {
             ${!(classDeclarationMatch) ? "if (MrbrBase.Namespace.isNamespace(" + exportName.replace(/_/g, '.') + ")){" + exportName.replace(/_/g, '.') + " = {}; } " : ""}
             ${manifest?.length ? "const miofc = Mrbr.IO.File.component;\r\n" : ""}
             ${preloadAssembly?.length ? `mrbr.loadManifest( miofc(${preloadAssembly}) )\r\n` : ""}
             ${preloadAssembly?.length ? ".then(_ =>{" : ""}
-            ${code}\r\n
+            ${code} \r\n
                 ${manifest?.length ? exportName.replace(/_/g, '.') + "[symbols.manifest] = [ " + manifest.join(",\r\n") + "]" : ""}                
-                ${exportName.replace(/_/g, '.')}[symbols.componentName] = "${exportName.replace(/_/g, '.')}";
-                setTimeout(()=>{ resolve(${exportName.replace(/_/g, ".")})},0)
+                ${exportName.replace(/_/g, '.')} [symbols.componentName] = "${exportName.replace(/_/g, '.')}";
+    setTimeout(() => { resolve(${exportName.replace(/_/g, ".")}) }, 0)
                 ${preloadAssembly?.length ? "})" : ""}
                 ${preloadAssembly?.length ? ".catch(err => reject(err))" : ""}
-        })(mrbr, data, resolve, reject, symbols)
-    `, true)
+})(mrbr, data, resolve, reject, symbols)
+            `, true)
         fs.writeFileSync(destinationFileName, source)
     }
 }
@@ -329,4 +338,48 @@ function traverseNodes(node, replaceNames) {
     };
 }
 
-console.log(fileTypeMap)
+function getExtension(filename) {
+    const lastIndexOfDot = filename.lastIndexOf('.');
+    return (lastIndexOfDot < 0) ? '' : filename.substr(lastIndexOfDot);
+}
+
+
+function GetFileListRecursively(targetpath, extension, depth = -1) {
+    let result = [],
+        dirEntries = fs.readdirSync(targetpath);
+    dirEntries.forEach(file => {
+        const filepath = path.join(targetpath, file),
+            isDir = fs.lstatSync(filepath).isDirectory();
+        (isDir || (!isDir && getExtension(filepath).toLowerCase() === extension.toLowerCase())) && result.push({ path: filepath, isDir: isDir })
+        if (isDir) {
+            if (depth == 0) return result;
+            result = result.concat(GetFileListRecursively(filepath, extension, depth - 1));
+        }
+    });
+    return result;
+};
+
+function CopyFilesRecursively(sourcePath, destinationPath, extension) {
+    (!fs.existsSync(destinationPath)) && fs.mkdirSync(destinationPath, { recursive: true });
+    GetFileListRecursively(sourcePath, extension)
+        .forEach(node => {
+            const newPath = path.join(destinationPath, node.path.substring(sourcePath.length));
+            try {
+                fs.accessSync(sourcePath, fs.constants.R_OK);
+                fs.accessSync(destinationPath, fs.constants.W_OK);
+                (node.isDir && !fs.existsSync(newPath)) && fs.mkdirSync(newPath, { recursive: true });
+                !node.isDir && fs.copyFile(node.path, newPath, err => { if (err) throw err });
+            }
+            catch (ex) {
+                console.log(
+                    (_ => {
+                        switch (ex.errno) {
+                            case -2: return `File "${node.path}" doesn't exist.`;
+                            case -13: return `Could not access "${path.resolve(destinationPath)}"`;
+                            default: return `Could not copy "${node.path}" to "${newPath}"`;
+                        }
+                    })()
+                )
+            }
+        });
+};

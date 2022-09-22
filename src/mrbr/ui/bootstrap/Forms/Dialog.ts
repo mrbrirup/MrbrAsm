@@ -1,5 +1,5 @@
 import { Mrbr_Geometry_Bounds2d } from "../../../geometry/bounds2d";
-import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../controls/classActions";
+import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
@@ -11,6 +11,7 @@ import { Mrbr_UI_Controls_Handles_Drag } from "../../controls/handles/drag";
 import { Mrbr_UI_Controls_Handles_Resize } from "../../controls/handles/resize";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_UI_Bootstrap_Controls_Defaults } from "../controls/defaults";
 
 type AnyOp = (...args) => void;
 
@@ -85,8 +86,8 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
                     self.defaultConfiguration.add(Mrbr_UI_Bootstrap_Forms_Dialog.TITLE_TEXT_CONTROL_NAME,
                         new muccop()
                             .Classes(["row", "justify-content-left", "align-self-center", "text-light", "py-1", "pe-1", "ps-3", "flex-fill"])
-                            .LightTheme("text-dark")
-                            .DarkTheme("text-light")
+                            .LightTheme(Mrbr_UI_Bootstrap_Controls_Defaults.textDark)
+                            .DarkTheme(Mrbr_UI_Bootstrap_Controls_Defaults.textLight)
                             .Styles({ "pointerEvents": "none" })
                             .Properties({ textContent: self.title })
                     )
@@ -403,14 +404,14 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
         //self.initialise();
         self.parentElement.appendChild(self.rootElement);
         self.drawDialog();
-        self.classes(this.rootElement, Mrbr_UI_Bootstrap_Controls_ClassActions.Remove, "d-none")
+        self.classes(this.rootElement, Mrbr_UI_Controls_ClassActions.Remove, "d-none")
     }
     showDialog() {
         const self = this;
         //await self.initialise()
         self.parentElement.appendChild(self.rootElement);
         self.drawDialog();
-        self.classes(this.rootElement, Mrbr_UI_Bootstrap_Controls_ClassActions.Remove, "d-none")
+        self.classes(this.rootElement, Mrbr_UI_Controls_ClassActions.Remove, "d-none")
     }
     public get parentBounds(): Mrbr_Geometry_Bounds2d {
         return this._parentBounds;
@@ -519,7 +520,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     }
     public set controlBox(value: boolean) {
         this._controlBox = value;
-        let action = value ? Mrbr_UI_Bootstrap_Controls_ClassActions.Remove : Mrbr_UI_Bootstrap_Controls_ClassActions.Add;
+        let action = value ? Mrbr_UI_Controls_ClassActions.Remove : Mrbr_UI_Controls_ClassActions.Add;
         if (this.controls[(<typeof Mrbr_UI_Bootstrap_Forms_Dialog>this.constructor).CONTROL_BOX_CONTROL_NAME]) {
             this.classes(
                 (<Mrbr_UI_Bootstrap_Forms_ControlBox>this.controls[(<typeof Mrbr_UI_Bootstrap_Forms_Dialog>this.constructor).CONTROL_BOX_CONTROL_NAME]).rootElement,

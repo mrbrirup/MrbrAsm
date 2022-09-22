@@ -101,7 +101,29 @@ export class Mrbr_System_MrbrPromise<T> {
         }
     }
     static runGarbageCollector() {
-        
+
+    }
+    public static CreateResolvedMrbrPromise(resolvedObject: any): Mrbr_System_MrbrPromise<any> {
+        // let mrbrPromise = new Mrbr_System_MrbrPromise<object>();
+        // mrbrPromise.promise.resolve(resolvedObject);
+        // return mrbrPromise;
+
+
+        const id: string = `promise_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`;
+        let mrbrPromise: Mrbr_System_MrbrPromise<any> = new Mrbr_System_MrbrPromise<any>();
+        mrbrPromise.promise = new Promise((resolve, reject) => {
+            mrbrPromise.executor = {
+                reject: (reason: any) => { },
+                resolve: (value: any | PromiseLike<any>) => {
+                    mrbrPromise.fulfilled = true;
+                    resolve(value);
+                }
+            }
+        });
+        mrbrPromise.id = id;
+        Mrbr_System_MrbrPromise.Promises.set(id, mrbrPromise);
+        mrbrPromise.resolve(resolvedObject);
+        return mrbrPromise;
     }
     public static CreateMrbrPromise<T>(reference: string): Mrbr_System_MrbrPromise<T> {
         const id: string = `promise_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`;

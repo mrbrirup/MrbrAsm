@@ -3,44 +3,45 @@ import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "./ControlConfi
 export class Mrbr_UI_Controls_ControlConfig {
     private _elementName: string;
     private _elementType: string;
-    private _id: string;
-    private _classes: Array<string> | string;
-    private _attributes: object;
-    private _data: object;
-    private _children: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[];
-    private _properties: object;
-    private _styles: object;
-    private _darkTheme: Array<string> = [];
-    private _lightTheme: Array<string> = [];
+    private _optionalParameters: Mrbr_UI_Controls_ControlConfigOptionalParameters;
+    public get optionalParameters(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
+        return this._optionalParameters;
+    }
+    public set optionalParameters(value: Mrbr_UI_Controls_ControlConfigOptionalParameters) {
+        this._optionalParameters = value;
+    }
     constructor(elementName: string, elementType: string, optionalParameters?: Mrbr_UI_Controls_ControlConfigOptionalParameters) {
         const self = this;
         self.elementName = elementName;
         self.elementType = elementType;
-        self.id = optionalParameters?.id;
-        self.classes = optionalParameters?.classes;
-        self.attributes = optionalParameters?.attributes;
-        self.data = optionalParameters?.data;
-        self.properties = optionalParameters?.properties;
-        self.styles = optionalParameters?.styles
-        self.children = optionalParameters?.children;
-        self.lightTheme = optionalParameters?.lightTheme;
-        self.darkTheme = optionalParameters?.darkTheme;
+        self._optionalParameters = optionalParameters;
     }
-    public get darkTheme(): Array<string> { return this._darkTheme; }
-    public set darkTheme(value: Array<string> | string) { let _value = value || ""; this._darkTheme = Array.isArray(_value) ? _value : this._darkTheme = _value.split(" ").map(_val => _val.trim()); }
-    public get lightTheme(): Array<string> { return this._lightTheme; }
-    public set lightTheme(value: Array<string> | string) { let _value = value || ""; this._lightTheme = Array.isArray(_value) ? _value : this._lightTheme = _value.split(" ").map(_val => _val.trim()); }
+    public get darkTheme(): Array<string> { return <Array<string>>this.optionalParameters?.darkTheme }
+    public set darkTheme(value: Array<string> | string) { let _value = value || ""; this.darkTheme = Array.isArray(_value) ? _value : this.darkTheme = _value.split(" ").map(_val => _val.trim()); }
+    public get lightTheme(): Array<string> { return <Array<string>>this.optionalParameters?.lightTheme; }
+    public set lightTheme(value: Array<string> | string) { let _value = value || ""; this.lightTheme = Array.isArray(_value) ? _value : this.lightTheme = _value.split(" ").map(_val => _val.trim()); }
+
+    public get aria(): object {
+        return this.optionalParameters?.aria;
+    }
+    public set aria(value: object) {
+        !this.optionalParameters && (this.optionalParameters = new Mrbr_UI_Controls_ControlConfigOptionalParameters());
+        this.optionalParameters.aria = value;
+    }
+
     public get styles(): object {
-        return this._styles;
+        return this.optionalParameters?.styles;
     }
     public set styles(value: object) {
-        this._styles = value;
+        !this.optionalParameters && (this.optionalParameters = new Mrbr_UI_Controls_ControlConfigOptionalParameters());
+        this.optionalParameters.styles = value;
     }
     public get properties(): object {
-        return this._properties;
+        return this.optionalParameters?.properties;
     }
     public set properties(value: object) {
-        this._properties = value;
+        !this.optionalParameters && (this.optionalParameters = new Mrbr_UI_Controls_ControlConfigOptionalParameters());
+        this.optionalParameters.properties = value;
     }
     public get elementName(): string {
         return this._elementName;
@@ -55,49 +56,59 @@ export class Mrbr_UI_Controls_ControlConfig {
         this._elementType = value;
     }
     public get id(): string {
-        return this._id;
+        return this.optionalParameters?.id;
     }
     public set id(value: string) {
-        this._id = value;
+        !this.optionalParameters && (this.optionalParameters = new Mrbr_UI_Controls_ControlConfigOptionalParameters());
+        this.optionalParameters.id = value;
     }
     public get classes(): Array<string> | string {
-        return this._classes;
+        return this.optionalParameters?.classes;
     }
     public set classes(value: Array<string> | string) {
-        this._classes = value;
+        !this.optionalParameters && (this.optionalParameters = new Mrbr_UI_Controls_ControlConfigOptionalParameters());
+        this.optionalParameters.classes = value;
     }
     public get attributes(): object {
-        return this._attributes;
+        return this.optionalParameters?.attributes;
     }
     public set attributes(value: object) {
-        this._attributes = value;
+        !this.optionalParameters && (this.optionalParameters = new Mrbr_UI_Controls_ControlConfigOptionalParameters());
+        this.optionalParameters.attributes = value;
     }
     public get data(): object {
-        return this._data;
+        return this.optionalParameters?.data;
     }
     public set data(value: object) {
-        this._data = value;
+        !this.optionalParameters && (this.optionalParameters = new Mrbr_UI_Controls_ControlConfigOptionalParameters());
+        this.optionalParameters.data = value;
     }
     public get children(): (Mrbr_UI_Controls_ControlConfig | HTMLElement)[] {
-        return this._children;
+        return this.optionalParameters?.children;
     }
     public set children(value: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[]) {
-        this._children = value;
+        !this.optionalParameters && (this.optionalParameters = new Mrbr_UI_Controls_ControlConfigOptionalParameters());
+        this.optionalParameters.children = value;
     }
     public DarkTheme(value: Array<string> | string): Mrbr_UI_Controls_ControlConfig {
-        let _value = value || ""; this._darkTheme = Array.isArray(_value) ? _value : this._darkTheme = _value.split(" ").map(_val => _val.trim());
+        let _value = value || "";
+        this.darkTheme = Array.isArray(_value) ? _value : this.darkTheme = _value.split(" ").map(_val => _val.trim());
         return this;
     }
     public LightTheme(value: Array<string> | string): Mrbr_UI_Controls_ControlConfig {
-        let _value = value || ""; this._lightTheme = Array.isArray(_value) ? _value : this._lightTheme = _value.split(" ").map(_val => _val.trim());
+        let _value = value || ""; this.lightTheme = Array.isArray(_value) ? _value : this.lightTheme = _value.split(" ").map(_val => _val.trim());
+        return this;
+    }
+    public Aria(value: object): Mrbr_UI_Controls_ControlConfig {
+        this.aria = value;
         return this;
     }
     public Styles(value: object): Mrbr_UI_Controls_ControlConfig {
-        this._styles = value;
+        this.styles = value;
         return this;
     }
     public Properties(value: object): Mrbr_UI_Controls_ControlConfig {
-        this._properties = value;
+        this.properties = value;
         return this;
     }
     public ElementName(value: string): Mrbr_UI_Controls_ControlConfig {
@@ -109,23 +120,23 @@ export class Mrbr_UI_Controls_ControlConfig {
         return this;
     }
     public Id(value: string): Mrbr_UI_Controls_ControlConfig {
-        this._id = value;
+        this.id = value;
         return this;
     }
     public Classes(value: Array<string> | string): Mrbr_UI_Controls_ControlConfig {
-        this._classes = value;
+        this.classes = value;
         return this;
     }
     public Attributes(value: object): Mrbr_UI_Controls_ControlConfig {
-        this._attributes = value;
+        this.attributes = value;
         return this;
     }
     public Data(value: object): Mrbr_UI_Controls_ControlConfig {
-        this._data = value;
+        this.data = value;
         return this;
     }
     public Children(value: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[]): Mrbr_UI_Controls_ControlConfig {
-        this._children = value;
+        this.children = value;
         return this;
     }
 }

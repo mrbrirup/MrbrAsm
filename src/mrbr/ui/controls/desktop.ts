@@ -1,5 +1,5 @@
 import { Mrbr_UI_Bootstrap_Containers_Container$Breakpoints } from "../bootstrap/containers/container$breakpoints";
-import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../bootstrap/controls/classActions";
+import { Mrbr_UI_Controls_ClassActions } from "./classActions";
 import { Mrbr_UI_Controls_Control } from "./control";
 import { Mrbr_UI_Controls_ControlConfig } from "./ControlConfig";
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Height } from "../bootstrap/utilities/sizing$height";
@@ -13,7 +13,7 @@ export class Mrbr_UI_Controls_Desktop extends Mrbr_UI_Bootstrap_Containers_Conta
     constructor(rootElementName: string) {
         super(rootElementName);
         let self = this,
-            classActions = Mrbr_UI_Bootstrap_Controls_ClassActions;
+            classActions = Mrbr_UI_Controls_ClassActions;
         self.containerType = Mrbr_UI_Bootstrap_Containers_Container$Breakpoints.containerFluid;
         self.height = Mrbr_UI_Bootstrap_Utilities_Sizing$Height.viewHeight100;
         self.width = Mrbr_UI_Bootstrap_Utilities_Sizing$Width.viewWidth100;

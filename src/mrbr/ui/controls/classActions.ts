@@ -1,4 +1,4 @@
-export enum Mrbr_UI_Bootstrap_Controls_ClassActions {
+export enum Mrbr_UI_Controls_ClassActions {
     "Add",
     "Remove",
     "Clear",

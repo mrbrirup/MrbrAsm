@@ -1,5 +1,5 @@
 import { Mrbr_UI_Html_StyleClasses } from "../html/StyleClasses";
-import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../bootstrap/controls/classActions";
+import { Mrbr_UI_Controls_ClassActions } from "./classActions";
 import { Mrbr_UI_Controls_ControlConfig } from "./ControlConfig";
 import { Mrbr_System_Events_EventHandler } from "../../system/events/EventHandler";
 import { Mrbr_UI_Controls_Themes } from "./themes";
@@ -114,6 +114,20 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
             event: self.themeChanged
         }
     }
+    private _id: string;
+    public get id(): string {
+        return this._id;
+    }
+    public set id(value: string) {
+        this._id = value;
+    }
+    public Id(value: string): Mrbr_UI_Controls_Control {
+        this.id = value;
+        return this;
+    }
+    setDefaultConfiguration(...args: any[]): Mrbr_System_MrbrPromise<any> {
+        return Mrbr_System_MrbrPromise.CreateResolvedMrbrPromise(null);
+    }
     initialise(...args: any[]): Mrbr_System_MrbrPromise<any> {
         let retval = Mrbr_System_MrbrPromise.CreateMrbrPromise("");
         retval.resolve(this);
@@ -131,7 +145,6 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     public set controlEvents(value) {
         Mrbr_UI_Controls_Control._controlEvents = value;
     }
-
     private themeChanged(event: Mrbr_UI_Controls_ThemeChangeEvent): void {
         const self = this;
         if (self._updateTheme === false) {
@@ -149,10 +162,10 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
             let toRemove = currentTheme === Mrbr_UI_Controls_Themes.dark ? element.dataset["lightTheme"] : element.dataset["darkTheme"],
                 toAdd = currentTheme === Mrbr_UI_Controls_Themes.dark ? element.dataset["darkTheme"] : element.dataset["lightTheme"];
             if (toRemove && toRemove.length > 0) {
-                self.classes(element, Mrbr_UI_Bootstrap_Controls_ClassActions.Remove, toRemove);
+                self.classes(element, Mrbr_UI_Controls_ClassActions.Remove, toRemove);
             }
             if (toAdd && toAdd.length > 0) {
-                self.classes(element, Mrbr_UI_Bootstrap_Controls_ClassActions.Add, toAdd);
+                self.classes(element, Mrbr_UI_Controls_ClassActions.Add, toAdd);
             }
         } catch (error) {
             console.log("error: ", error)
@@ -171,10 +184,10 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
                 let toRemove = currentTheme === Mrbr_UI_Controls_Themes.dark ? themedElement.dataset["lightTheme"] : themedElement.dataset["darkTheme"],
                     toAdd = currentTheme === Mrbr_UI_Controls_Themes.dark ? themedElement.dataset["darkTheme"] : themedElement.dataset["lightTheme"];
                 if (toRemove && toRemove.length > 0) {
-                    self.classes(themedElement, Mrbr_UI_Bootstrap_Controls_ClassActions.Remove, toRemove);
+                    self.classes(themedElement, Mrbr_UI_Controls_ClassActions.Remove, toRemove);
                 }
                 if (toAdd && toAdd.length > 0) {
-                    self.classes(themedElement, Mrbr_UI_Bootstrap_Controls_ClassActions.Add, toAdd);
+                    self.classes(themedElement, Mrbr_UI_Controls_ClassActions.Add, toAdd);
                 }
             } catch (error) {
                 console.log("error: ", error)
@@ -196,19 +209,16 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         }
 
         let _element = document.createElement(_config.elementType);
-        _element.id = _config.id || Mrbr_UI_Controls_Control.createId(_config.elementType)
-        self.classes(_element, Mrbr_UI_Bootstrap_Controls_ClassActions.Add, _config.classes)
+        _element.id = self.id || _config.id || Mrbr_UI_Controls_Control.createId(_config.elementType)
+        self.classes(_element, Mrbr_UI_Controls_ClassActions.Add, _config.classes)
         self.attributes(_element, _config.attributes)
         self.dataset(_element, _config.data)
         self.properties(_element, _config.properties)
         self.styles(_element, _config.styles)
         self.elements[_config.elementName] = _element;
-        self.dataset(_element, {
-            lightTheme: _config.lightTheme || "",
-            darkTheme: _config.darkTheme || ""
-        })
-        //  if (self.themedElements.has(_element) === false) {
-        self.themedElements.add(_element)
+        _config.lightTheme && self.dataset(_element, { lightTheme: _config.lightTheme });
+        _config.darkTheme && self.dataset(_element, { darkTheme: _config.darkTheme });
+        (_config.lightTheme || _config.darkTheme) && self.themedElements.add(_element)
         self.changeElementTheme(_element, Mrbr_UI_Controls_Control._theme);
         //}
         if (_config.children) {
@@ -260,10 +270,10 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     set rootElementName(value: string) { this._rootElementName = value; }
     get rootElement(): HTMLElement { const self = this; return self.elements[self._rootElementName]; }
     set rootElement(value: HTMLElement) { const self = this; self.elements[self._rootElementName] = value; }
-    classes(targetElement: string | HTMLElement, action: Mrbr_UI_Bootstrap_Controls_ClassActions, value: Array<string> | string, styleType?: Object): HTMLElement {
+    classes(targetElement: string | HTMLElement, action: Mrbr_UI_Controls_ClassActions, value: Array<string> | string, styleType?: Object): HTMLElement {
         const self = this,
             styleClasses = self._styleClasses,
-            classActions = Mrbr_UI_Bootstrap_Controls_ClassActions,
+            classActions = Mrbr_UI_Controls_ClassActions,
             valueAsArray = (Array.isArray(value) ? value : [value]);
         let _targetElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
 
@@ -329,10 +339,32 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         if (datasetSettings) {
             Object.keys(datasetSettings).forEach(key => {
                 _targetElement.dataset[key] = datasetSettings[key]
+                // if (key) {
+                //     _targetElement.dataset[key.toLowerCase().startsWith("data") ? key : `data-${key}`] = datasetSettings[key]
+                // }
+                //_targetElement.setAttribute(`aria-${_key[_key.length - 1]}`, datasetSettings[key]);
             });
         }
         return _targetElement
     }
+
+    aria(targetElement: string | HTMLElement, datasetSettings: object): HTMLElement {
+        const self = this;
+        let _targetElement: HTMLElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
+        if (datasetSettings) {
+            Object.keys(datasetSettings).forEach(key => {
+                if (key) {
+                    let _key = key.split("-");
+                    _targetElement.setAttribute(`aria-${_key[_key.length - 1]}`, datasetSettings[key]);
+                }
+            });
+        }
+        return _targetElement
+    }
+
+
+
+
     properties(targetElement: string | HTMLElement, propertyValues: object): HTMLElement {
         const self = this;
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;

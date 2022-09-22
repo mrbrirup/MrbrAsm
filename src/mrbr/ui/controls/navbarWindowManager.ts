@@ -1,6 +1,6 @@
 import { Mrbr_IO_File } from "../../io/File";
 import { MrbrBase } from "../../system/MrbrBase";
-import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../bootstrap/controls/classActions";
+import { Mrbr_UI_Controls_ClassActions } from "./classActions";
 import { Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu } from "../bootstrap/navigation/menus/MainMenu";// exclude
 import { Mrbr_UI_Bootstrap_Navigation_NavBar_NavBar } from "../bootstrap/navigation/navbar/navbar";
 
@@ -20,7 +20,7 @@ export class Mrbr_UI_Controls_NavbarWindowManager extends Mrbr_UI_Bootstrap_Navi
         this.menuButton = document.createElement("button");
         //this.style.addClasses(this.menuButton,"navbar-toggler")
 
-        this.classes(this.menuButton, Mrbr_UI_Bootstrap_Controls_ClassActions.Add, ["btn",
+        this.classes(this.menuButton, Mrbr_UI_Controls_ClassActions.Add, ["btn",
             "btn-primary",
             "mx-1"]);
         this.menuButton.appendChild(this.menuImage);

@@ -1,4 +1,4 @@
-import { Mrbr_UI_Bootstrap_Controls_ClassActions } from "../controls/classActions";
+import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
@@ -131,7 +131,7 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
         const self = this,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig;
         if (self.elements[name] && self.elements[name].classList.contains("d-none")) {
-            self.classes(self.elements[name], Mrbr_UI_Bootstrap_Controls_ClassActions.Remove, "d-none")
+            self.classes(self.elements[name], Mrbr_UI_Controls_ClassActions.Remove, "d-none")
             return;
         }
         const controlBoxControl: ControlBoxControl = self.controlBoxControls[name],
@@ -156,7 +156,7 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
     removeControlButton(name: string) {
         const self = this;
         if (self.elements[name]) {
-            self.classes(self.elements[name], Mrbr_UI_Bootstrap_Controls_ClassActions.Add, "d-none")
+            self.classes(self.elements[name], Mrbr_UI_Controls_ClassActions.Add, "d-none")
         }
     }
 
@@ -209,7 +209,7 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
     public set dialogState(value: Mrbr_UI_Bootstrap_Forms_Dialog$States) {
         const self = this,
             states = Mrbr_UI_Bootstrap_Forms_Dialog$States,
-            classActions = Mrbr_UI_Bootstrap_Controls_ClassActions,
+            classActions = Mrbr_UI_Controls_ClassActions,
             rootPath = MrbrBase.mrbrInstance.paths.get("Mrbr");
         self._dialogState = value
         switch (value) {
