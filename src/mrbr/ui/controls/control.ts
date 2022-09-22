@@ -9,11 +9,12 @@ import { Mrbr_System_MrbrPromise } from "../../system/MrbrPromise";
 import { Mrbr_UI_Controls_ControlDefaultsCollection } from "./ControlDefaultsCollection";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "./ControlConfigOptionalParameters";
 export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Controls_IControl {
+    public static CONTROL_KEYS: symbol = Symbol("control_keys");
     private _styleClasses = Mrbr_UI_Html_StyleClasses
     private _rootElementName: string;
     private _defaultContainerElementName: string;
     private _elements: Map<string, HTMLElement>
-    private _controls: Map<string, Mrbr_UI_Controls_Control>
+    private _controls: Map<string | symbol, Mrbr_UI_Controls_Control>
     protected _defaultConfiguration: Mrbr_UI_Controls_ControlDefaultsCollection;
     protected _customConfiguration: Mrbr_UI_Controls_ControlDefaultsCollection;
     private _events: Map<string, Mrbr_System_Events_EventHandler>;
@@ -54,8 +55,11 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
             }
         })
 
-        self._controls = new Proxy(new Map<string, Mrbr_UI_Controls_Control>(), {
-            get(target: Map<string, Mrbr_UI_Controls_Control>, name: string) {
+        self._controls = new Proxy(new Map<string | symbol, Mrbr_UI_Controls_Control>(), {
+            get(target: Map<string | symbol, Mrbr_UI_Controls_Control>, name: string | symbol) {
+                if ((name as symbol) === Mrbr_UI_Controls_Control.CONTROL_KEYS) {
+                    return Array.from(target.keys());
+                }
                 return (target.has(name)) ? (target.get(name)) : null;
             },
             set(target, name: string, value) {

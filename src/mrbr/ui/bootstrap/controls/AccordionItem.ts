@@ -1,4 +1,6 @@
+import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
@@ -9,24 +11,10 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
     public static ACCORDION_TOGGLE_NAME: string = "accordion_toggle";
     public static ACCORDION_COLLAPSE: string = "accordion_collapse";
     public static ACCORDION_BODY: string = "accordion_body";
-    private _flush: boolean = false;
     private _title: string = "";
-    private _keepOpenState: boolean = false;
-    public get keepOpenState(): boolean {
-        return this._keepOpenState;
-    }
-    public set keepOpenState(value: boolean) {
-        this._keepOpenState = value;
-    }
     constructor(rootElementName: string) {
         super(rootElementName);
         this.defaultContainerElementName = Mrbr_UI_Bootstrap_Controls_AccordionItem.ACCORDION_BODY;
-    }
-    public get flush(): boolean {
-        return this._flush;
-    }
-    public set flush(value: boolean) {
-        this._flush = value;
     }
 
 
@@ -75,25 +63,40 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
                             ])
                         )
                     ])
-                )
-                if (self.title) {
-                    (<HTMLHeadingElement>self.elements[mubcai.ACCORDION_TOGGLE_NAME]).textContent = self.title;
-                }
+                );
+                self.title = self._title;
                 initialisePromise.resolve(self);
             })
 
         return initialisePromise;
+    }
+    public expand() {
+        const self = this,
+            host = MrbrBase.mrbrInstance.host,
+            collapseElement = self.elements[Mrbr_UI_Bootstrap_Controls_AccordionItem.ACCORDION_COLLAPSE];
+
+        if (collapseElement.classList.contains("collapse")) {
+            new (host.bootstrap as any).Collapse(collapseElement);
+        }
+    }
+    public collapse() {
+        const self = this,
+            host = MrbrBase.mrbrInstance.host,
+            collapseElement = self.elements[Mrbr_UI_Bootstrap_Controls_AccordionItem.ACCORDION_COLLAPSE];
+            console.log('collapseElement.classList.contains("collapse") === false')
+        if (collapseElement.classList.contains("collapse") && collapseElement.classList.contains("show") ) {
+            new (host.bootstrap as any).Collapse(collapseElement);
+        }
+
     }
 
     public get title(): string {
         return this._title;
     }
     public set title(value: string) {
-        const self = this, mubca = Mrbr_UI_Bootstrap_Controls_AccordionItem;;
-        if (self.elements[mubca.ACCORDION_TOGGLE_NAME]) {
-            (<HTMLHeadingElement>self.elements[mubca.ACCORDION_TOGGLE_NAME]).textContent = value;
-        }
-        self._title = value;
+        const elements = this.elements, toggleName = Mrbr_UI_Bootstrap_Controls_AccordionItem.ACCORDION_TOGGLE_NAME;
+        (elements[toggleName]) && ((<HTMLHeadingElement>elements[toggleName]).textContent = value)
+        this._title = value;
     }
     setParent(parentId: string) {
         this.elements[Mrbr_UI_Bootstrap_Controls_AccordionItem.ACCORDION_COLLAPSE].dataset["bsParent"] = `#${parentId}`;
