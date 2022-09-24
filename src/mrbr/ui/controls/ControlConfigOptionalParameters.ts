@@ -14,46 +14,6 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     constructor() {
         super();
     }
-    public Aria(aria: object): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        this.aria = aria;
-        return this;
-    }
-    public ID(id: string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        this.id = id;
-        return this;
-    }
-    public Classes(value: Array<string> | string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        this.classes = value;
-        return this;
-    }
-    public Attributes(value: object): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        this.attributes = value;
-        return this;
-    }
-    public Data(value: object): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        this.data = value;
-        return this;
-    }
-    public Properties(value: object): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        this.properties = value;
-        return this;
-    }
-    public Styles(value: object): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        this.styles = value;
-        return this;
-    }
-    public Children(value: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[]): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        this.children = value;
-        return this;
-    }
-    public LightTheme(value: Array<string> | string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        this.lightTheme = value;
-        return this;
-    }
-    public DarkTheme(value: Array<string> | string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        this.darkTheme = value;
-        return this;
-    }
     public get aria(): object {
         return this._aria;
     }
@@ -113,5 +73,45 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     }
     public set darkTheme(value: Array<string> | string) {
         this._darkTheme = value;
+    }
+    public Aria(aria: object): Mrbr_UI_Controls_ControlConfigOptionalParameters {
+        this.aria = aria;
+        return this;
+    }
+    public ID(id: string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
+        this.id = id;
+        return this;
+    }
+    public Classes(value: Array<string> | string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
+        this.classes = value;
+        return this;
+    }
+    public Attributes(value: object): Mrbr_UI_Controls_ControlConfigOptionalParameters {
+        this.attributes = value;
+        return this;
+    }
+    public Data(value: object): Mrbr_UI_Controls_ControlConfigOptionalParameters {
+        this.data = value;
+        return this;
+    }
+    public Properties(value: object): Mrbr_UI_Controls_ControlConfigOptionalParameters {
+        this.properties = value;
+        return this;
+    }
+    public Styles(value: object): Mrbr_UI_Controls_ControlConfigOptionalParameters {
+        this.styles = value;
+        return this;
+    }
+    public Children(value: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[]): Mrbr_UI_Controls_ControlConfigOptionalParameters {
+        this.children = value;
+        return this;
+    }
+    public LightTheme(value: Array<string> | string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
+        this.lightTheme = value;
+        return this;
+    }
+    public DarkTheme(value: Array<string> | string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
+        this.darkTheme = value;
+        return this;
     }
 }
