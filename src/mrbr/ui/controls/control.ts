@@ -133,8 +133,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         return Mrbr_System_MrbrPromise.CreateResolvedMrbrPromise(null);
     }
     initialise(...args: any[]): Mrbr_System_MrbrPromise<any> {
-        let retval = Mrbr_System_MrbrPromise.CreateMrbrPromise("");
-        retval.resolve(this);
+        let retval = Mrbr_System_MrbrPromise.CreateResolvedMrbrPromise(this);
         return retval;
     }
     public get themedElements() {

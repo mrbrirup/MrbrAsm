@@ -4,7 +4,8 @@ let cfg = {
 };
 function runRes(result) {
     try {
-        let container = new Mrbr.Tests.Application$Badge()
+        let breadcrumbApplication = new Mrbr.Tests.Application$Breadcrumb()
+        breadcrumbApplication.initialise();
     } catch (error) {
         console.log(error)
     }
@@ -22,7 +23,7 @@ async function onReady() {
     try {
         window["mrbrLoadManifest"] =
             [
-                Mrbr.IO.File.component(Mrbr.Tests.Application$Badge),
+                Mrbr.IO.File.component(Mrbr.Tests.Application$Breadcrumb),
                 new Mrbr.IO.File(Mrbr.IO.FileType.ScriptLink, null, "https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js", "", {
                     integrity: "sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa",
                     crossorigin: "anonymous"

@@ -57,7 +57,12 @@ export class Mrbr_Collections_Dictionary<TKey, TValue> extends EventTarget {
         let currentValue = self.get(key);
         self.changed(changeType, currentValue, lastValue);
     }
-    add(key: TKey, value: TValue) {
+    addEntries(values: Array<[key: TKey, value: TValue]>) {
+        if (!values) return;
+        const self = this;
+        values.forEach(value => self.add(value[0], value[1]));
+    }
+    add(key: TKey, value: TValue): void {
         const self = this;
         if (self.has(key)) {
             throw new Error(`Item with key "${key}" exists in collection`)

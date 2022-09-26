@@ -26,7 +26,13 @@ export class Mrbr_Tests_Application$Badge {
 
 
                 button.append(self.mrbrBadge.rootElement);
-                document.body.appendChild(button);
+
+                const targetNode = document.getElementById('accordionExample');
+
+                setTimeout(() => {
+                    targetNode.appendChild(button);                    
+                }, 1000);
+                //document.body.appendChild(button);
             })
     }
     clearAlert() {
