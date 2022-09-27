@@ -128,18 +128,26 @@ function createMrbrBaseFile(sourceFileName) {
         includeClassExtension = (classDeclarationMatch?.groups?.extends && classDeclarationMatch?.groups?.baseClass) ? (` extends(${classDeclarationMatch?.groups?.baseClass.replace(/_/g, ".")}) `) : "";
     if (classDeclarationMatch) {
         const //classExtension = (includeClassExtension.length > 0) ? (` extends mrbrClassExtension `) : "",
-            exportName = classDeclarationMatch?.groups?.exportName,
-            outputTextArray = [
-                //`${ includeClassExtension } ${ ((sourceFileName === mrbrBaseSourceFile) ? "let" : "") } ${ exportName } = ${ exportType } ${ includeClassExtension } `.replace(/ {2}/, " "), ,
-                `${((sourceFileName === mrbrBaseSourceFile) ? "let" : "")} ${exportName} = ${exportType} ${includeClassExtension} `.replace(/ {2}/, " "), ,
-                destinationContent.substring(classDeclarationRegex.lastIndex - 1),
-                ...((sourceFileName === mrbrBaseSourceFile) ? [
-                    `MrbrBase.Namespace.createAssembly(window, "Mrbr"); `,
-                    `Mrbr.System.MrbrBase = MrbrBase; `,
-                    `Mrbr.System.MrbrBase[MrbrBase.MRBR_COMPONENT_NAME] = "Mrbr.System.MrbrBase"; `
-                ] : [])
-            ],
-            code = generateCode(outputTextArray.join("\r\n"), importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
+            exportName = classDeclarationMatch?.groups?.exportName;
+        let firstLine = "";
+        if (sourceFileName === mrbrBaseSourceFile) {
+            firstLine = `let ${exportName} = ${exportType} ${includeClassExtension} `.replace(/ {2}/, " ");
+        }
+        else {
+            firstLine = `let ${exportName} = ${exportName.replace(/_/g, ".")} = ${exportType} ${includeClassExtension} `.replace(/ {2}/, " ");
+        }
+        //`${((sourceFileName === mrbrBaseSourceFile) ? "let" : "")} ${exportName} = ${exportType} ${includeClassExtension} `.replace(/ {2}/, " "), ,
+        const outputTextArray = [
+            //`${ includeClassExtension } ${ ((sourceFileName === mrbrBaseSourceFile) ? "let" : "") } ${ exportName } = ${ exportType } ${ includeClassExtension } `.replace(/ {2}/, " "), ,
+            firstLine,
+            destinationContent.substring(classDeclarationRegex.lastIndex - 1),
+            ...((sourceFileName === mrbrBaseSourceFile) ? [
+                `MrbrBase.Namespace.createAssembly(window, "Mrbr"); `,
+                `Mrbr.System.MrbrBase = MrbrBase; `,
+                `Mrbr.System.MrbrBase[MrbrBase.MRBR_COMPONENT_NAME] = "Mrbr.System.MrbrBase"; `
+            ] : [])
+        ],
+            code = generateCode(outputTextArray.join("\r\n"), importedReferences.map(importedReference => importedReference.assembly).concat([exportName]), "class", exportName);
         let assemblyPath = path.dirname(mrbrJSRootFile);
         !fs.existsSync(assemblyPath) && fs.mkdirSync(assemblyPath, { recursive: true });
         (sourceFileName === mrbrBaseSourceFile) ? fs.writeFileSync(mrbrJSRootFile, code + "\r\n") : fs.appendFileSync(mrbrJSRootFile, "\r\n" + code + "\r\n");
@@ -154,19 +162,25 @@ function createMrbrBaseFile(sourceFileName) {
         fs.writeFileSync(mrbrJSRootFile, prettify(`${sourceCode} \r\n${namespaceNames.join(";\r\n")} \r\n`, true))
     }
     else {
-        let enumFunctionRegex = /export\s+var\s+(?<assembly>[\w$]+)\s*;\s*(?<function>\(function \s*\((\1)\)\s{)(?<text>[\s\S]+)\}\)\s*\(\1\s*[|]{2}\s*\(\1\s*=\s*\{\}\)\);\s*/gm,
-            functionRegex = /(?<fullMatch>(?<exportFunction>export\s+function\s+)(?<assembly>[\w]+)(?<parameters>\([\s\S]*?\))\s*\{)/gm;
-        let match = null;
-        if ((match = enumFunctionRegex.exec(destinationContent)) !== null) {
-            code = generateCode(match.groups.text, [match.groups.assembly]);
-            fs.appendFileSync(mrbrJSRootFile, "\r\n" + code + "\r\n");
-        }
-        else if ((match = functionRegex.exec(destinationContent)) !== null) {
-            code = generateCode(`${match.groups.assembly} = function ${match.groups.parameters} { ${destinationContent.substring(functionRegex.lastIndex)} `, [match.groups.assembly]);
-            fs.appendFileSync(mrbrJSRootFile, "\r\n" + code + "\r\n");
-        }
-        else {
-            throw new Error(`${sourceFileName} has no Class or Function definition`)
+        try {
+
+            let enumFunctionRegex = /export\s+var\s+(?<assembly>[\w$]+)\s*;\s*(?<function>\(function \s*\((\1)\)\s{)(?<text>[\s\S]+)\}\)\s*\(\1\s*[|]{2}\s*\(\1\s*=\s*\{\}\)\);\s*/gm,
+                functionRegex = /(?<fullMatch>(?<exportFunction>export\s+function\s+)(?<assembly>[\w]+)(?<parameters>\([\s\S]*?\))\s*\{)/gm;
+            let match = null;
+            if ((match = enumFunctionRegex.exec(destinationContent)) !== null) {
+                code = generateCode(`let ${match.groups.assembly} = ${match.groups.assembly.replace(/_/g, ".")}\r\n` + match.groups.text, [match.groups.assembly], "enum", match.groups.assembly);
+                fs.appendFileSync(mrbrJSRootFile, "\r\n" + code + "\r\n");
+            }
+            else if ((match = functionRegex.exec(destinationContent)) !== null) {
+                code = generateCode(`let ${match.groups.assembly} = ${match.groups.assembly.replace(/_/g, ".")}\r\n` + ` = function ${match.groups.parameters} { ${destinationContent.substring(functionRegex.lastIndex)} `, [match.groups.assembly], "function", match.groups.assembly);
+                fs.appendFileSync(mrbrJSRootFile, "\r\n" + code + "\r\n");
+            }
+            else {
+                throw new Error(`${sourceFileName} has no Class or Function definition`)
+            }
+        } catch (error) {
+            console.log(error);
+
         }
     }
 }
@@ -246,29 +260,34 @@ function createMrbrAssemblyFile(sourceFile) {
         }
         exportName = classDeclarationMatch?.groups?.exportName;
         let outputTextArray = [
-            `${includeClassExtension}${exportName} = ${exportType} ${classExtension} `.replace(/ {2}/, " "), ,
+            `let ${exportName} = ${includeClassExtension}${exportName.replace(/_/g, ".")} = ${exportType} ${classExtension} `.replace(/ {2}/, " "), ,
             destinationContent.substring(classDeclarationRegex.lastIndex - 1)
         ];
-        code = generateCode(outputTextArray.join("\r\n"), importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
+        code = generateCode(outputTextArray.join("\r\n"), importedReferences.map(importedReference => importedReference.assembly).concat([exportName]), "class", exportName);
         if ((classDeclarationMatch?.groups?.baseClass?.length || 0) > 0) {
             //console.log("classDeclarationMatch?.groups?.baseClass?.length")
             code = code.replace(new RegExp(classDeclarationMatch?.groups?.baseClass.replace(/_/g, "."), ""), `(${classDeclarationMatch?.groups?.baseClass.replace(/_/g, ".")})`);
         }
     }
     else {
-        let enumFunctionRegex = /export\s+var\s+(?<assembly>[\w$]+)\s*;\s*(?<function>\(function \s*\((\1)\)\s{)(?<text>[\s\S]+)\}\)\s*\(\1\s*[|]{2}\s*\(\1\s*=\s*\{\}\)\);\s*/gm,
-            functionRegex = /(?<fullMatch>(?<exportFunction>export\s+function\s+)(?<assembly>[\w]+)(?<parameters>\([\s\S]*?\))\s*\{)/gm;
-        let match = null;
-        if ((match = enumFunctionRegex.exec(destinationContent)) !== null) {
-            exportName = match.groups.assembly;
-            code = generateCode(match.groups.text, importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
-        }
-        else if ((match = functionRegex.exec(destinationContent)) !== null) {
-            exportName = match.groups.assembly;
-            code = generateCode(`${match.groups.assembly} = function ${match.groups.parameters} { ${destinationContent.substring(functionRegex.lastIndex)} `, importedReferences.map(importedReference => importedReference.assembly).concat([exportName]));
-        }
-        else {
-            throw new Error(`No Class or Function definition`)
+        try {
+
+            let enumFunctionRegex = /export\s+var\s+(?<assembly>[\w$]+)\s*;\s*(?<function>\(function \s*\((\1)\)\s{)(?<text>[\s\S]+)\}\)\s*\(\1\s*[|]{2}\s*\(\1\s*=\s*\{\}\)\);\s*/gm,
+                functionRegex = /(?<fullMatch>(?<exportFunction>export\s+function\s+)(?<assembly>[\w]+)(?<parameters>\([\s\S]*?\))\s*\{)/gm;
+            let match = null;
+            if ((match = enumFunctionRegex.exec(destinationContent)) !== null) {
+                exportName = match.groups.assembly;
+                code = generateCode(`let ${match.groups.assembly} = ${match.groups.assembly.replace(/_/g, ".")}\r\n` + match.groups.text, importedReferences.map(importedReference => importedReference.assembly).concat([exportName]), "enum", exportName);
+            }
+            else if ((match = functionRegex.exec(destinationContent)) !== null) {
+                exportName = match.groups.assembly;
+                code = generateCode(`let ${match.groups.assembly} = ${match.groups.assembly.replace(/_/g, ".")}\r\n` + ` = function ${match.groups.parameters} { ${destinationContent.substring(functionRegex.lastIndex)} `, importedReferences.map(importedReference => importedReference.assembly).concat([exportName]), "function", exportName);
+            }
+            else {
+                throw new Error(`No Class or Function definition`)
+            }
+        } catch (error) {
+            console.log("error: ", error)
         }
     }
     if (exportName) {
@@ -285,8 +304,8 @@ function createMrbrAssemblyFile(sourceFile) {
             ${preloadAssembly?.length ? `mrbr.loadManifest( miofc(${preloadAssembly}) )\r\n` : ""}
             ${preloadAssembly?.length ? ".then(_ =>{" : ""}
             ${code} \r\n
-                ${manifest?.length ? exportName.replace(/_/g, '.') + "[symbols.manifest] = [ " + manifest.join(",\r\n") + "]" : ""}                
-                ${exportName.replace(/_/g, '.')} [symbols.componentName] = "${exportName.replace(/_/g, '.')}";
+                ${manifest?.length ? exportName + "[symbols.manifest] = [ " + manifest.join(",\r\n") + "]" : ""}                
+                ${exportName} [symbols.componentName] = "${exportName.replace(/_/g, '.')}";
     setTimeout(() => { resolve(${exportName.replace(/_/g, ".")}) }, 0)
                 ${preloadAssembly?.length ? "})" : ""}
                 ${preloadAssembly?.length ? ".catch(err => reject(err))" : ""}
@@ -300,7 +319,7 @@ function prettify(code, beautify = false) {
     return code;
     // var options = {
     //     compress: {
-    //         drop_debugger: false
+    //         drop_debugger: true
     //       },
     //     mangle: false,
     //     output: {
@@ -308,28 +327,125 @@ function prettify(code, beautify = false) {
     //     }
     // };
     // var result = UglifyJS.minify(code, options);
+    // var result = UglifyJS.minify(code);
     // return result.code;
 }
 
-function generateCode(text, replaceNames) {
+function generateCode(text, replaceNames, exportType, exportName) {
     if (!replaceNames || replaceNames.length === 0) { return text; }
-    const ast = esprima.parseScript(text)
+    const ast = esprima.parseScript(text);
+    let foundFirst = false;
     estraverse.traverse(ast, {
         enter: function (node, parent) { if (node.type !== "Program") { return estraverse.VisitorOption.Skip; } },
         leave: function (node, parent) {
-            if (node.type === "Program") { traverseNodes(node, replaceNames) }
+            //if (node.type === "Program") { traverseNodes(node, replaceNames, foundFirst, parent) }            
+
+            let isBodyExpression = false;
+            if (parent?.type === "Program") {
+                if (node.type === "ExpressionStatement") {
+                    if (
+                        node.expression.type === "AssignmentExpression" &&
+                        node.expression.left.type === "MemberExpression" &&
+                        node.expression.left.object.type === "Identifier" &&
+                        node.expression.left.object.name === exportName) {
+                        isBodyExpression = true;
+                        if (exportName === "Mrbr_UI_Controls_Control") console.log("#1", exportName, isBodyExpression)
+                    }
+                    traverseNodes(node, replaceNames, isBodyExpression)
+                }
+                // else if (node.expression.type === "AssignmentExpression" && node.expression.left.type === "Identifier") {
+                //     if (node.expression.left.name === exportName) {
+                //         isBodyExpression = true;
+                //     }
+                // }
+                else if (node.type === "VariableDeclaration") {
+                    if (exportName === "Mrbr_UI_Controls_Control") console.log("#2", exportName, node)
+                    node.declarations.forEach(declarator => {
+                        if (exportName === "Mrbr_UI_Controls_Control") console.log("#2", exportName, declarator.id)
+                        // if (
+                        //     declaration.type === "VariableDeclarator" &&
+                        //     declaration.id.type === "Identifier" &&
+                        //     declaration.id.name === exportName) {
+                        //     traverseNodes(declaration, replaceNames, true)
+                        for (const key in declarator) {
+                            const nodeKey = declarator[key];
+                            if (nodeKey instanceof Object) {
+                                if (Array.isArray(nodeKey)) {
+                                    nodeKey.forEach(nodeItem => {
+                                        if (exportName === "Mrbr_UI_Controls_Control") console.log("#3", exportName, (
+                                            //nodeItem.type === "VariableDeclarator" &&
+                                            nodeItem.id?.type === "Identifier" &&
+                                            nodeItem.id?.name === exportName))
+                                        traverseNodes(nodeItem, replaceNames, (
+                                            //nodeItem.type === "VariableDeclarator" &&
+                                            nodeItem.id?.type === "Identifier" &&
+                                            nodeItem.id?.name === exportName)
+                                        );
+                                    })
+                                }
+                                else {
+                                    if (exportName === "Mrbr_UI_Controls_Control") console.log("#4", exportName, nodeKey, !!(
+                                        //nodeKey.type === "VariableDeclarator" &&
+                                        nodeKey.type === "Identifier" &&
+                                        nodeKey.name === exportName))
+                                    traverseNodes(nodeKey, replaceNames, (
+                                        //nodeKey.type === "VariableDeclarator" &&
+                                        nodeKey.type === "Identifier" &&
+                                        nodeKey.name === exportName));
+
+                                }
+                            }
+                        };
+                        //}
+                        // else {
+                        //     traverseNodes(declaration, replaceNames, false)
+                        // }
+                    })
+                }
+                //             && node.id.type === "Identifier" && node.id.name === exportName) {
+                //     isBodyExpression = true;
+                //     if (exportName === "#Mrbr_UI_Controls_Control") console.log(exportName, isBodyExpression)
+                // }
+                else {
+                    traverseNodes(node, replaceNames, isBodyExpression)
+                }
+            }
+
+            // if (parent?.type === "Program" &&
+            //     node.type === "ExpressionStatement" &&
+            //     node.expression.type === "AssignmentExpression" &&
+            //     (node.expression?.left?.name === exportName ||
+            //         node.expression?.left?.object?.name === exportName)) {
+            //     console.log("bodyExpression")
+            //     traverseNodes(node, replaceNames, true)
+            // }
+            // else if (parent?.type === "Program" &&
+            //     (
+            //         node.type === "ExpressionStatement" ||
+            //         node.expression?.type === "AssignmentExpression" ||
+            //         (node.expression?.left?.name === exportName ||
+            //             node.expression?.left?.object?.name === exportName)
+            //     )
+
+            // ) { traverseNodes(node, replaceNames, false) }
         }
     });
     return escodegen.generate(ast);
 }
-function traverseNodes(node, replaceNames) {
+function traverseNodes(node, replaceNames, bodyExpression = false) {
     if (!node || (Array.isArray(node) === false && node instanceof Object === false)) { return; }
     if (node.type === "Identifier" && replaceNames.indexOf(node.name) >= 0) {
-        node.name = node.name.replace(/_/g, ".")
+        //if (foundFirst === false) { node.name = node.name.replace(/_/g, ".") }
+        if (!bodyExpression) { node.name = node.name.replace(/_/g, ".") }
+        //console.log(parent?.type, node.name)
+
     }
     else if (node.hasOwnProperty("name") && replaceNames.indexOf(node.name) >= 0) {
-        node.name = node.name.replace(/_/g, ".")
+        //if (foundFirst === false) { node.name = node.name.replace(/_/g, ".") }
+        if (!bodyExpression) { node.name = node.name.replace(/_/g, ".") }
+
     }
+    if (bodyExpression) { return; }
     for (const key in node) {
         const nodeKey = node[key];
         Array.isArray(nodeKey) ?
