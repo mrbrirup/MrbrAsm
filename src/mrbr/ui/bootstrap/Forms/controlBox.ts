@@ -31,7 +31,7 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
         //this.createControls();
     }
     initialise(...args): Mrbr_System_MrbrPromise<any> {
-        const retval = Mrbr_System_MrbrPromise.CreateMrbrPromise("");
+        const retval = Mrbr_System_MrbrPromise.create("");
         super.initialise(args)
             .then(_ => {
                 this.createControls();

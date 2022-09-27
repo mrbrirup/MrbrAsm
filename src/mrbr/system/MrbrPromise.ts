@@ -103,7 +103,7 @@ export class Mrbr_System_MrbrPromise<T> {
     static runGarbageCollector() {
 
     }
-    public static CreateResolvedMrbrPromise(resolvedObject: any): Mrbr_System_MrbrPromise<any> {
+    public static createResolved(resolvedObject: any): Mrbr_System_MrbrPromise<any> {
         // let mrbrPromise = new Mrbr_System_MrbrPromise<object>();
         // mrbrPromise.promise.resolve(resolvedObject);
         // return mrbrPromise;
@@ -125,7 +125,7 @@ export class Mrbr_System_MrbrPromise<T> {
         mrbrPromise.resolve(resolvedObject);
         return mrbrPromise;
     }
-    public static CreateMrbrPromise<T>(reference: string): Mrbr_System_MrbrPromise<T> {
+    public static create<T>(reference: string): Mrbr_System_MrbrPromise<T> {
         const id: string = `promise_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`;
         let mrbrPromise: Mrbr_System_MrbrPromise<T> = new Mrbr_System_MrbrPromise<T>();
         mrbrPromise.promise = new Promise((resolve, reject) => {

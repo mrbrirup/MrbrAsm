@@ -44,7 +44,7 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
         const self = this,
             mubca = Mrbr_UI_Bootstrap_Controls_Accordion,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig,
-            initialisePromise = Mrbr_System_MrbrPromise.CreateMrbrPromise(`Mrbr_UI_Bootstrap_Controls_Accordion:${self.rootElementName}`);
+            initialisePromise = Mrbr_System_MrbrPromise.create(`Mrbr_UI_Bootstrap_Controls_Accordion:${self.rootElementName}`);
         super.initialise(args)
             .then(async _ => {
                 await self.setDefaultConfiguration();
@@ -63,7 +63,7 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
         self.defaultConfiguration.add(mubca.ACCORDION_NAME, new muccop()
             .Classes(["accordion"])
         );
-        return Mrbr_System_MrbrPromise.CreateResolvedMrbrPromise(this);
+        return Mrbr_System_MrbrPromise.createResolved(this);
     }
     public addItems(item: Mrbr_UI_Bootstrap_Controls_AccordionItem | Array<Mrbr_UI_Bootstrap_Controls_AccordionItem>) {
         const self = this;

@@ -65,7 +65,7 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Controls_Control {
         const self = this,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig,
             mubca = Mrbr_UI_Bootstrap_Controls_Alert,
-            initialisePromise = Mrbr_System_MrbrPromise.CreateMrbrPromise("Mrbr_UI_Bootstrap_Controls_Alert:initialise");
+            initialisePromise = Mrbr_System_MrbrPromise.create("Mrbr_UI_Bootstrap_Controls_Alert:initialise");
         super.initialise(args)
             .then(result => {
                 self.setDefaultConfiguration();
@@ -112,6 +112,6 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Controls_Control {
             .Aria({ label: "Close" })
         )
 
-        return Mrbr_System_MrbrPromise.CreateResolvedMrbrPromise(this);
+        return Mrbr_System_MrbrPromise.createResolved(this);
     }
 }

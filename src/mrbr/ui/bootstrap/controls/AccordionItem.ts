@@ -24,7 +24,7 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
         const self = this,
             mubcai = Mrbr_UI_Bootstrap_Controls_AccordionItem,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig,
-            initialisePromise = Mrbr_System_MrbrPromise.CreateMrbrPromise("Mrbr_UI_Bootstrap_Controls_AccordionItem:initialise");
+            initialisePromise = Mrbr_System_MrbrPromise.create("Mrbr_UI_Bootstrap_Controls_AccordionItem:initialise");
 
 
         super.initialise(args)
@@ -120,7 +120,7 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
         self.defaultConfiguration.add(mubca.ACCORDION_BODY, new muccop()
             .Classes(["accordion-body"])
         )
-        return Mrbr_System_MrbrPromise.CreateResolvedMrbrPromise(this);
+        return Mrbr_System_MrbrPromise.createResolved(this);
     }
 
 }

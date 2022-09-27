@@ -10,7 +10,7 @@ export class Mrbr_Tests_Application$Breadcrumb {
     }
     initialise(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Breadcrumb> {
         const self = this,
-            initialisePromise = Mrbr_System_MrbrPromise.CreateMrbrPromise<Mrbr_UI_Bootstrap_Controls_Breadcrumb>("Mrbr_Tests_Application$Breadcrumb:initialise");
+            initialisePromise = Mrbr_System_MrbrPromise.create<Mrbr_UI_Bootstrap_Controls_Breadcrumb>("Mrbr_Tests_Application$Breadcrumb:initialise");
         self.breadCrumb
             .initialise()
             .then(_ => {

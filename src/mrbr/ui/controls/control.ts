@@ -10,6 +10,7 @@ import { Mrbr_UI_Controls_ControlDefaultsCollection } from "./ControlDefaultsCol
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "./ControlConfigOptionalParameters";
 export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Controls_IControl {
     public static CONTROL_KEYS: symbol = Symbol("control_keys");
+    public static DELETE: symbol = Symbol("delete");
     private _styleClasses = Mrbr_UI_Html_StyleClasses
     private _rootElementName: string;
     private _defaultContainerElementName: string;
@@ -130,10 +131,10 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         return this;
     }
     setDefaultConfiguration(...args: any[]): Mrbr_System_MrbrPromise<any> {
-        return Mrbr_System_MrbrPromise.CreateResolvedMrbrPromise(null);
+        return Mrbr_System_MrbrPromise.createResolved(null);
     }
     initialise(...args: any[]): Mrbr_System_MrbrPromise<any> {
-        let retval = Mrbr_System_MrbrPromise.CreateResolvedMrbrPromise(this);
+        let retval = Mrbr_System_MrbrPromise.createResolved(this);
         return retval;
     }
     public get themedElements() {
@@ -320,7 +321,10 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         const self = this;
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
         if (attributesSettings) {
-            Object.keys(attributesSettings).forEach(key => _targetElement.setAttribute(key, attributesSettings[key]))
+            Object.keys(attributesSettings).forEach(key => {
+                if (attributesSettings[key] === Mrbr_UI_Controls_Control.DELETE) { if (_targetElement.hasAttribute(key)) { _targetElement.removeAttribute(key) } }
+                else { _targetElement.setAttribute(key, attributesSettings[key]); }
+            })
         }
         return _targetElement
     }
@@ -341,11 +345,8 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
         if (datasetSettings) {
             Object.keys(datasetSettings).forEach(key => {
-                _targetElement.dataset[key] = datasetSettings[key]
-                // if (key) {
-                //     _targetElement.dataset[key.toLowerCase().startsWith("data") ? key : `data-${key}`] = datasetSettings[key]
-                // }
-                //_targetElement.setAttribute(`aria-${_key[_key.length - 1]}`, datasetSettings[key]);
+                if (datasetSettings[key] === Mrbr_UI_Controls_Control.DELETE) { delete _targetElement.dataset[key] }
+                else { _targetElement.dataset[key] = datasetSettings[key]; }
             });
         }
         return _targetElement
@@ -358,7 +359,9 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
             Object.keys(datasetSettings).forEach(key => {
                 if (key) {
                     let _key = key.split("-");
-                    _targetElement.setAttribute(`aria-${_key[_key.length - 1]}`, datasetSettings[key]);
+                    const ariaKey = `aria-${_key[_key.length - 1]}`;
+                    if (datasetSettings[key] === Mrbr_UI_Controls_Control.DELETE) { if (_targetElement.hasAttribute(ariaKey)) { _targetElement.removeAttribute(ariaKey) } }
+                    else { _targetElement.setAttribute(ariaKey, datasetSettings[key]); }
                 }
             });
         }

@@ -60,7 +60,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     initialise(...args): Mrbr_System_MrbrPromise<any> {
         const self = this,
             muccop = Mrbr_UI_Controls_ControlConfigOptionalParameters,
-            retval = Mrbr_System_MrbrPromise.CreateMrbrPromise("");
+            retval = Mrbr_System_MrbrPromise.create("");
         super.initialise(args)
             .then(async _ => {
                 if (!self._drawDialog) { self._drawDialog = self.drawDialog.bind(self) }

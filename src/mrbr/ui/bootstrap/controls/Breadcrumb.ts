@@ -98,7 +98,7 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
         const self = this,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig,
             mubcb = Mrbr_UI_Bootstrap_Controls_Breadcrumb,
-            initlialisepromise = Mrbr_System_MrbrPromise.CreateMrbrPromise<Mrbr_UI_Bootstrap_Controls_Breadcrumb>("Mrbr_UI_Bootstrap_Controls_Breadcrumb:initialise");
+            initlialisepromise = Mrbr_System_MrbrPromise.create<Mrbr_UI_Bootstrap_Controls_Breadcrumb>("Mrbr_UI_Bootstrap_Controls_Breadcrumb:initialise");
         super.initialise(...args)
             .then(result => {
                 self.setDefaultConfiguration();
@@ -136,6 +136,6 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
             [mubcb.BREADCRUMB_ITEM_NAME, new muccop().Classes(["breadcrumb-item user-select-none"])],
             [mubcb.BREADCRUMB_ITEM_LINK_NAME, new muccop()]
         ])
-        return Mrbr_System_MrbrPromise.CreateResolvedMrbrPromise(this);
+        return Mrbr_System_MrbrPromise.createResolved(this);
     }
 }

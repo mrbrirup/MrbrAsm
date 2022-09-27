@@ -573,7 +573,7 @@ export class MrbrBase extends EventTarget {
      */
     initialise(config: Mrbr_Assembly_MrbrConfig): Mrbr_System_MrbrPromise<any> {
         const self = this,
-            promise = Mrbr_System_MrbrPromise.CreateMrbrPromise("MrbrBase.initialise"),
+            promise = Mrbr_System_MrbrPromise.create("MrbrBase.initialise"),
             self_paths = self._paths;
         self.config = config;
         !(self.host) && (_ => {
@@ -748,7 +748,7 @@ export class MrbrBase extends EventTarget {
                     result
                         .text()
                         .then((componentText: string) => {
-                            let loadedPromise = Mrbr_System_MrbrPromise.CreateMrbrPromise<any>(`mrbrFetch:${file.fileName}`);
+                            let loadedPromise = Mrbr_System_MrbrPromise.create<any>(`mrbrFetch:${file.fileName}`);
                             fn(componentParameters, componentText).bind(self)(instance, file.data, loadedPromise.executor.resolve, loadedPromise.executor.reject, { componentName: _compName, manifest: _compManifest });
                             loadedPromise
                                 .then(entry => {
@@ -852,7 +852,7 @@ export class MrbrBase extends EventTarget {
      */
     addFileFunction(target: any, targetFunctionName: string, functionToLoad: any): Mrbr_System_MrbrPromise<any> {
         const self = this,
-            promise = Mrbr_System_MrbrPromise.CreateMrbrPromise("MrbrBase.addFileFunction");
+            promise = Mrbr_System_MrbrPromise.create("MrbrBase.addFileFunction");
         self.addFunction(target, targetFunctionName, functionToLoad)
             .then(fn => promise.resolve(fn))
             .catch(err => promise.reject(err))
@@ -896,7 +896,7 @@ export class MrbrBase extends EventTarget {
     addFunction(target: any, targetFunctionName: string, functionToLoad: any): Mrbr_System_MrbrPromise<any> {
         const self = this;
         if (target[targetFunctionName]) {
-            let retVal = Mrbr_System_MrbrPromise.CreateMrbrPromise<any>("MrbrBase.addFunction")
+            let retVal = Mrbr_System_MrbrPromise.create<any>("MrbrBase.addFunction")
             retVal.resolve(target[targetFunctionName])
             return retVal;
         }
@@ -904,7 +904,7 @@ export class MrbrBase extends EventTarget {
             target[targetFunctionName] = functionToLoad;
 
 
-            let retVal = Mrbr_System_MrbrPromise.CreateMrbrPromise<any>("MrbrBase.addFunction")
+            let retVal = Mrbr_System_MrbrPromise.create<any>("MrbrBase.addFunction")
             retVal.resolve(functionToLoad)
             return retVal;
         }

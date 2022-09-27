@@ -63,7 +63,7 @@ export class Mrbr_UI_Bootstrap_Forms_UrlDialog extends Mrbr_UI_Bootstrap_Forms_D
         this.elements["iframeContainer"] = value;
     }
     initialise(...args): Mrbr_System_MrbrPromise<any> {
-        const retval = Mrbr_System_MrbrPromise.CreateMrbrPromise("");
+        const retval = Mrbr_System_MrbrPromise.create("");
         super.initialise(args)
         .then(_ => {            
             const self = this;

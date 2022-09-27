@@ -120,7 +120,7 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
             ctrlCfg = Mrbr_UI_Controls_ControlConfig,
             mucca = Mrbr_UI_Controls_ClassActions,
             mubcb = Mrbr_UI_Bootstrap_Controls_Badge,
-            initialisePromise = Mrbr_System_MrbrPromise.CreateMrbrPromise("Mrbr_UI_Bootstrap_Controls_Badge:initialise");
+            initialisePromise = Mrbr_System_MrbrPromise.create("Mrbr_UI_Bootstrap_Controls_Badge:initialise");
         super.initialise(args)
             .then(result => {
                 self.setDefaultConfiguration();
@@ -155,7 +155,7 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
         self.defaultConfiguration.add(mubcb.CONTEXT_TEXT_NAME, new muccop().Classes(["visually-hidden"]));
 
 
-        return Mrbr_System_MrbrPromise.CreateResolvedMrbrPromise(this);
+        return Mrbr_System_MrbrPromise.createResolved(this);
 
     }
 }
