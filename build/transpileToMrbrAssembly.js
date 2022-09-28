@@ -292,10 +292,7 @@ function createMrbrAssemblyFile(sourceFile) {
     }
     if (exportName) {
         let manifest = []
-        //console.log(exportName, destinationFileName);
-
         if (importedReferences?.length > 0) {
-
             manifest = manifest.concat(...[importedReferences.filter(entry => entry.exclude === false).filter(entry => entry.assembly?.name?.toLowerCase() !== "mrbrbase").map(include => (`${" ".repeat(8)} miofc(${include.assembly.replace(/_/g, ".")})`))])
         }
         let source = prettify(`((mrbr, data, resolve, reject, symbols) => {
@@ -338,8 +335,6 @@ function generateCode(text, replaceNames, exportType, exportName) {
     estraverse.traverse(ast, {
         enter: function (node, parent) { if (node.type !== "Program") { return estraverse.VisitorOption.Skip; } },
         leave: function (node, parent) {
-            //if (node.type === "Program") { traverseNodes(node, replaceNames, foundFirst, parent) }            
-
             let isBodyExpression = false;
             if (parent?.type === "Program") {
                 if (node.type === "ExpressionStatement") {
@@ -349,85 +344,36 @@ function generateCode(text, replaceNames, exportType, exportName) {
                         node.expression.left.object.type === "Identifier" &&
                         node.expression.left.object.name === exportName) {
                         isBodyExpression = true;
-                        if (exportName === "Mrbr_UI_Controls_Control") console.log("#1", exportName, isBodyExpression)
                     }
                     traverseNodes(node, replaceNames, isBodyExpression)
                 }
-                // else if (node.expression.type === "AssignmentExpression" && node.expression.left.type === "Identifier") {
-                //     if (node.expression.left.name === exportName) {
-                //         isBodyExpression = true;
-                //     }
-                // }
                 else if (node.type === "VariableDeclaration") {
-                    if (exportName === "Mrbr_UI_Controls_Control") console.log("#2", exportName, node)
                     node.declarations.forEach(declarator => {
-                        if (exportName === "Mrbr_UI_Controls_Control") console.log("#2", exportName, declarator.id)
-                        // if (
-                        //     declaration.type === "VariableDeclarator" &&
-                        //     declaration.id.type === "Identifier" &&
-                        //     declaration.id.name === exportName) {
-                        //     traverseNodes(declaration, replaceNames, true)
                         for (const key in declarator) {
                             const nodeKey = declarator[key];
                             if (nodeKey instanceof Object) {
                                 if (Array.isArray(nodeKey)) {
                                     nodeKey.forEach(nodeItem => {
-                                        if (exportName === "Mrbr_UI_Controls_Control") console.log("#3", exportName, (
-                                            //nodeItem.type === "VariableDeclarator" &&
-                                            nodeItem.id?.type === "Identifier" &&
-                                            nodeItem.id?.name === exportName))
                                         traverseNodes(nodeItem, replaceNames, (
-                                            //nodeItem.type === "VariableDeclarator" &&
                                             nodeItem.id?.type === "Identifier" &&
                                             nodeItem.id?.name === exportName)
                                         );
                                     })
                                 }
                                 else {
-                                    if (exportName === "Mrbr_UI_Controls_Control") console.log("#4", exportName, nodeKey, !!(
-                                        //nodeKey.type === "VariableDeclarator" &&
-                                        nodeKey.type === "Identifier" &&
-                                        nodeKey.name === exportName))
                                     traverseNodes(nodeKey, replaceNames, (
-                                        //nodeKey.type === "VariableDeclarator" &&
                                         nodeKey.type === "Identifier" &&
                                         nodeKey.name === exportName));
 
                                 }
                             }
                         };
-                        //}
-                        // else {
-                        //     traverseNodes(declaration, replaceNames, false)
-                        // }
                     })
                 }
-                //             && node.id.type === "Identifier" && node.id.name === exportName) {
-                //     isBodyExpression = true;
-                //     if (exportName === "#Mrbr_UI_Controls_Control") console.log(exportName, isBodyExpression)
-                // }
                 else {
                     traverseNodes(node, replaceNames, isBodyExpression)
                 }
             }
-
-            // if (parent?.type === "Program" &&
-            //     node.type === "ExpressionStatement" &&
-            //     node.expression.type === "AssignmentExpression" &&
-            //     (node.expression?.left?.name === exportName ||
-            //         node.expression?.left?.object?.name === exportName)) {
-            //     console.log("bodyExpression")
-            //     traverseNodes(node, replaceNames, true)
-            // }
-            // else if (parent?.type === "Program" &&
-            //     (
-            //         node.type === "ExpressionStatement" ||
-            //         node.expression?.type === "AssignmentExpression" ||
-            //         (node.expression?.left?.name === exportName ||
-            //             node.expression?.left?.object?.name === exportName)
-            //     )
-
-            // ) { traverseNodes(node, replaceNames, false) }
         }
     });
     return escodegen.generate(ast);
@@ -435,15 +381,10 @@ function generateCode(text, replaceNames, exportType, exportName) {
 function traverseNodes(node, replaceNames, bodyExpression = false) {
     if (!node || (Array.isArray(node) === false && node instanceof Object === false)) { return; }
     if (node.type === "Identifier" && replaceNames.indexOf(node.name) >= 0) {
-        //if (foundFirst === false) { node.name = node.name.replace(/_/g, ".") }
         if (!bodyExpression) { node.name = node.name.replace(/_/g, ".") }
-        //console.log(parent?.type, node.name)
-
     }
     else if (node.hasOwnProperty("name") && replaceNames.indexOf(node.name) >= 0) {
-        //if (foundFirst === false) { node.name = node.name.replace(/_/g, ".") }
         if (!bodyExpression) { node.name = node.name.replace(/_/g, ".") }
-
     }
     if (bodyExpression) { return; }
     for (const key in node) {

@@ -121,7 +121,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     }
     private _id: string;
     public get id(): string {
-        return this._id;
+        return this._id || this.rootElement?.id || this.rootElement?.dataset?.id;
     }
     public set id(value: string) {
         this._id = value;
