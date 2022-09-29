@@ -155,7 +155,7 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
         self.defaultConfiguration.add(mubcb.CONTEXT_TEXT_NAME, new muccop().Classes(["visually-hidden"]));
 
 
-        return Mrbr_System_MrbrPromise.createResolved(this);
+        return Mrbr_System_MrbrPromise.createResolved("Mrbr_UI_Bootstrap_Controls_Badge:setDefaultConfiguration", self);
 
     }
 }

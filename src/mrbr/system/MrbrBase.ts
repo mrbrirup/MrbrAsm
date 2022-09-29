@@ -13,6 +13,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTH
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 import { Mrbr_Assembly_MrbrConfig } from '../assembly/mrbrConfig';
+import { Mrbr_System_MrbrPromise } from './MrbrPromise';
 import { Mrbr_IO_Fetch } from '../io/Fetch';
 import { Mrbr_IO_File } from '../io/File';
 import { Mrbr_IO_FilePromise } from '../io/FilePromise';
@@ -23,7 +24,7 @@ import { Mrbr_IO_LoadScript } from '../io/LoadScript';//exclude
 import { Mrbr_IO_LoadScriptElement } from '../io/LoadScriptElement';//exclude
 import { Mrbr_IO_LoadScriptLink } from '../io/LoadScriptLink';//exclude
 import { Mrbr_IO_ManifestPromise } from '../io/ManifestPromise';
-import { Mrbr_System_MrbrPromise } from './MrbrPromise';
+import { Mrbr_IO_ManifestRequirements } from '../io/ManifestRequirements';
 
 type fileLoaderDelegate = (file: Mrbr_IO_File) => Mrbr_IO_FilePromise;
 
@@ -599,17 +600,14 @@ export class MrbrBase extends EventTarget {
      * @param {(Array<Mrbr_IO_File> | Mrbr_IO_File)} manifest
      * @returns {Promise<any>}
      */
-    public loadManifest(manifest: Array<Mrbr_IO_File> | Mrbr_IO_File): Mrbr_IO_ManifestPromise {
+    public loadManifest(manifest: Array<Mrbr_IO_File> | Mrbr_IO_File, loadRequirement: Mrbr_IO_ManifestRequirements = Mrbr_IO_ManifestRequirements.default): Mrbr_IO_ManifestPromise {
         const mifp = Mrbr_IO_ManifestPromise,
-            mifpCreate = mifp.CreateManifestPromise;
-        (!manifest || (Array.isArray(manifest) && manifest.length === 0)) && (_ => {
-            let retValPromise = mifpCreate("MrbrBase.loadManifest", []);
-            retValPromise.resolve();
-            return retValPromise;
-        })();
+            mifpCreate = mifp.create;
+        let _manifest = manifest instanceof Array ? manifest : [manifest];
+        if (!manifest || _manifest.length === 0) { return mifp.createResolved("MrbrBase.loadManifest", _manifest); }
         const self = this,
-            promise = mifpCreate("MrbrBase.loadManifest", (Array.isArray(manifest) ? manifest : [manifest]));
-        Promise.all(promise.files.map(manifestEntry => self.load(manifestEntry).promise))
+            promise = mifpCreate("MrbrBase.loadManifest", _manifest);
+        Promise.all(_manifest.map(manifestEntry => self.load(manifestEntry).promise))
             .then(_ => promise.resolve())
             .catch(err => promise.reject(err));
         return promise;

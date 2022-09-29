@@ -136,6 +136,6 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
             [mubcb.BREADCRUMB_ITEM_NAME, new muccop().Classes(["breadcrumb-item user-select-none"])],
             [mubcb.BREADCRUMB_ITEM_LINK_NAME, new muccop()]
         ])
-        return Mrbr_System_MrbrPromise.createResolved(this);
+        return Mrbr_System_MrbrPromise.createResolved("Mrbr_UI_Bootstrap_Controls_Breadcrumb:setDefaultConfiguration", self);
     }
 }

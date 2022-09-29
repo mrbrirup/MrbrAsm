@@ -120,7 +120,7 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
         self.defaultConfiguration.add(mubca.ACCORDION_BODY, new muccop()
             .Classes(["accordion-body"])
         )
-        return Mrbr_System_MrbrPromise.createResolved(this);
+        return Mrbr_System_MrbrPromise.createResolved("Mrbr_UI_Bootstrap_Controls_AccordionItem:setDefaultConfiguration", self);
     }
 
 }

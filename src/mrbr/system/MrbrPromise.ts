@@ -6,15 +6,22 @@ export class Mrbr_System_MrbrPromise<T> {
     private _cancellable: boolean = true;
     private _rejected: boolean = false;
     private _fulfilled: boolean = false;
-    private _executor: { resolve: (value: T | PromiseLike<T>) => void, reject: (reason?: any) => void }
+    protected _executor: { resolve: (value: T | PromiseLike<T>) => void, reject: (reason?: any) => void }
     private static _garbageCollectorHandle: number = 0;
     private completedTime: number;
     private _collectable: boolean = true;
+    private _data: any;
     /**
      *
      */
-
+    
     constructor() {
+    }
+    public get data(): any {
+        return this._data;
+    }
+    public set data(value: any) {
+        this._data = value;
     }
     public get executor(): { resolve: (value: T | PromiseLike<T>) => void, reject: (reason?: any) => void } {
         return this._executor;
@@ -31,7 +38,7 @@ export class Mrbr_System_MrbrPromise<T> {
     public reject(reason?: any) {
         return this.executor.reject(reason)
     }
-    public resolve(value: any | PromiseLike<any>) {
+    public resolve(value: T | PromiseLike<T>) {
         return this.executor.resolve(value);
     }
     // public set resolve(value: (value: T | PromiseLike<T>) => void) {
@@ -103,32 +110,36 @@ export class Mrbr_System_MrbrPromise<T> {
     static runGarbageCollector() {
 
     }
-    public static createResolved(resolvedObject: any): Mrbr_System_MrbrPromise<any> {
+    public static createResolved(reference: string, resolvedObject?: any): Mrbr_System_MrbrPromise<any> {
+        const retval = Mrbr_System_MrbrPromise.create(reference);
+        retval.resolve(resolvedObject);
+        return retval;
         // let mrbrPromise = new Mrbr_System_MrbrPromise<object>();
         // mrbrPromise.promise.resolve(resolvedObject);
         // return mrbrPromise;
 
 
-        const id: string = `promise_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`;
-        let mrbrPromise: Mrbr_System_MrbrPromise<any> = new Mrbr_System_MrbrPromise<any>();
-        mrbrPromise.promise = new Promise((resolve, reject) => {
-            mrbrPromise.executor = {
-                reject: (reason: any) => { },
-                resolve: (value: any | PromiseLike<any>) => {
-                    mrbrPromise.fulfilled = true;
-                    resolve(value);
-                }
-            }
-        });
-        mrbrPromise.id = id;
-        Mrbr_System_MrbrPromise.Promises.set(id, mrbrPromise);
-        mrbrPromise.resolve(resolvedObject);
-        return mrbrPromise;
+        // const id: string = `promise_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`;
+        // let mrbrPromise: Mrbr_System_MrbrPromise<any> = new Mrbr_System_MrbrPromise<any>();
+        // mrbrPromise.promise = new Promise((resolve, reject) => {
+        //     mrbrPromise.executor = {
+        //         reject: (reason: any) => { },
+        //         resolve: (value: any | PromiseLike<any>) => {
+        //             mrbrPromise.fulfilled = true;
+        //             resolve(value);
+        //         }
+        //     }
+        // });
+        // mrbrPromise.id = id;
+        // Mrbr_System_MrbrPromise.Promises.set(id, mrbrPromise);
+        // mrbrPromise.resolve(resolvedObject);
+        // return mrbrPromise;
     }
-    public static create<T>(reference: string): Mrbr_System_MrbrPromise<T> {
+    public static create<T>(reference: string, data?: any): Mrbr_System_MrbrPromise<any> {
         const id: string = `promise_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`;
-        let mrbrPromise: Mrbr_System_MrbrPromise<T> = new Mrbr_System_MrbrPromise<T>();
-        mrbrPromise.promise = new Promise((resolve, reject) => {
+        let mrbrPromise = new Mrbr_System_MrbrPromise<T>();
+        mrbrPromise.data = data;
+        mrbrPromise.promise = new Promise<any>((resolve, reject) => {
             mrbrPromise.executor = {
                 reject: (reason: any) => {
                     //Mrbr_System_MrbrPromise.Promises.delete(id);

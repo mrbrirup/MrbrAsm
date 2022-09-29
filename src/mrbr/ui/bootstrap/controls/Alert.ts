@@ -112,6 +112,6 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Controls_Control {
             .Aria({ label: "Close" })
         )
 
-        return Mrbr_System_MrbrPromise.createResolved(this);
+        return Mrbr_System_MrbrPromise.createResolved("Mrbr_UI_Bootstrap_Controls_Alert:setDefaultConfiguration", self);
     }
 }

@@ -128,6 +128,6 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Controls_Con
     public setDefaultConfiguration(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_ButtonGroup> {
         const self = this;
         self.defaultConfiguration.add(self.$cls.BUTTON_GROUP_NAME, new self.$ctrlPrm().Attributes({ role: "group" }));
-        return self.$promise.createResolved(self);
+        return self.$promise.createResolved("Mrbr_UI_Bootstrap_Controls_ButtonGroup:setDefaultConfiguration", self);
     }
 }
