@@ -1,4 +1,4 @@
-import { Mrbr_IO_File } from "./File";//exclude
+import { Mrbr_IO_File } from "./File";//optional
 
 export class Mrbr_IO_FileResult {
     _file: Mrbr_IO_File

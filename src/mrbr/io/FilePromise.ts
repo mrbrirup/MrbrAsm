@@ -23,7 +23,7 @@ export class Mrbr_IO_FilePromise extends Mrbr_System_MrbrPromise<Mrbr_IO_File> {
         return this.executor.resolve(this.file);
     }
 
-    public static CreateFilePromise(reference: string, file: Mrbr_IO_File): Mrbr_IO_FilePromise {
+    public static create(reference: string, file: Mrbr_IO_File): Mrbr_IO_FilePromise {
         let id: string;
         (file.fileType === Mrbr_IO_FileType.Component) && (_ => id = MrbrBase.Namespace.namespace(file.entry))();
         (!id) && (_ => id = file.fileName || file.entry || `file_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`)();
@@ -49,6 +49,11 @@ export class Mrbr_IO_FilePromise extends Mrbr_System_MrbrPromise<Mrbr_IO_File> {
         file.loadingPromise = mrbrFilePromise;
         Mrbr_IO_FilePromise.Promises.set(id, mrbrFilePromise);
         return mrbrFilePromise;
+    }
+    public static createResolved(reference: string, file?: Mrbr_IO_File): Mrbr_IO_FilePromise {
+        const retVal = Mrbr_IO_FilePromise.create(reference, file);
+        retVal.resolve();
+        return retVal;
     }
     public static Promises: Map<string, Mrbr_IO_FilePromise> = new Map<string, Mrbr_IO_FilePromise>();
 }

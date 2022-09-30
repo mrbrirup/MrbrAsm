@@ -3,21 +3,13 @@ The MIT License (MIT)
 Copyright © 2022 mrbrirup
 https://github.com/mrbrirup/MrbrAsm/blob/main/LICENSE
 */
-import { MrbrBase } from "../system/MrbrBase";//exclude
+import { MrbrBase } from "../system/MrbrBase";//optional
 import { Mrbr_IO_FileOptions } from "./FileOptions";
 import { Mrbr_IO_FilePromise } from "./FilePromise";
 import { Mrbr_IO_LoadRequirements } from "./LoadRequirements";
 import { Mrbr_IO_FileType } from "./FileType";
 import { Mrbr_IO_Path } from "./Path";
 export class Mrbr_IO_File {
-
-    public static LoadRequirements = {
-        "force": "force",
-        "required": "required",
-        "optional": "optional"
-    } as const;
-
-
 
     private _entry: any;
     private _extension: string;

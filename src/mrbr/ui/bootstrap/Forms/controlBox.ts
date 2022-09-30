@@ -31,13 +31,17 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
         //this.createControls();
     }
     initialise(...args): Mrbr_System_MrbrPromise<any> {
-        const retval = Mrbr_System_MrbrPromise.create("");
+        const self = this,
+            initalisePromise = Mrbr_System_MrbrPromise.create("");
         super.initialise(args)
             .then(_ => {
-                this.createControls();
-                retval.resolve(this);
+                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                    .then(_ => {
+                        self.createControls();
+                        initalisePromise.resolve(this);
+                    })
             })
-        return retval;
+        return initalisePromise;
     }
 
 

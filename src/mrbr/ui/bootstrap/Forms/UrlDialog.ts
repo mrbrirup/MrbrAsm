@@ -1,3 +1,4 @@
+import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
@@ -63,25 +64,28 @@ export class Mrbr_UI_Bootstrap_Forms_UrlDialog extends Mrbr_UI_Bootstrap_Forms_D
         this.elements["iframeContainer"] = value;
     }
     initialise(...args): Mrbr_System_MrbrPromise<any> {
-        const retval = Mrbr_System_MrbrPromise.create("");
+        const self = this,
+            initalisePromise = Mrbr_System_MrbrPromise.create("");
         super.initialise(args)
-        .then(_ => {            
-            const self = this;
-            self.customConfiguration.add(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME,
-                new Mrbr_UI_Controls_ControlConfigOptionalParameters()
-                    .Classes(["mrbr-dialog-handle-drag", "container-fluid", "bg-dark", "d-flex", "user-select-none", "pe-0"])
-                    .Styles({ height: "10rem" })
-                    .LightTheme("bg-light")
-                    .DarkTheme("bg-dark")
-            );
-            self.createElement(self._iFrameConfig());
-            self
-                .elements[Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME]
-                .appendChild(self.elements[Mrbr_UI_Bootstrap_Forms_UrlDialog.IFRAME_ELEMENT_NAME])
-            self.elements[Mrbr_UI_Bootstrap_Forms_UrlDialog.IFRAME_ELEMENT_NAME].src = self.url;
-            retval.resolve(this);
-        })
-        return retval;
+            .then(_ => {
+                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                    .then(_ => {
+                        self.customConfiguration.add(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME,
+                            new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+                                .Classes(["mrbr-dialog-handle-drag", "container-fluid", "bg-dark", "d-flex", "user-select-none", "pe-0"])
+                                .Styles({ height: "10rem" })
+                                .LightTheme("bg-light")
+                                .DarkTheme("bg-dark")
+                        );
+                        self.createElement(self._iFrameConfig());
+                        self
+                            .elements[Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME]
+                            .appendChild(self.elements[Mrbr_UI_Bootstrap_Forms_UrlDialog.IFRAME_ELEMENT_NAME])
+                        self.elements[Mrbr_UI_Bootstrap_Forms_UrlDialog.IFRAME_ELEMENT_NAME].src = self.url;
+                        initalisePromise.resolve(this);
+                    })
+            })
+        return initalisePromise;
     }
     drawDialog() {
         const self = this;

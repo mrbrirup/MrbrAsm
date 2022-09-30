@@ -25,46 +25,46 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
             mubcai = Mrbr_UI_Bootstrap_Controls_AccordionItem,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig,
             initialisePromise = Mrbr_System_MrbrPromise.create("Mrbr_UI_Bootstrap_Controls_AccordionItem:initialise");
-
-
         super.initialise(args)
             .then(result => {
                 self.setDefaultConfiguration();
-
-                const accordionItemHeadingId = Mrbr_UI_Controls_Control.createId("accordion_item_heading");
-                const accordionCollapsableId = Mrbr_UI_Controls_Control.createId("accordion_collapsable");
-                self.createElement(new ctrlCfg(self.rootElementName, "div", self.configuration(mubcai.ACCORDION_ITEM))
-                    .Children([
-                        <HTMLElement>self.createElement(new ctrlCfg(mubcai.ACCORDION_HEADER_NAME, "h2", self.configuration(mubcai.ACCORDION_HEADER_NAME))
-                            .Id(accordionItemHeadingId)
-                            .Children([
-                                <HTMLElement>self.createElement(new ctrlCfg(mubcai.ACCORDION_TOGGLE_NAME, "button", self.configuration(mubcai.ACCORDION_TOGGLE_NAME))
-                                    .Attributes({
-                                        "type": "button"
-                                    })
-                                    .Aria({
-                                        "aria-expanded": false,
-                                        "aria-controls": accordionCollapsableId
-                                    })
-                                    .Data({
-                                        "bsToggle": "collapse",
-                                        "bsTarget": `#${accordionCollapsableId}`
-                                    })
-                                )
-                            ])),
-                        <HTMLElement>self.createElement(new ctrlCfg(mubcai.ACCORDION_COLLAPSE, "div", self.configuration(mubcai.ACCORDION_COLLAPSE))
-                            .Id(accordionCollapsableId)
-                            .Aria({
-                                "aria-labelledby": accordionItemHeadingId
-                            })
-                            .Children([
-                                <HTMLElement>self.createElement(new ctrlCfg(mubcai.ACCORDION_BODY, "div", self.configuration(mubcai.ACCORDION_BODY)))
-                            ])
-                        )
-                    ])
-                );
-                self.title = self._title;
-                initialisePromise.resolve(self);
+                const manifestPromise = MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);
+                manifestPromise.then(manifest => {
+                    const accordionItemHeadingId = Mrbr_UI_Controls_Control.createId("accordion_item_heading");
+                    const accordionCollapsableId = Mrbr_UI_Controls_Control.createId("accordion_collapsable");
+                    self.createElement(new ctrlCfg(self.rootElementName, "div", self.configuration(mubcai.ACCORDION_ITEM))
+                        .Children([
+                            <HTMLElement>self.createElement(new ctrlCfg(mubcai.ACCORDION_HEADER_NAME, "h2", self.configuration(mubcai.ACCORDION_HEADER_NAME))
+                                .Id(accordionItemHeadingId)
+                                .Children([
+                                    <HTMLElement>self.createElement(new ctrlCfg(mubcai.ACCORDION_TOGGLE_NAME, "button", self.configuration(mubcai.ACCORDION_TOGGLE_NAME))
+                                        .Attributes({
+                                            "type": "button"
+                                        })
+                                        .Aria({
+                                            "aria-expanded": false,
+                                            "aria-controls": accordionCollapsableId
+                                        })
+                                        .Data({
+                                            "bsToggle": "collapse",
+                                            "bsTarget": `#${accordionCollapsableId}`
+                                        })
+                                    )
+                                ])),
+                            <HTMLElement>self.createElement(new ctrlCfg(mubcai.ACCORDION_COLLAPSE, "div", self.configuration(mubcai.ACCORDION_COLLAPSE))
+                                .Id(accordionCollapsableId)
+                                .Aria({
+                                    "aria-labelledby": accordionItemHeadingId
+                                })
+                                .Children([
+                                    <HTMLElement>self.createElement(new ctrlCfg(mubcai.ACCORDION_BODY, "div", self.configuration(mubcai.ACCORDION_BODY)))
+                                ])
+                            )
+                        ])
+                    );
+                    self.title = self._title;
+                    initialisePromise.resolve(self);
+                })
             })
 
         return initialisePromise;

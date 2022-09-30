@@ -95,7 +95,7 @@ function createMrbrBaseFile(sourceFileName) {
     writtenFiles.push(sourceFileName);
     const sourceFile = sourceFiles.find(sourceFile => sourceFile.shortSourceFileName.substring(sourceFile.shortSourceFileName.length - sourceFileName.length).toLowerCase() === sourceFileName.toLowerCase()),
         importedReferences = [],
-        importReferenceRegex = /(^(?<import>import)\s*\{*\s*(?<assembly>\S*?)\s*\}*\s*from\s*(?<fileName>'.*?'|".*?")[\s;]*?(\s*?|(\s*\/{2}\s*?(?<exclude>exclude)))$)/gm,
+        importReferenceRegex = /(^(?<import>import)\s*\{*\s*(?<assembly>\S*?)\s*\}*\s*from\s*(?<fileName>'.*?'|".*?")[\s;]*?(\s*?|(\s*\/{2}\s*?(?<optional>optional)))$)/gm,
         sourceContent = fs.readFileSync(sourceFile.longSourceFileName, "utf8"),
         classDeclarationRegex = /(?<exportStatement>(?<export>export\s+)(?<exportType>(class|enum))\s+(?<exportName>(\S[\S_$]+)?)(?<genericType>\<\s*\S+\s*\>)*(?<extends>\s+extends\s+)*(?<baseClass>\S[\S_]*)?(?<end>\s*?)\s*((?<implements>implements \S[\S_]*)|\s*?)\s*?{)/gm,
         interfaceRegex = /(?<keyword_export>export)\s+(?<keyword_interface>interface)\s+(?<interface_name>\S[\S]*)\s+{/gm;
@@ -104,16 +104,13 @@ function createMrbrBaseFile(sourceFileName) {
     }
     while ((importMatch = importReferenceRegex.exec(sourceContent)) !== null) {
         if (importMatch.index === importReferenceRegex.lastIndex) { importReferenceRegex.lastIndex++; }
-        //importedReferences.push({ assembly: importMatch?.groups?.assembly, exclude: importMatch?.groups?.exclude === "exclude" })
-
-
         let importTest = importMatch?.groups?.assembly.toLowerCase() === "mrbrbase" ? "Mrbr_System_MrbrBase" : importMatch?.groups?.assembly
         if (!fileTypeMap.get(importTest)) {
             let fileType = getExportType(importTest);
             fileTypeMap.set(importTest, fileType);
         }
         if (fileTypeMap.get(importTest) !== "interface") {
-            importedReferences.push({ assembly: importMatch?.groups?.assembly, exclude: importMatch?.groups?.exclude === "exclude" });
+            importedReferences.push({ assembly: importMatch?.groups?.assembly, optional: importMatch?.groups?.optional === "optional" });
         }
 
 
@@ -153,12 +150,12 @@ function createMrbrBaseFile(sourceFileName) {
         (sourceFileName === mrbrBaseSourceFile) ? fs.writeFileSync(mrbrJSRootFile, code + "\r\n") : fs.appendFileSync(mrbrJSRootFile, "\r\n" + code + "\r\n");
         //console.log(importedReferences);
         importedReferences.forEach(importedReference => {
-            if (importedReference.exclude === false) {
+            if (importedReference.optional === false) {
                 createMrbrBaseFile(`${importedReference.assembly.replace(/_/g, "\\")}.ts`);
             }
         });
         let sourceCode = fs.readFileSync(mrbrJSRootFile, "utf8")
-        let namespaceNames = importedReferences.filter(importedReference => importedReference.exclude === false).map(importedReference => `${importedReference.assembly.replace(/_/g, ".")} [MrbrBase.MRBR_COMPONENT_NAME] = "${importedReference.assembly.replace(/_/g, ".")}"`);
+        let namespaceNames = importedReferences.filter(importedReference => importedReference.optional === false).map(importedReference => `${importedReference.assembly.replace(/_/g, ".")} [MrbrBase.MRBR_COMPONENT_NAME] = "${importedReference.assembly.replace(/_/g, ".")}"`);
         fs.writeFileSync(mrbrJSRootFile, prettify(`${sourceCode} \r\n${namespaceNames.join(";\r\n")} \r\n`, true))
     }
     else {
@@ -191,7 +188,7 @@ function getExportType(assemblyName) {
     let sourceFileName = assemblyName.replace(/_/gm, "/") + ".ts";
     let fullSourceFileName = path.join(resolvedSourceFolder, sourceFileName);
     let exists = fs.existsSync(fullSourceFileName);
-    let importReferenceRegex = /(^(?<import>import)\s*\{*\s*(?<assembly>\S*?)\s*\}*\s*from\s*(?<fileName>'.*?'|".*?")[\s;]*?(\s*?|(\s*\/{2}\s*?(?<exclude>exclude)))$)/gm,
+    let importReferenceRegex = /(^(?<import>import)\s*\{*\s*(?<assembly>\S*?)\s*\}*\s*from\s*(?<fileName>'.*?'|".*?")[\s;]*?(\s*?|(\s*\/{2}\s*?(?<optional>optional)))$)/gm,
         sourceContent = fs.readFileSync(fullSourceFileName, "utf8"),
         classDeclarationRegex = /(?<exportStatement>(?<export>export\s+)(?<exportType>(class|enum))\s+(?<exportName>(\S[\S_$]+)?)(?<genericType>\<\s*\S+\s*\>)*(?<extends>\s+extends\s+)*(?<baseClass>\S[\S_]*)?(?<end>\s*?)\s*((?<implements>implements \S[\S_]*)|\s*?)\s*?{)/gm,
         interfaceRegex = /(?<keyword_export>export)\s+(?<keyword_interface>interface)\s+(?<interface_name>\S[\S]*)\s+{/gm,
@@ -220,7 +217,7 @@ function createMrbrAssemblyFile(sourceFile) {
     //console.log("sourceFile.shortSourceFileName: ", sourceFile.shortSourceFileName)
     writtenFiles.push(sourceFile.shortSourceFileName);
     const importedReferences = [],
-        importReferenceRegex = /(^(?<import>import)\s*\{*\s*(?<assembly>\S*?)\s*\}*\s*from\s*(?<fileName>'.*?'|".*?")[\s;]*?(\s*?|(\s*\/{2}\s*?(?<exclude>exclude)))$)/gm,
+        importReferenceRegex = /(^(?<import>import)\s*\{*\s*(?<assembly>\S*?)\s*\}*\s*from\s*(?<fileName>'.*?'|".*?")[\s;]*?(\s*?|(\s*\/{2}\s*?(?<optional>optional)))$)/gm,
         sourceContent = fs.readFileSync(sourceFile.longSourceFileName, "utf8"),
         classDeclarationRegex = /(?<exportStatement>(?<export>export\s+)(?<exportType>(class|enum))\s+(?<exportName>(\S[\S_$]+)?)(?<genericType>\<\s*\S+\s*\>)*(?<extends>\s+extends\s+)*(?<baseClass>\S[\S_]*)?(?<end>\s*?)\s*((?<implements>implements \S[\S_]*)|\s*?)\s*?{)/gm,
         interfaceRegex = /(?<keyword_export>export)\s+(?<keyword_interface>interface)\s+(?<interface_name>\S[\S]*)\s+{/gm;
@@ -235,7 +232,7 @@ function createMrbrAssemblyFile(sourceFile) {
             fileTypeMap.set(importTest, fileType);
         }
         if (fileTypeMap.get(importTest) !== "interface") {
-            importedReferences.push({ assembly: importMatch?.groups?.assembly, exclude: importMatch?.groups?.exclude === "exclude" });
+            importedReferences.push({ assembly: importMatch?.groups?.assembly, optional: importMatch?.groups?.optional === "optional" });
         }
     }
     const destinationContent = fs.readFileSync(sourceFile.longDestinationFileName, "utf-8"),
@@ -293,7 +290,7 @@ function createMrbrAssemblyFile(sourceFile) {
     if (exportName) {
         let manifest = []
         if (importedReferences?.length > 0) {
-            manifest = manifest.concat(...[importedReferences.filter(entry => entry.exclude === false).filter(entry => entry.assembly?.name?.toLowerCase() !== "mrbrbase").map(include => (`${" ".repeat(8)} miofc(${include.assembly.replace(/_/g, ".")})`))])
+            manifest = manifest.concat(...[importedReferences.filter(entry => entry.optional === false).filter(entry => entry.assembly?.name?.toLowerCase() !== "mrbrbase").map(include => (`${" ".repeat(8)} miofc(${include.assembly.replace(/_/g, ".")})`))])
         }
         let source = prettify(`((mrbr, data, resolve, reject, symbols) => {
             ${!(classDeclarationMatch) ? "if (MrbrBase.Namespace.isNamespace(" + exportName.replace(/_/g, '.') + ")){" + exportName.replace(/_/g, '.') + " = {}; } " : ""}

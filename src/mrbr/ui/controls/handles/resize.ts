@@ -1,5 +1,7 @@
 import { Mrbr_Geometry_Bounds2d } from "../../../geometry/bounds2d";
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
+import { MrbrBase } from "../../../system/MrbrBase";
+import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
 import { Mrbr_UI_Controls_Control } from "../control";
 import { Mrbr_UI_Controls_ControlConfig } from "../ControlConfig";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../ControlConfigOptionalParameters";
@@ -46,10 +48,18 @@ export class Mrbr_UI_Controls_Handles_Resize extends Mrbr_UI_Controls_Control {
     public set parentElement(value: HTMLElement) {
         this._parentElement = value;
     }
-
-
-
-
+    initialise(...args: any[]): Mrbr_System_MrbrPromise<any> {
+        const self = this,
+            initalisePromise = Mrbr_System_MrbrPromise.create("Mrbr_UI_Controls_Handles_Drag:initalise", self);
+        super.initialise(...args)
+            .then(() => {
+                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                    .then(() => {
+                        initalisePromise.resolve(self);
+                    })
+            })
+        return initalisePromise;
+    }
     createHandles() {
         const self = this,
             resizeHandles = Mrbr_UI_Controls_Handles_Resize.resizeHandles;

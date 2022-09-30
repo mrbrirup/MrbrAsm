@@ -5,7 +5,7 @@ import { Mrbr_IO_FilePromise } from "./FilePromise";
 export function Mrbr_IO_LoadCssLink(file: Mrbr_IO_File): Mrbr_IO_FilePromise {
     let link = document.createElement('link'),
         instance = MrbrBase.mrbrInstance,
-        loadResultPromise = Mrbr_IO_FilePromise.CreateFilePromise("function:Mrbr_IO_LoadScript", file);
+        loadResultPromise = Mrbr_IO_FilePromise.create("function:Mrbr_IO_LoadScript", file);
     link.rel = 'stylesheet';
     link.type = 'text/css';
 

@@ -8,6 +8,7 @@ import { Mrbr_UI_Controls_IControl } from "./IControl";
 import { Mrbr_System_MrbrPromise } from "../../system/MrbrPromise";
 import { Mrbr_UI_Controls_ControlDefaultsCollection } from "./ControlDefaultsCollection";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "./ControlConfigOptionalParameters";
+import { MrbrBase } from "../../system/MrbrBase";
 export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Controls_IControl {
     public static CONTROL_KEYS: symbol = Symbol("control_keys");
     public static DELETE: symbol = Symbol("delete");
@@ -35,8 +36,6 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         super();
         const self = this;
         self.rootElementName = rootElementName;
-        this._defaultConfiguration = new Mrbr_UI_Controls_ControlDefaultsCollection();
-        this._customConfiguration = new Mrbr_UI_Controls_ControlDefaultsCollection();
         self._elements = new Proxy(new Map<string, HTMLElement>(), {
             get(target, name) {
                 return (target.has(name as string)) ? target.get(name as string) : null;
@@ -112,12 +111,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
                 return Array.from(target.keys());
             }
         });
-        self.events[Mrbr_UI_Controls_ThemeChangeEvent.themeChangeEvent] = <Mrbr_System_Events_EventHandler>{
-            context: self,
-            eventName: Mrbr_UI_Controls_ThemeChangeEvent.themeChangeEvent,
-            eventTarget: self.controlEvents,
-            event: self.themeChanged
-        }
+
     }
     private _id: string;
     public get id(): string {
@@ -134,8 +128,25 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         return Mrbr_System_MrbrPromise.createResolved(null);
     }
     initialise(...args: any[]): Mrbr_System_MrbrPromise<any> {
-        let retval = Mrbr_System_MrbrPromise.createResolved("Mrbr_UI_Controls_Control:initialise", this);
-        return retval;
+        const self = this,
+            initialisePromise = Mrbr_System_MrbrPromise.create<Mrbr_UI_Controls_Control>("Mrbr_UI_Controls_Control:initialise"),
+            manifestPromise = MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+        manifestPromise
+            .then(manifest => {
+                this._defaultConfiguration = new Mrbr_UI_Controls_ControlDefaultsCollection();
+                this._customConfiguration = new Mrbr_UI_Controls_ControlDefaultsCollection();
+                self.events[Mrbr_UI_Controls_ThemeChangeEvent.themeChangeEvent] = <Mrbr_System_Events_EventHandler>{
+                    context: self,
+                    eventName: Mrbr_UI_Controls_ThemeChangeEvent.themeChangeEvent,
+                    eventTarget: self.controlEvents,
+                    event: self.themeChanged
+                }
+                initialisePromise.resolve(self);
+            })
+            .catch(error => {
+                initialisePromise.reject(error);
+            })
+        return initialisePromise;
     }
     public get themedElements() {
         return this._themedElements;
@@ -174,12 +185,10 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         } catch (error) {
             console.log("error: ", error)
         }
-        //console.log("currentTheme: end: ", theme, element)
     }
     changeTheme(theme: Mrbr_UI_Controls_Themes) {
         const self = this;
         const currentTheme = theme;// Mrbr_UI_Controls_Control._theme;
-        //console.log("currentTheme: ", theme, self.themedElements)
 
         //self.themedElements.forEach((themedElement: HTMLElement) => HTMLElement = function (themedElement: HTMLElement) {
         self.themedElements.forEach(themedElement => {

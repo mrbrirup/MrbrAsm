@@ -5,7 +5,7 @@ import { Mrbr_IO_FilePromise } from "./FilePromise";
 export function Mrbr_IO_LoadScriptLink(file: Mrbr_IO_File): Mrbr_IO_FilePromise {
     let script = document.createElement('script'),
         instance = MrbrBase.mrbrInstance,
-        loadResultPromise = Mrbr_IO_FilePromise.CreateFilePromise("function:Mrbr_IO_LoadScript", file)
+        loadResultPromise = Mrbr_IO_FilePromise.create("function:Mrbr_IO_LoadScript", file)
     script.setAttribute('src', file.entry);
     if (file.attributes) {
         Object.keys(file.attributes)

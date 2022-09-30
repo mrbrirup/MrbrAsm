@@ -1,4 +1,5 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
+import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
 import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/control";
@@ -69,25 +70,25 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Controls_Control {
         super.initialise(args)
             .then(result => {
                 self.setDefaultConfiguration();
-                self.createElement(new ctrlCfg(self.rootElementName, "div", self.configuration(mubca.ALERT_CONTROL_NAME))
-                    .Children([
-                        new ctrlCfg(mubca.ALERT_TEXT_CONTAINER_NAME, "div", self.configuration(mubca.ALERT_TEXT_CONTAINER_NAME))
-                    ])
-                )
-                self.defaultContainerElementName = mubca.ALERT_TEXT_CONTAINER_NAME;
-                self.alertContext = self._alertContext;
-                self.showCloseButton = self._showCloseButton;
+                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                    .then(manifest => {
+                        self.createElement(new ctrlCfg(self.rootElementName, "div", self.configuration(mubca.ALERT_CONTROL_NAME))
+                            .Children([
+                                new ctrlCfg(mubca.ALERT_TEXT_CONTAINER_NAME, "div", self.configuration(mubca.ALERT_TEXT_CONTAINER_NAME))
+                            ])
+                        )
+                        self.defaultContainerElementName = mubca.ALERT_TEXT_CONTAINER_NAME;
+                        self.alertContext = self._alertContext;
+                        self.showCloseButton = self._showCloseButton;
 
-                self.events[Mrbr_UI_Bootstrap_Controls_Alert.ALERT_CLOSING_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
-                    context: self,
-                    eventName: Mrbr_UI_Bootstrap_Controls_Alert.ALERT_CLOSING_EVENT_NAME,
-                    eventTarget: self.rootElement,
-                    event: self.alertClosing
-                }
-
-
-
-                initialisePromise.resolve(self);
+                        self.events[Mrbr_UI_Bootstrap_Controls_Alert.ALERT_CLOSING_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
+                            context: self,
+                            eventName: Mrbr_UI_Bootstrap_Controls_Alert.ALERT_CLOSING_EVENT_NAME,
+                            eventTarget: self.rootElement,
+                            event: self.alertClosing
+                        }
+                        initialisePromise.resolve(self);
+                    })
             })
         return initialisePromise;
     }

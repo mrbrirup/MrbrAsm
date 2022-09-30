@@ -1,6 +1,7 @@
 import { Mrbr_Collections_DoubleLinkedList } from "../../../collections/DoubleLinkedList";
 import { Mrbr_Collections_DoubleLinkedListNode } from "../../../collections/DoubleLinkedListNode";
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
+import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
 import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/control";
@@ -102,16 +103,20 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
         super.initialise(...args)
             .then(result => {
                 self.setDefaultConfiguration();
-                self.createElement(new ctrlCfg(self.rootElementName, "nav", self.configuration(mubcb.BREADCRUMB_NAV_NAME))
-                    .Children([new ctrlCfg(self.defaultContainerElementName, "ol", self.configuration(mubcb.BREADCRUMB_LIST_NAME))]
-                    ));
-                self.events[mubcb.BREADCRUMB_CLICK_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
-                    eventName: "click",
-                    eventTarget: self.rootElement,
-                    event: self.crumbClick_handler,
-                    context: self
-                }
-                initlialisepromise.resolve(self);
+                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                    .then(manifest => {
+
+                        self.createElement(new ctrlCfg(self.rootElementName, "nav", self.configuration(mubcb.BREADCRUMB_NAV_NAME))
+                            .Children([new ctrlCfg(self.defaultContainerElementName, "ol", self.configuration(mubcb.BREADCRUMB_LIST_NAME))]
+                            ));
+                        self.events[mubcb.BREADCRUMB_CLICK_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
+                            eventName: "click",
+                            eventTarget: self.rootElement,
+                            event: self.crumbClick_handler,
+                            context: self
+                        }
+                        initlialisepromise.resolve(self);
+                    })
             })
         return initlialisepromise;
     }

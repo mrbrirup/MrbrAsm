@@ -1,4 +1,4 @@
-import { Mrbr_UI_Html_StyleClasses } from "../html/StyleClasses";// exclude
+import { Mrbr_UI_Html_StyleClasses } from "../html/StyleClasses";//optional
 
 export class Mrbr_UI_Controls_NavBar extends EventTarget {
     navbar: HTMLElement

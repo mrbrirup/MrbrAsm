@@ -7,7 +7,7 @@ export function Mrbr_IO_LoadScript(file: Mrbr_IO_File): Mrbr_IO_FilePromise {
     const self = this;
     let mrbrFetch = new Mrbr_IO_Fetch(),
         instance = MrbrBase.mrbrInstance,
-        promise = Mrbr_IO_FilePromise.CreateFilePromise("function:Mrbr_IO_LoadScript", file)
+        promise = Mrbr_IO_FilePromise.create("function:Mrbr_IO_LoadScript", file)
     mrbrFetch.fetch(file.entry, {})
         .then(result => {
             result.text()

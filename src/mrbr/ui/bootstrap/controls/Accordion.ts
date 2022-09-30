@@ -1,3 +1,4 @@
+import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
 import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/control";
@@ -21,7 +22,6 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
         self.controls[Mrbr_UI_Controls_Control.CONTROL_KEYS].forEach(item => {
             const control = self.controls[item];
             if (control instanceof accordianItem) {
-                console.log("control: ", control);
                 !value && control.setParent(self.rootElement.id);
                 value && delete control.elements[accordianItem.ACCORDION_COLLAPSE].dataset.bsParent;
             }
@@ -48,9 +48,12 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
         super.initialise(args)
             .then(async _ => {
                 await self.setDefaultConfiguration();
-                self.createElement(new ctrlCfg(self.rootElementName, "div", self.configuration(mubca.ACCORDION_NAME)))
-                self.flush = self._flush;
-                initialisePromise.resolve(self);
+                const manifestPromise = MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                    .then(manifest => {
+                        self.createElement(new ctrlCfg(self.rootElementName, "div", self.configuration(mubca.ACCORDION_NAME)))
+                        self.flush = self._flush;
+                        initialisePromise.resolve(self);
+                    })
             })
         return initialisePromise;
 

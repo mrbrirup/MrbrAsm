@@ -111,7 +111,7 @@ export class Mrbr_System_MrbrPromise<T> {
 
     }
     public static createResolved(reference: string, resolvedObject?: any): Mrbr_System_MrbrPromise<any> {
-        const retval = Mrbr_System_MrbrPromise.create(reference);
+        const retval = Mrbr_System_MrbrPromise.create(reference, resolvedObject);
         retval.resolve(resolvedObject);
         return retval;
         // let mrbrPromise = new Mrbr_System_MrbrPromise<object>();

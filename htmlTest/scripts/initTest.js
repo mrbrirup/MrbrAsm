@@ -4,8 +4,12 @@ let cfg = {
 };
 function runRes(result) {
     try {
-        let buttonApplication = new Mrbr.Tests.Application$ButtonGroup()
-        
+        MrbrBase.mrbrInstance.loadManifest(Mrbr.Tests.Application$ButtonGroup[MrbrBase.MRBR_COMPONENT_MANIFEST])
+            .then(_ => {
+
+                let buttonApplication = new Mrbr.Tests.Application$ButtonGroup()
+            })
+
     } catch (error) {
         console.log(error)
     }

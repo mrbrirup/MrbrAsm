@@ -50,15 +50,15 @@ function updateReferences(manifestEntry, startPosition, text, exportName) {
 exports.generateDeclarations = function (input, fileManifestEntries) {
     const importedReferences = [];
     //const regex = /(^(?<import>import)\s*\{*\s*(?<assembly>\S*?)\s*\}*\s*from\s*(?<fileName>'.*?'|".*?")[\s;]*?\s*?$)/gm;
-    const regex = /(^(?<import>import)\s*\{*\s*(?<assembly>\S*?)\s*\}*\s*from\s*(?<fileName>'.*?'|".*?")[\s;]*?(\s*?|(\s*\/{2}\s*?(?<exclude>exclude)))$)/gm
+    const regex = /(^(?<import>import)\s*\{*\s*(?<assembly>\S*?)\s*\}*\s*from\s*(?<fileName>'.*?'|".*?")[\s;]*?(\s*?|(\s*\/{2}\s*?(?<optional>optional)))$)/gm
     let importMatch;
 
     while ((importMatch = regex.exec(input)) !== null) {
         if (importMatch.index === regex.lastIndex) { regex.lastIndex++; }
-        let assembly, exclude
+        let assembly, optional
         if (importMatch?.groups?.import) { assembly = importMatch?.groups?.assembly }
-        exclude = importMatch?.groups?.exclude === "exclude";
-        importedReferences.push({ assembly: assembly, exclude: exclude })
+        optional = importMatch?.groups?.optional === "optional";
+        importedReferences.push({ assembly: assembly, optional: optional })
     }
 
 
@@ -142,7 +142,7 @@ exports.generateDeclarations = function (input, fileManifestEntries) {
 
     if (!isMrbrBase) {
         output.push(`mrbr.loadManifest([`)
-        output.push(importedReferences.filter(entry => entry.exclude === false).map(include => (`mrbr.entries["Mrbr_IO_File"].component("${include.assembly}")`)).join(",\r\n"));
+        output.push(importedReferences.filter(entry => entry.optional === false).map(include => (`mrbr.entries["Mrbr_IO_File"].component("${include.assembly}")`)).join(",\r\n"));
         output.push(`]).then(_ => {`)
 
 
@@ -154,7 +154,7 @@ exports.generateDeclarations = function (input, fileManifestEntries) {
     output.push("");
     return {
         declaration: declarationBody,
-        importedReferences: importedReferences.filter(entry => entry.exclude === false).map(include => (`mrbr.entries["Mrbr_IO_File"].component("${include.assembly}")`)).join(",\r\n"),
+        importedReferences: importedReferences.filter(entry => entry.optional === false).map(include => (`mrbr.entries["Mrbr_IO_File"].component("${include.assembly}")`)).join(",\r\n"),
         //importedReferences: importedReferences.map(include => (`new mrbr.entries["Mrbr_IO_File"](mrbr.entries["Mrbr_IO_FileType"].Component, "Mrbr", "${include}", null, false, false)`)).join(",\r\n"),
         exportName: exportName
     }

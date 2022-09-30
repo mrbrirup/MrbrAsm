@@ -7,12 +7,12 @@ export class Mrbr_Tests_Application$Badge {
         const self = this;
         self.mrbrBadge = new Mrbr_UI_Bootstrap_Controls_Badge("badge1");
         self.mrbrBadge.initialise()
-            .then(_ => {
+            .then(async _ => {
 
 
+                await self.mrbrBadge.initialise();
 
-
-                let button = document.createElement("button");
+                let button = document.createElement("button");                
                 self.mrbrBadge.classes(button, Mrbr_UI_Controls_ClassActions.Add, "btn btn-dark m-4");
 
                 button.textContent = "In-Box";

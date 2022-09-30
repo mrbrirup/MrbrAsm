@@ -37,12 +37,10 @@ export class Mrbr_IO_ManifestPromise extends Mrbr_System_MrbrPromise<Mrbr_IO_Fil
         mrbrManifestPromise.promise = new Promise<Mrbr_IO_File[]>((resolve, reject) => {
             mrbrManifestPromise.executor = {
                 reject: (reason: any) => {
-                    //Mrbr_IO_ManifestPromise.Promises.delete(id);
                     mrbrManifestPromise.rejected = true;
                     reject(reason);
                 },
                 resolve: (value: Mrbr_IO_File[] | PromiseLike<Mrbr_IO_File[]>) => {
-                    //Mrbr_IO_ManifestPromise.Promises.delete(id);
                     mrbrManifestPromise.fulfilled = true;
                     resolve(mrbrManifestPromise.files);
                 }

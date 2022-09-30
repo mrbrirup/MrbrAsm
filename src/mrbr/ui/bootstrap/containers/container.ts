@@ -4,6 +4,8 @@ import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Height } from "../utilities/sizing$height";
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Width } from "../utilities/sizing$width";
 import { Mrbr_UI_Bootstrap_Containers_Container$Breakpoints } from "./container$breakpoints";
+import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { MrbrBase } from "../../../system/MrbrBase";
 
 export class Mrbr_UI_Bootstrap_Containers_Container extends Mrbr_UI_Controls_Control {
     _containerType: Mrbr_UI_Bootstrap_Containers_Container$Breakpoints = Mrbr_UI_Bootstrap_Containers_Container$Breakpoints.containerFluid;
@@ -61,5 +63,18 @@ export class Mrbr_UI_Bootstrap_Containers_Container extends Mrbr_UI_Controls_Con
             })
         style.addClasses(element, value)
 
+    }
+    initialise(...args: any[]): Mrbr_System_MrbrPromise<any> {
+        const self = this,
+            initialisePromise = Mrbr_System_MrbrPromise.create<Mrbr_UI_Controls_Control>("Mrbr_UI_Controls_Control:initialise");
+        super.initialise(args)
+            .then(result => {
+                const manifestPromise = MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);
+                manifestPromise
+                    .then(manifest => {
+                        initialisePromise.resolve(self);
+                    })
+            })
+        return initialisePromise;
     }
 }

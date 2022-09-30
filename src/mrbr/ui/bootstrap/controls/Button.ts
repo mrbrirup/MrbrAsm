@@ -1,4 +1,5 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
+import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
 import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/control";
@@ -217,24 +218,28 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
             initialisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Button>("Mrbr_UI_Bootstrap_Controls_Button:initialise");
         super.initialise(...args)
             .then(() => {
-                self.createElement(new self.$ctrlCfg(self.rootElementName, self.elementType, new self.$ctrlParams().Classes("btn")));
-                self.events[self.$class.CLICK_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
-                    eventName: "click",
-                    eventTarget: self.rootElement,
-                    event: self.buttonClick_handler,
-                    context: self
-                };
-                self.text = self._buttonText;
-                self.colour = self._colour;
-                self.size = self._size;
-                self.buttonType = self._buttonType;
-                self.elementType = self._elementType;
-                self.disabled = self._disabled;
-                self.isToggle = self._isToggle;
-                self.noWrap = self._noWrap;
-                self.outline = self._outline;
-                self.toggleState = self._toggleState;
-                initialisePromise.resolve(self);
+                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                    .then(_ => {
+
+                        self.createElement(new self.$ctrlCfg(self.rootElementName, self.elementType, new self.$ctrlParams().Classes("btn")));
+                        self.events[self.$class.CLICK_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
+                            eventName: "click",
+                            eventTarget: self.rootElement,
+                            event: self.buttonClick_handler,
+                            context: self
+                        };
+                        self.text = self._buttonText;
+                        self.colour = self._colour;
+                        self.size = self._size;
+                        self.buttonType = self._buttonType;
+                        self.elementType = self._elementType;
+                        self.disabled = self._disabled;
+                        self.isToggle = self._isToggle;
+                        self.noWrap = self._noWrap;
+                        self.outline = self._outline;
+                        self.toggleState = self._toggleState;
+                        initialisePromise.resolve(self);
+                    })
             })
         return initialisePromise;
     }

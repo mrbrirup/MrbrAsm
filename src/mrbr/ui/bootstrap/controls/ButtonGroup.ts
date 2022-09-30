@@ -1,4 +1,5 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
+import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
 import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/control";
@@ -72,21 +73,22 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Controls_Con
     initialise(...args): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_ButtonGroup> {
         const self = this,
             initalisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_ButtonGroup>("Mrbr_UI_Bootstrap_Controls_ButtonGroup:initialise");
-        super.initialise(...args).then(() => {
-
-            self.setDefaultConfiguration();
-            self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.BUTTON_GROUP_NAME)));
-
-            self.orientation = self._orientation;
-            self.buttonGroupSize = self._buttonGroupSize;
-            self.ariaLabel = self._ariaLabel;
-            self.events[self.$cls.CLICK_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
-                eventName: "click",
-                eventTarget: self.rootElement,
-                event: self.groupClick_handler,
-                context: self
-            }
-            initalisePromise.resolve(self);
+        super.initialise(args).then(() => {
+            MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                .then(_ => {
+                    self.setDefaultConfiguration();
+                    self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.BUTTON_GROUP_NAME)));
+                    self.orientation = self._orientation;
+                    self.buttonGroupSize = self._buttonGroupSize;
+                    self.ariaLabel = self._ariaLabel;
+                    self.events[self.$cls.CLICK_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
+                        eventName: "click",
+                        eventTarget: self.rootElement,
+                        event: self.groupClick_handler,
+                        context: self
+                    }
+                    initalisePromise.resolve(self);
+                })
         })
 
         return initalisePromise;
@@ -120,7 +122,6 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Controls_Con
     }
     public setActive(id: string) {
         const self = this;
-        console.log(id)
         self.groupItems.forEach((value, key) => self.classes(value, self.$clsActions.Remove, "active"));
         (self.groupItems.has(id)) && self.classes(self.groupItems.get(id), self.$clsActions.Add, "active");
 

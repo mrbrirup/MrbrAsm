@@ -1,3 +1,4 @@
+import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
 import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/control";
@@ -123,20 +124,24 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
             initialisePromise = Mrbr_System_MrbrPromise.create("Mrbr_UI_Bootstrap_Controls_Badge:initialise");
         super.initialise(args)
             .then(result => {
-                self.setDefaultConfiguration();
-                self.createElement(new ctrlCfg(self.rootElementName, "span", self.defaultConfiguration.get(mubcb.BADGE_NAME))
-                    .Children([
-                        new ctrlCfg(mubcb.BADGE_TEXT_NAME, "span", self.defaultConfiguration.get(mubcb.BADGE_TEXT_NAME))
-                    ])
-                )
-                self.badgeText = self._badgeText;
-                self.contextText = self._contextText;
-                self.badgePosition = self._badgePosition;
-                self.badgeShape = self._badgeShape;
-                self.badgeClasses = self._badgeClasses;
-                self.classes(self.rootElement, mucca.Add, "d-none");
-                self.setParentAttributes(self.rootElement.parentElement);
-                initialisePromise.resolve(self);
+                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                    .then(_ => {
+
+                        self.setDefaultConfiguration();
+                        self.createElement(new ctrlCfg(self.rootElementName, "span", self.defaultConfiguration.get(mubcb.BADGE_NAME))
+                            .Children([
+                                new ctrlCfg(mubcb.BADGE_TEXT_NAME, "span", self.defaultConfiguration.get(mubcb.BADGE_TEXT_NAME))
+                            ])
+                        )
+                        self.badgeText = self._badgeText;
+                        self.contextText = self._contextText;
+                        self.badgePosition = self._badgePosition;
+                        self.badgeShape = self._badgeShape;
+                        self.badgeClasses = self._badgeClasses;
+                        self.classes(self.rootElement, mucca.Add, "d-none");
+                        self.setParentAttributes(self.rootElement.parentElement);
+                        initialisePromise.resolve(self);
+                    })
             })
             .catch(error => {
                 initialisePromise.reject(error);
