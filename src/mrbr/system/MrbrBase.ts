@@ -18,11 +18,11 @@ import { Mrbr_IO_Fetch } from '../io/Fetch';
 import { Mrbr_IO_File } from '../io/File';
 import { Mrbr_IO_FilePromise } from '../io/FilePromise';
 import { Mrbr_IO_FileType } from '../io/FileType';
-import { Mrbr_IO_LoadCssElement } from '../io/LoadCssElement';//optional
-import { Mrbr_IO_LoadCssLink } from '../io/LoadCssLink';//optional
-import { Mrbr_IO_LoadScript } from '../io/LoadScript';//optional
-import { Mrbr_IO_LoadScriptElement } from '../io/LoadScriptElement';//optional
-import { Mrbr_IO_LoadScriptLink } from '../io/LoadScriptLink';//optional
+import { Mrbr_IO_LoadCssElement } from '../io/LoadCssElement';//mrbr:optional
+import { Mrbr_IO_LoadCssLink } from '../io/LoadCssLink';//mrbr:optional
+import { Mrbr_IO_LoadScript } from '../io/LoadScript';//mrbr:optional
+import { Mrbr_IO_LoadScriptElement } from '../io/LoadScriptElement';//mrbr:optional
+import { Mrbr_IO_LoadScriptLink } from '../io/LoadScriptLink';//mrbr:optional
 import { Mrbr_IO_ManifestPromise } from '../io/ManifestPromise';
 import { Mrbr_IO_ManifestRequirements } from '../io/ManifestRequirements';
 
@@ -70,6 +70,11 @@ export class MrbrBase extends EventTarget {
     private _assembly: Map<string, any> = new Map<string, any>();
     private _loadFunctionMap: Map<string, loadFunction> = null;
     private _host: any;
+    private $promise: typeof Mrbr_System_MrbrPromise;
+    private $mnfPrm: typeof Mrbr_IO_ManifestPromise;
+    private $filePrm: typeof Mrbr_IO_FilePromise;
+    private $file: typeof Mrbr_IO_File;
+    private $fileType: typeof Mrbr_IO_FileType;
     _loadScript: nullFileFunction = null;
     _loadScriptElement: nullFileFunction = null;
     _loadScriptLink: nullFileFunction = null;
@@ -437,7 +442,9 @@ export class MrbrBase extends EventTarget {
         const self = this,
             assembly = self.assembly;
         host && (_ => self.host = host)();
-        MrbrBase.Namespace.createAssembly(window, 'Mrbr');
+        MrbrBase._mrbr = this;
+        MrbrBase.Namespace.createAssembly(self.host, "Mrbr")
+        //MrbrBase.Namespace.createAssembly(window, 'Mrbr');
         self._entries = new Proxy(assembly, {
             get(target, name): any {
                 return (target.has(name as string)) ? (target.get(name as string)).result : undefined;
@@ -457,8 +464,7 @@ export class MrbrBase extends EventTarget {
                 return (target.has(name as string)) ? (target.get(name as string)).file : undefined;
             }
         })
-        MrbrBase._mrbr = this;
-        MrbrBase.Namespace.createAssembly(self.host, "Mrbr")
+        self.setAliases();
     }
 
     /**
@@ -573,8 +579,10 @@ export class MrbrBase extends EventTarget {
      * @returns {Promise<any>} Promise for initialisation completed
      */
     initialise(config: Mrbr_Assembly_MrbrConfig): Mrbr_System_MrbrPromise<any> {
-        const self = this,
-            promise = Mrbr_System_MrbrPromise.create("MrbrBase.initialise"),
+        const self = this;
+        self.setAliases();
+        const
+            promise = self.$promise.create("MrbrBase.initialise"),
             self_paths = self._paths;
         self.config = config;
         !(self.host) && (_ => {
@@ -591,7 +599,14 @@ export class MrbrBase extends EventTarget {
         promise.resolve(self);
         return promise;
     }
-
+    private setAliases() {
+        const self = this;
+        self.$promise = Mrbr_System_MrbrPromise;
+        self.$mnfPrm = Mrbr_IO_ManifestPromise;
+        self.$filePrm = Mrbr_IO_FilePromise;
+        self.$file = Mrbr_IO_File
+        self.$fileType = Mrbr_IO_FileType;
+    }
     /**
      * Load a manifest, a single or array of Mrbr.IO.File 
      * @date 22/08/2022 - 21:13:01
@@ -601,12 +616,10 @@ export class MrbrBase extends EventTarget {
      * @returns {Promise<any>}
      */
     public loadManifest(manifest: Array<Mrbr_IO_File> | Mrbr_IO_File, loadRequirement: Mrbr_IO_ManifestRequirements = Mrbr_IO_ManifestRequirements.default): Mrbr_IO_ManifestPromise {
-        const mifp = Mrbr_IO_ManifestPromise,
-            mifpCreate = mifp.create;
-        let _manifest = manifest instanceof Array ? manifest : [manifest];
-        if (!manifest || _manifest.length === 0) { return mifp.createResolved("MrbrBase.loadManifest", _manifest); }
         const self = this,
-            promise = mifpCreate("MrbrBase.loadManifest", _manifest);
+            _manifest = manifest instanceof Array ? manifest : [manifest];
+        if (!manifest || _manifest.length === 0) { return self.$mnfPrm.createResolved("MrbrBase.loadManifest", _manifest); }
+        const promise = self.$mnfPrm.create("MrbrBase.loadManifest", _manifest);
         Promise.all(_manifest.map(manifestEntry => self.load(manifestEntry).promise))
             .then(_ => promise.resolve())
             .catch(err => promise.reject(err));
@@ -649,7 +662,7 @@ export class MrbrBase extends EventTarget {
      */
     load(file: Mrbr_IO_File): Mrbr_IO_FilePromise {
         const self = this,
-            mift = Mrbr_IO_FileType;
+            mift = self.$fileType;
         switch (file.fileType) {
             case mift.Component:
                 return self.loadComponent(file);
@@ -692,12 +705,8 @@ export class MrbrBase extends EventTarget {
         const ns = MrbrBase.Namespace,
             nsNamespace = ns.namespace,
             nsIsNamespace = ns.isNamespace,
-            moif = Mrbr_IO_FilePromise,
-            moifCreate = moif.create,
-            mif = Mrbr_IO_File,
             _compName = MrbrBase.MRBR_COMPONENT_NAME,
             _compManifest = MrbrBase.MRBR_COMPONENT_MANIFEST,
-            mift = Mrbr_IO_FileType,
             namespaceComponentName: string = MrbrBase.Namespace.NAMESPACE_COMPONENT_NAME,
             componentParameters: string = "mrbr,data,resolve,reject,symbols",
             instance = MrbrBase.mrbrInstance,
@@ -705,31 +714,31 @@ export class MrbrBase extends EventTarget {
         self._loadComponentMemo = (file => {
             const fileEntry = file.entry;
             if (fileEntry && Object.keys(fileEntry).indexOf(_compName) >= 0) {
-                if (moif.Promises.has(fileEntry[_compName])) {
-                    file.loadingPromise = moif.Promises.get(fileEntry[_compName])
+                if (self.$filePrm.Promises.has(fileEntry[_compName])) {
+                    file.loadingPromise = self.$filePrm.Promises.get(fileEntry[_compName])
                     file.loadingPromise.resolve();
                     return file.loadingPromise;
                 }
-                return moif.createResolved("MrbrBase:loadComponent", file);
+                return self.$filePrm.createResolved("MrbrBase:loadComponent", file);
             }
             if (!nsIsNamespace(fileEntry)) {
-                if (moif.Promises.has(fileEntry[_compName])) {
-                    file.loadingPromise = moif.Promises.get(fileEntry[_compName])
+                if (self.$filePrm.Promises.has(fileEntry[_compName])) {
+                    file.loadingPromise = self.$filePrm.Promises.get(fileEntry[_compName])
                     file.loadingPromise.resolve();
                     return file.loadingPromise;
                 }
-                return moif.createResolved("MrbrBase:loadComponent", file);
+                return self.$filePrm.createResolved("MrbrBase:loadComponent", file);
             }
             //  If a file loading is already in progress for this Component as load requests can be in parallel
             //  Get the promise from the first component load request
-            if (moif.Promises.has(file.fileName)) {
-                return moif.Promises.get(file.fileName);
+            if (self.$filePrm.Promises.has(file.fileName)) {
+                return self.$filePrm.Promises.get(file.fileName);
             }
-            if (nsIsNamespace(file.entry) && moif.Promises.has(nsNamespace(fileEntry))) {
-                return moif.Promises.get(nsNamespace(fileEntry));
+            if (nsIsNamespace(file.entry) && self.$filePrm.Promises.has(nsNamespace(fileEntry))) {
+                return self.$filePrm.Promises.get(nsNamespace(fileEntry));
             }
             //  Create a promise for a Component not previously requested
-            moifCreate("MrbrBase:loadComponent:" + nsNamespace(fileEntry), file);
+            self.$filePrm.create("MrbrBase:loadComponent:" + nsNamespace(fileEntry), file);
             /// Fetch file
             new Mrbr_IO_Fetch()
                 .fetch(file.fileName, {})
@@ -804,8 +813,8 @@ export class MrbrBase extends EventTarget {
     loadCssLink(file: Mrbr_IO_File): Mrbr_IO_FilePromise {
         const self = this;
         if (self._loadCssLink) { return self._loadCssLink(file); }
-        const filePromise = Mrbr_IO_FilePromise.create("MrbrBase.loadCssLink", file);
-        self.loadComponent(Mrbr_IO_File.component(Mrbr_IO_LoadCssLink))
+        const filePromise = self.$filePrm.create("MrbrBase.loadCssLink", file);
+        self.loadComponent(self.$file.component(Mrbr_IO_LoadCssLink))
             .then(_ => {
                 self._loadCssLink = Mrbr_IO_LoadCssLink.bind(self)
                 self.loadCssLink(file)
@@ -826,13 +835,15 @@ export class MrbrBase extends EventTarget {
     loadScriptLink(file: Mrbr_IO_File): Mrbr_IO_FilePromise {
         const self = this;
         if (self._loadScriptLink) { return self._loadScriptLink(file); }
-        const filePromise: Mrbr_IO_FilePromise = Mrbr_IO_FilePromise.create("MrbrBase.loadScriptLink", file);
+        const filePromise: Mrbr_IO_FilePromise = self.$filePrm.create("MrbrBase.loadScriptLink", file);
 
-        self.loadComponent(Mrbr_IO_File.component(Mrbr_IO_LoadScriptLink))
+        self.loadComponent(self.$file.component(Mrbr_IO_LoadScriptLink))
             .then(_ => {
                 self._loadScriptLink = Mrbr_IO_LoadScriptLink.bind(self)
                 self.loadScriptLink(file)
-                    .then(_ => filePromise.resolve())
+                    .then(_ => setTimeout(() => {
+                        filePromise.resolve();
+                    }, 0))
                     .catch(err => filePromise.reject(err))
             })
         return filePromise;
@@ -849,7 +860,7 @@ export class MrbrBase extends EventTarget {
      */
     addFileFunction(target: any, targetFunctionName: string, functionToLoad: any): Mrbr_System_MrbrPromise<any> {
         const self = this,
-            promise = Mrbr_System_MrbrPromise.create("MrbrBase.addFileFunction");
+            promise = self.$promise.create("MrbrBase.addFileFunction");
         self.addFunction(target, targetFunctionName, functionToLoad)
             .then(fn => promise.resolve(fn))
             .catch(err => promise.reject(err))
@@ -893,7 +904,7 @@ export class MrbrBase extends EventTarget {
     addFunction(target: any, targetFunctionName: string, functionToLoad: any): Mrbr_System_MrbrPromise<any> {
         const self = this;
         if (target[targetFunctionName]) {
-            let retVal = Mrbr_System_MrbrPromise.create<any>("MrbrBase.addFunction")
+            let retVal = self.$promise.create<any>("MrbrBase.addFunction")
             retVal.resolve(target[targetFunctionName])
             return retVal;
         }
@@ -901,12 +912,12 @@ export class MrbrBase extends EventTarget {
             target[targetFunctionName] = functionToLoad;
 
 
-            let retVal = Mrbr_System_MrbrPromise.create<any>("MrbrBase.addFunction")
+            let retVal = self.$promise.create<any>("MrbrBase.addFunction")
             retVal.resolve(functionToLoad)
             return retVal;
         }
         //const promise = self.createPromise("MrbrBase.addFunction");
-        let promise: Mrbr_IO_ManifestPromise = self.loadManifest(Mrbr_IO_File.component(functionToLoad));
+        let promise: Mrbr_IO_ManifestPromise = self.loadManifest(self.$file.component(functionToLoad));
         promise
             .then(_ => promise.resolve())
             .catch(err => promise.reject(err));
