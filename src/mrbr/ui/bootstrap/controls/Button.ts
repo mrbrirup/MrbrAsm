@@ -48,12 +48,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
     } as const
     //#endregion enums
     //#region aliases
-    private $class = Mrbr_UI_Bootstrap_Controls_Button;
-    private $ctrl = Mrbr_UI_Controls_Control;
-    private $promise = Mrbr_System_MrbrPromise;
-    private $ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-    private $ctrlParams = Mrbr_UI_Controls_ControlConfigOptionalParameters;
-    private $actions = Mrbr_UI_Controls_ClassActions;
+    $cls = Mrbr_UI_Bootstrap_Controls_Button;
     //#endregion aliases
     //#region fields
     private _href: string = "";
@@ -63,11 +58,11 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
     private _outline: boolean = false;
     private _isToggle: boolean = false;
     private _buttonText: string = null;
-    private _toggleState: typeToggleState = this.$class.toggleStates.off;
-    private _colour: typeButtonColor = this.$class.buttonColours.primary;
-    private _size: typeButtonSize = this.$class.buttonSizes.default;
-    private _elementType: typeElementType = this.$class.elementTypes.button;
-    private _buttonType: typeButtonType = this.$class.buttonTypes.button;
+    private _toggleState: typeToggleState = this.$cls.toggleStates.off;
+    private _colour: typeButtonColor = this.$cls.buttonColours.primary;
+    private _size: typeButtonSize = this.$cls.buttonSizes.default;
+    private _elementType: typeElementType = this.$cls.elementTypes.button;
+    private _buttonType: typeButtonType = this.$cls.buttonTypes.button;
     //#endregion fields
 
     constructor(rootElementName: string) {
@@ -94,9 +89,9 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
             root = self.rootElement;
         if (root && self.isToggle) {
             self.classes(root,
-                value === self.$class.toggleStates.on ? self.$actions.Add : self.$actions.Remove,
+                value === self.$cls.toggleStates.on ? self.$clsActions.Add : self.$clsActions.Remove,
                 "active");
-            self.aria(root, { pressed: value === self.$class.toggleStates.on });
+            self.aria(root, { pressed: value === self.$cls.toggleStates.on });
         }
         this._toggleState = value;
     }
@@ -118,7 +113,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
         const self = this,
             root = self.rootElement;
         root && self.classes(root,
-            self.$actions.Swap,
+            self.$clsActions.Swap,
             [self.size, value]);
         this._size = value;
     }
@@ -138,7 +133,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
         const self = this,
             root = self.rootElement;
         root && self.attributes(root, {
-            role: (value === self.$class.elementTypes.link) ? "button" : self.$ctrl.DELETE
+            role: (value === self.$cls.elementTypes.link) ? "button" : self.$ctrl.DELETE
         });
         this._elementType = value;
     }
@@ -150,7 +145,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
         const self = this,
             root = self.rootElement;
         root &&
-            self.classes(root, value ? self.$actions.Add : self.$actions.Remove, "btn-no-wrap");
+            self.classes(root, value ? self.$clsActions.Add : self.$clsActions.Remove, "btn-no-wrap");
         self._noWrap = value;
     }
     public get outline(): boolean {
@@ -160,8 +155,8 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
         const self = this,
             root = self.rootElement;
         root && (_ => {
-            self.classes(root, self.$actions.Remove, `btn-${(self._outline ? "outline-" : "")}${self._colour}`);
-            self.classes(root, self.$actions.Add, `btn-${(value ? "outline-" : "")}${self._colour}`);
+            self.classes(root, self.$clsActions.Remove, `btn-${(self._outline ? "outline-" : "")}${self._colour}`);
+            self.classes(root, self.$clsActions.Add, `btn-${(value ? "outline-" : "")}${self._colour}`);
         })()
         this._outline = value;
     }
@@ -178,9 +173,9 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
                     self.attributes(root, { tabIndex: "-1" });
                 }
                 self.attributes(root, { disabled: "" });
-                self.classes(root, self.$actions.Add, self.$class.DISABLED_CLASSES);
+                self.classes(root, self.$clsActions.Add, self.$cls.DISABLED_CLASSES);
                 self.aria(root, { disabled: "true" });
-                if (self.elementType === self.$class.elementTypes.link) {
+                if (self.elementType === self.$cls.elementTypes.link) {
                     self._href = (<HTMLAnchorElement>root).href;
                     (<HTMLAnchorElement>root).href = "";
                 }
@@ -188,9 +183,9 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
             else {
                 self._tabIndex && self.attributes(root, { tabIndex: self._tabIndex });
                 self.attributes(root, { disabled: self.$ctrl.DELETE });
-                self.classes(root, self.$actions.Remove, self.$class.DISABLED_CLASSES);
+                self.classes(root, self.$clsActions.Remove, self.$cls.DISABLED_CLASSES);
                 self.aria(root, { disabled: self.$ctrl.DELETE });
-                if (self.elementType === self.$class.elementTypes.link) {
+                if (self.elementType === self.$cls.elementTypes.link) {
                     (<HTMLAnchorElement>root).href = self._href;
                 }
 
@@ -205,8 +200,8 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
         const self = this,
             root = self.rootElement;
         root && (_ => {
-            self.classes(root, self.$actions.Remove, `btn-${(self.outline ? "outline-" : "")}${self._colour}`);
-            self.classes(root, self.$actions.Add, `btn-${(self.outline ? "outline-" : "")}${value}`);
+            self.classes(root, self.$clsActions.Remove, `btn-${(self.outline ? "outline-" : "")}${self._colour}`);
+            self.classes(root, self.$clsActions.Add, `btn-${(self.outline ? "outline-" : "")}${value}`);
         })()
         self._colour = value;
 
@@ -221,8 +216,8 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
                 MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(_ => {
 
-                        self.createElement(new self.$ctrlCfg(self.rootElementName, self.elementType, new self.$ctrlParams().Classes("btn")));
-                        self.events[self.$class.CLICK_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
+                        self.createElement(new self.$ctrlCfg(self.rootElementName, self.elementType, new self.$ctrlPrm().Classes("btn")));
+                        self.events[self.$cls.CLICK_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
                             eventName: "click",
                             eventTarget: self.rootElement,
                             event: self.buttonClick_handler,
@@ -247,11 +242,11 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
     protected buttonClick_handler(event: MouseEvent | TouchEvent): void {
         const self = this;
         if (self.isToggle) {
-            self.toggleState = self.toggleState === self.$class.toggleStates.on ? self.$class.toggleStates.off : self.$class.toggleStates.on;
-            self.dispatchEvent(new CustomEvent(self.$class.TOGGLE_EVENT_NAME, { detail: { source: self.rootElement, toggleState: self.toggleState } }));
+            self.toggleState = self.toggleState === self.$cls.toggleStates.on ? self.$cls.toggleStates.off : self.$cls.toggleStates.on;
+            self.dispatchEvent(new CustomEvent(self.$cls.TOGGLE_EVENT_NAME, { detail: { source: self.rootElement, toggleState: self.toggleState } }));
         }
         else {
-            self.dispatchEvent(new CustomEvent(self.$class.CLICK_EVENT_NAME, { detail: { source: self.rootElement } }));
+            self.dispatchEvent(new CustomEvent(self.$cls.CLICK_EVENT_NAME, { detail: { source: self.rootElement } }));
         }
     }
     //#endregion event handlers

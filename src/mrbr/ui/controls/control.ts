@@ -12,7 +12,6 @@ import { MrbrBase } from "../../system/MrbrBase";
 export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Controls_IControl {
     public static CONTROL_KEYS: symbol = Symbol("control_keys");
     public static DELETE: symbol = Symbol("delete");
-    private _styleClasses = Mrbr_UI_Html_StyleClasses
     private _rootElementName: string;
     private _defaultContainerElementName: string;
     private _elements: Map<string, HTMLElement>
@@ -21,6 +20,17 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     protected _customConfiguration: Mrbr_UI_Controls_ControlDefaultsCollection;
     private _events: Map<string, Mrbr_System_Events_EventHandler>;
     private _updateTheme: boolean = false;
+    $cls = Mrbr_UI_Controls_Control;
+    protected $clsActions = Mrbr_UI_Controls_ClassActions;
+    protected $promise = Mrbr_System_MrbrPromise;
+    protected $mrbr = MrbrBase.mrbrInstance;
+    protected $themeChange = Mrbr_UI_Controls_ThemeChangeEvent;
+    protected $ctrlCol = Mrbr_UI_Controls_ControlDefaultsCollection;
+    protected $ctrlTheme = Mrbr_UI_Controls_Themes;
+    protected $styleCls = Mrbr_UI_Html_StyleClasses
+    protected $ctrlCfg = Mrbr_UI_Controls_ControlConfig;
+    protected $ctrlPrm = Mrbr_UI_Controls_ControlConfigOptionalParameters;
+    protected $ctrl = Mrbr_UI_Controls_Control;   
     private static themeMediaMatch = "(prefers-color-scheme: dark)";
     private static windowThemeChangeEventName: string = "change";
     private static get _theme() { return window.matchMedia(Mrbr_UI_Controls_Control.themeMediaMatch).matches ? Mrbr_UI_Controls_Themes.dark : Mrbr_UI_Controls_Themes.light; }
@@ -47,7 +57,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
                     }
                 }
                 target.set((name as string), value);
-                if (value === Mrbr_UI_Controls_Control.DELETE_ENTRY) { target.delete(name); }
+                if (value === self.$cls.DELETE_ENTRY) { target.delete(name); }
                 return true;
             },
             ownKeys(target) {
@@ -57,7 +67,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
 
         self._controls = new Proxy(new Map<string | symbol, Mrbr_UI_Controls_Control>(), {
             get(target: Map<string | symbol, Mrbr_UI_Controls_Control>, name: string | symbol) {
-                if ((name as symbol) === Mrbr_UI_Controls_Control.CONTROL_KEYS) {
+                if ((name as symbol) === self.$cls.CONTROL_KEYS) {
                     return Array.from(target.keys());
                 }
                 return (target.has(name)) ? (target.get(name)) : null;
@@ -125,19 +135,19 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         return this;
     }
     setDefaultConfiguration(...args: any[]): Mrbr_System_MrbrPromise<any> {
-        return Mrbr_System_MrbrPromise.createResolved(null);
+        return this.$promise.createResolved(null);
     }
     initialise(...args: any[]): Mrbr_System_MrbrPromise<any> {
         const self = this,
-            initialisePromise = Mrbr_System_MrbrPromise.create<Mrbr_UI_Controls_Control>("Mrbr_UI_Controls_Control:initialise"),
-            manifestPromise = MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+            initialisePromise = self.$promise.create<Mrbr_UI_Controls_Control>("Mrbr_UI_Controls_Control:initialise"),
+            manifestPromise = self.$mrbr.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
         manifestPromise
             .then(manifest => {
-                this._defaultConfiguration = new Mrbr_UI_Controls_ControlDefaultsCollection();
-                this._customConfiguration = new Mrbr_UI_Controls_ControlDefaultsCollection();
-                self.events[Mrbr_UI_Controls_ThemeChangeEvent.themeChangeEvent] = <Mrbr_System_Events_EventHandler>{
+                self._defaultConfiguration = new self.$ctrlCol();
+                self._customConfiguration = new self.$ctrlCol();
+                self.events[self.$themeChange.themeChangeEvent] = <Mrbr_System_Events_EventHandler>{
                     context: self,
-                    eventName: Mrbr_UI_Controls_ThemeChangeEvent.themeChangeEvent,
+                    eventName: self.$themeChange.themeChangeEvent,
                     eventTarget: self.controlEvents,
                     event: self.themeChanged
                 }
@@ -171,36 +181,33 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         }
     }
     changeElementTheme(element: HTMLElement, theme: Mrbr_UI_Controls_Themes) {
-        const self = this;
-        const currentTheme = theme;// Mrbr_UI_Controls_Control._theme;
+        const self = this,
+            currentTheme = theme;
         try {
-            let toRemove = currentTheme === Mrbr_UI_Controls_Themes.dark ? element.dataset["lightTheme"] : element.dataset["darkTheme"],
-                toAdd = currentTheme === Mrbr_UI_Controls_Themes.dark ? element.dataset["darkTheme"] : element.dataset["lightTheme"];
+            let toRemove = currentTheme === self.$ctrlTheme.dark ? element.dataset["lightTheme"] : element.dataset["darkTheme"],
+                toAdd = currentTheme === self.$ctrlTheme.dark ? element.dataset["darkTheme"] : element.dataset["lightTheme"];
             if (toRemove && toRemove.length > 0) {
-                self.classes(element, Mrbr_UI_Controls_ClassActions.Remove, toRemove);
+                self.classes(element, self.$clsActions.Remove, toRemove);
             }
             if (toAdd && toAdd.length > 0) {
-                self.classes(element, Mrbr_UI_Controls_ClassActions.Add, toAdd);
+                self.classes(element, self.$clsActions.Add, toAdd);
             }
         } catch (error) {
             console.log("error: ", error)
         }
     }
     changeTheme(theme: Mrbr_UI_Controls_Themes) {
-        const self = this;
-        const currentTheme = theme;// Mrbr_UI_Controls_Control._theme;
-
-        //self.themedElements.forEach((themedElement: HTMLElement) => HTMLElement = function (themedElement: HTMLElement) {
+        const self = this,
+            currentTheme = theme;
         self.themedElements.forEach(themedElement => {
-            //if (themedElement) {
             try {
-                let toRemove = currentTheme === Mrbr_UI_Controls_Themes.dark ? themedElement.dataset["lightTheme"] : themedElement.dataset["darkTheme"],
-                    toAdd = currentTheme === Mrbr_UI_Controls_Themes.dark ? themedElement.dataset["darkTheme"] : themedElement.dataset["lightTheme"];
+                let toRemove = currentTheme === self.$ctrlTheme.dark ? themedElement.dataset["lightTheme"] : themedElement.dataset["darkTheme"],
+                    toAdd = currentTheme === self.$ctrlTheme.dark ? themedElement.dataset["darkTheme"] : themedElement.dataset["lightTheme"];
                 if (toRemove && toRemove.length > 0) {
-                    self.classes(themedElement, Mrbr_UI_Controls_ClassActions.Remove, toRemove);
+                    self.classes(themedElement, self.$clsActions.Remove, toRemove);
                 }
                 if (toAdd && toAdd.length > 0) {
-                    self.classes(themedElement, Mrbr_UI_Controls_ClassActions.Add, toAdd);
+                    self.classes(themedElement, self.$clsActions.Add, toAdd);
                 }
             } catch (error) {
                 console.log("error: ", error)
@@ -217,13 +224,11 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         }
         let _config: Mrbr_UI_Controls_ControlConfig = <Mrbr_UI_Controls_ControlConfig>controlConfig;
 
-        if (controlConfig instanceof HTMLElement) {
-            return controlConfig;
-        }
+        if (controlConfig instanceof HTMLElement) { return controlConfig; }
 
         let _element = document.createElement(_config.elementType);
-        _element.id = self.id || _config.id || Mrbr_UI_Controls_Control.createId(_config.elementType)
-        self.classes(_element, Mrbr_UI_Controls_ClassActions.Add, _config.classes)
+        _element.id = self.id || _config.id || self.$cls.createId(_config.elementType)
+        self.classes(_element, self.$clsActions.Add, _config.classes)
         self.attributes(_element, _config.attributes)
         self.dataset(_element, _config.data)
         self.properties(_element, _config.properties)
@@ -233,7 +238,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         _config.lightTheme && self.dataset(_element, { lightTheme: _config.lightTheme });
         _config.darkTheme && self.dataset(_element, { darkTheme: _config.darkTheme });
         (_config.lightTheme || _config.darkTheme) && self.themedElements.add(_element)
-        self.changeElementTheme(_element, Mrbr_UI_Controls_Control._theme);
+        self.changeElementTheme(_element, self.$cls._theme);
         //}
         if (_config.children) {
             let children = _config.children.map(entry => self.createElement(entry));
@@ -286,41 +291,39 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     set rootElement(value: HTMLElement) { const self = this; self.elements[self._rootElementName] = value; }
     classes(targetElement: string | HTMLElement, action: Mrbr_UI_Controls_ClassActions, value: Array<string> | string, styleType?: Object): HTMLElement {
         const self = this,
-            styleClasses = self._styleClasses,
-            classActions = Mrbr_UI_Controls_ClassActions,
             valueAsArray = (Array.isArray(value) ? value : [value]);
         let _targetElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
 
         switch (action) {
-            case classActions.Add:
-                valueAsArray.forEach(valueEntry => styleClasses.addClasses(_targetElement, valueEntry))
+            case self.$clsActions.Add:
+                valueAsArray.forEach(valueEntry => self.$styleCls.addClasses(_targetElement, valueEntry))
                 break;
-            case classActions.Clear:
-                Object.keys(styleType).forEach(key => styleClasses.removeClass(_targetElement, key))
+            case self.$clsActions.Clear:
+                Object.keys(styleType).forEach(key => self.$styleCls.removeClass(_targetElement, key))
                 break;
-            case classActions.Remove:
-                valueAsArray.forEach(valueEntry => styleClasses.removeClass(_targetElement, valueEntry))
+            case self.$clsActions.Remove:
+                valueAsArray.forEach(valueEntry => self.$styleCls.removeClass(_targetElement, valueEntry))
                 break;
-            case classActions.Toggle:
-                valueAsArray.forEach(valueEntry => styleClasses.toggleClass(_targetElement, valueEntry))
+            case self.$clsActions.Toggle:
+                valueAsArray.forEach(valueEntry => self.$styleCls.toggleClass(_targetElement, valueEntry))
                 break;
-            case classActions.Swap:
+            case self.$clsActions.Swap:
                 if (valueAsArray.length !== 2) { throw new Error("Two values must be provided") }
                 let addClass, removeClass;
-                if (styleClasses.hasClass(_targetElement, valueAsArray[0]) === true) {
+                if (self.$styleCls.hasClass(_targetElement, valueAsArray[0]) === true) {
                     addClass = valueAsArray[1]
                     removeClass = valueAsArray[0];
                 }
-                else if (styleClasses.hasClass(_targetElement, valueAsArray[1])) {
+                else if (self.$styleCls.hasClass(_targetElement, valueAsArray[1])) {
                     addClass = valueAsArray[0];
                     removeClass = valueAsArray[1];
                 }
-                styleClasses.addClasses(_targetElement, addClass)
-                styleClasses.removeClass(_targetElement, removeClass)
+                self.$styleCls.addClasses(_targetElement, addClass)
+                self.$styleCls.removeClass(_targetElement, removeClass)
                 break;
-            case classActions.ReplaceAllWith:
-                Object.keys(styleType).forEach(key => styleClasses.removeClass(_targetElement, key))
-                valueAsArray.forEach(valueEntry => styleClasses.addClasses(_targetElement, valueEntry))
+            case self.$clsActions.ReplaceAllWith:
+                Object.keys(styleType).forEach(key => self.$styleCls.removeClass(_targetElement, key))
+                valueAsArray.forEach(valueEntry => self.$styleCls.addClasses(_targetElement, valueEntry))
             default:
                 break;
 
@@ -332,7 +335,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
         if (attributesSettings) {
             Object.keys(attributesSettings).forEach(key => {
-                if (attributesSettings[key] === Mrbr_UI_Controls_Control.DELETE) { if (_targetElement.hasAttribute(key)) { _targetElement.removeAttribute(key) } }
+                if (attributesSettings[key] === self.$cls.DELETE) { if (_targetElement.hasAttribute(key)) { _targetElement.removeAttribute(key) } }
                 else { _targetElement.setAttribute(key, attributesSettings[key]); }
             })
         }
@@ -355,7 +358,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
         if (datasetSettings) {
             Object.keys(datasetSettings).forEach(key => {
-                if (datasetSettings[key] === Mrbr_UI_Controls_Control.DELETE) { delete _targetElement.dataset[key] }
+                if (datasetSettings[key] === self.$cls.DELETE) { delete _targetElement.dataset[key] }
                 else { _targetElement.dataset[key] = datasetSettings[key]; }
             });
         }
@@ -370,8 +373,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
                 if (key) {
                     let _key = key.split("-");
                     const ariaKey = `aria-${_key[_key.length - 1]}`;
-                    console.log(ariaKey)
-                    if (datasetSettings[key] === Mrbr_UI_Controls_Control.DELETE) { if (_targetElement.hasAttribute(ariaKey)) { _targetElement.removeAttribute(ariaKey) } }
+                    if (datasetSettings[key] === self.$cls.DELETE) { if (_targetElement.hasAttribute(ariaKey)) { _targetElement.removeAttribute(ariaKey) } }
                     else { _targetElement.setAttribute(ariaKey, datasetSettings[key]); }
                 }
             });

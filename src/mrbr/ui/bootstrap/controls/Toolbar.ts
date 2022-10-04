@@ -7,12 +7,8 @@ import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls
 
 export class Mrbr_UI_Bootstrap_Controls_Toolbar extends Mrbr_UI_Controls_Control {
     static TOOLBAR_NAME: string = "toolbar";
-    static DIVIDER_CLASS: string = "me-2";
-    private $promise = Mrbr_System_MrbrPromise;
-    private $clsAct = Mrbr_UI_Controls_ClassActions;
-    private $cls = Mrbr_UI_Bootstrap_Controls_Toolbar;
-    private $ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-    private $ctrlCfgOpt = Mrbr_UI_Controls_ControlConfigOptionalParameters;
+    static DIVIDER_CLASS: string = "me-2";    
+    $cls = Mrbr_UI_Bootstrap_Controls_Toolbar;
     constructor(rootElementName: string) {
         super(rootElementName);
     }
@@ -35,13 +31,13 @@ export class Mrbr_UI_Bootstrap_Controls_Toolbar extends Mrbr_UI_Controls_Control
             childrenLength = children.length || 0 as number;
         if (childrenLength <= 1) { return; }
         for (let childCounter = 0; childCounter < childrenLength - 1; childCounter++) {
-            self.classes(<HTMLElement>children[childCounter], self.$clsAct.Add, self.$cls.DIVIDER_CLASS);
+            self.classes(<HTMLElement>children[childCounter], self.$clsActions.Add, self.$cls.DIVIDER_CLASS);
         }
-        self.classes(<HTMLElement>children[childrenLength - 1], self.$clsAct.Remove, self.$cls.DIVIDER_CLASS);
+        self.classes(<HTMLElement>children[childrenLength - 1], self.$clsActions.Remove, self.$cls.DIVIDER_CLASS);
     }
     setDefaultConfiguration(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Toolbar> {
         const self = this;
-        self.defaultConfiguration.add(self.$cls.TOOLBAR_NAME, new self.$ctrlCfgOpt()
+        self.defaultConfiguration.add(self.$cls.TOOLBAR_NAME, new self.$ctrlPrm()
             .Classes("btn-toolbar")
             .Attributes({ role: "toolbar" })
             .Aria({ "label": "Toolbar with button groups" })

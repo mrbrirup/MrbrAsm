@@ -23,11 +23,7 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Controls_Con
     //#endregion enums
 
     //#region Aliases
-    private $cls = Mrbr_UI_Bootstrap_Controls_ButtonGroup;
-    private $promise = Mrbr_System_MrbrPromise;
-    private $ctrlPrm = Mrbr_UI_Controls_ControlConfigOptionalParameters;
-    private $ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-    private $clsActions = Mrbr_UI_Controls_ClassActions;
+    $cls = Mrbr_UI_Bootstrap_Controls_ButtonGroup;    
     //#endregion Aliases
     //#region Private Properties
     private _ariaLabel: string = "";
