@@ -67,8 +67,8 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Controls_Control {
             mubca = Mrbr_UI_Bootstrap_Controls_Alert,
             initialisePromise = Mrbr_System_MrbrPromise.create("Mrbr_UI_Bootstrap_Controls_Alert:initialise");
         super.initialise(args)
-            .then(result => {
-                self.setDefaultConfiguration();
+            .then(async result => {
+                await self.setDefaultConfiguration();
                 MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(manifest => {
                         self.createElement(new ctrlCfg(self.rootElementName, "div", self.configuration(mubca.ALERT_CONTROL_NAME))

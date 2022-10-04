@@ -228,6 +228,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         self.dataset(_element, _config.data)
         self.properties(_element, _config.properties)
         self.styles(_element, _config.styles)
+        self.aria(_element, _config.aria)
         self.elements[_config.elementName] = _element;
         _config.lightTheme && self.dataset(_element, { lightTheme: _config.lightTheme });
         _config.darkTheme && self.dataset(_element, { darkTheme: _config.darkTheme });
@@ -369,6 +370,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
                 if (key) {
                     let _key = key.split("-");
                     const ariaKey = `aria-${_key[_key.length - 1]}`;
+                    console.log(ariaKey)
                     if (datasetSettings[key] === Mrbr_UI_Controls_Control.DELETE) { if (_targetElement.hasAttribute(ariaKey)) { _targetElement.removeAttribute(ariaKey) } }
                     else { _targetElement.setAttribute(ariaKey, datasetSettings[key]); }
                 }
