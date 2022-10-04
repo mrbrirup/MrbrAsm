@@ -26,28 +26,27 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
         DEFAULT: "m-1"
     }
 
-    private _badgePosition: string = Mrbr_UI_Bootstrap_Controls_Badge.BADGE_POSITION.NONE;
-    private _badgeShape: string = Mrbr_UI_Bootstrap_Controls_Badge.BADGE_SHAPE.DEFAULT;
+    $cls = Mrbr_UI_Bootstrap_Controls_Badge;
+    private _badgePosition: string = this.$cls.BADGE_POSITION.NONE;
+    private _badgeShape: string = this.$cls.BADGE_SHAPE.DEFAULT;
     private _contextText: string = "";
     private _badgeText: string = "";
     private _badgeClasses: string[] = ["text-bg-primary"];
     constructor(rootElementName: string) {
         super(rootElementName);
-        this.defaultContainerElementName = Mrbr_UI_Bootstrap_Controls_Badge.BADGE_TEXT_NAME;
+        this.defaultContainerElementName = this.$cls.BADGE_TEXT_NAME;
     }
     public get badgeShape(): string {
         return this._badgeShape;
     }
     public set badgeShape(value: string) {
-        const self = this,
-            mubcb = Mrbr_UI_Bootstrap_Controls_Badge,
-            mucca = Mrbr_UI_Controls_ClassActions;
-        if (self.badgeShape === mubcb.BADGE_SHAPE.DEFAULT) {
-            self.classes(self.rootElement, mucca.Add, value);
+        const self = this;
+        if (self.badgeShape === self.$cls.BADGE_SHAPE.DEFAULT) {
+            self.classes(self.rootElement, self.$clsActions.Add, value);
         }
         else {
             if (self.badgeShape !== value) {
-                self.classes(self.rootElement, mucca.Swap, [self.badgeShape, value]);
+                self.classes(self.rootElement, self.$clsActions.Swap, [self.badgeShape, value]);
             }
         }
         this._badgeShape = value;
@@ -57,19 +56,17 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
     }
     public set badgeClasses(value: string | string[]) {
         if (!value) { return; }
-        const self = this,
-            mucca = Mrbr_UI_Controls_ClassActions;
-        self.classes(self.rootElement, mucca.Remove, self.badgeClasses);
-        self.classes(self.rootElement, mucca.Add, value);
+        const self = this;
+        self.classes(self.rootElement, self.$clsActions.Remove, self.badgeClasses);
+        self.classes(self.rootElement, self.$clsActions.Add, value);
         self._badgeClasses = (typeof value === "string") ? value.split(" ").map(_class => _class.trim()) : value;
     }
     public get badgeText(): string {
         return this._badgeText;
     }
     public set badgeText(value: string) {
-        const self = this,
-            mubcb = Mrbr_UI_Bootstrap_Controls_Badge;
-        self.elements[mubcb.BADGE_TEXT_NAME].textContent = value;
+        const self = this;
+        self.elements[self.$cls.BADGE_TEXT_NAME].textContent = value;
         this._badgeText = value;
     }
     public get contextText(): string {
@@ -77,40 +74,36 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
     }
     public set contextText(value: string) {
         if (!value) { return; }
-        const self = this,
-            mubcb = Mrbr_UI_Bootstrap_Controls_Badge;
-        if (!self.elements[mubcb.CONTEXT_TEXT_NAME]) {
-            self.createElement(new Mrbr_UI_Controls_ControlConfig(mubcb.CONTEXT_TEXT_NAME, "span", self.defaultConfiguration.get(mubcb.CONTEXT_TEXT_NAME)));
-            self.rootElement.appendChild(self.elements[mubcb.CONTEXT_TEXT_NAME]);
+        const self = this;
+        if (!self.elements[self.$cls.CONTEXT_TEXT_NAME]) {
+            self.createElement(new self.$ctrlCfg(self.$cls.CONTEXT_TEXT_NAME, "span", self.defaultConfiguration.get(self.$cls.CONTEXT_TEXT_NAME)));
+            self.rootElement.appendChild(self.elements[self.$cls.CONTEXT_TEXT_NAME]);
         }
-        self.elements[mubcb.CONTEXT_TEXT_NAME].textContent = value;
+        self.elements[self.$cls.CONTEXT_TEXT_NAME].textContent = value;
         this._contextText = value;
     }
     public get badgePosition(): string {
         return this._badgePosition;
     }
     public set badgePosition(value: string) {
-        const self = this,
-            mubcb = Mrbr_UI_Bootstrap_Controls_Badge,
-            mucca = Mrbr_UI_Controls_ClassActions;
-        if (self.badgePosition === mubcb.BADGE_POSITION.NONE) {
-            self.classes(self.rootElement, mucca.Add, value);
+        const self = this;
+        if (self.badgePosition === self.$cls.BADGE_POSITION.NONE) {
+            self.classes(self.rootElement, self.$clsActions.Add, value);
         }
         else {
 
-            let classes = Array.from(new Set(Object.keys(mubcb.BADGE_POSITION).map(_key => mubcb.BADGE_POSITION[_key].split(" ").map(_class => _class.trim())).flat(3)));
-            self.classes(self.rootElement, mucca.Remove, classes);
-            self.classes(self.rootElement, mucca.Add, value);
+            let classes = Array.from(new Set(Object.keys(self.$cls.BADGE_POSITION).map(_key => self.$cls.BADGE_POSITION[_key].split(" ").map(_class => _class.trim())).flat(3)));
+            self.classes(self.rootElement, self.$clsActions.Remove, classes);
+            self.classes(self.rootElement, self.$clsActions.Add, value);
 
         }
         this._badgePosition = value;
     }
     private setParentAttributes(parent: HTMLElement) {
-        const self = this,
-            mucca = Mrbr_UI_Controls_ClassActions;
+        const self = this;
         if (parent) {
-            self.classes(parent, mucca.Add, "position-relative");
-            self.classes(self.rootElement, mucca.Remove, "d-none");
+            self.classes(parent, self.$clsActions.Add, "position-relative");
+            self.classes(self.rootElement, self.$clsActions.Remove, "d-none");
         }
         else {
             requestAnimationFrame(_ => { self.setParentAttributes(self.rootElement.parentElement); })
@@ -118,19 +111,16 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
     }
     initialise(...args: any): Mrbr_System_MrbrPromise<any> {
         const self = this,
-            ctrlCfg = Mrbr_UI_Controls_ControlConfig,
-            mucca = Mrbr_UI_Controls_ClassActions,
-            mubcb = Mrbr_UI_Bootstrap_Controls_Badge,
-            initialisePromise = Mrbr_System_MrbrPromise.create("Mrbr_UI_Bootstrap_Controls_Badge:initialise");
+            initialisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_Badge:initialise");
         super.initialise(args)
             .then(result => {
-                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                self.$mrbr.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(_ => {
 
                         self.setDefaultConfiguration();
-                        self.createElement(new ctrlCfg(self.rootElementName, "span", self.defaultConfiguration.get(mubcb.BADGE_NAME))
+                        self.createElement(new self.$ctrlCfg(self.rootElementName, "span", self.defaultConfiguration.get(self.$cls.BADGE_NAME))
                             .Children([
-                                new ctrlCfg(mubcb.BADGE_TEXT_NAME, "span", self.defaultConfiguration.get(mubcb.BADGE_TEXT_NAME))
+                                new self.$ctrlCfg(self.$cls.BADGE_TEXT_NAME, "span", self.defaultConfiguration.get(self.$cls.BADGE_TEXT_NAME))
                             ])
                         )
                         self.badgeText = self._badgeText;
@@ -138,7 +128,7 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
                         self.badgePosition = self._badgePosition;
                         self.badgeShape = self._badgeShape;
                         self.badgeClasses = self._badgeClasses;
-                        self.classes(self.rootElement, mucca.Add, "d-none");
+                        self.classes(self.rootElement, self.$clsActions.Add, "d-none");
                         self.setParentAttributes(self.rootElement.parentElement);
                         initialisePromise.resolve(self);
                     })
@@ -152,15 +142,12 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
         console.log(mutation);
     }
     setDefaultConfiguration(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Badge> {
-        const self = this,
-            mubcb = Mrbr_UI_Bootstrap_Controls_Badge,
-            muccop = Mrbr_UI_Controls_ControlConfigOptionalParameters;
-        self.defaultConfiguration.add(mubcb.BADGE_NAME, new muccop().Classes(["badge"]));
-        self.defaultConfiguration.add(mubcb.BADGE_TEXT_NAME, new muccop());
-        self.defaultConfiguration.add(mubcb.CONTEXT_TEXT_NAME, new muccop().Classes(["visually-hidden"]));
+        const self = this;
+        self.defaultConfiguration.add(self.$cls.BADGE_NAME, new self.$ctrlPrm().Classes(["badge"]));
+        self.defaultConfiguration.add(self.$cls.BADGE_TEXT_NAME, new self.$ctrlPrm());
+        self.defaultConfiguration.add(self.$cls.CONTEXT_TEXT_NAME, new self.$ctrlPrm().Classes(["visually-hidden"]));
 
-
-        return Mrbr_System_MrbrPromise.createResolved("Mrbr_UI_Bootstrap_Controls_Badge:setDefaultConfiguration", self);
+        return self.$promise.createResolved("Mrbr_UI_Bootstrap_Controls_Badge:setDefaultConfiguration", self);
 
     }
 }
