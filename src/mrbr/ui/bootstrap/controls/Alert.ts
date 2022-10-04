@@ -17,6 +17,7 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Controls_Control {
     //alert alert-warning alert-dismissible fade show
     private _alertContext: Mrbr_UI_Bootstrap_Controls_Alert$Contexts = Mrbr_UI_Bootstrap_Controls_Alert$Contexts.success;
     private _showCloseButton: boolean = true;
+    $cls = Mrbr_UI_Bootstrap_Controls_Alert;
     constructor(rootElementName: string) {
         super(rootElementName);
     }
@@ -24,26 +25,20 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Controls_Control {
         return this._showCloseButton;
     }
     public set showCloseButton(value: boolean) {
-        const self = this,
-            ctrlCfg = Mrbr_UI_Controls_ControlConfig,
-            mubca = Mrbr_UI_Bootstrap_Controls_Alert,
-            mucc = Mrbr_UI_Controls_ClassActions;
+        const self = this;
         if (value === true) {
-            if (!self.elements[mubca.ALERT_CLOSE_BUTTON_NAME]) {
-                self.createElement(new ctrlCfg(mubca.ALERT_CLOSE_BUTTON_NAME, "button", self.configuration(mubca.ALERT_CLOSE_BUTTON_NAME)))
-                self.rootElement.appendChild(self.elements[mubca.ALERT_CLOSE_BUTTON_NAME]);
-
-
-
+            if (!self.elements[self.$cls.ALERT_CLOSE_BUTTON_NAME]) {
+                self.createElement(new self.$ctrlCfg(self.$cls.ALERT_CLOSE_BUTTON_NAME, "button", self.configuration(self.$cls.ALERT_CLOSE_BUTTON_NAME)))
+                self.rootElement.appendChild(self.elements[self.$cls.ALERT_CLOSE_BUTTON_NAME]);
             }
-            self.classes(self.rootElement, mucc.Add, "alert-dismissible fade show");
-            self.classes(self.elements[mubca.ALERT_CLOSE_BUTTON_NAME], mucc.Remove, Mrbr_UI_Bootstrap_Utilities_Display.none)
+            self.classes(self.rootElement, self.$clsActions.Add, "alert-dismissible fade show");
+            self.classes(self.elements[self.$cls.ALERT_CLOSE_BUTTON_NAME], self.$clsActions.Remove, Mrbr_UI_Bootstrap_Utilities_Display.none)
         }
         else {
-            if (self.elements[mubca.ALERT_CLOSE_BUTTON_NAME]) {
-                self.classes(self.elements[mubca.ALERT_CLOSE_BUTTON_NAME], mucc.Add, Mrbr_UI_Bootstrap_Utilities_Display.none)
+            if (self.elements[self.$cls.ALERT_CLOSE_BUTTON_NAME]) {
+                self.classes(self.elements[self.$cls.ALERT_CLOSE_BUTTON_NAME], self.$clsActions.Add, Mrbr_UI_Bootstrap_Utilities_Display.none)
             }
-            self.classes(self.rootElement, mucc.Remove, "alert-dismissible fade show");
+            self.classes(self.rootElement, self.$clsActions.Remove, "alert-dismissible fade show");
         }
         this._showCloseButton = value;
     }
@@ -55,34 +50,32 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Controls_Control {
             alertContexts = Mrbr_UI_Bootstrap_Controls_Alert$Contexts;
         let rootElement = self.elements[self.rootElementName];
         if (rootElement) {
-            self.classes(rootElement, Mrbr_UI_Controls_ClassActions.Remove, Object.keys(alertContexts).map(key => alertContexts[key]))
-            self.classes(rootElement, Mrbr_UI_Controls_ClassActions.Add, value);
+            self.classes(rootElement, self.$clsActions.Remove, Object.keys(alertContexts).map(key => alertContexts[key]))
+            self.classes(rootElement, self.$clsActions.Add, value);
         }
 
         this._alertContext = value;
     }
     initialise(...args: any): Mrbr_System_MrbrPromise<any> {
         const self = this,
-            ctrlCfg = Mrbr_UI_Controls_ControlConfig,
-            mubca = Mrbr_UI_Bootstrap_Controls_Alert,
-            initialisePromise = Mrbr_System_MrbrPromise.create("Mrbr_UI_Bootstrap_Controls_Alert:initialise");
+            initialisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_Alert:initialise");
         super.initialise(args)
             .then(async result => {
                 await self.setDefaultConfiguration();
-                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                self.$mrbr.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(manifest => {
-                        self.createElement(new ctrlCfg(self.rootElementName, "div", self.configuration(mubca.ALERT_CONTROL_NAME))
+                        self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.ALERT_CONTROL_NAME))
                             .Children([
-                                new ctrlCfg(mubca.ALERT_TEXT_CONTAINER_NAME, "div", self.configuration(mubca.ALERT_TEXT_CONTAINER_NAME))
+                                new self.$ctrlCfg(self.$cls.ALERT_TEXT_CONTAINER_NAME, "div", self.configuration(self.$cls.ALERT_TEXT_CONTAINER_NAME))
                             ])
                         )
-                        self.defaultContainerElementName = mubca.ALERT_TEXT_CONTAINER_NAME;
+                        self.defaultContainerElementName = self.$cls.ALERT_TEXT_CONTAINER_NAME;
                         self.alertContext = self._alertContext;
                         self.showCloseButton = self._showCloseButton;
 
-                        self.events[Mrbr_UI_Bootstrap_Controls_Alert.ALERT_CLOSING_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
+                        self.events[self.$cls.ALERT_CLOSING_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
                             context: self,
-                            eventName: Mrbr_UI_Bootstrap_Controls_Alert.ALERT_CLOSING_EVENT_NAME,
+                            eventName: self.$cls.ALERT_CLOSING_EVENT_NAME,
                             eventTarget: self.rootElement,
                             event: self.alertClosing
                         }
@@ -92,26 +85,24 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Controls_Control {
         return initialisePromise;
     }
     public alertClosing() {
-        this.dispatchEvent(new CustomEvent(Mrbr_UI_Bootstrap_Controls_Alert.ALERT_CLOSING_EVENT_NAME));
+        this.dispatchEvent(new CustomEvent(this.$cls.ALERT_CLOSING_EVENT_NAME));
     }
     setDefaultConfiguration(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Alert> {
 
-        const self = this,
-            mubca = Mrbr_UI_Bootstrap_Controls_Alert,
-            muccop = Mrbr_UI_Controls_ControlConfigOptionalParameters;
-        self.defaultConfiguration.add(mubca.ALERT_CONTROL_NAME, new muccop()
+        const self = this;
+        self.defaultConfiguration.add(self.$cls.ALERT_CONTROL_NAME, new self.$ctrlPrm()
             .Classes(["alert", self.alertContext])
             .Attributes({ role: "alert" })
         );
-        self.defaultConfiguration.add(mubca.ALERT_TEXT_CONTAINER_NAME, new muccop());
+        self.defaultConfiguration.add(self.$cls.ALERT_TEXT_CONTAINER_NAME, new self.$ctrlPrm());
 
-        self.defaultConfiguration.add(mubca.ALERT_CLOSE_BUTTON_NAME, new muccop()
+        self.defaultConfiguration.add(self.$cls.ALERT_CLOSE_BUTTON_NAME, new self.$ctrlPrm()
             .Attributes({ "type": "button" })
             .Classes("btn-close")
             .Data({ bsDismiss: "alert" })
             .Aria({ label: "Close" })
         )
 
-        return Mrbr_System_MrbrPromise.createResolved("Mrbr_UI_Bootstrap_Controls_Alert:setDefaultConfiguration", self);
+        return self.$promise.createResolved("Mrbr_UI_Bootstrap_Controls_Alert:setDefaultConfiguration", self);
     }
 }

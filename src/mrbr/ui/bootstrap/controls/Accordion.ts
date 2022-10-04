@@ -10,6 +10,8 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
     public static ACCORDION_NAME: string = "accordion_name";
     private _flush: boolean = false;
     private _alwaysOpen: boolean = false;
+    $cls = Mrbr_UI_Bootstrap_Controls_Accordion;
+    private $acrItem = Mrbr_UI_Bootstrap_Controls_AccordionItem;
     constructor(rootElementName: string) {
         super(rootElementName);
     }
@@ -17,13 +19,12 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
         return this._alwaysOpen;
     }
     public set alwaysOpen(value: boolean) {
-        const self = this,
-            accordianItem = Mrbr_UI_Bootstrap_Controls_AccordionItem;
-        self.controls[Mrbr_UI_Controls_Control.CONTROL_KEYS].forEach(item => {
+        const self = this;
+        self.controls[self.$ctrl.CONTROL_KEYS].forEach(item => {
             const control = self.controls[item];
-            if (control instanceof accordianItem) {
+            if (control instanceof self.$acrItem) {
                 !value && control.setParent(self.rootElement.id);
-                value && delete control.elements[accordianItem.ACCORDION_COLLAPSE].dataset.bsParent;
+                value && delete control.elements[self.$acrItem.ACCORDION_COLLAPSE].dataset.bsParent;
             }
         })
         this._alwaysOpen = value;
@@ -34,23 +35,20 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
     public set flush(flush: boolean) {
         const self = this,
             elements = self.elements,
-            accordionName = Mrbr_UI_Bootstrap_Controls_Accordion.ACCORDION_NAME,
-            classActions = Mrbr_UI_Controls_ClassActions,
+            accordionName = self.$cls.ACCORDION_NAME,
             flushClass = "accordion-flush";
-        ((elements[accordionName]) && flush) && (self.classes((<HTMLHeadingElement>elements[accordionName]), (flush ? classActions.Add : classActions.Remove), flushClass));
+        ((elements[accordionName]) && flush) && (self.classes((<HTMLHeadingElement>elements[accordionName]), (flush ? self.$clsActions.Add : self.$clsActions.Remove), flushClass));
         this._flush = flush;
     }
     initialise(...args: any): Mrbr_System_MrbrPromise<any> {
         const self = this,
-            mubca = Mrbr_UI_Bootstrap_Controls_Accordion,
-            ctrlCfg = Mrbr_UI_Controls_ControlConfig,
-            initialisePromise = Mrbr_System_MrbrPromise.create(`Mrbr_UI_Bootstrap_Controls_Accordion:${self.rootElementName}`);
+            initialisePromise = self.$promise.create(`Mrbr_UI_Bootstrap_Controls_Accordion:${self.rootElementName}`);
         super.initialise(args)
             .then(async _ => {
                 await self.setDefaultConfiguration();
-                const manifestPromise = MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                const manifestPromise = self.$mrbr.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(manifest => {
-                        self.createElement(new ctrlCfg(self.rootElementName, "div", self.configuration(mubca.ACCORDION_NAME)))
+                        self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.ACCORDION_NAME)))
                         self.flush = self._flush;
                         initialisePromise.resolve(self);
                     })
@@ -60,13 +58,11 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
     }
 
     setDefaultConfiguration(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Accordion> {
-        const self = this,
-            mubca = Mrbr_UI_Bootstrap_Controls_Accordion,
-            muccop = Mrbr_UI_Controls_ControlConfigOptionalParameters;
-        self.defaultConfiguration.add(mubca.ACCORDION_NAME, new muccop()
+        const self = this;
+        self.defaultConfiguration.add(self.$cls.ACCORDION_NAME, new self.$ctrlPrm()
             .Classes(["accordion"])
         );
-        return Mrbr_System_MrbrPromise.createResolved("Mrbr_UI_Bootstrap_Controls_Accordion:setDefaultConfiguration", self);
+        return self.$promise.createResolved("Mrbr_UI_Bootstrap_Controls_Accordion:setDefaultConfiguration", self);
     }
     public addItems(item: Mrbr_UI_Bootstrap_Controls_AccordionItem | Array<Mrbr_UI_Bootstrap_Controls_AccordionItem>) {
         const self = this;

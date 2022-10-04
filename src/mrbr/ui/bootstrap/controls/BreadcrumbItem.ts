@@ -48,37 +48,4 @@ export class Mrbr_UI_Bootstrap_Controls_BreadcrumbItem {
     public set active(value: boolean) {
         this._active = value;
     }
-    // public set active(value: boolean) {
-    //     const self = this,
-    //         muibcbi = Mrbr_UI_Bootstrap_ControlsBreadcrumbItem,
-    //         muccop = Mrbr_UI_Controls_ControlConfigOptionalParameters,
-    //         ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-    //     if (self.rootElement) {
-    //         if (!self.elements[muibcbi.BREADCRUMBITEM_LINK_NAME]) {
-    //             self.createElement(new ctrlCfg(self.rootElementName, "a", self.configuration(muibcbi.BREADCRUMBITEM_LINK_NAME))
-    //                 .Aria({ current: "page" }))
-    //         }
-    //     }
-    //     this._active = value;
-    // }
-    // initialise(...args): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_ControlsBreadcrumbItem> {
-    //     const self = this,
-    //         muibcbi = Mrbr_UI_Bootstrap_ControlsBreadcrumbItem,
-    //         ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-
-    //     super.initialise(args)
-    //         .then(async result => {
-    //             await self.setDefaultConfiguration();
-    //             self.createElement(new ctrlCfg(self.rootElementName, "nav", self.configuration(muibcbi.BREADCRUMBITEM_NAME)));
-    //         })
-    //     return Mrbr_System_MrbrPromise.CreateResolvedMrbrPromise(self);
-    // }
-    // setDefaultConfiguration(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_ControlsBreadcrumbItem> {
-    //     const self = this,
-    //         muibcbi = Mrbr_UI_Bootstrap_ControlsBreadcrumbItem,
-    //         muccop = Mrbr_UI_Controls_ControlConfigOptionalParameters
-    //     self.defaultConfiguration.add(muibcbi.BREADCRUMBITEM_NAME, new muccop().Classes("breadcrumb-item"));
-    //     self.defaultConfiguration.add(muibcbi.BREADCRUMBITEM_LINK_NAME, new muccop());
-    //     return Mrbr_System_MrbrPromise.CreateResolvedMrbrPromise(self);
-    // }
 }

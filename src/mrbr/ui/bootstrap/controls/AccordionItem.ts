@@ -12,32 +12,27 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
     public static ACCORDION_COLLAPSE: string = "accordion_collapse";
     public static ACCORDION_BODY: string = "accordion_body";
     private _title: string = "";
+    $cls = Mrbr_UI_Bootstrap_Controls_AccordionItem;
     constructor(rootElementName: string) {
         super(rootElementName);
-        this.defaultContainerElementName = Mrbr_UI_Bootstrap_Controls_AccordionItem.ACCORDION_BODY;
+        this.defaultContainerElementName = this.$cls.ACCORDION_BODY;
     }
-
-
-
-
     initialise(...args: any): Mrbr_System_MrbrPromise<any> {
         const self = this,
-            mubcai = Mrbr_UI_Bootstrap_Controls_AccordionItem,
-            ctrlCfg = Mrbr_UI_Controls_ControlConfig,
-            initialisePromise = Mrbr_System_MrbrPromise.create("Mrbr_UI_Bootstrap_Controls_AccordionItem:initialise");
+            initialisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_AccordionItem:initialise");
         super.initialise(args)
             .then(result => {
                 self.setDefaultConfiguration();
-                const manifestPromise = MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);
+                const manifestPromise = self.$mrbr.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);
                 manifestPromise.then(manifest => {
-                    const accordionItemHeadingId = Mrbr_UI_Controls_Control.createId("accordion_item_heading");
-                    const accordionCollapsableId = Mrbr_UI_Controls_Control.createId("accordion_collapsable");
-                    self.createElement(new ctrlCfg(self.rootElementName, "div", self.configuration(mubcai.ACCORDION_ITEM))
+                    const accordionItemHeadingId = self.$ctrl.createId("accordion_item_heading"),
+                        accordionCollapsableId = self.$ctrl.createId("accordion_collapsable");
+                    self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.ACCORDION_ITEM))
                         .Children([
-                            <HTMLElement>self.createElement(new ctrlCfg(mubcai.ACCORDION_HEADER_NAME, "h2", self.configuration(mubcai.ACCORDION_HEADER_NAME))
+                            <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_HEADER_NAME, "h2", self.configuration(self.$cls.ACCORDION_HEADER_NAME))
                                 .Id(accordionItemHeadingId)
                                 .Children([
-                                    <HTMLElement>self.createElement(new ctrlCfg(mubcai.ACCORDION_TOGGLE_NAME, "button", self.configuration(mubcai.ACCORDION_TOGGLE_NAME))
+                                    <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_TOGGLE_NAME, "button", self.configuration(self.$cls.ACCORDION_TOGGLE_NAME))
                                         .Attributes({
                                             "type": "button"
                                         })
@@ -51,13 +46,13 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
                                         })
                                     )
                                 ])),
-                            <HTMLElement>self.createElement(new ctrlCfg(mubcai.ACCORDION_COLLAPSE, "div", self.configuration(mubcai.ACCORDION_COLLAPSE))
+                            <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_COLLAPSE, "div", self.configuration(self.$cls.ACCORDION_COLLAPSE))
                                 .Id(accordionCollapsableId)
                                 .Aria({
                                     "aria-labelledby": accordionItemHeadingId
                                 })
                                 .Children([
-                                    <HTMLElement>self.createElement(new ctrlCfg(mubcai.ACCORDION_BODY, "div", self.configuration(mubcai.ACCORDION_BODY)))
+                                    <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_BODY, "div", self.configuration(self.$cls.ACCORDION_BODY)))
                                 ])
                             )
                         ])
@@ -70,21 +65,19 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
         return initialisePromise;
     }
     public expand() {
-        const self = this,
-            host = MrbrBase.mrbrInstance.host,
-            collapseElement = self.elements[Mrbr_UI_Bootstrap_Controls_AccordionItem.ACCORDION_COLLAPSE];
+        const self = this,            
+            collapseElement = self.elements[self.$cls.ACCORDION_COLLAPSE];
 
         if (collapseElement.classList.contains("collapse")) {
-            const collapse = (host.bootstrap as any).Collapse.getOrCreateInstance(collapseElement);
+            const collapse = (self.$mrbr.host.bootstrap as any).Collapse.getOrCreateInstance(collapseElement);
             collapse.show();
         }
     }
     public collapse() {
         const self = this,
-            host = MrbrBase.mrbrInstance.host,
-            collapseElement = self.elements[Mrbr_UI_Bootstrap_Controls_AccordionItem.ACCORDION_COLLAPSE];
+            collapseElement = self.elements[self.$cls.ACCORDION_COLLAPSE];
         if (collapseElement.classList.contains("collapse") && collapseElement.classList.contains("show")) {
-            const collapse = (host.bootstrap as any).Collapse.getOrCreateInstance(collapseElement);
+            const collapse = (self.$mrbr.host.bootstrap as any).Collapse.getOrCreateInstance(collapseElement);
             collapse.hide();
         }
 
@@ -94,33 +87,32 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
         return this._title;
     }
     public set title(value: string) {
-        const elements = this.elements, toggleName = Mrbr_UI_Bootstrap_Controls_AccordionItem.ACCORDION_TOGGLE_NAME;
+        const self = this,
+            elements = self.elements, toggleName = self.$cls.ACCORDION_TOGGLE_NAME;
         (elements[toggleName]) && ((<HTMLHeadingElement>elements[toggleName]).textContent = value)
         this._title = value;
     }
     setParent(parentId: string) {
-        this.elements[Mrbr_UI_Bootstrap_Controls_AccordionItem.ACCORDION_COLLAPSE].dataset["bsParent"] = `#${parentId}`;
+        this.elements[this.$cls.ACCORDION_COLLAPSE].dataset["bsParent"] = `#${parentId}`;
     }
     setDefaultConfiguration(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_AccordionItem> {
-        const self = this,
-            mubca = Mrbr_UI_Bootstrap_Controls_AccordionItem,
-            muccop = Mrbr_UI_Controls_ControlConfigOptionalParameters;
-        self.defaultConfiguration.add(mubca.ACCORDION_ITEM, new muccop()
+        const self = this;
+        self.defaultConfiguration.add(self.$cls.ACCORDION_ITEM, new self.$ctrlPrm()
             .Classes(["accordion-item"])
         )
-        self.defaultConfiguration.add(mubca.ACCORDION_HEADER_NAME, new muccop()
+        self.defaultConfiguration.add(self.$cls.ACCORDION_HEADER_NAME, new self.$ctrlPrm()
             .Classes(["accordion-header"])
         )
-        self.defaultConfiguration.add(mubca.ACCORDION_TOGGLE_NAME, new muccop()
+        self.defaultConfiguration.add(self.$cls.ACCORDION_TOGGLE_NAME, new self.$ctrlPrm()
             .Classes(["accordion-button collapsed"])
         )
-        self.defaultConfiguration.add(mubca.ACCORDION_COLLAPSE, new muccop()
+        self.defaultConfiguration.add(self.$cls.ACCORDION_COLLAPSE, new self.$ctrlPrm()
             .Classes(["accordion-collapse collapse"])
         )
-        self.defaultConfiguration.add(mubca.ACCORDION_BODY, new muccop()
+        self.defaultConfiguration.add(self.$cls.ACCORDION_BODY, new self.$ctrlPrm()
             .Classes(["accordion-body"])
         )
-        return Mrbr_System_MrbrPromise.createResolved("Mrbr_UI_Bootstrap_Controls_AccordionItem:setDefaultConfiguration", self);
+        return self.$promise.createResolved("Mrbr_UI_Bootstrap_Controls_AccordionItem:setDefaultConfiguration", self);
     }
 
 }

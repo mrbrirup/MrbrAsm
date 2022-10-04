@@ -213,7 +213,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
             initialisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Button>("Mrbr_UI_Bootstrap_Controls_Button:initialise");
         super.initialise(...args)
             .then(() => {
-                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                self.$mrbr.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(_ => {
 
                         self.createElement(new self.$ctrlCfg(self.rootElementName, self.elementType, new self.$ctrlPrm().Classes("btn")));

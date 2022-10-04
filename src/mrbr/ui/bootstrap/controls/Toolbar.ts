@@ -11,6 +11,7 @@ export class Mrbr_UI_Bootstrap_Controls_Toolbar extends Mrbr_UI_Controls_Control
     $cls = Mrbr_UI_Bootstrap_Controls_Toolbar;
     constructor(rootElementName: string) {
         super(rootElementName);
+        this.defaultContainerElementName = rootElementName;
     }
     initialise(...args: any): Mrbr_System_MrbrPromise<any> {
         const self = this,
@@ -18,9 +19,8 @@ export class Mrbr_UI_Bootstrap_Controls_Toolbar extends Mrbr_UI_Controls_Control
         super.initialise(args)
             .then(async result => {
                 await self.setDefaultConfiguration();
-                await MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);
+                await self.$mrbr.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);
                 self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.TOOLBAR_NAME)))
-                self.defaultContainerElementName = self.rootElementName;
                 initialisePromise.resolve(self);
             })
         return initialisePromise;
