@@ -17,7 +17,9 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
     public static BREADCRUMB_CLICK_EVENT_NAME = "breadcrumb_click_event";
     private _breadcrumbDivider: string = "/";
     private _breadcrumbTrail: Mrbr_Collections_DoubleLinkedList<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem> = new Mrbr_Collections_DoubleLinkedList<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem>(true);
-    $cls = Mrbr_UI_Bootstrap_Controls_Breadcrumb;
+
+    override get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Breadcrumb { return Mrbr_UI_Bootstrap_Controls_Breadcrumb; }
+
     constructor(rootElementName: string) {
         super(rootElementName);
         const self = this;
@@ -37,7 +39,7 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
     }
 
     public setCurrentCrumb(breadcrumbItem: Mrbr_UI_Bootstrap_Controls_BreadcrumbItem) {
-        const self = this,  
+        const self = this,
             removedCrumbs = self.breadcrumbTrail.removeAfter(breadcrumbItem);
         if (removedCrumbs?.length > 0) {
             removedCrumbs.forEach(crumb => {

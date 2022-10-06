@@ -26,7 +26,9 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
         DEFAULT: "m-1"
     }
 
-    $cls = Mrbr_UI_Bootstrap_Controls_Badge;
+
+    override get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Badge { return Mrbr_UI_Bootstrap_Controls_Badge; }
+
     private _badgePosition: string = this.$cls.BADGE_POSITION.NONE;
     private _badgeShape: string = this.$cls.BADGE_SHAPE.DEFAULT;
     private _contextText: string = "";

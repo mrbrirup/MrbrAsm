@@ -23,7 +23,9 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Controls_Con
     //#endregion enums
 
     //#region Aliases
-    $cls = Mrbr_UI_Bootstrap_Controls_ButtonGroup;    
+
+    override get $cls(): typeof Mrbr_UI_Bootstrap_Controls_ButtonGroup { return Mrbr_UI_Bootstrap_Controls_ButtonGroup; }
+
     //#endregion Aliases
     //#region Private Properties
     private _ariaLabel: string = "";

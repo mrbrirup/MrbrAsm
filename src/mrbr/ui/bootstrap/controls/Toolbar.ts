@@ -7,8 +7,8 @@ import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls
 
 export class Mrbr_UI_Bootstrap_Controls_Toolbar extends Mrbr_UI_Controls_Control {
     static TOOLBAR_NAME: string = "toolbar";
-    static DIVIDER_CLASS: string = "me-2";    
-    $cls = Mrbr_UI_Bootstrap_Controls_Toolbar;
+    static DIVIDER_CLASS: string = "me-2";
+    override get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Toolbar { return Mrbr_UI_Bootstrap_Controls_Toolbar; }
     constructor(rootElementName: string) {
         super(rootElementName);
         this.defaultContainerElementName = rootElementName;

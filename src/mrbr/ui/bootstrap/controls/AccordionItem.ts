@@ -12,7 +12,9 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
     public static ACCORDION_COLLAPSE: string = "accordion_collapse";
     public static ACCORDION_BODY: string = "accordion_body";
     private _title: string = "";
-    $cls = Mrbr_UI_Bootstrap_Controls_AccordionItem;
+
+    override get $cls(): typeof Mrbr_UI_Bootstrap_Controls_AccordionItem { return Mrbr_UI_Bootstrap_Controls_AccordionItem; }
+
     constructor(rootElementName: string) {
         super(rootElementName);
         this.defaultContainerElementName = this.$cls.ACCORDION_BODY;

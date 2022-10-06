@@ -78,7 +78,7 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
         this.aria = aria;
         return this;
     }
-    public ID(id: string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
+    public Id(id: string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
         this.id = id;
         return this;
     }

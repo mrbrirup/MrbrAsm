@@ -9,6 +9,7 @@ import { Mrbr_System_MrbrPromise } from "../../system/MrbrPromise";
 import { Mrbr_UI_Controls_ControlDefaultsCollection } from "./ControlDefaultsCollection";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "./ControlConfigOptionalParameters";
 import { MrbrBase } from "../../system/MrbrBase";
+
 export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Controls_IControl {
     public static CONTROL_KEYS: symbol = Symbol("control_keys");
     public static DELETE: symbol = Symbol("delete");
@@ -20,7 +21,8 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     protected _customConfiguration: Mrbr_UI_Controls_ControlDefaultsCollection;
     private _events: Map<string, Mrbr_System_Events_EventHandler>;
     private _updateTheme: boolean = false;
-    $cls = Mrbr_UI_Controls_Control;
+    //$cls : Mrbr_UI_Controls_Control;
+    get $cls(): typeof Mrbr_UI_Controls_Control { return Mrbr_UI_Controls_Control; }
     protected $clsActions = Mrbr_UI_Controls_ClassActions;
     protected $promise = Mrbr_System_MrbrPromise;
     protected $mrbr = MrbrBase.mrbrInstance;
@@ -30,7 +32,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     protected $styleCls = Mrbr_UI_Html_StyleClasses
     protected $ctrlCfg = Mrbr_UI_Controls_ControlConfig;
     protected $ctrlPrm = Mrbr_UI_Controls_ControlConfigOptionalParameters;
-    protected $ctrl = Mrbr_UI_Controls_Control;   
+    protected $ctrl = Mrbr_UI_Controls_Control;
     private static themeMediaMatch = "(prefers-color-scheme: dark)";
     private static windowThemeChangeEventName: string = "change";
     private static get _theme() { return window.matchMedia(Mrbr_UI_Controls_Control.themeMediaMatch).matches ? Mrbr_UI_Controls_Themes.dark : Mrbr_UI_Controls_Themes.light; }

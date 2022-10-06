@@ -135,9 +135,7 @@ function createMrbrBaseFile(sourceFileName) {
             fileTypeMap.set(importTest, fileType);
         }
         if (fileTypeMap.get(importTest) !== "interface") {
-            console.log("config: ", importMatch?.groups?.assembly, importMatch?.groups?.mrbrConfig, mrbrConfigToConfig(importMatch?.groups?.mrbrConfig));
-            let config = mrbrConfigToConfig(importMatch?.groups?.mrbrConfig);
-            importedReferences.push({ assembly: importMatch?.groups?.assembly, config: config });
+            importedReferences.push({ assembly: importMatch?.groups?.assembly, config: mrbrConfigToConfig(importMatch?.groups?.mrbrConfig) });
             // if (config.optional !== true && config.exclude !== true) {
 
             // }

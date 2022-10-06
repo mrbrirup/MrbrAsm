@@ -10,7 +10,9 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
     public static ACCORDION_NAME: string = "accordion_name";
     private _flush: boolean = false;
     private _alwaysOpen: boolean = false;
-    $cls = Mrbr_UI_Bootstrap_Controls_Accordion;
+    
+    override get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Accordion { return Mrbr_UI_Bootstrap_Controls_Accordion; }
+
     private $acrItem = Mrbr_UI_Bootstrap_Controls_AccordionItem;
     constructor(rootElementName: string) {
         super(rootElementName);

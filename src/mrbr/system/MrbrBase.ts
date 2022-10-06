@@ -746,7 +746,7 @@ export class MrbrBase extends EventTarget {
                     result
                         .text()
                         .then((componentText: string) => {
-                            let loadedPromise = Mrbr_System_MrbrPromise.create<Mrbr_IO_Fetch>(`Mrbr_IO_Fetch:${file.fileName}`);
+                            let loadedPromise = self.$promise.create<Mrbr_IO_Fetch>(`Mrbr_IO_Fetch:${file.fileName}`);
                             fn(componentParameters, componentText).bind(self)(instance, file.data, loadedPromise.executor.resolve, loadedPromise.executor.reject, { componentName: _compName, manifest: _compManifest });
                             // loadedPromise
                             //     .then(entry => setTimeout(() => { file.loadingPromise.resolve() }, 0))

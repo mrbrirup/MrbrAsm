@@ -1,10 +1,7 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
-import { MrbrBase } from "../../../system/MrbrBase";
+import { MrbrBase } from "../../../system/MrbrBase";//mrbr:exclude
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
-import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/control";
-import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
-import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 type typeButtonColor = typeof Mrbr_UI_Bootstrap_Controls_Button.buttonColours[keyof typeof Mrbr_UI_Bootstrap_Controls_Button.buttonColours];
 type typeButtonSize = typeof Mrbr_UI_Bootstrap_Controls_Button.buttonSizes[keyof typeof Mrbr_UI_Bootstrap_Controls_Button.buttonSizes];
 type typeButtonType = typeof Mrbr_UI_Bootstrap_Controls_Button.buttonTypes[keyof typeof Mrbr_UI_Bootstrap_Controls_Button.buttonTypes];
@@ -48,7 +45,8 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
     } as const
     //#endregion enums
     //#region aliases
-    $cls = Mrbr_UI_Bootstrap_Controls_Button;
+    
+    override get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Button { return Mrbr_UI_Bootstrap_Controls_Button; }
     //#endregion aliases
     //#region fields
     private _href: string = "";

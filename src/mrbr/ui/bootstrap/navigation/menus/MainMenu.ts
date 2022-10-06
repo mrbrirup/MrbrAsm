@@ -53,7 +53,7 @@ export class Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu extends Mrbr_UI_Control
                                 new ctrlCfg("title", "div",
                                     new Mrbr_UI_Controls_ControlConfigOptionalParameters()
                                         .Classes("offcanvas-title")
-                                        .ID("offcanvasDarkLabel")
+                                        .Id("offcanvasDarkLabel")
                                 ),
                                 new ctrlCfg("button", "button",
                                     new Mrbr_UI_Controls_ControlConfigOptionalParameters()
