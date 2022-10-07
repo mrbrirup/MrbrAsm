@@ -23,16 +23,16 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     private _updateTheme: boolean = false;
     //$cls : Mrbr_UI_Controls_Control;
     get $cls(): typeof Mrbr_UI_Controls_Control { return Mrbr_UI_Controls_Control; }
-    protected $clsActions = Mrbr_UI_Controls_ClassActions;
-    protected $promise = Mrbr_System_MrbrPromise;
-    protected $mrbr = MrbrBase.mrbrInstance;
-    protected $themeChange = Mrbr_UI_Controls_ThemeChangeEvent;
-    protected $ctrlCol = Mrbr_UI_Controls_ControlDefaultsCollection;
-    protected $ctrlTheme = Mrbr_UI_Controls_Themes;
-    protected $styleCls = Mrbr_UI_Html_StyleClasses
-    protected $ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-    protected $ctrlPrm = Mrbr_UI_Controls_ControlConfigOptionalParameters;
-    protected $ctrl = Mrbr_UI_Controls_Control;
+    public $clsActions = Mrbr_UI_Controls_ClassActions;
+    public $promise = Mrbr_System_MrbrPromise;
+    public $mrbr = MrbrBase.mrbrInstance;
+    public $themeChange = Mrbr_UI_Controls_ThemeChangeEvent;
+    public $ctrlCol = Mrbr_UI_Controls_ControlDefaultsCollection;
+    public $ctrlTheme = Mrbr_UI_Controls_Themes;
+    public $styleCls = Mrbr_UI_Html_StyleClasses
+    public $ctrlCfg = Mrbr_UI_Controls_ControlConfig;
+    public $ctrlPrm = Mrbr_UI_Controls_ControlConfigOptionalParameters;
+    public $ctrl = Mrbr_UI_Controls_Control;
     private static themeMediaMatch = "(prefers-color-scheme: dark)";
     private static windowThemeChangeEventName: string = "change";
     private static get _theme() { return window.matchMedia(Mrbr_UI_Controls_Control.themeMediaMatch).matches ? Mrbr_UI_Controls_Themes.dark : Mrbr_UI_Controls_Themes.light; }

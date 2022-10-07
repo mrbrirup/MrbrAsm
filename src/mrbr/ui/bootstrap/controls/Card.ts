@@ -20,18 +20,17 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Controls_Control {
     public static CARD_IMAGE_HOLDER_NAME: string = "card_image_holder";
     public static CARD_BODY_HOLDER_NAME: string = "card_body_holder";
     public static HorizontalImageSize = {
-        0: "",
-        1: "1:11",
-        2: "2:10",
-        3: "3:9",
-        4: "4:8",
-        5: "5:7",
-        6: "6:6",
-        7: "7:5",
-        8: "8:4",
-        9: "9:3",
-        10: "10:2",
-        11: "11:1"
+        "i1_11": "1:11",
+        "I2_10": "2:10",
+        "i3_9": "3:9",
+        "i4_8": "4:8",
+        "i5_7": "5:7",
+        "i6_6": "6:6",
+        "i7_7": "7:5",
+        "i8_8": "8:4",
+        "i9_3": "9:3",
+        "i10_2": "10:2",
+        "i11_1": "11:1"
     } as const;
     public static HorizontalImageSplit = {
         "default": "col",
@@ -80,7 +79,8 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Controls_Control {
     public static imageLocations = {
         TOP: "top",
         BOTTOM: "bottom",
-        OVERLAY: "overlay"
+        OVERLAY: "overlay",
+        LEFT: "left"
     } as const;
     private _cardImageProperties: imagePropertiesType | horizontalCardStyleType;
     get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Card { return Mrbr_UI_Bootstrap_Controls_Card; }
@@ -88,57 +88,69 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Controls_Control {
     private _imageLocation: imageLocationType = this.$cls.imageLocations.TOP;
     constructor(rootElementName: string, cardStyle: cardStyleType = Mrbr_UI_Bootstrap_Controls_Card.cardStyles.HORIZONTAL, cardImageProperties?: imagePropertiesType | horizontalCardStyleType) {
         super(rootElementName);
-        this.cardStyle = cardStyle || this.$cls.cardStyles.HORIZONTAL;
+        const self = this;
+        self.cardStyle = cardStyle;
+        if (cardStyle === self.$cls.cardStyles.OVERLAY &&
+            (!cardImageProperties || !(cardImageProperties instanceof self.$cls.ImageCardProperties))) {
+            throw new Error("Overlay card style requires an image properties object");
+        }
+        else if (cardStyle === self.$cls.cardStyles.HORIZONTAL &&
+            (!cardImageProperties || !(cardImageProperties instanceof self.$cls.HorizontalCardStyle))) {
+            throw new Error("Horizontal card style requires a horizontal card style object");
+        }
         this._cardImageProperties = cardImageProperties;
     }
     initialise(...args): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Card> {
         const self = this,
             initalisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Card>("Mrbr_UI_Bootstrap_Controls_Card:initialise");
         self.defaultContainerElementName = self.rootElementName;
-
-        super.initialise(args).then(() => {
-            const elements = [];
-            switch (self.cardStyle) {
-                case self.$cls.cardStyles.VERTICAL:
-                    elements.push(self.createBody(self.$cls.CARD_BODY_NAME));
-                    break;
-                case self.$cls.cardStyles.HORIZONTAL:
-                    let imageProperties: InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Card.ImageCardProperties> = self._cardImageProperties as InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Card.ImageCardProperties>;
-                    elements.push(
-                        self.createBody(self.$cls.CARD_BODY_NAME),
-                        self.createImage(self.$cls.CARD_IMAGE_NAME, self.imageLocation, imageProperties.src || "", imageProperties?.alt || ""));
-                    break;
-                case self.$cls.cardStyles.OVERLAY:
-                    let horizontalImageProperties: InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Card.HorizontalCardStyle> = self._cardImageProperties as InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Card.HorizontalCardStyle>,
-                        imageSplit = horizontalImageProperties.imageSize.split(":"),
-                        leftSplit = imageSplit[0],
-                        rightSplit = imageSplit[imageSplit.length - 1],
-                        image = self.createImage(self.$cls.CARD_IMAGE_NAME, self.$cls.imageLocations.OVERLAY, horizontalImageProperties?.imageCardProperties.src || "", horizontalImageProperties?.imageCardProperties?.alt || ""),
-                        body = self.createBody(self.$cls.CARD_BODY_NAME),
-                        imageHolder = self.createElement(new self.$ctrlCfg(self.$cls.CARD_IMAGE_HOLDER_NAME, self.configuration[self.$cls.CARD_IMAGE_HOLDER_NAME])
-                            .Children([image])
-                            .Classes(`${horizontalImageProperties.imageSplit}${leftSplit}`)
-                        ),
-                        bodyHolder = self.createElement(new self.$ctrlCfg(self.$cls.CARD_BODY_HOLDER_NAME, self.configuration[self.$cls.CARD_BODY_HOLDER_NAME])
-                            .Children([body])
-                            .Classes(`${horizontalImageProperties.imageSplit}${rightSplit}`)
-                        );
-                    elements.push(imageHolder, bodyHolder);
-                    break;
-                case self.$cls.cardStyles.EMPTY:
-                    break;
-            }
-            self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.CARD_NAME)).Children(elements));
-            initalisePromise.resolve(self);
-        });
+        super.initialise(args)
+            .then(() => {
+                self.setDefaultConfiguration()
+                    .then(() => {
+                        let elements = [];
+                        switch (self.cardStyle) {
+                            case self.$cls.cardStyles.VERTICAL:
+                                elements.push(self.createBody(self.$cls.CARD_BODY_NAME));
+                                break;
+                            case self.$cls.cardStyles.OVERLAY:
+                                const imageProperties: imagePropertiesType = self._cardImageProperties as imagePropertiesType,
+                                    overlayBody = self.createBody(self.$cls.CARD_BODY_NAME),
+                                    overlayImage = self.createImage(self.$cls.CARD_IMAGE_NAME, self.imageLocation, imageProperties?.src || "", imageProperties?.alt || "");
+                                self.classes(overlayBody, self.$clsActions.Add, "card-img-overlay")
+                                elements.push(overlayImage, overlayBody);
+                                break;
+                            case self.$cls.cardStyles.HORIZONTAL:
+                                let horizontalImageProperties: horizontalCardStyleType = self._cardImageProperties as horizontalCardStyleType,
+                                    imageSplit = horizontalImageProperties.imageSize.split(":"),
+                                    leftSplit = imageSplit[0],
+                                    rightSplit = imageSplit[imageSplit.length - 1],
+                                    image = self.createImage(self.$cls.CARD_IMAGE_NAME, self.$cls.imageLocations.LEFT, horizontalImageProperties?.imageCardProperties?.src || "", horizontalImageProperties?.imageCardProperties?.alt || ""),
+                                    body = self.createBody(self.$cls.CARD_BODY_NAME),
+                                    imageHolder: HTMLElement = self.createElement(new self.$ctrlCfg(self.$cls.CARD_IMAGE_HOLDER_NAME, "div", self.configuration(self.$cls.CARD_IMAGE_HOLDER_NAME))
+                                        .Children([image])
+                                        .Classes(`${horizontalImageProperties.imageSplit}${leftSplit}`)
+                                    ) as HTMLElement,
+                                    bodyHolder: HTMLElement = self.createElement(new self.$ctrlCfg(self.$cls.CARD_BODY_HOLDER_NAME, "div", self.configuration(self.$cls.CARD_BODY_HOLDER_NAME))
+                                        .Children([body])
+                                        .Classes(`${horizontalImageProperties.imageSplit}${rightSplit}`)
+                                    ) as HTMLElement,
+                                    cardRow = self.createElement(new self.$ctrlCfg(self.$cls.CARD_ROW_NAME, "div", self.configuration(self.$cls.CARD_ROW_NAME))
+                                        .Children([imageHolder, bodyHolder])
+                                    );
+                                elements.push(cardRow);
+                                break;
+                            case self.$cls.cardStyles.EMPTY:
+                                break;
+                        }
+                        self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.CARD_NAME)).Children(elements));
+                        initalisePromise.resolve(self);
+                    })
+            });
         return initalisePromise;
     }
-    public get imageLocation(): imageLocationType {
-        return this._imageLocation;
-    }
-    public set imageLocation(value: imageLocationType) {
-        this._imageLocation = value;
-    }
+    public get imageLocation(): imageLocationType { return this._imageLocation; }
+    public set imageLocation(value: imageLocationType) { this._imageLocation = value; }
     setDefaultConfiguration(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Card> {
         const self = this;
         self.defaultConfiguration.add(self.$cls.CARD_NAME, new self.$ctrlPrm().Classes("card"));
@@ -154,44 +166,38 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Controls_Control {
     createBody(id: string): HTMLDivElement {
         const self = this;
         self.defaultConfiguration.has(self.$cls.CARD_BODY_NAME) === false
-            && self.defaultConfiguration.add(self.$cls.CARD_BODY_NAME, new self.$ctrlPrm()
-                .Classes("card-body")
-            );
-        return self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.CARD_BODY_NAME))) as HTMLDivElement;
+            && self.defaultConfiguration.add(self.$cls.CARD_BODY_NAME, new self.$ctrlPrm().Classes("card-body"));
+        return self.createElement(new self.$ctrlCfg(id, "div", self.configuration(self.$cls.CARD_BODY_NAME))) as HTMLDivElement;
     }
     createTitle(id: string, titleText: string): HTMLHeadElement {
         const self = this;
         self.defaultConfiguration.has(self.$cls.CARD_TITLE_NAME) === false
-            && self.defaultConfiguration.add(self.$cls.CARD_TITLE_NAME, new self.$ctrlPrm()
-                .Classes("card-title"));
-        const element = self.createElement(new self.$ctrlCfg(self.rootElementName, "h5", self.configuration(self.$cls.CARD_TITLE_NAME))) as HTMLHeadElement;
+            && self.defaultConfiguration.add(self.$cls.CARD_TITLE_NAME, new self.$ctrlPrm().Classes("card-title"));
+        const element = self.createElement(new self.$ctrlCfg(id, "h5", self.configuration(self.$cls.CARD_TITLE_NAME))) as HTMLHeadElement;
         element.textContent = titleText;
         return element;
     }
     createSubtitle(id: string, subtitleText: string): HTMLHeadElement {
         const self = this;
         self.defaultConfiguration.has(self.$cls.CARD_SUBTITLE_NAME) === false
-            && self.defaultConfiguration.add(self.$cls.CARD_SUBTITLE_NAME, new self.$ctrlPrm()
-                .Classes("card-subtitle"));
-        const element = self.createElement(new self.$ctrlCfg(self.rootElementName, "h6", self.configuration(self.$cls.CARD_SUBTITLE_NAME))) as HTMLHeadElement;
+            && self.defaultConfiguration.add(self.$cls.CARD_SUBTITLE_NAME, new self.$ctrlPrm().Classes("card-subtitle"));
+        const element = self.createElement(new self.$ctrlCfg(id, "h6", self.configuration(self.$cls.CARD_SUBTITLE_NAME))) as HTMLHeadElement;
         element.textContent = subtitleText;
         return element;
     }
     createText(id: string, text: string): HTMLParagraphElement {
         const self = this;
         self.defaultConfiguration.has(self.$cls.CARD_TEXT_NAME) === false
-            && self.defaultConfiguration.add(self.$cls.CARD_TEXT_NAME, new self.$ctrlPrm()
-                .Classes("card-text"));
-        const element = self.createElement(new self.$ctrlCfg(self.rootElementName, "p", self.configuration(self.$cls.CARD_TEXT_NAME))) as HTMLParagraphElement;
+            && self.defaultConfiguration.add(self.$cls.CARD_TEXT_NAME, new self.$ctrlPrm().Classes("card-text"));
+        const element = self.createElement(new self.$ctrlCfg(id, "p", self.configuration(self.$cls.CARD_TEXT_NAME))) as HTMLParagraphElement;
         element.textContent = text;
         return element;
     }
     createLink(id: string, href: string, text: string): HTMLAnchorElement {
         const self = this;
         self.defaultConfiguration.has(self.$cls.CARD_LINK_NAME) === false
-            && self.defaultConfiguration.add(self.$cls.CARD_LINK_NAME, new self.$ctrlPrm()
-                .Classes("card-link"));
-        const element = self.createElement(new self.$ctrlCfg(self.rootElementName, "a", self.configuration(self.$cls.CARD_LINK_NAME))) as HTMLAnchorElement;
+            && self.defaultConfiguration.add(self.$cls.CARD_LINK_NAME, new self.$ctrlPrm().Classes("card-link"));
+        const element = self.createElement(new self.$ctrlCfg(id, "a", self.configuration(self.$cls.CARD_LINK_NAME))) as HTMLAnchorElement;
         element.href = href;
         element.textContent = text;
         return element;
@@ -200,18 +206,10 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Controls_Control {
     createImage(id: string, location: imageLocationType, source: string, alt: string): HTMLImageElement {
         const self = this,
             classes = [];
-        if (location === self.$cls.imageLocations.OVERLAY) {
-            classes.push("img-fluid");
-            classes.push("rounded-start");
-        }
-        else {
-            classes.push(location === self.$cls.imageLocations.TOP ? "card-img-top" : "card-img-bottom");
-        }
+        (location === self.$cls.imageLocations.LEFT) && classes.push("img-fluid", "rounded-start") || classes.push(location === self.$cls.imageLocations.TOP ? "card-img-top" : "card-img-bottom");
         self.defaultConfiguration.has(self.$cls.CARD_IMAGE_NAME) === false
-            && self.defaultConfiguration.add(self.$cls.CARD_IMAGE_NAME, new self.$ctrlPrm()
-                .Classes(classes)
-            );
-        const element = self.createElement(new self.$ctrlCfg(self.rootElementName, "img", self.configuration(self.$cls.CARD_IMAGE_NAME))) as HTMLImageElement;
+            && self.defaultConfiguration.add(self.$cls.CARD_IMAGE_NAME, new self.$ctrlPrm().Classes(classes));
+        const element = self.createElement(new self.$ctrlCfg(id, "img", self.configuration(self.$cls.CARD_IMAGE_NAME))) as HTMLImageElement;
         element.src = source;
         element.alt = alt;
         return element;
@@ -219,18 +217,16 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Controls_Control {
     createHeader(id: string, text: string): HTMLDivElement {
         const self = this;
         self.defaultConfiguration.has(self.$cls.CARD_HEADER_NAME) === false
-            && self.defaultConfiguration.add(self.$cls.CARD_HEADER_NAME, new self.$ctrlPrm()
-                .Classes("card-header"));
-        const element = self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.CARD_HEADER_NAME))) as HTMLDivElement;
+            && self.defaultConfiguration.add(self.$cls.CARD_HEADER_NAME, new self.$ctrlPrm().Classes("card-header"));
+        const element = self.createElement(new self.$ctrlCfg(id, "div", self.configuration(self.$cls.CARD_HEADER_NAME))) as HTMLDivElement;
         element.textContent = text;
         return element;
     }
     createFooter(id: string, text: string): HTMLDivElement {
         const self = this;
         self.defaultConfiguration.has(self.$cls.CARD_FOOTER_NAME) === false
-            && self.defaultConfiguration.add(self.$cls.CARD_FOOTER_NAME, new self.$ctrlPrm()
-                .Classes("card-footer"));
-        const element = self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.CARD_FOOTER_NAME))) as HTMLDivElement;
+            && self.defaultConfiguration.add(self.$cls.CARD_FOOTER_NAME, new self.$ctrlPrm().Classes("card-footer"));
+        const element = self.createElement(new self.$ctrlCfg(id, "div", self.configuration(self.$cls.CARD_FOOTER_NAME))) as HTMLDivElement;
         element.textContent = text;
         return element;
     }
