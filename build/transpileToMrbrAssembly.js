@@ -47,7 +47,7 @@ const
     rxClassDeclaration = /(?<exportStatement>(?<export>export\s+)(?<exportType>(class|enum))\s+(?<exportName>(\S[\S_$]+)?)(?<genericType>\<\s*\S+\s*\>)*(?<extends>\s+extends\s+)*(?<baseClass>\S[\S_]*)?(?<end>\s*?)\s*((?<implements>implements \S[\S_]*)|\s*?)\s*?{)/gm,
     rxInterface = /(?<keyword_export>export)\s+(?<keyword_interface>interface)\s+(?<interface_name>\S[\S]*)\s+{/gm,
     rxEnumFunction = /export\s+var\s+(?<assembly>[\w$]+)\s*;\s*(?<function>\(function \s*\((\1)\)\s{)(?<text>[\s\S]+)\}\)\s*\(\1\s*[|]{2}\s*\(\1\s*=\s*\{\}\)\);\s*/gm,
-    rxFunction = /(?<fullMatch>(?<exportFunction>export\s+function\s+)(?<assembly>[\w]+)(?<parameters>\([\s\S]*?\))\s*\{)/gm;
+    rxFunction = /(?<fullMatch>(?<exportFunction>export\s+function\s+)(?<assembly>[\w$]+)\s*(?<parameters>\([\s\S]*?\))\s*\{)/gm;
 
 const sourceFiles = [],
     mrbrJSRootFile = path.join(destinationFolder, "asm/mrbr.js"),

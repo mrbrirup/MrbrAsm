@@ -189,7 +189,7 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Controls_Control {
         const self = this;
         self.defaultConfiguration.has(self.$cls.CARD_TEXT_NAME) === false
             && self.defaultConfiguration.add(self.$cls.CARD_TEXT_NAME, new self.$ctrlPrm().Classes("card-text"));
-        const element = self.createElement(new self.$ctrlCfg(id, "p", self.configuration(self.$cls.CARD_TEXT_NAME))) as HTMLParagraphElement;
+        const element = self.createElement(new self.$ctrlCfg(id, "p", self.configuration(self.$cls.CARD_TEXT_NAME).Id(self.$ctrl.createId("p")) )) as HTMLParagraphElement;        
         element.textContent = text;
         return element;
     }

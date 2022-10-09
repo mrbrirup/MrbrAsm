@@ -229,7 +229,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         if (controlConfig instanceof HTMLElement) { return controlConfig; }
 
         let _element = document.createElement(_config.elementType);
-        _element.id = self.id || _config.id || self.$cls.createId(_config.elementType)
+        _element.id = _config.id || self.$cls.createId(_config.elementType)
         self.classes(_element, self.$clsActions.Add, _config.classes)
         self.attributes(_element, _config.attributes)
         self.dataset(_element, _config.data)
@@ -429,7 +429,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
             }
         });
     }
-    static createId(prefix: string) { return `${prefix}_${((new Date()).getTime())}_${Math.floor(Math.random() * 100)}`; }
+    static createId(prefix: string) { return `${prefix}_${((new Date()).getTime())}_${Math.floor(Math.random() * 1000)}`; }
 
 }
 
