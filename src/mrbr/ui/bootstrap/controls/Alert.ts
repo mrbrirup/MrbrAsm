@@ -61,7 +61,7 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Controls_Control {
             initialisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_Alert:initialise");
         super.initialise(args)
             .then(async result => {
-                await self.setDefaultConfiguration();
+                await self.setDefaultConfig();
                 self.$mrbr.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(manifest => {
                         self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.ALERT_CONTROL_NAME))
@@ -87,16 +87,16 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Controls_Control {
     public alertClosing() {
         this.dispatchEvent(new CustomEvent(this.$cls.ALERT_CLOSING_EVENT_NAME));
     }
-    setDefaultConfiguration(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Alert> {
+    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Alert> {
 
         const self = this;
-        self.defaultConfiguration.add(self.$cls.ALERT_CONTROL_NAME, new self.$ctrlPrm()
+        self.defaultConfig.add(self.$cls.ALERT_CONTROL_NAME, new self.$ctrlPrm()
             .Classes(["alert", self.alertContext])
             .Attributes({ role: "alert" })
         );
-        self.defaultConfiguration.add(self.$cls.ALERT_TEXT_CONTAINER_NAME, new self.$ctrlPrm());
+        self.defaultConfig.add(self.$cls.ALERT_TEXT_CONTAINER_NAME, new self.$ctrlPrm());
 
-        self.defaultConfiguration.add(self.$cls.ALERT_CLOSE_BUTTON_NAME, new self.$ctrlPrm()
+        self.defaultConfig.add(self.$cls.ALERT_CLOSE_BUTTON_NAME, new self.$ctrlPrm()
             .Attributes({ "type": "button" })
             .Classes("btn-close")
             .Data({ bsDismiss: "alert" })

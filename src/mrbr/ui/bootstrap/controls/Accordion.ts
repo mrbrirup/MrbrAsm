@@ -47,7 +47,7 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
             initialisePromise = self.$promise.create(`Mrbr_UI_Bootstrap_Controls_Accordion:${self.rootElementName}`);
         super.initialise(args)
             .then(async _ => {
-                await self.setDefaultConfiguration();
+                await self.setDefaultConfig();
                 const manifestPromise = self.$mrbr.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(manifest => {
                         self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.ACCORDION_NAME)))
@@ -59,9 +59,9 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
 
     }
 
-    setDefaultConfiguration(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Accordion> {
+    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Accordion> {
         const self = this;
-        self.defaultConfiguration.add(self.$cls.ACCORDION_NAME, new self.$ctrlPrm()
+        self.defaultConfig.add(self.$cls.ACCORDION_NAME, new self.$ctrlPrm()
             .Classes(["accordion"])
         );
         return self.$promise.createResolved("Mrbr_UI_Bootstrap_Controls_Accordion:setDefaultConfiguration", self);

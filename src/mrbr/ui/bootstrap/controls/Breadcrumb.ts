@@ -98,7 +98,7 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
             initlialisepromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Breadcrumb>("Mrbr_UI_Bootstrap_Controls_Breadcrumb:initialise");
         super.initialise(args)
             .then(result => {
-                self.setDefaultConfiguration();
+                self.setDefaultConfig();
                 MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(manifest => {
 
@@ -127,9 +127,9 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
         }
     }
 
-    public setDefaultConfiguration(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Breadcrumb> {
+    public setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Breadcrumb> {
         const self = this;
-        self.defaultConfiguration.addEntries([
+        self.defaultConfig.addEntries([
             [self.$cls.BREADCRUMB_NAV_NAME, new self.$ctrlPrm().Aria({ label: "breadcrumb" })],
             [self.$cls.BREADCRUMB_LIST_NAME, new self.$ctrlPrm().Classes(["breadcrumb"])],
             [self.$cls.BREADCRUMB_ITEM_NAME, new self.$ctrlPrm().Classes(["breadcrumb-item user-select-none"])],

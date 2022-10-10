@@ -68,26 +68,26 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
                     .then(_ => {
 
                         if (!self._drawDialog) { self._drawDialog = self.drawDialog.bind(self) }
-                        !self.defaultConfiguration.has(self.rootElementName) && self.defaultConfiguration.add(self.rootElementName, new muccop()
+                        !self.defaultConfig.has(self.rootElementName) && self.defaultConfig.add(self.rootElementName, new muccop()
                             .Classes(["border", "shadow", "d-flex", "flex-column", "border-1", "border-dark", "d-none"])
                             .Styles({
                                 transform: `translate(${self.bounds.x}px,${self.bounds.y}px)`, position: "absolute", top: "0px", left: "0px", width: `${self.bounds.width}px`, height: `${self.bounds.height}`
                             }));
-                        !self.defaultConfiguration.has(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME) &&
-                            self.defaultConfiguration.add(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME, new muccop()
+                        !self.defaultConfig.has(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME) &&
+                            self.defaultConfig.add(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME, new muccop()
                                 .Classes(["container-fluid", "h-100", "p-1", "bg-light", "d-flex", "flex-column"])
                                 .Styles({ "minHeight": `${self._minBounds.height / 2}px` })
                             )
-                        !self.defaultConfiguration.has(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME) &&
-                            self.defaultConfiguration.add(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME,
+                        !self.defaultConfig.has(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME) &&
+                            self.defaultConfig.add(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME,
                                 new muccop()
                                     .Classes(["mrbr-dialog-handle-drag", "container-fluid", "bg-dark", "d-flex", "user-select-none", "pe-0"])
                                     .Styles({ height: "3rem" })
                                     .LightTheme("bg-light")
                                     .DarkTheme("bg-dark")
                             );
-                        !self.defaultConfiguration.has(Mrbr_UI_Bootstrap_Forms_Dialog.TITLE_TEXT_CONTROL_NAME) &&
-                            self.defaultConfiguration.add(Mrbr_UI_Bootstrap_Forms_Dialog.TITLE_TEXT_CONTROL_NAME,
+                        !self.defaultConfig.has(Mrbr_UI_Bootstrap_Forms_Dialog.TITLE_TEXT_CONTROL_NAME) &&
+                            self.defaultConfig.add(Mrbr_UI_Bootstrap_Forms_Dialog.TITLE_TEXT_CONTROL_NAME,
                                 new muccop()
                                     .Classes(["row", "justify-content-left", "align-self-center", "text-light", "py-1", "pe-1", "ps-3", "flex-fill"])
                                     .LightTheme(Mrbr_UI_Bootstrap_Controls_Defaults.textDark)
@@ -95,8 +95,8 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
                                     .Styles({ "pointerEvents": "none" })
                                     .Properties({ textContent: self.title })
                             )
-                        !self.defaultConfiguration.has(Mrbr_UI_Bootstrap_Forms_Dialog.FOOTER_CONTROL_NAME) &&
-                            self.defaultConfiguration.add(Mrbr_UI_Bootstrap_Forms_Dialog.FOOTER_CONTROL_NAME,
+                        !self.defaultConfig.has(Mrbr_UI_Bootstrap_Forms_Dialog.FOOTER_CONTROL_NAME) &&
+                            self.defaultConfig.add(Mrbr_UI_Bootstrap_Forms_Dialog.FOOTER_CONTROL_NAME,
                                 new muccop()
                                     .Classes(["container-fluid", "bg-dark", "d-flex", "p-4"])
                                     .Styles({ height: "3rem" })

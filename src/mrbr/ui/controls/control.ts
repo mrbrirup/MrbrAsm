@@ -13,6 +13,7 @@ import { MrbrBase } from "../../system/MrbrBase";
 export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Controls_IControl {
     public static CONTROL_KEYS: symbol = Symbol("control_keys");
     public static DELETE: symbol = Symbol("delete");
+    public static MUTATION_EVENT_NAME: string = "mutation_event";
     private _rootElementName: string;
     private _defaultContainerElementName: string;
     private _elements: Map<string, HTMLElement>
@@ -39,6 +40,18 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     private static _controlEvents = new EventTarget();
     private _themedElements: Set<HTMLElement> = new Set<HTMLElement>();
     public static DELETE_ENTRY: symbol = Symbol("delete_entry");
+    private static _mutationObserver: MutationObserver = null;
+    private static _mutations: EventTarget = new EventTarget();
+    public static get mutations(): EventTarget { return Mrbr_UI_Controls_Control._mutations; }
+    public static set mutations(value: EventTarget) { Mrbr_UI_Controls_Control._mutations = value; }
+    public static MutationEvent = class extends CustomEvent<MutationRecord[]> {
+        constructor(mutationRecords: MutationRecord[]) {
+            super(Mrbr_UI_Controls_Control.MUTATION_EVENT_NAME, { detail: mutationRecords });
+        }
+    }
+
+
+
     private static _themeChangeHandle = window.matchMedia(Mrbr_UI_Controls_Control.themeMediaMatch)
         .addEventListener(
             Mrbr_UI_Controls_Control.windowThemeChangeEventName,
@@ -123,7 +136,12 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
                 return Array.from(target.keys());
             }
         });
-
+        if (self.$cls._mutationObserver === null) {
+            self.$cls._mutationObserver = new MutationObserver((mutations) => {
+                self.$cls.mutations.dispatchEvent(new self.$cls.MutationEvent(mutations));
+            });
+            self.$cls._mutationObserver.observe(document.body, { attributes: true, childList: true });
+        }
     }
     private _id: string;
     public get id(): string {
@@ -136,7 +154,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         this.id = value;
         return this;
     }
-    setDefaultConfiguration(...args: any[]): Mrbr_System_MrbrPromise<any> {
+    setDefaultConfig(...args: any[]): Mrbr_System_MrbrPromise<any> {
         return this.$promise.createResolved(null);
     }
     initialise(...args: any[]): Mrbr_System_MrbrPromise<any> {
@@ -267,10 +285,10 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     public set defaultContainerElementName(value: string) {
         this._defaultContainerElementName = value;
     }
-    public get defaultConfiguration(): Mrbr_UI_Controls_ControlDefaultsCollection {
+    public get defaultConfig(): Mrbr_UI_Controls_ControlDefaultsCollection {
         return this._defaultConfiguration;
     }
-    public set defaultConfiguration(value: Mrbr_UI_Controls_ControlDefaultsCollection) {
+    public set defaultConfig(value: Mrbr_UI_Controls_ControlDefaultsCollection) {
         this._defaultConfiguration = value;
     }
     public get customConfiguration(): Mrbr_UI_Controls_ControlDefaultsCollection {
@@ -280,7 +298,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         this._customConfiguration = value;
     }
     protected configuration(key: string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        let retVal = this.customConfiguration.index[key] || this.defaultConfiguration.index[key];
+        let retVal = this.customConfiguration.index[key] || this.defaultConfig.index[key];
         if (retVal) { return retVal; }
         throw new Error(`Configuration ${key} not found`)
     }
@@ -291,9 +309,14 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     set rootElementName(value: string) { this._rootElementName = value; }
     get rootElement(): HTMLElement { const self = this; return self.elements[self._rootElementName]; }
     set rootElement(value: HTMLElement) { const self = this; self.elements[self._rootElementName] = value; }
-    classes(targetElement: string | HTMLElement, action: Mrbr_UI_Controls_ClassActions, value: Array<string> | string, styleType?: Object): HTMLElement {
-        const self = this,
-            valueAsArray = (Array.isArray(value) ? value : [value]);
+    classes(targetElement: string | HTMLElement | Array<string> | Array<HTMLElement>, action: Mrbr_UI_Controls_ClassActions, value: Array<string> | string, styleType?: Object): HTMLElement | Array<HTMLElement> {
+        const self = this;
+        if (Array.isArray(targetElement)) {
+            const returnElements = [];
+            targetElement.forEach(entry => returnElements.push(self.classes(entry, action, value, styleType)))
+            return returnElements;
+        }
+        const valueAsArray = (Array.isArray(value) ? value : [value]);
         let _targetElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
 
         switch (action) {
@@ -367,8 +390,13 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         return _targetElement
     }
 
-    aria(targetElement: string | HTMLElement, datasetSettings: object): HTMLElement {
+    aria(targetElement: string | HTMLElement | Array<string> | Array<HTMLElement>, datasetSettings: object): HTMLElement | Array<HTMLElement> {
         const self = this;
+        if (Array.isArray(targetElement)) {
+            const returnElements = [];
+            targetElement.forEach(entry => returnElements.push(self.aria(entry, datasetSettings)))
+            return returnElements;
+        }
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
         if (datasetSettings) {
             Object.keys(datasetSettings).forEach(key => {
@@ -429,7 +457,9 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
             }
         });
     }
-    static createId(prefix: string) { return `${prefix}_${((new Date()).getTime())}_${Math.floor(Math.random() * 1000)}`; }
+    static createId(prefix: string) {
+        return `${prefix}_` + (new Date()).toISOString().replace(/[:z.-]/gmi, "").split("T").map(part => parseInt(part).toString(36)).concat((Math.floor(Math.random() * 10000)).toString(36)).join("_");
+    }
 
 }
 

@@ -18,7 +18,7 @@ export class Mrbr_UI_Bootstrap_Controls_Toolbar extends Mrbr_UI_Controls_Control
             initialisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Toolbar:initialise");
         super.initialise(args)
             .then(async result => {
-                await self.setDefaultConfiguration();
+                await self.setDefaultConfig();
                 await self.$mrbr.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);
                 self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.TOOLBAR_NAME)))
                 initialisePromise.resolve(self);
@@ -35,9 +35,9 @@ export class Mrbr_UI_Bootstrap_Controls_Toolbar extends Mrbr_UI_Controls_Control
         }
         self.classes(<HTMLElement>children[childrenLength - 1], self.$clsActions.Remove, self.$cls.DIVIDER_CLASS);
     }
-    setDefaultConfiguration(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Toolbar> {
+    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Toolbar> {
         const self = this;
-        self.defaultConfiguration.add(self.$cls.TOOLBAR_NAME, new self.$ctrlPrm()
+        self.defaultConfig.add(self.$cls.TOOLBAR_NAME, new self.$ctrlPrm()
             .Classes("btn-toolbar")
             .Attributes({ role: "toolbar" })
             .Aria({ "label": "Toolbar with button groups" })

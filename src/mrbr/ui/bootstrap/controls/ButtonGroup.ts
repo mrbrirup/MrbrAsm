@@ -74,7 +74,7 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Controls_Con
         super.initialise(args).then(() => {
             MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                 .then(_ => {
-                    self.setDefaultConfiguration();
+                    self.setDefaultConfig();
                     self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.BUTTON_GROUP_NAME)));
                     self.orientation = self._orientation;
                     self.buttonGroupSize = self._buttonGroupSize;
@@ -124,9 +124,9 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Controls_Con
         (self.groupItems.has(id)) && self.classes(self.groupItems.get(id), self.$clsActions.Add, "active");
 
     }
-    public setDefaultConfiguration(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_ButtonGroup> {
+    public setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_ButtonGroup> {
         const self = this;
-        self.defaultConfiguration.add(self.$cls.BUTTON_GROUP_NAME, new self.$ctrlPrm().Attributes({ role: "group" }));
+        self.defaultConfig.add(self.$cls.BUTTON_GROUP_NAME, new self.$ctrlPrm().Attributes({ role: "group" }));
         return self.$promise.createResolved("Mrbr_UI_Bootstrap_Controls_ButtonGroup:setDefaultConfiguration", self);
     }
 }

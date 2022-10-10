@@ -106,7 +106,7 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Controls_Control {
         self.defaultContainerElementName = self.rootElementName;
         super.initialise(args)
             .then(() => {
-                self.setDefaultConfiguration()
+                self.setDefaultConfig()
                     .then(() => {
                         let elements = [];
                         switch (self.cardStyle) {
@@ -151,12 +151,12 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Controls_Control {
     }
     public get imageLocation(): imageLocationType { return this._imageLocation; }
     public set imageLocation(value: imageLocationType) { this._imageLocation = value; }
-    setDefaultConfiguration(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Card> {
+    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Card> {
         const self = this;
-        self.defaultConfiguration.add(self.$cls.CARD_NAME, new self.$ctrlPrm().Classes("card"));
-        self.defaultConfiguration.add(self.$cls.CARD_ROW_NAME, new self.$ctrlPrm().Classes("row g-0"));
-        self.defaultConfiguration.add(self.$cls.CARD_IMAGE_HOLDER_NAME, new self.$ctrlPrm());
-        self.defaultConfiguration.add(self.$cls.CARD_BODY_HOLDER_NAME, new self.$ctrlPrm());
+        self.defaultConfig.add(self.$cls.CARD_NAME, new self.$ctrlPrm().Classes("card"));
+        self.defaultConfig.add(self.$cls.CARD_ROW_NAME, new self.$ctrlPrm().Classes("row g-0"));
+        self.defaultConfig.add(self.$cls.CARD_IMAGE_HOLDER_NAME, new self.$ctrlPrm());
+        self.defaultConfig.add(self.$cls.CARD_BODY_HOLDER_NAME, new self.$ctrlPrm());
 
         return self.$promise.createResolved("Mrbr_UI_Bootstrap_Controls_Card:setDefaultConfiguration", self);
     }
@@ -165,38 +165,38 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Controls_Control {
 
     createBody(id: string): HTMLDivElement {
         const self = this;
-        self.defaultConfiguration.has(self.$cls.CARD_BODY_NAME) === false
-            && self.defaultConfiguration.add(self.$cls.CARD_BODY_NAME, new self.$ctrlPrm().Classes("card-body"));
+        self.defaultConfig.has(self.$cls.CARD_BODY_NAME) === false
+            && self.defaultConfig.add(self.$cls.CARD_BODY_NAME, new self.$ctrlPrm().Classes("card-body"));
         return self.createElement(new self.$ctrlCfg(id, "div", self.configuration(self.$cls.CARD_BODY_NAME))) as HTMLDivElement;
     }
     createTitle(id: string, titleText: string): HTMLHeadElement {
         const self = this;
-        self.defaultConfiguration.has(self.$cls.CARD_TITLE_NAME) === false
-            && self.defaultConfiguration.add(self.$cls.CARD_TITLE_NAME, new self.$ctrlPrm().Classes("card-title"));
+        self.defaultConfig.has(self.$cls.CARD_TITLE_NAME) === false
+            && self.defaultConfig.add(self.$cls.CARD_TITLE_NAME, new self.$ctrlPrm().Classes("card-title"));
         const element = self.createElement(new self.$ctrlCfg(id, "h5", self.configuration(self.$cls.CARD_TITLE_NAME))) as HTMLHeadElement;
         element.textContent = titleText;
         return element;
     }
     createSubtitle(id: string, subtitleText: string): HTMLHeadElement {
         const self = this;
-        self.defaultConfiguration.has(self.$cls.CARD_SUBTITLE_NAME) === false
-            && self.defaultConfiguration.add(self.$cls.CARD_SUBTITLE_NAME, new self.$ctrlPrm().Classes("card-subtitle"));
+        self.defaultConfig.has(self.$cls.CARD_SUBTITLE_NAME) === false
+            && self.defaultConfig.add(self.$cls.CARD_SUBTITLE_NAME, new self.$ctrlPrm().Classes("card-subtitle"));
         const element = self.createElement(new self.$ctrlCfg(id, "h6", self.configuration(self.$cls.CARD_SUBTITLE_NAME))) as HTMLHeadElement;
         element.textContent = subtitleText;
         return element;
     }
     createText(id: string, text: string): HTMLParagraphElement {
         const self = this;
-        self.defaultConfiguration.has(self.$cls.CARD_TEXT_NAME) === false
-            && self.defaultConfiguration.add(self.$cls.CARD_TEXT_NAME, new self.$ctrlPrm().Classes("card-text"));
+        self.defaultConfig.has(self.$cls.CARD_TEXT_NAME) === false
+            && self.defaultConfig.add(self.$cls.CARD_TEXT_NAME, new self.$ctrlPrm().Classes("card-text"));
         const element = self.createElement(new self.$ctrlCfg(id, "p", self.configuration(self.$cls.CARD_TEXT_NAME).Id(self.$ctrl.createId("p")) )) as HTMLParagraphElement;        
         element.textContent = text;
         return element;
     }
     createLink(id: string, href: string, text: string): HTMLAnchorElement {
         const self = this;
-        self.defaultConfiguration.has(self.$cls.CARD_LINK_NAME) === false
-            && self.defaultConfiguration.add(self.$cls.CARD_LINK_NAME, new self.$ctrlPrm().Classes("card-link"));
+        self.defaultConfig.has(self.$cls.CARD_LINK_NAME) === false
+            && self.defaultConfig.add(self.$cls.CARD_LINK_NAME, new self.$ctrlPrm().Classes("card-link"));
         const element = self.createElement(new self.$ctrlCfg(id, "a", self.configuration(self.$cls.CARD_LINK_NAME))) as HTMLAnchorElement;
         element.href = href;
         element.textContent = text;
@@ -207,8 +207,8 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Controls_Control {
         const self = this,
             classes = [];
         (location === self.$cls.imageLocations.LEFT) && classes.push("img-fluid", "rounded-start") || classes.push(location === self.$cls.imageLocations.TOP ? "card-img-top" : "card-img-bottom");
-        self.defaultConfiguration.has(self.$cls.CARD_IMAGE_NAME) === false
-            && self.defaultConfiguration.add(self.$cls.CARD_IMAGE_NAME, new self.$ctrlPrm().Classes(classes));
+        self.defaultConfig.has(self.$cls.CARD_IMAGE_NAME) === false
+            && self.defaultConfig.add(self.$cls.CARD_IMAGE_NAME, new self.$ctrlPrm().Classes(classes));
         const element = self.createElement(new self.$ctrlCfg(id, "img", self.configuration(self.$cls.CARD_IMAGE_NAME))) as HTMLImageElement;
         element.src = source;
         element.alt = alt;
@@ -216,16 +216,16 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Controls_Control {
     }
     createHeader(id: string, text: string): HTMLDivElement {
         const self = this;
-        self.defaultConfiguration.has(self.$cls.CARD_HEADER_NAME) === false
-            && self.defaultConfiguration.add(self.$cls.CARD_HEADER_NAME, new self.$ctrlPrm().Classes("card-header"));
+        self.defaultConfig.has(self.$cls.CARD_HEADER_NAME) === false
+            && self.defaultConfig.add(self.$cls.CARD_HEADER_NAME, new self.$ctrlPrm().Classes("card-header"));
         const element = self.createElement(new self.$ctrlCfg(id, "div", self.configuration(self.$cls.CARD_HEADER_NAME))) as HTMLDivElement;
         element.textContent = text;
         return element;
     }
     createFooter(id: string, text: string): HTMLDivElement {
         const self = this;
-        self.defaultConfiguration.has(self.$cls.CARD_FOOTER_NAME) === false
-            && self.defaultConfiguration.add(self.$cls.CARD_FOOTER_NAME, new self.$ctrlPrm().Classes("card-footer"));
+        self.defaultConfig.has(self.$cls.CARD_FOOTER_NAME) === false
+            && self.defaultConfig.add(self.$cls.CARD_FOOTER_NAME, new self.$ctrlPrm().Classes("card-footer"));
         const element = self.createElement(new self.$ctrlCfg(id, "div", self.configuration(self.$cls.CARD_FOOTER_NAME))) as HTMLDivElement;
         element.textContent = text;
         return element;

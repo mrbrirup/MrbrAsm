@@ -100,11 +100,17 @@ export class Mrbr_UI_Controls_ControlConfig {
         return this;
     }
     public Aria(value: object): Mrbr_UI_Controls_ControlConfig {
-        this.aria = value;
+        if (!this.aria) {
+            this.aria = {};
+        }
+        Object.assign(this.aria, value);
         return this;
     }
     public Styles(value: object): Mrbr_UI_Controls_ControlConfig {
-        this.styles = value;
+        if (!this.styles) {
+            this.styles = {};
+        }
+        Object.assign(this.styles, value);        
         return this;
     }
     public Properties(value: object): Mrbr_UI_Controls_ControlConfig {
@@ -124,15 +130,26 @@ export class Mrbr_UI_Controls_ControlConfig {
         return this;
     }
     public Classes(value: Array<string> | string): Mrbr_UI_Controls_ControlConfig {
-        this.classes = value;
+        value = value || "";
+        let _value = Array.isArray(value) ? value : value.split(" ").map(_val => _val.trim());
+        let _classes = this.classes || [];
+        let currentClasses = Array.isArray(_classes) ? _classes : _classes.split(" ").map(_val => _val.trim());
+        this.classes = this.classes ? [...new Set([...currentClasses, ..._value])] : _value;
         return this;
     }
     public Attributes(value: object): Mrbr_UI_Controls_ControlConfig {
+        if (!this.attributes) {
+            this.attributes = {};
+        }
+        Object.assign(this.attributes, value);
         this.attributes = value;
         return this;
     }
     public Data(value: object): Mrbr_UI_Controls_ControlConfig {
-        this.data = value;
+        if (!this.data) {
+            this.data = {};
+        }
+        Object.assign(this.data, value);
         return this;
     }
     public Children(value: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[]): Mrbr_UI_Controls_ControlConfig {

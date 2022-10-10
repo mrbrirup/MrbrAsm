@@ -78,7 +78,7 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
         if (!value) { return; }
         const self = this;
         if (!self.elements[self.$cls.CONTEXT_TEXT_NAME]) {
-            self.createElement(new self.$ctrlCfg(self.$cls.CONTEXT_TEXT_NAME, "span", self.defaultConfiguration.get(self.$cls.CONTEXT_TEXT_NAME)));
+            self.createElement(new self.$ctrlCfg(self.$cls.CONTEXT_TEXT_NAME, "span", self.defaultConfig.get(self.$cls.CONTEXT_TEXT_NAME)));
             self.rootElement.appendChild(self.elements[self.$cls.CONTEXT_TEXT_NAME]);
         }
         self.elements[self.$cls.CONTEXT_TEXT_NAME].textContent = value;
@@ -119,10 +119,10 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
                 self.$mrbr.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(_ => {
 
-                        self.setDefaultConfiguration();
-                        self.createElement(new self.$ctrlCfg(self.rootElementName, "span", self.defaultConfiguration.get(self.$cls.BADGE_NAME))
+                        self.setDefaultConfig();
+                        self.createElement(new self.$ctrlCfg(self.rootElementName, "span", self.defaultConfig.get(self.$cls.BADGE_NAME))
                             .Children([
-                                new self.$ctrlCfg(self.$cls.BADGE_TEXT_NAME, "span", self.defaultConfiguration.get(self.$cls.BADGE_TEXT_NAME))
+                                new self.$ctrlCfg(self.$cls.BADGE_TEXT_NAME, "span", self.defaultConfig.get(self.$cls.BADGE_TEXT_NAME))
                             ])
                         )
                         self.badgeText = self._badgeText;
@@ -143,11 +143,11 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
     private logMutation(mutation: any) {
         console.log(mutation);
     }
-    setDefaultConfiguration(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Badge> {
+    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Badge> {
         const self = this;
-        self.defaultConfiguration.add(self.$cls.BADGE_NAME, new self.$ctrlPrm().Classes(["badge"]));
-        self.defaultConfiguration.add(self.$cls.BADGE_TEXT_NAME, new self.$ctrlPrm());
-        self.defaultConfiguration.add(self.$cls.CONTEXT_TEXT_NAME, new self.$ctrlPrm().Classes(["visually-hidden"]));
+        self.defaultConfig.add(self.$cls.BADGE_NAME, new self.$ctrlPrm().Classes(["badge"]));
+        self.defaultConfig.add(self.$cls.BADGE_TEXT_NAME, new self.$ctrlPrm());
+        self.defaultConfig.add(self.$cls.CONTEXT_TEXT_NAME, new self.$ctrlPrm().Classes(["visually-hidden"]));
 
         return self.$promise.createResolved("Mrbr_UI_Bootstrap_Controls_Badge:setDefaultConfiguration", self);
 

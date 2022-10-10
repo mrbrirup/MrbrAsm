@@ -24,7 +24,7 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
             initialisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_AccordionItem:initialise");
         super.initialise(args)
             .then(result => {
-                self.setDefaultConfiguration();
+                self.setDefaultConfig();
                 const manifestPromise = self.$mrbr.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);
                 manifestPromise.then(manifest => {
                     const accordionItemHeadingId = self.$ctrl.createId("accordion_item_heading"),
@@ -97,21 +97,21 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
     setParent(parentId: string) {
         this.elements[this.$cls.ACCORDION_COLLAPSE].dataset["bsParent"] = `#${parentId}`;
     }
-    setDefaultConfiguration(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_AccordionItem> {
+    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_AccordionItem> {
         const self = this;
-        self.defaultConfiguration.add(self.$cls.ACCORDION_ITEM, new self.$ctrlPrm()
+        self.defaultConfig.add(self.$cls.ACCORDION_ITEM, new self.$ctrlPrm()
             .Classes(["accordion-item"])
         )
-        self.defaultConfiguration.add(self.$cls.ACCORDION_HEADER_NAME, new self.$ctrlPrm()
+        self.defaultConfig.add(self.$cls.ACCORDION_HEADER_NAME, new self.$ctrlPrm()
             .Classes(["accordion-header"])
         )
-        self.defaultConfiguration.add(self.$cls.ACCORDION_TOGGLE_NAME, new self.$ctrlPrm()
+        self.defaultConfig.add(self.$cls.ACCORDION_TOGGLE_NAME, new self.$ctrlPrm()
             .Classes(["accordion-button collapsed"])
         )
-        self.defaultConfiguration.add(self.$cls.ACCORDION_COLLAPSE, new self.$ctrlPrm()
+        self.defaultConfig.add(self.$cls.ACCORDION_COLLAPSE, new self.$ctrlPrm()
             .Classes(["accordion-collapse collapse"])
         )
-        self.defaultConfiguration.add(self.$cls.ACCORDION_BODY, new self.$ctrlPrm()
+        self.defaultConfig.add(self.$cls.ACCORDION_BODY, new self.$ctrlPrm()
             .Classes(["accordion-body"])
         )
         return self.$promise.createResolved("Mrbr_UI_Bootstrap_Controls_AccordionItem:setDefaultConfiguration", self);
