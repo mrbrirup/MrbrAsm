@@ -153,7 +153,8 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
                     prevText = document.createElement("span"),
                     nextIcon = document.createElement("span"),
                     nextText = document.createElement("span");
-                self.classes([prevIcon, nextIcon], self.$clsActions.Add, "carousel-control-prev-icon");
+                self.classes(prevIcon, self.$clsActions.Add, "carousel-control-prev-icon");
+                self.classes(nextIcon, self.$clsActions.Add, "carousel-control-next-icon");
                 self.aria([prevIcon, nextIcon], { hidden: "true" });
                 self.classes([prevText, nextText], self.$clsActions.Add, "visually-hidden");
                 prevText.innerText = "Previous";
