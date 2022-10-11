@@ -137,10 +137,8 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
             }
         });
         if (self.$cls._mutationObserver === null) {
-            self.$cls._mutationObserver = new MutationObserver((mutations) => {
-                self.$cls.mutations.dispatchEvent(new self.$cls.MutationEvent(mutations));
-            });
-            self.$cls._mutationObserver.observe(document.body, { attributes: true, childList: true });
+            self.$cls._mutationObserver = new MutationObserver((mutations) => { self.$cls.mutations.dispatchEvent(new self.$cls.MutationEvent(mutations)); });
+            self.$cls._mutationObserver.observe(document.body, { attributes: false, childList: true });
         }
     }
     private _id: string;
