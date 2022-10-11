@@ -187,12 +187,12 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
         if (controlBoxEvents.maximise === detail) { self.maximiseDialog(event); }
         else if (controlBoxEvents.fullScreen === detail) {
             self.fullScreenDialog();
-            self.events[Mrbr_UI_Bootstrap_Forms_Dialog.DIALOG_FULLSCREEN_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
-                eventName: "fullscreenchange",
-                eventTarget: document,
-                context: self,
-                event: self.exitFullScreenHandler
-            }
+            self.events[Mrbr_UI_Bootstrap_Forms_Dialog.DIALOG_FULLSCREEN_EVENT_NAME] = new Mrbr_System_Events_EventHandler(
+                "fullscreenchange",
+                document,
+                self.exitFullScreenHandler,
+                self
+            )
         }
 
     }
@@ -285,12 +285,12 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
         controlBox.fullScreenBox = self.fullScreenBox;
         await controlBox.initialise();
         self.elements[Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME].appendChild(self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.CONTROL_BOX_CONTROL_NAME].rootElement)
-        self.events[Mrbr_UI_Bootstrap_Forms_ControlBox.CONTROL_BOX_CLICK_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
-            context: self,
-            eventName: Mrbr_UI_Bootstrap_Forms_ControlBox.CONTROL_BOX_CLICK_EVENT_NAME,
-            eventTarget: self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.CONTROL_BOX_CONTROL_NAME],
-            event: self.controlBoxClick
-        }
+        self.events[Mrbr_UI_Bootstrap_Forms_ControlBox.CONTROL_BOX_CLICK_EVENT_NAME] = new Mrbr_System_Events_EventHandler(
+            Mrbr_UI_Bootstrap_Forms_ControlBox.CONTROL_BOX_CLICK_EVENT_NAME,
+            self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.CONTROL_BOX_CONTROL_NAME],
+            self.controlBoxClick,
+            self
+        )
 
     }
     addDragHandle() {
@@ -299,12 +299,12 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
         let titlebar = self.elements[Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME];
         if (!(titlebar) || !self.rootElement || !self.parentElement) { return; }
         self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.DRAG_HANDLE_CONTROL_NAME] = new Mrbr_UI_Controls_Handles_Drag(titlebar, self.rootElement, self.parentElement);
-        self.events[Mrbr_UI_Controls_Handles_Drag.DRAGGING_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
-            context: self,
-            eventName: Mrbr_UI_Controls_Handles_Drag.DRAGGING_EVENT_NAME,
-            eventTarget: self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.DRAG_HANDLE_CONTROL_NAME],
-            event: self.dragDialog
-        }
+        self.events[Mrbr_UI_Controls_Handles_Drag.DRAGGING_EVENT_NAME] = new Mrbr_System_Events_EventHandler(
+            Mrbr_UI_Controls_Handles_Drag.DRAGGING_EVENT_NAME,
+            self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.DRAG_HANDLE_CONTROL_NAME],
+            self.dragDialog,
+            self
+        )
     }
 
     dragDialog(event: CustomEvent) {
@@ -328,12 +328,12 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
         if (!self.rootElement || !self.parentElement) { return; }
         if (self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.RESIZE_HANDLE_CONTROL_NAME] === null) {
             self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.RESIZE_HANDLE_CONTROL_NAME] = new Mrbr_UI_Controls_Handles_Resize(self.rootElement, self.parentElement);
-            self.events[Mrbr_UI_Controls_Handles_Resize.RESIZING_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
-                eventName: Mrbr_UI_Controls_Handles_Resize.RESIZING_EVENT_NAME,
-                eventTarget: self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.RESIZE_HANDLE_CONTROL_NAME],
-                event: self.resizeHandle_resizing,
-                context: self
-            }
+            self.events[Mrbr_UI_Controls_Handles_Resize.RESIZING_EVENT_NAME] = new Mrbr_System_Events_EventHandler(
+                Mrbr_UI_Controls_Handles_Resize.RESIZING_EVENT_NAME,
+                self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.RESIZE_HANDLE_CONTROL_NAME],
+                self.resizeHandle_resizing,
+                self
+            )
         }
     }
     removeResizeHandles() {

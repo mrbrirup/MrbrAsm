@@ -39,12 +39,12 @@ export class Mrbr_UI_Bootstrap_Controls_CloseButton extends Mrbr_UI_Controls_Con
             self.createElement(new self.$ctrlCfg(self.rootElementName, "button", self.defaultConfig.get(self.$cls.CLOSE_BUTTON_NAME)));
             self.disabled = self._disabled;
             self.whiteVariant = self._whiteVariant;
-            self.events[self.$cls.CLOSE_BUTTON_CLICK_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
-                eventName: "click",
-                event: self.closeButtonClick_handler,
-                context: self,
-                eventTarget: self.rootElement
-            }
+            self.events[self.$cls.CLOSE_BUTTON_CLICK_EVENT_NAME] = new Mrbr_System_Events_EventHandler(
+                "click",
+                self.rootElement,
+                self.closeButtonClick_handler,
+                self
+            );
             initalisePromise.resolve(self);
         });
         return initalisePromise;

@@ -105,12 +105,12 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
                         self.createElement(new self.$ctrlCfg(self.rootElementName, "nav", self.configuration(self.$cls.BREADCRUMB_NAV_NAME))
                             .Children([new self.$ctrlCfg(self.defaultContainerElementName, "ol", self.configuration(self.$cls.BREADCRUMB_LIST_NAME))]
                             ));
-                        self.events[self.$cls.BREADCRUMB_CLICK_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
-                            eventName: "click",
-                            eventTarget: self.rootElement,
-                            event: self.crumbClick_handler,
-                            context: self
-                        }
+                        self.events[self.$cls.BREADCRUMB_CLICK_EVENT_NAME] = new Mrbr_System_Events_EventHandler(
+                            "click",
+                            self.rootElement,
+                            self.crumbClick_handler,
+                            self
+                        )
                         initlialisepromise.resolve(self);
                     })
             })

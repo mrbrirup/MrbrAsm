@@ -79,12 +79,12 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Controls_Con
                     self.orientation = self._orientation;
                     self.buttonGroupSize = self._buttonGroupSize;
                     self.ariaLabel = self._ariaLabel;
-                    self.events[self.$cls.CLICK_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
-                        eventName: "click",
-                        eventTarget: self.rootElement,
-                        event: self.groupClick_handler,
-                        context: self
-                    }
+                    self.events[self.$cls.CLICK_EVENT_NAME] = new Mrbr_System_Events_EventHandler(
+                        "click",
+                        self.rootElement,
+                        self.groupClick_handler,
+                        self
+                    )
                     initalisePromise.resolve(self);
                 })
         })

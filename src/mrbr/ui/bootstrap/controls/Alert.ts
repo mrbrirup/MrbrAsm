@@ -73,12 +73,12 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Controls_Control {
                         self.alertContext = self._alertContext;
                         self.showCloseButton = self._showCloseButton;
 
-                        self.events[self.$cls.ALERT_CLOSING_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
-                            context: self,
-                            eventName: self.$cls.ALERT_CLOSING_EVENT_NAME,
-                            eventTarget: self.rootElement,
-                            event: self.alertClosing
-                        }
+                        self.events[self.$cls.ALERT_CLOSING_EVENT_NAME] = new Mrbr_System_Events_EventHandler(
+                            self.$cls.ALERT_CLOSING_EVENT_NAME,
+                            self.rootElement,
+                            self.alertClosing,
+                            self
+                        )
                         initialisePromise.resolve(self);
                     })
             })

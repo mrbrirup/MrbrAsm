@@ -101,12 +101,12 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
         self.minimiseBox = self.minimiseBox;
         self.fullScreenBox = self.fullScreenBox;
         self.closeBox = self.closeBox;
-        self.events[Mrbr_UI_Bootstrap_Forms_ControlBox.CONTROL_BOX_CLICK_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
-            eventName: "click",
-            eventTarget: self.rootElement,
-            event: self.controlBoxClick,
-            context: self
-        };
+        self.events[Mrbr_UI_Bootstrap_Forms_ControlBox.CONTROL_BOX_CLICK_EVENT_NAME] = new Mrbr_System_Events_EventHandler(
+            "click",
+            self.rootElement,
+            self.controlBoxClick,
+            self
+        )
     }
 
     sortControlBoxControls() {

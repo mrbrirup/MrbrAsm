@@ -111,7 +111,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
                 }
                 if (!value) { return target.delete(name); }
                 if (!value.handler) {
-                    value.handler = value.event.bind((value.context || value.eventTarget));
+                    value.handler = value.eventHandler.bind((value.context || value.eventTarget));
                     (value.options !== undefined) ?
                         value.eventTarget.addEventListener(value.eventName, value.handler, value.options) :
                         value.eventTarget.addEventListener(value.eventName, value.handler);
@@ -165,12 +165,12 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
             .then(manifest => {
                 self._defaultConfiguration = new self.$ctrlCol();
                 self._customConfiguration = new self.$ctrlCol();
-                self.events[self.$themeChange.themeChangeEvent] = <Mrbr_System_Events_EventHandler>{
-                    context: self,
-                    eventName: self.$themeChange.themeChangeEvent,
-                    eventTarget: self.controlEvents,
-                    event: self.themeChanged
-                }
+                self.events[self.$themeChange.themeChangeEvent] = new Mrbr_System_Events_EventHandler(
+                    self.$themeChange.themeChangeEvent,
+                    self.controlEvents,
+                    self.themeChanged,
+                    self
+                )
                 initialisePromise.resolve(self);
             })
             .catch(error => {

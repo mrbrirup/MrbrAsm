@@ -347,12 +347,12 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
                 let [first] = self.carouselItems.keys();
                 self.setActiveItem(first);
             }
-            self.events[`carousel_${self.$cls.MUTATION_EVENT_NAME}`] = <Mrbr_System_Events_EventHandler>{
-                eventName: self.$cls.MUTATION_EVENT_NAME,
-                eventTarget: self.$cls.mutations,
-                event: self.mutation_handler,
-                context: self
-            };
+            self.events[`carousel_${self.$cls.MUTATION_EVENT_NAME}`] = new Mrbr_System_Events_EventHandler(
+                self.$cls.MUTATION_EVENT_NAME,
+                self.$cls.mutations,
+                self.mutation_handler,
+                self
+            );
             initalisePromise.resolve(self);
         });
         return initalisePromise;
@@ -372,18 +372,23 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
                         self.bootstrapCarousel = new MrbrBase.mrbrInstance.host["bootstrap"].Carousel(`#${self.rootElement.id}`)
                         nodedAdded = true;
                         (self.autoPlay) && self.bootstrapCarousel.cycle();
-                        self.events[`slid.bs.carousel`] = <Mrbr_System_Events_EventHandler>{
-                            eventName: "slid.bs.carousel",
-                            eventTarget: self.rootElement,
-                            event: self.carouselSlid_handler,
-                            context: self
-                        };
-                        self.events[`slide.bs.carousel`] = <Mrbr_System_Events_EventHandler>{
-                            eventName: "slid.bs.carousel",
-                            eventTarget: self.rootElement,
-                            event: self.carouselSlide_handler,
-                            context: self
-                        };
+                        self.events[`slid.bs.carousel`] = new Mrbr_System_Events_EventHandler(
+                            "slid.bs.carousel",
+                            self.rootElement,
+                            self.carouselSlid_handler,
+                            self
+                        );
+                        //     eventName: "slid.bs.carousel",
+                        //     eventTarget: self.rootElement,
+                        //     eventHandler: self.carouselSlid_handler,
+                        //     context: self
+                        // };
+                        self.events[`slide.bs.carousel`] = new Mrbr_System_Events_EventHandler(
+                            "slide.bs.carousel",
+                            self.rootElement,
+                            self.carouselSlide_handler,
+                            self
+                        )
                         break;
                     }
                 }

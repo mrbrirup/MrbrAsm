@@ -45,7 +45,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
     } as const
     //#endregion enums
     //#region aliases
-    
+
     override get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Button { return Mrbr_UI_Bootstrap_Controls_Button; }
     //#endregion aliases
     //#region fields
@@ -215,12 +215,12 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
                     .then(_ => {
 
                         self.createElement(new self.$ctrlCfg(self.rootElementName, self.elementType, new self.$ctrlPrm().Classes("btn")));
-                        self.events[self.$cls.CLICK_EVENT_NAME] = <Mrbr_System_Events_EventHandler>{
-                            eventName: "click",
-                            eventTarget: self.rootElement,
-                            event: self.buttonClick_handler,
-                            context: self
-                        };
+                        self.events[self.$cls.CLICK_EVENT_NAME] = new Mrbr_System_Events_EventHandler(
+                            "click",
+                            self.rootElement,
+                            self.buttonClick_handler,
+                            self
+                        );
                         self.text = self._buttonText;
                         self.colour = self._colour;
                         self.size = self._size;

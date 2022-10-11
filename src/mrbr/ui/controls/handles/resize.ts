@@ -75,18 +75,18 @@ export class Mrbr_UI_Controls_Handles_Resize extends Mrbr_UI_Controls_Control {
                         .Classes([`mrbr-dialog-handle`, `mrbr-dialog-handle-${handle}`])
                         .Properties({ draggable: false })
                 ))
-                self.events[`mrbr-dialog-handle-${handle}_mousedown`] = <Mrbr_System_Events_EventHandler>{
-                    event: self.handle_mouseDown,
-                    eventName: "mousedown",
-                    context: self,
-                    eventTarget: controlHandle
-                }
-                self.events[`mrbr-dialog-handle-${handle}_touchstart`] = <Mrbr_System_Events_EventHandler>{
-                    event: self.handle_touchDown,
-                    eventName: "touchstart",
-                    context: self,
-                    eventTarget: controlHandle
-                }
+                self.events[`mrbr-dialog-handle-${handle}_mousedown`] = new Mrbr_System_Events_EventHandler(
+                    "mousedown",
+                    controlHandle,
+                    self.handle_mouseDown,
+                    self,
+                )
+                self.events[`mrbr-dialog-handle-${handle}_touchstart`] = new Mrbr_System_Events_EventHandler(
+                    "touchstart",
+                    controlHandle,
+                    self.handle_touchDown,
+                    self
+                )
                 self._resizeTarget.appendChild(controlHandle)
                 return controlHandle;
             })
@@ -115,30 +115,30 @@ export class Mrbr_UI_Controls_Handles_Resize extends Mrbr_UI_Controls_Control {
             self.resizeTarget.offsetWidth,
             self.resizeTarget.offsetHeight
         )
-        self.events[`window_handle_mousemove`] = <Mrbr_System_Events_EventHandler>{
-            event: self.handle_mouseMove,
-            eventName: "mousemove",
-            context: self,
-            eventTarget: window
-        }
-        self.events[`window_handle_mouseup`] = <Mrbr_System_Events_EventHandler>{
-            event: self.handle_mouseUp,
-            eventName: "mouseup",
-            context: self,
-            eventTarget: window
-        }
-        self.events["container_handle_mousemove"] = <Mrbr_System_Events_EventHandler>{
-            event: self.handle_mouseMove,
-            eventName: "mousemove",
-            context: self,
-            eventTarget: self.resizeTarget
-        }
-        self.events[`activehandle_mouseup`] = <Mrbr_System_Events_EventHandler>{
-            event: self.handle_mouseUp,
-            eventName: "mouseup",
-            context: self,
-            eventTarget: self._activeHandle
-        }
+        self.events[`window_handle_mousemove`] = new Mrbr_System_Events_EventHandler(
+            "mousemove",
+            window,
+            self.handle_mouseMove,
+            self,
+        )
+        self.events[`window_handle_mouseup`] = new Mrbr_System_Events_EventHandler(
+            "mouseup",
+            window,
+            self.handle_mouseUp,
+            self
+        )
+        self.events["container_handle_mousemove"] = new Mrbr_System_Events_EventHandler(
+            "mousemove",
+            self.resizeTarget,
+            self.handle_mouseMove,
+            self,
+        )
+        self.events[`activehandle_mouseup`] = new Mrbr_System_Events_EventHandler(
+            "mouseup",
+            self._activeHandle,
+            self.handle_mouseUp,
+            self
+        )
         self.createElement(new Mrbr_UI_Controls_ControlConfig("contentContainer_overlay", "div",
             new Mrbr_UI_Controls_ControlConfigOptionalParameters()
                 .Classes("w-100 h-100")
@@ -231,18 +231,18 @@ export class Mrbr_UI_Controls_Handles_Resize extends Mrbr_UI_Controls_Control {
         touchEvent.stopPropagation();
         touchEvent.cancelable && touchEvent.preventDefault();
         this.resizeTarget.classList.add("mrbr-dialog-handle-drag")
-        self.events["window_touchmove"] = <Mrbr_System_Events_EventHandler>{
-            event: self.touchMove,
-            eventName: "touchmove",
-            context: self,
-            eventTarget: window
-        };
-        self.events[`window_touchend`] = <Mrbr_System_Events_EventHandler>{
-            event: self.handle_touchDown,
-            eventName: "touchend",
-            context: self,
-            eventTarget: window
-        }
+        self.events["window_touchmove"] = new Mrbr_System_Events_EventHandler(
+            "touchmove",
+            window,
+            self.touchMove,
+            self
+        )
+        self.events[`window_touchend`] = new Mrbr_System_Events_EventHandler(
+            "touchend",
+            window,
+            self.handle_touchDown,
+            self
+        )
         self.newBounds.x = touch.pageX;
         self.newBounds.y = touch.pageY;
         self._activeHandle = (<HTMLElement>touchEvent.target);
