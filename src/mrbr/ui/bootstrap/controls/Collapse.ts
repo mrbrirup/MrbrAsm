@@ -98,7 +98,6 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Contro
         const self = this;
         if (value) {
             if ((self._targetElements?.length || 0) === 0) { self._targetElements = []; }
-            console.log(value)
             if (!Array.isArray(value)) {
                 if (value instanceof HTMLElement) { self._targetElements.push(value); }
                 else if (typeof value === "string") { self._targetElements.push(document.getElementById(value)); }
@@ -121,9 +120,6 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Contro
             }
             self.setTargetEvents();
         }
-
-
-        console.log(self._targetElements)
     }
     public get horizontal(): boolean { return this._horizontal; }
     public set horizontal(value: boolean) {
@@ -185,7 +181,6 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Contro
     }
     private rootElementAdded() {
         const self = this;
-        console.log("rootElementAdded: ", self.rootElement)
         if (self.events[`carousel_${self.$cls.MUTATION_EVENT_NAME}`]) { self.events[`carousel_${self.$cls.MUTATION_EVENT_NAME}`].remove(); }
         self.targetElements = self._targetElements;
         self.startOpen = self._startOpen;

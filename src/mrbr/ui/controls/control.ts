@@ -300,6 +300,9 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         if (retVal) { return retVal; }
         throw new Error(`Configuration ${key} not found`)
     }
+    protected hasConfiguration(key: string): boolean {
+        return this.customConfiguration.index[key] || this.defaultConfig.index[key] ? true : false;
+    }
     get elements() { return this._elements }
     get controls() { return this._controls }
     get events(): Map<string, Mrbr_System_Events_EventHandler> { return this._events }
