@@ -11,6 +11,7 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     private _children?: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[];
     private _lightTheme?: Array<string> | string;
     private _darkTheme?: Array<string> | string;
+    private _template: string;
     constructor() {
         super();
     }
@@ -74,6 +75,12 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     public set darkTheme(value: Array<string> | string) {
         this._darkTheme = value;
     }
+    public get template(): string {
+        return this._template;
+    }
+    public set template(value: string) {
+        this._template = value;
+    }
     public Aria(aria: object): Mrbr_UI_Controls_ControlConfigOptionalParameters {
         this.aria = aria;
         return this;
@@ -112,6 +119,10 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     }
     public DarkTheme(value: Array<string> | string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
         this.darkTheme = value;
+        return this;
+    }
+    public Template(value: string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
+        this.template = value;
         return this;
     }
 }

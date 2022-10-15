@@ -79,6 +79,7 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
         false: "false",
         default: "default"
     } as const;
+    private _alignment: dropdownAlignmentType[keyof dropdownAlignmentType] = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownAlignments.default;
     private _buttonColour: buttonColourType[keyof buttonColourType] = Mrbr_UI_Bootstrap_Controls_Dropdown.buttonColours.primary;
     private _buttonText: string = "Dropdown";
     private _darkDropdown: boolean = false;
@@ -87,12 +88,9 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
     private _autoClose: autoClosingType[keyof autoClosingType] = Mrbr_UI_Bootstrap_Controls_Dropdown.autoClosing.true;
     private _isSubMenu: boolean = false;
     private _bootstrapDown: any = null;;
-    public get isSubMenu(): boolean {
-        return this._isSubMenu;
-    }
-    public set isSubMenu(value: boolean) {
-        this._isSubMenu = value;
-    }
+    private _dropdownPosition: dropdownPostionType[keyof dropdownPostionType] = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownPositions.default;
+    public get isSubMenu(): boolean { return this._isSubMenu; }
+    public set isSubMenu(value: boolean) { this._isSubMenu = value; }
     public get autoClose(): autoClosingType[keyof autoClosingType] { return this._autoClose; }
     public set autoClose(value: autoClosingType[keyof autoClosingType]) {
         const self = this,
@@ -102,7 +100,6 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
         }
         this._autoClose = value;
     }
-
     public get buttonSize(): dropdownButtonSizeType[keyof dropdownButtonSizeType] { return this._buttonSize; }
     public set buttonSize(value: dropdownButtonSizeType[keyof dropdownButtonSizeType]) {
         const self = this,
@@ -114,8 +111,6 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
         this._buttonSize = value;
     }
     public get menuStyle(): dropdownMenuStyle[keyof dropdownMenuStyle] { return this._menuStyle; }
-
-    private _alignment: dropdownAlignmentType[keyof dropdownAlignmentType] = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownAlignments.default;
     public get alignment(): dropdownAlignmentType[keyof dropdownAlignmentType] { return this._alignment; }
     public set alignment(value: dropdownAlignmentType[keyof dropdownAlignmentType]) {
         const self = this,
@@ -131,8 +126,6 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
         }
         self._alignment = value;
     }
-
-    private _dropdownPosition: dropdownPostionType[keyof dropdownPostionType] = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownPositions.default;
     public get dropdownPosition(): dropdownPostionType[keyof dropdownPostionType] { return this._dropdownPosition; }
     public set dropdownPosition(value: dropdownPostionType[keyof dropdownPostionType]) {
         const self = this,
@@ -143,7 +136,6 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
         }
         self._dropdownPosition = value;
     }
-
     public get darkDropdown(): boolean { return this._darkDropdown; }
     public set darkDropdown(value: boolean) {
         const self = this,
@@ -155,7 +147,13 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
     public set buttonText(value: string) {
         const self = this,
             button = self.isSubMenu ? self.elements[self.$cls.DROPDOWN_SUBMENU_LINK_NAME] : self.elements[self.$cls.DROPDOWN_BUTTON_NAME];
-        (button && value !== button.innerText) && (button.innerText = value);
+        if (self.isSubMenu) {
+            let textElement = document.querySelector(`${self.$cls.DROPDOWN_SUBMENU_LINK_NAME} > div.mrbr-info-text`)
+            textElement && (textElement.textContent = value);
+        }
+        else {
+            (button && value !== button.innerText) && (button.innerText = value);
+        }
         self._buttonText = value;
     }
     public get buttonColour(): buttonColourType[keyof buttonColourType] { return this._buttonColour; }
@@ -184,13 +182,23 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
             if (self.isSubMenu === true) {
                 //.Classes(self._buttonColour));
 
-                let buttonLink = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.DROPDOWN_SUBMENU_LINK_NAME, "a", self.configuration(self.$cls.DROPDOWN_SUBMENU_LINK_NAME))),
-                    menuItemContainer = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME, (self.menuStyle === self.$cls.menuStyles.default ? "ul" : "div"), self.configuration(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME)));
+                let buttonLink = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.DROPDOWN_SUBMENU_LINK_NAME, "a", self.configuration(self.$cls.DROPDOWN_SUBMENU_LINK_NAME)
+                    .Template(`<div class="d-flex" >` +
+                        `<div class="mrbr-info-text flex-grow-1">Dropdown</div>` +
+                        `<div class="flex-shrink-0" >` +
+                        `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox = "0 0 16 16" >` +
+                        `<path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z" > </path>` +
+                        `</svg>` +
+                        `</div>` +
+                        `</div>`)
+                )),
+                    menuItemContainer = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME, (self.menuStyle === self.$cls.menuStyles.default ? "ul" : "div"), self.configuration(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME)
+                    ));
                 self.createElement(new self.$ctrlCfg(self.rootElementName, "li", self.configuration(self.$cls.DROPDOWN_SUBMENU_NAME))
                     .Children([buttonLink, menuItemContainer])
                 )
-                self.events[`${self.rootElementName}_click`] =
-                    new Mrbr_System_Events_EventHandler("show.bs.dropdown", self.elements[self.rootElementName], self.setSubMenuPosition, self);
+                self.events[`${self.rootElementName}_show.bs.dropdown`] = new Mrbr_System_Events_EventHandler("show.bs.dropdown", self.elements[self.rootElementName], self.setSubMenuPosition, self);
+                self.events[`${self.rootElementName}_hidden.bs.dropdown`] = new Mrbr_System_Events_EventHandler("hidden.bs.dropdown", self.elements[self.rootElementName], self.resetSubMenuPosition, self);
             }
             else {
                 let button = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.DROPDOWN_BUTTON_NAME, "button", self.configuration(self.$cls.DROPDOWN_BUTTON_NAME))
@@ -213,27 +221,30 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
         })
         return initalisePromise;
     }
+    resetSubMenuPosition(event: any) {
+        const self = this;
+        self._bootstrapDown && self.$mrbr.host.bootstrap.Dropdown.getOrCreateInstance(event.relatedTarget).dispose();
+        self._bootstrapDown = null;
+    }
     setSubMenuPosition(event: any) {
         const self = this;
-        if(self._paddingTop ===null){
+        if (self._paddingTop === null) {
             let top = parseInt(getComputedStyle(self.defaultContainerElement).paddingTop);
-            self._paddingTop = isNaN(top) ? 0 : top; 
+            self._paddingTop = isNaN(top) ? 0 : top;
         }
         let link = self.elements[self.$cls.DROPDOWN_SUBMENU_LINK_NAME],
-            offset = [
-                self.rootElement.offsetWidth,
-                -link.offsetHeight - self._paddingTop
-            ],
+            offset = [self.rootElement.offsetWidth, -link.offsetHeight - self._paddingTop],
             counter = 0,
             setOptions = () => {
-                if(typeof self._bootstrapDown?._popper?.setOptions === "function"){
-                    self._bootstrapDown._popper.setOptions({modifiers: [{name: "offset",options: {offset: offset}}]})
-                    requestAnimationFrame(() => {self.defaultContainerElement.style.inset = "0px 0px auto 0px";})
+                !self._bootstrapDown && (self._bootstrapDown = self.$mrbr.host.bootstrap.Dropdown.getOrCreateInstance(event.relatedTarget));
+                let fnOptions = self._bootstrapDown?._popper?.setOptions;
+                if (typeof fnOptions === "function") {
+                    fnOptions({ modifiers: [{ name: "offset", options: { offset: offset } }] })
+                    requestAnimationFrame(() => { self.defaultContainerElement.style.inset = "0px 0px auto 0px"; })
                     return;
-                }                
-                (counter++ < 60) && requestAnimationFrame(() => setOptions());                                      
+                }
+                (counter++ < 60) && requestAnimationFrame(() => setOptions());
             }
-        !self._bootstrapDown && (self._bootstrapDown =self.$mrbr.host.bootstrap.Dropdown.getOrCreateInstance(event.relatedTarget))
         setOptions();
     }
     setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Dropdown> {
@@ -258,8 +269,6 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
             .Classes("dropdown-divider")
         )
         !self.hasConfiguration(self.$cls.DROPDOWN_SUBMENU_NAME) && self.defaultConfig.add(self.$cls.DROPDOWN_SUBMENU_NAME, new self.$ctrlPrm());
-
-
         !this.hasConfiguration(self.$cls.DROPDOWN_SUBMENU_LINK_NAME) && self.defaultConfig.add(self.$cls.DROPDOWN_SUBMENU_LINK_NAME, new self.$ctrlPrm()
             .Classes("dropdown-item")
             .Data({ bsToggle: "dropdown" })
@@ -271,14 +280,11 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
     }
 
 
-    public addSubMenuItem(id: string, text: string, parentMenuItem: HTMLElement, ...args) {
+    public addSubMenuItem(subMenu: Mrbr_UI_Bootstrap_Controls_Dropdown): Mrbr_UI_Bootstrap_Controls_Dropdown {
         const self = this
-
-        let submenu = self.addMenuItem(id, text)
-        const menuItem = self.elements[id];
-        self.classes(menuItem, self.$clsActions.Add, "dropdown-submenu");
-        parentMenuItem.appendChild(menuItem);
-
+        subMenu.isSubMenu = true;
+        self.defaultContainerElement.appendChild(subMenu.rootElement);
+        return subMenu;
     }
 
 
@@ -288,11 +294,9 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
             .Properties({
                 href: "#",
                 innerText: text
-            })
-        ),
+            })),
             item = <HTMLElement>self.createElement(new self.$ctrlCfg(id, "li")
-                .Children([link])
-            )
+                .Children([link]))
         self.defaultContainerElement.appendChild(item);
         return item;
     }
@@ -312,8 +316,7 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
         const self = this;
         let divider = <HTMLElement>self.createElement(new self.$ctrlCfg(`${id}_hr`, "hr", self.configuration(self.$cls.DROPDOWN_DIVIDER_NAME))),
             item = <HTMLElement>self.createElement(new self.$ctrlCfg(id, "li")
-                .Children([divider])
-            )
+                .Children([divider]))
         self.defaultContainerElement.appendChild(item);
         return item;
     }
@@ -328,117 +331,4 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
         (item) && (self.classes(id, disabled ? self.$clsActions.Add : self.$clsActions.Remove, "disabled"))
     }
     private _paddingTop: number = null;
-    private offset(x?: number, y?: number, event?: any) {
-        const self = this;
-        if(self._paddingTop ===null){
-            let top = parseInt(getComputedStyle(self.defaultContainerElement).paddingTop);
-            self._paddingTop = isNaN(top) ? 0 : top; 
-        }
-        let link = self.elements[self.$cls.DROPDOWN_SUBMENU_LINK_NAME],
-            offset = [
-                self.rootElement.offsetWidth,
-                -link.offsetHeight - self._paddingTop
-            ],
-            counter = 0,
-            setOptions = () => {
-                if(typeof self._bootstrapDown?._popper?.setOptions === "function"){
-                    self._bootstrapDown._popper.setOptions({modifiers: [{name: "offset",options: {offset: offset}}]})
-                    requestAnimationFrame(() => {self.defaultContainerElement.style.inset = "0px 0px auto 0px";})
-                    return;
-                }                
-                (counter++ < 60) && requestAnimationFrame(() => setOptions());                                      
-            }
-        !self._bootstrapDown && (self._bootstrapDown =self.$mrbr.host.bootstrap.Dropdown.getOrCreateInstance(event.relatedTarget))
-        setOptions();
-    }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-// $(() => {
-//     var autoHideCt = 0;
-//     var shownCt = 0;
-
-//      function mySetOptions(optionsObj) {
-//         console.log(`mySetOptions(): shown=${shownCt}`, optionsObj);
-//         return optionsObj;
-//     }
-
-
-//     function hideDropdown($ddelem, method) {
-//         $ddelem.removeData('autohide');
-//         if (method === 1) {
-//             var dd = bootstrap.Dropdown.getInstance($ddelem.get(0));
-//             console.log('auto-hide dropdown method 1...');
-//             dd.hide();
-//         } else if (method === 2) {
-//             console.log('auto-hide dropdown method 2...');
-//             $ddelem.dropdown('hide');
-//         } else {
-//             throw `Unknown auto-hide method ${method}`;
-//         }
-//     }
-
-//     $('.dropdown')
-//         .on('show.bs.dropdown', (evt) => {
-//             var dd = bootstrap.Dropdown.getInstance(evt.relatedTarget);
-//             console.log(`show.bs.dropdown ${evt.relatedTarget.id}`);
-//         })
-//         .on('shown.bs.dropdown', (evt) => {
-//             var dd = bootstrap.Dropdown.getInstance(evt.relatedTarget);
-//   var id = evt.relatedTarget.id;
-//             console.log(`shown.bs.dropdown ${id}, shown=${shownCt}`);
-//             if (id === "country_trigger") {
-//     dd._popper.setOptions( {modifiers: [
-//            {
-//             name: 'offset',
-//             options: {
-//               // calculate and set the offset as needed here..
-//               offset: [20*shownCt, 20*shownCt],
-//             },
-//           },
-//       ]});
-//   } else {
-//     console.log(`Invoke mySetOptions(): shown=${shownCt}...`);
-//     dd._popper.setOptions((options) => { return mySetOptions(options); });
-//   }
-//             shownCt++;
-  
-//             var $ddelem = $(evt.relatedTarget);
-//             // auto-hide after 5 seconds
-//             $ddelem.data('autohide', window.setTimeout(() => { hideDropdown($ddelem, autoHideCt++ % 2 + 1); }, 5000));
-//         })
-//         .on('hide.bs.dropdown', (evt) => {
-//             var $ddelem = $(evt.relatedTarget);
-//             console.log(`hide.bs.dropdown ${$ddelem.attr('id')}`);
-//             var tmr = $ddelem.data('autohide');
-//             if (tmr) {
-//                 window.clearTimeout(tmr);
-//                 $ddelem.removeData('autohide');
-//             }
-//         })
-//         .on('hidden.bs.dropdown', (evt) => {
-//             console.log(`hidden.bs.dropdown ${evt.relatedTarget.id}`);
-//         })
-
-// });
-
-
-
-
-
-
-
-
-
-

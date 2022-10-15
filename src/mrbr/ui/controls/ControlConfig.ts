@@ -4,6 +4,7 @@ export class Mrbr_UI_Controls_ControlConfig {
     private _elementName: string;
     private _elementType: string;
     private _optionalParameters: Mrbr_UI_Controls_ControlConfigOptionalParameters;
+    private _template: string;
     public get optionalParameters(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
         return this._optionalParameters;
     }
@@ -90,6 +91,13 @@ export class Mrbr_UI_Controls_ControlConfig {
         !this.optionalParameters && (this.optionalParameters = new Mrbr_UI_Controls_ControlConfigOptionalParameters());
         this.optionalParameters.children = value;
     }
+    public get template(): string {
+        return this.optionalParameters?.template;        
+    }
+    public set template(value: string) {
+        !this.optionalParameters && (this.optionalParameters = new Mrbr_UI_Controls_ControlConfigOptionalParameters());
+        this.optionalParameters.template = value;
+    }
     public DarkTheme(value: Array<string> | string): Mrbr_UI_Controls_ControlConfig {
         let _value = value || "";
         this.darkTheme = Array.isArray(_value) ? _value : this.darkTheme = _value.split(" ").map(_val => _val.trim());
@@ -154,6 +162,10 @@ export class Mrbr_UI_Controls_ControlConfig {
     }
     public Children(value: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[]): Mrbr_UI_Controls_ControlConfig {
         this.children = value;
+        return this;
+    }
+    public Template(value: string): Mrbr_UI_Controls_ControlConfig {
+        this.template = value;
         return this;
     }
 }

@@ -33,7 +33,8 @@ export class Mrbr_Tests_Application$Dropdown {
                 submenu2.addMenuItem("submenuItem1", "Submenu Item 1");
                 submenu2.addMenuItem("submenuItem2", "Submenu Item 2");
                 submenu2.alignment = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownAlignments.end;
-                dropdown.defaultContainerElement.appendChild(submenu2.rootElement);
+                dropdown.addSubMenuItem(submenu2);
+                //dropdown.defaultContainerElement.appendChild(submenu2.rootElement);
                 //dropdown.dropdownPosition = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownPositions.dropUp;
                 //dropdown.buttonSize = Mrbr_UI_Bootstrap_Controls_Dropdown.buttonSizes.large;
                 //dropdown.alignment = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownAlignments.lgEnd;

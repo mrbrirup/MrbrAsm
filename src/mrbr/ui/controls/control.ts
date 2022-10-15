@@ -252,6 +252,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         self.properties(_element, _config.properties)
         self.styles(_element, _config.styles)
         self.aria(_element, _config.aria)
+        self.template(_element, _config.template);
         self.elements[_config.elementName] = _element;
         _config.lightTheme && self.dataset(_element, { lightTheme: _config.lightTheme });
         _config.darkTheme && self.dataset(_element, { darkTheme: _config.darkTheme });
@@ -269,6 +270,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         }
         return _element;
     }
+
     public get defaultContainerElement(): HTMLElement {
         const self = this;
         return self.elements[self._defaultContainerElementName]
@@ -411,7 +413,14 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         }
         return _targetElement
     }
-
+    template(_element: HTMLElement, template: string): HTMLElement {
+        const self = this;
+        if (template) {
+            console.log(template)
+            _element.innerHTML = template;
+        }
+        return _element;
+    }
 
 
 
