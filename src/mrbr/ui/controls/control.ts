@@ -383,6 +383,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     }
     dataset(targetElement: string | HTMLElement, datasetSettings: object): HTMLElement {
         const self = this;
+        //console.log("datasetSettings", datasetSettings)
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
         if (datasetSettings) {
             Object.keys(datasetSettings).forEach(key => {
@@ -416,7 +417,6 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     template(_element: HTMLElement, template: string): HTMLElement {
         const self = this;
         if (template) {
-            console.log(template)
             _element.innerHTML = template;
         }
         return _element;

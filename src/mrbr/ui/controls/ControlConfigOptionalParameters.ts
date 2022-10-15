@@ -90,7 +90,21 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
         return this;
     }
     public Classes(value: Array<string> | string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        this.classes = value;
+        if (!value) { return; }
+        debugger
+        if (!Array.isArray(value)) {
+            value = value.split(" ").map(_val => _val.trim());
+        }
+        let currentClasses = [];
+        if (this.classes) {
+            if (!Array.isArray(this.classes)) {
+                currentClasses = this.classes.split(" ").map(_val => _val.trim());
+            }
+            else {
+                currentClasses = this.classes;
+            }
+        }
+        this.classes = currentClasses.concat(value);
         return this;
     }
     public Attributes(value: object): Mrbr_UI_Controls_ControlConfigOptionalParameters {
@@ -98,7 +112,15 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
         return this;
     }
     public Data(value: object): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        this.data = value;
+        if (!this.data && value) {
+            this.data = value;
+        }
+        else if (this.data && value) {
+            Object.assign(this.data, value);
+        }
+        else {
+            this.data = value;
+        }
         return this;
     }
     public Properties(value: object): Mrbr_UI_Controls_ControlConfigOptionalParameters {

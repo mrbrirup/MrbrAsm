@@ -191,22 +191,26 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
                         `</svg>` +
                         `</div>` +
                         `</div>`)
+                    .Data({ mrbrDropdownType: "dropdown_button" })
                 )),
                     menuItemContainer = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME, (self.menuStyle === self.$cls.menuStyles.default ? "ul" : "div"), self.configuration(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME)
                     ));
-                self.createElement(new self.$ctrlCfg(self.rootElementName, "li", self.configuration(self.$cls.DROPDOWN_SUBMENU_NAME))
+                self.createElement(new self.$ctrlCfg(self.rootElementName, "li", self.configuration(self.$cls.DROPDOWN_SUBMENU_NAME)
                     .Children([buttonLink, menuItemContainer])
-                )
+                    .Data({ mrbrDropdownType: "dropdown_submenu" })
+                ))
                 self.events[`${self.rootElementName}_show.bs.dropdown`] = new Mrbr_System_Events_EventHandler("show.bs.dropdown", self.elements[self.rootElementName], self.setSubMenuPosition, self);
                 self.events[`${self.rootElementName}_hidden.bs.dropdown`] = new Mrbr_System_Events_EventHandler("hidden.bs.dropdown", self.elements[self.rootElementName], self.resetSubMenuPosition, self);
             }
             else {
-                let button = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.DROPDOWN_BUTTON_NAME, "button", self.configuration(self.$cls.DROPDOWN_BUTTON_NAME))
-                    .Classes(self._buttonColour)),
+                let button = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.DROPDOWN_BUTTON_NAME, "button", self.configuration(self.$cls.DROPDOWN_BUTTON_NAME)
+                    .Data({ mrbrDropdownType: "dropdown_button" })
+                    .Classes(self._buttonColour))),
                     menuItemContainer = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME, (self.menuStyle === self.$cls.menuStyles.default ? "ul" : "div"), self.configuration(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME)));
-                self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.DROPDOWN_NAME))
+                self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.DROPDOWN_NAME)
                     .Children([button, menuItemContainer])
-                );
+                    .Data({ mrbrDropdownType: "dropdown_container" })
+                ));
             }
             self.defaultContainerElementName = self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME;
             self.buttonText = self._buttonText;
@@ -280,10 +284,20 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
     }
 
 
+    private stopPropagation(event: Event) {
+        event.stopPropagation();
+        console.log(event);
+    }
+
+
     public addSubMenuItem(subMenu: Mrbr_UI_Bootstrap_Controls_Dropdown): Mrbr_UI_Bootstrap_Controls_Dropdown {
         const self = this
         subMenu.isSubMenu = true;
         self.defaultContainerElement.appendChild(subMenu.rootElement);
+        self.events[`${self.rootElementName}_click`] = new Mrbr_System_Events_EventHandler("hide.bs.dropdown", self.elements[self.rootElementName], self.stopPropagation, self);
+        // subMenu.rootElement.addEventListener("click", function(event) {
+        //     event.stopPropagation();
+        // });
         return subMenu;
     }
 
@@ -296,7 +310,10 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
                 innerText: text
             })),
             item = <HTMLElement>self.createElement(new self.$ctrlCfg(id, "li")
-                .Children([link]))
+                .Children([link])
+                .Data({ mrbrDropdownType: "dropdown_menuitem" })
+            )
+
         self.defaultContainerElement.appendChild(item);
         return item;
     }
@@ -307,7 +324,9 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
         ),
             item = <HTMLElement>self.createElement(new self.$ctrlCfg(id, "li")
                 .Classes("dropdown-header user-select-none pointer-events-none")
-                .Children([textElement]))
+                .Children([textElement])
+                .Data({ mrbrDropdownType: "dropdown_header" })
+            )
         self.defaultContainerElement.prepend(item);
         return item;
     }
@@ -316,7 +335,8 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
         const self = this;
         let divider = <HTMLElement>self.createElement(new self.$ctrlCfg(`${id}_hr`, "hr", self.configuration(self.$cls.DROPDOWN_DIVIDER_NAME))),
             item = <HTMLElement>self.createElement(new self.$ctrlCfg(id, "li")
-                .Children([divider]))
+                .Children([divider])
+                .Data({ mrbrDropdownType: "dropdown_divider" }))
         self.defaultContainerElement.appendChild(item);
         return item;
     }

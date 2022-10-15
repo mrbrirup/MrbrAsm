@@ -34,13 +34,15 @@ export class Mrbr_Tests_Application$Dropdown {
                 submenu2.addMenuItem("submenuItem2", "Submenu Item 2");
                 submenu2.alignment = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownAlignments.end;
                 dropdown.addSubMenuItem(submenu2);
+                //dropdown.autoClose = Mrbr_UI_Bootstrap_Controls_Dropdown.autoClosing.outside;
+
+
                 //dropdown.defaultContainerElement.appendChild(submenu2.rootElement);
                 //dropdown.dropdownPosition = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownPositions.dropUp;
                 //dropdown.buttonSize = Mrbr_UI_Bootstrap_Controls_Dropdown.buttonSizes.large;
                 //dropdown.alignment = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownAlignments.lgEnd;
                 //splitDropDown.buttonSize = Mrbr_UI_Bootstrap_Controls_Dropdown.buttonSizes.small;
                 //splitDropDown.dropdownPosition = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownPositions.dropEnd;
-                dropdown.autoClose = Mrbr_UI_Bootstrap_Controls_Dropdown.autoClosing.outside;
                 document.body.appendChild(dropdown.rootElement);
                 //submenu2.offset(100,0)
                 //document.body.appendChild(splitDropDown.rootElement);

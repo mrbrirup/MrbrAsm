@@ -4,7 +4,6 @@ export class Mrbr_UI_Controls_ControlConfig {
     private _elementName: string;
     private _elementType: string;
     private _optionalParameters: Mrbr_UI_Controls_ControlConfigOptionalParameters;
-    private _template: string;
     public get optionalParameters(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
         return this._optionalParameters;
     }
@@ -92,7 +91,7 @@ export class Mrbr_UI_Controls_ControlConfig {
         this.optionalParameters.children = value;
     }
     public get template(): string {
-        return this.optionalParameters?.template;        
+        return this.optionalParameters?.template;
     }
     public set template(value: string) {
         !this.optionalParameters && (this.optionalParameters = new Mrbr_UI_Controls_ControlConfigOptionalParameters());
@@ -118,7 +117,7 @@ export class Mrbr_UI_Controls_ControlConfig {
         if (!this.styles) {
             this.styles = {};
         }
-        Object.assign(this.styles, value);        
+        Object.assign(this.styles, value);
         return this;
     }
     public Properties(value: object): Mrbr_UI_Controls_ControlConfig {
@@ -138,11 +137,27 @@ export class Mrbr_UI_Controls_ControlConfig {
         return this;
     }
     public Classes(value: Array<string> | string): Mrbr_UI_Controls_ControlConfig {
-        value = value || "";
-        let _value = Array.isArray(value) ? value : value.split(" ").map(_val => _val.trim());
-        let _classes = this.classes || [];
-        let currentClasses = Array.isArray(_classes) ? _classes : _classes.split(" ").map(_val => _val.trim());
-        this.classes = this.classes ? [...new Set([...currentClasses, ..._value])] : _value;
+        if (!value) { return; }
+        debugger
+        if (!Array.isArray(value)) {
+            value = value.split(" ").map(_val => _val.trim());
+        }
+        let currentClasses = [];
+        if (this.classes) {
+            if (!Array.isArray(this.classes)) {
+                currentClasses = this.classes.split(" ").map(_val => _val.trim());
+            }
+            else {
+                currentClasses = this.classes;
+            }
+        }
+        this.classes = currentClasses.concat(value);
+
+        // value = value || "";
+        // let _value = Array.isArray(value) ? value : value.split(" ").map(_val => _val.trim());
+        // let _classes = this.classes || [];
+        // let currentClasses = Array.isArray(_classes) ? _classes : _classes.split(" ").map(_val => _val.trim());
+        // this.classes = [...new Set([...currentClasses, ..._value])];
         return this;
     }
     public Attributes(value: object): Mrbr_UI_Controls_ControlConfig {
@@ -158,10 +173,16 @@ export class Mrbr_UI_Controls_ControlConfig {
             this.data = {};
         }
         Object.assign(this.data, value);
+        //console.log(this.data);
         return this;
     }
     public Children(value: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[]): Mrbr_UI_Controls_ControlConfig {
-        this.children = value;
+        if (!this.children) {
+            this.children = value;
+        }
+        else {
+            this.children = [...this.children, ...value];
+        }
         return this;
     }
     public Template(value: string): Mrbr_UI_Controls_ControlConfig {
