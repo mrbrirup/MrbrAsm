@@ -35,15 +35,35 @@ export class Mrbr_Tests_Application$Dropdown {
                 submenu2.alignment = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownAlignments.end;
                 dropdown.addSubMenuItem(submenu2);
                 //dropdown.autoClose = Mrbr_UI_Bootstrap_Controls_Dropdown.autoClosing.outside;
+                document.body.appendChild(dropdown.rootElement);
+                dropdown.addEventListener(Mrbr_UI_Bootstrap_Controls_Dropdown.menuItemEvents.dropdown_button_click, (e: Event) => {
+                    console.log("dropdown_button_click", (<InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Dropdown.DropdownEvent>>e));
+                });
+                dropdown.addEventListener("dropdown_menuitem_click", (e: Event) => {
+                    //console.log("dropdown_menuitem_click", (<InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Dropdown.DropdownEvent>>e));
+                    console.log("dropdown_menuitem_click", e)
+                });
+                dropdown.addEventListener("dropdown_submenu_click", (e: Event) => {
+                    console.log("dropdown_submenu_click", (<InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Dropdown.DropdownEvent>>e));
+                })
 
 
+
+
+
+                //     self.dispatchEvent(new CustomEvent(`${targetDropdownType}_click`, event));
+                //     break;
+                // case "dropdown_submenu":
+                //     self.dispatchEvent(new CustomEvent(`${targetDropdownType}_click`, event));
+                //     break;
+                // case "dropdown_menuitem":
+                //     self.dispatchEvent(new CustomEvent(`${targetDropdownType}_click`, event));
                 //dropdown.defaultContainerElement.appendChild(submenu2.rootElement);
                 //dropdown.dropdownPosition = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownPositions.dropUp;
                 //dropdown.buttonSize = Mrbr_UI_Bootstrap_Controls_Dropdown.buttonSizes.large;
                 //dropdown.alignment = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownAlignments.lgEnd;
                 //splitDropDown.buttonSize = Mrbr_UI_Bootstrap_Controls_Dropdown.buttonSizes.small;
                 //splitDropDown.dropdownPosition = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownPositions.dropEnd;
-                document.body.appendChild(dropdown.rootElement);
                 //submenu2.offset(100,0)
                 //document.body.appendChild(splitDropDown.rootElement);
             });

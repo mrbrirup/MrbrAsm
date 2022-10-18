@@ -22,7 +22,6 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     protected _customConfiguration: Mrbr_UI_Controls_ControlDefaultsCollection;
     private _events: Map<string, Mrbr_System_Events_EventHandler>;
     private _updateTheme: boolean = false;
-    //$cls : Mrbr_UI_Controls_Control;
     get $cls(): typeof Mrbr_UI_Controls_Control { return Mrbr_UI_Controls_Control; }
     public $clsActions = Mrbr_UI_Controls_ClassActions;
     public $promise = Mrbr_System_MrbrPromise;
@@ -67,8 +66,8 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
             },
             set(target, name: string, value) {
                 if (value instanceof HTMLElement) {
-                    if (value && !value?.dataset?.id) {
-                        value.dataset.id = <string>name;
+                    if (value && !value?.dataset?.mrbrId) {
+                        value.dataset.mrbrId = <string>name;
                     }
                 }
                 target.set((name as string), value);
@@ -122,11 +121,16 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
                             target.get(name as string).count--;
                         }
                         else {
-                            (value.options !== undefined) ?
+                            (value.options) ?
                                 value.eventTarget.removeEventListener(value.eventName, value.handler, value.options) :
                                 value.eventTarget.removeEventListener(value.eventName, value.handler);
-                            target.delete(name);
+                            setTimeout(() => {
+                                target.delete(name);
+                            }, 0);
                         }
+                    }
+                    else {
+                        throw new Error("Event not found");
                     }
                 }
                 target.set(name, value);
@@ -143,7 +147,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     }
     private _id: string;
     public get id(): string {
-        return this._id || this.rootElement?.id || this.rootElement?.dataset?.id;
+        return this._id || this.rootElement?.id || this.rootElement?.dataset?.mrbrId;
     }
     public set id(value: string) {
         this._id = value;
@@ -383,7 +387,6 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     }
     dataset(targetElement: string | HTMLElement, datasetSettings: object): HTMLElement {
         const self = this;
-        //console.log("datasetSettings", datasetSettings)
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
         if (datasetSettings) {
             Object.keys(datasetSettings).forEach(key => {

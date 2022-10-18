@@ -138,7 +138,6 @@ export class Mrbr_UI_Controls_ControlConfig {
     }
     public Classes(value: Array<string> | string): Mrbr_UI_Controls_ControlConfig {
         if (!value) { return; }
-        debugger
         if (!Array.isArray(value)) {
             value = value.split(" ").map(_val => _val.trim());
         }

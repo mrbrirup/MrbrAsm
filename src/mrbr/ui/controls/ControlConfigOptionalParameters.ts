@@ -91,7 +91,6 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     }
     public Classes(value: Array<string> | string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
         if (!value) { return; }
-        debugger
         if (!Array.isArray(value)) {
             value = value.split(" ").map(_val => _val.trim());
         }

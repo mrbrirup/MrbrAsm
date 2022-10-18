@@ -33,7 +33,7 @@ export class Mrbr_UI_DOM_MutationObserver extends EventTarget {
     observerCallback(mutations: MutationRecord[]): void {
         const self = this,
             mudmoEventNames = Mrbr_UI_DOM_MutationObserver.MUTATION_EVENT_NAMES;
-            //debugger
+        //debugger
         for (let mutation of mutations) {
             let result: CustomMutationResult = self._customFilter?.(mutation),
                 mutationResult: MutationRecord,
