@@ -362,6 +362,18 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         }
         return _targetElement;
     }
+    children(targetElement: string | HTMLElement, value: Array<string> | string | HTMLElement | Array<HTMLElement>): HTMLElement {
+        const self = this;
+
+        let _targetElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
+        let _value = (Array.isArray(value) ? value : [value]);
+
+        _value.forEach(entry => {
+            if (typeof value === "string") { _targetElement.appendChild(self.elements[value]) }
+            else { _targetElement.appendChild(entry) }
+        })
+        return _targetElement;
+    }
     attributes(targetElement: string | HTMLElement, attributesSettings: object): HTMLElement {
         const self = this;
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? self.elements[targetElement] : targetElement;
