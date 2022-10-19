@@ -212,7 +212,6 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
         (listGroupItem) && self.rootElement.removeChild(listGroupItem);
         return listGroupItem;
     }
-
     public customContentContainerItem(element: string | HTMLElement, customContentContainer: boolean, defaultText?: string): HTMLElement {
         const self = this,
             listGroupItem: HTMLElement = typeof element === "string" ? self.elements[element] : element;
@@ -220,8 +219,6 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
         (listGroupItem && defaultText) && (listGroupItem.innerText = defaultText);
         return listGroupItem;
     }
-
-
     public setActiveItem(element: string | HTMLElement): HTMLElement {
         const self = this,
             listGroupItem: HTMLElement = typeof element === "string" ? self.elements[element] : element;

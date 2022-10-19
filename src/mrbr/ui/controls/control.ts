@@ -302,8 +302,10 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         this._customConfiguration = value;
     }
     protected configuration(key: string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        let retVal = this.customConfiguration.index[key] || this.defaultConfig.index[key];
-        if (retVal) { return retVal; }
+        let configEntry = this.customConfiguration.index[key] || this.defaultConfig.index[key];
+        if (configEntry) {
+            return Object.assign(new Mrbr_UI_Controls_ControlConfigOptionalParameters(), configEntry);
+        }
         throw new Error(`Configuration ${key} not found`)
     }
     protected hasConfiguration(key: string): boolean {
