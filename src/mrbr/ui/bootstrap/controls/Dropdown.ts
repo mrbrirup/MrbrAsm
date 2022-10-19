@@ -10,7 +10,7 @@ type dropdownButtonSizeType = typeof Mrbr_UI_Bootstrap_Controls_Dropdown.buttonS
 type autoClosingType = typeof Mrbr_UI_Bootstrap_Controls_Dropdown.autoClosing;
 
 export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Control {
-    //#region Public Static Properties
+    //#region Public Static Fields
     public static readonly DROPDOWN_NAME = "Mrbr_UI_Bootstrap_Dropdown";
     public static readonly DROPDOWN_BUTTON_NAME = "Mrbr_UI_Bootstrap_Dropdown_button";
     public static readonly DROPDOWN_MENUITEM_CONTAINER_NAME = "Mrbr_UI_Bootstrap_Dropdown_menuItemContainer";
@@ -18,10 +18,10 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
     public static readonly DROPDOWN_DIVIDER_NAME = "Mrbr_UI_Bootstrap_Dropdown_dividerItem";
     public static readonly DROPDOWN_SUBMENU_NAME = "Mrbr_UI_Bootstrap_Dropdown_submenu";
     public static readonly DROPDOWN_SUBMENU_LINK_NAME = "Mrbr_UI_Bootstrap_Dropdown_submenuLink";
-    //#endregion Public Static Properties
+    //#endregion Public Static Fields
     //#region Private Static Properties
     private static readonly OUTSIDE_DROPDOWN_CLICK_EVENT_NAME = "document_body_outside_menu_click";
-    //#endregion Private Static Properties
+    //#endregion Private Static Fields
     //#region Public Static Enums
     public static buttonColours = {
         primary: "btn-primary",
