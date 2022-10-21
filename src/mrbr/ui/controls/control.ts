@@ -245,24 +245,11 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
             return (<Array<Mrbr_UI_Controls_ControlConfig>>controlConfig).map(entry => <HTMLElement>self.createElement(entry));
         }
         let _config: Mrbr_UI_Controls_ControlConfig = <Mrbr_UI_Controls_ControlConfig>controlConfig;
-
+        let _element: HTMLElement;
         if (controlConfig instanceof HTMLElement) { return controlConfig; }
-
-        let _element = document.createElement(_config.elementType);
-        _element.id = _config.id || self.$cls.createId(_config.elementType)
-        self.classes(_element, self.$clsActions.Add, _config.classes)
-        self.attributes(_element, _config.attributes)
-        self.dataset(_element, _config.data)
-        self.properties(_element, _config.properties)
-        self.styles(_element, _config.styles)
-        self.aria(_element, _config.aria)
-        self.template(_element, _config.template);
+        _element = <HTMLElement>document.createElement(_config.elementType);
+        _config?.optionalParameters && self.assignElementConfig(_element, _config.optionalParameters);
         self.elements[_config.elementName] = _element;
-        _config.lightTheme && self.dataset(_element, { lightTheme: _config.lightTheme });
-        _config.darkTheme && self.dataset(_element, { darkTheme: _config.darkTheme });
-        (_config.lightTheme || _config.darkTheme) && self.themedElements.add(_element)
-        self.changeElementTheme(_element, self.$cls._theme);
-        //}
         if (_config.children) {
             let children = _config.children.map(entry => self.createElement(entry));
             if (Array.isArray(children)) {
@@ -274,6 +261,25 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         }
         return _element;
     }
+
+
+    public assignElementConfig(element: HTMLElement, config: Mrbr_UI_Controls_ControlConfigOptionalParameters): void {
+        const self = this;
+        element.id = config.id || self.$cls.createId(element.nodeName?.toLocaleLowerCase() || "element");
+        self.classes(element, self.$clsActions.Add, config.classes)
+        self.attributes(element, config.attributes)
+        self.dataset(element, config.data)
+        self.properties(element, config.properties)
+        self.styles(element, config.styles)
+        self.aria(element, config.aria)
+        self.template(element, config.template);
+        config.lightTheme && self.dataset(element, { lightTheme: config.lightTheme });
+        config.darkTheme && self.dataset(element, { darkTheme: config.darkTheme });
+        (config.lightTheme || config.darkTheme) && self.themedElements.add(element)
+        self.changeElementTheme(element, self.$cls._theme);
+    }
+
+
 
     public get defaultContainerElement(): HTMLElement {
         const self = this;

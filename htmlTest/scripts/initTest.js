@@ -4,10 +4,10 @@ let cfg = {
 };
 function runRes(result) {
     try {
-        MrbrBase.mrbrInstance.loadManifest(Mrbr.Tests.Application$Modal[MrbrBase.MRBR_COMPONENT_MANIFEST])
+        MrbrBase.mrbrInstance.loadManifest(Mrbr.Tests.Application$Navbar[MrbrBase.MRBR_COMPONENT_MANIFEST])
             .then(_ => {
 
-                let DropdownApplication = new Mrbr.Tests.Application$Modal()
+                let DropdownApplication = new Mrbr.Tests.Application$Navbar()
             })
 
     } catch (error) {
@@ -27,7 +27,7 @@ async function onReady() {
     try {
         window["mrbrLoadManifest"] =
             [
-                Mrbr.IO.File.component(Mrbr.Tests.Application$Modal, 0),
+                Mrbr.IO.File.component(Mrbr.Tests.Application$Navbar, 0),
                 new Mrbr.IO.File(Mrbr.IO.FileType.ScriptLink, null, "https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js", "", {
                     integrity: "sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa",
                     crossorigin: "anonymous"
