@@ -5,6 +5,7 @@ import { Mrbr_UI_Bootstrap_Controls_Navbar } from "./Navbar";
 
 export class Mrbr_UI_Bootstrap_Controls_Navbar$Toggler implements Mrbr_UI_Bootstrap_Controls_INavbarControls {
     private static _navbar_toggler_config: Mrbr_UI_Controls_ControlConfigOptionalParameters
+    private static _navbar_toggler_collapse_config: Mrbr_UI_Controls_ControlConfigOptionalParameters;
     public static get NAVBAR_TOGGLER_CONFIG(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
         const cls = Mrbr_UI_Bootstrap_Controls_Navbar$Toggler;
         (!cls._navbar_toggler_config) && (cls._navbar_toggler_config = new Mrbr_UI_Controls_ControlConfigOptionalParameters()
@@ -17,7 +18,6 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$Toggler implements Mrbr_UI_Bootst
         return Object.assign(new Mrbr_UI_Controls_ControlConfigOptionalParameters(), cls._navbar_toggler_config);
     }
 
-    private static _navbar_toggler_collapse_config: Mrbr_UI_Controls_ControlConfigOptionalParameters;
     public static get NAVBAR_TOGGLER_COLLAPSE_CONFIG(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
         const cls = Mrbr_UI_Bootstrap_Controls_Navbar$Toggler;
         (!cls._navbar_toggler_collapse_config) && (cls._navbar_toggler_collapse_config = new Mrbr_UI_Controls_ControlConfigOptionalParameters()
@@ -27,8 +27,8 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$Toggler implements Mrbr_UI_Bootst
     private _active: boolean = false;
     private _disabled: boolean = false;
     private _name: string;
-    private _togglerElement: HTMLButtonElement;
     private _navCollapseElement: HTMLDivElement;
+    private _togglerElement: HTMLButtonElement;
 
     constructor(name: string) { this.name = name; }
 
@@ -52,7 +52,7 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$Toggler implements Mrbr_UI_Bootst
 
         const cls = Mrbr_UI_Bootstrap_Controls_Navbar$Toggler,
             self = this,
-            id = hostNavbar.$cls.createId(this.name),
+            id = hostNavbar.$cls.createId(self.name),
             togglerId = `${id}_toggler`,
             collapseId = `${id}_collapse`,
             togglerName = `${self.name}_toggler`,

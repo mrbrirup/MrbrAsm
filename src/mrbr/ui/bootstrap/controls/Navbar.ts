@@ -2,6 +2,7 @@ import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
 import { Mrbr_UI_Controls_Control } from "../../controls/control";
 import { Mrbr_UI_Bootstrap_Controls_INavbarControls } from "./INavbarControls";
 import { Mrbr_UI_Bootstrap_Controls_Navbar$Brand } from "./Navbar$Brand";
+import { Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas } from "./Navbar$OffCanvas";
 import { Mrbr_UI_Bootstrap_Controls_Navbar$Toggler } from "./Navbar$Toggler";
 
 export class Mrbr_UI_Bootstrap_Controls_Navbar extends Mrbr_UI_Controls_Control {
@@ -137,7 +138,7 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar extends Mrbr_UI_Controls_Control 
         return self;
     }
 
-    public addToggler(toggler: Mrbr_UI_Bootstrap_Controls_Navbar$Toggler): Mrbr_UI_Bootstrap_Controls_Navbar {
+    public addToggler(toggler: Mrbr_UI_Bootstrap_Controls_Navbar$Toggler | Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas): Mrbr_UI_Bootstrap_Controls_Navbar {
         const self = this;
         toggler.build(self);
         return self;

@@ -6,10 +6,8 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$Brand implements Mrbr_UI_Bootstra
     private static _navbar_brand_config: Mrbr_UI_Controls_ControlConfigOptionalParameters;
     public static get NAVBAR_BRAND_CONFIG(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
         const cls = Mrbr_UI_Bootstrap_Controls_Navbar$Brand;
-        if (!cls._navbar_brand_config) {
-            cls._navbar_brand_config = new Mrbr_UI_Controls_ControlConfigOptionalParameters()
-                .Classes("navbar-brand");
-        }
+        (!cls._navbar_brand_config) && (cls._navbar_brand_config = new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+            .Classes("navbar-brand"))
         return Object.assign(new Mrbr_UI_Controls_ControlConfigOptionalParameters(), cls._navbar_brand_config);
     }
 
@@ -31,21 +29,9 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$Brand implements Mrbr_UI_Bootstra
     public set disabled(value: boolean) {
         const self = this;
         self.rootElement && self.rootElement.classList.toggle("pe-none", value);
-
         self._disabled = value;
 
     }
-
-    // public set disabled(value: boolean) {
-    //     const self = this;
-    //     [self.togglerElement, self.navCollapseElement].filter(element => !!element)
-    //         .forEach(element => {
-    //             value && (!element.classList.contains("pe-none")) && (element.classList.add("pe-none"));
-    //             !value && (element.classList.contains("pe-none")) && (element.classList.remove("pe-none"));
-    //         })
-    //     self._disabled = value;
-    // }
-
 
     public get imageElement(): HTMLImageElement { return this._imageElement; }
     public set imageElement(value: HTMLImageElement) { this._imageElement = value; }
@@ -90,6 +76,7 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$Brand implements Mrbr_UI_Bootstra
             .Properties({ href: self.url })
             .Children([self.textElement, self.imageElement].filter(element => !!element)));
         hostNavbar.navbarControls.set(self.name, self);
+        self.disabled = self._disabled;
         hostElement.appendChild(self.rootElement);
         return self;
     }
