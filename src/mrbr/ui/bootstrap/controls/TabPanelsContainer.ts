@@ -1,3 +1,4 @@
+import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
 import { Mrbr_UI_Controls_Control } from "../../controls/control";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
@@ -10,11 +11,22 @@ export class Mrbr_UI_Bootstrap_Controls_TabPanelsContainer extends Mrbr_UI_Contr
     private static _tab_panel_config: Mrbr_UI_Controls_ControlConfigOptionalParameters;
     private static _tab_buttons_config: Mrbr_UI_Controls_ControlConfigOptionalParameters;
 
+    public static NAV_HIDE_TAB_EVENT: string = "hide.bs.tab";
+    public static NAV_SHOW_TAB_EVENT: string = "show.bs.tab";
+    public static NAV_HIDDEN_TAB_EVENT: string = "hidden.bs.tab";
+    public static NAV_SHOWN_TAB_EVENT: string = "shown.bs.tab";
+
+
+
+
+
     public static TabPanel = class {
+        name: string;
         panel: HTMLDivElement;
         tab: HTMLButtonElement;
         _disabled: boolean;
-        constructor(tab: HTMLButtonElement, panel: HTMLDivElement) {
+        constructor(name: string, tab: HTMLButtonElement, panel: HTMLDivElement) {
+            this.name = name;
             this.panel = panel;
             this.tab = tab;
         }
@@ -22,7 +34,8 @@ export class Mrbr_UI_Bootstrap_Controls_TabPanelsContainer extends Mrbr_UI_Contr
         public set disabled(value: boolean) {
             const self = this;
             if (self.tab) {
-                (value) ? self.tab.setAttribute("disabled", value.toString()) : self.tab.removeAttribute("disabled");
+                if (value) { self.tab.setAttribute("disabled", value.toString()) }
+                else { self.tab.removeAttribute("disabled"); }
             }
             self._disabled = value;
         }
@@ -55,9 +68,9 @@ export class Mrbr_UI_Bootstrap_Controls_TabPanelsContainer extends Mrbr_UI_Contr
             new Mrbr_UI_Controls_ControlConfigOptionalParameters()
                 .Classes("nav")
                 .Attributes({ role: "tablist" }))
+
         return self.$cls._tab_tabs_container_config;
     }
-
 
     public get panelsContainerConfig(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
         const self = this;
@@ -87,12 +100,11 @@ export class Mrbr_UI_Bootstrap_Controls_TabPanelsContainer extends Mrbr_UI_Contr
     public get tabStyle(): typeof Mrbr_UI_Bootstrap_Controls_TabPanelsContainer.tabStyles[keyof typeof Mrbr_UI_Bootstrap_Controls_TabPanelsContainer.tabStyles] { return this._tabStyle; }
     public set tabStyle(value: typeof Mrbr_UI_Bootstrap_Controls_TabPanelsContainer.tabStyles[keyof typeof Mrbr_UI_Bootstrap_Controls_TabPanelsContainer.tabStyles]) {
         const self = this;
-        self.navbarControls.forEach((element, key) => {
-            self.dataset(element.tab, { bsToggle: value })
-        });
         self.tabsContainer && self.classes(self.tabsContainer, self.$clsActions.Remove, `nav-${self._tabStyle}`);
         self.tabsContainer && self.classes(self.tabsContainer, self.$clsActions.Add, `nav-${value}`);
         self._tabStyle = value;
+        const linkToggleStyle = self.linkToggleStyle();
+        self.navbarControls.forEach((element, key) => self.dataset(element.tab, { bsToggle: linkToggleStyle }));
     }
 
     public get navbarControls(): Map<string, InstanceType<typeof Mrbr_UI_Bootstrap_Controls_TabPanelsContainer.TabPanel>> { return this._navbarControls; }
@@ -109,6 +121,17 @@ export class Mrbr_UI_Bootstrap_Controls_TabPanelsContainer extends Mrbr_UI_Contr
         const self = this;
         (self.rootElement) && self.classes(self.rootElement, value ? self.$clsActions.Add : self.$clsActions.Remove, "d-flex align-items-start");
         self._horizontal = value;
+    }
+    private linkToggleStyle() {
+        const self = this;
+        switch (self.tabStyle) {
+            case self.$cls.tabStyles.pills:
+                return "pill";
+            case self.$cls.tabStyles.tabs:
+                return "tab";
+            default:
+                return "tab";
+        }
     }
 
 
@@ -129,9 +152,73 @@ export class Mrbr_UI_Bootstrap_Controls_TabPanelsContainer extends Mrbr_UI_Contr
                     .Children([self.tabsContainer, self.panelsContainer])));
                 self.horizontal = self._horizontal;
                 self.tabStyle = self._tabStyle;
+
+                self.events[self.$cls.NAV_HIDE_TAB_EVENT] = new Mrbr_System_Events_EventHandler(
+                    self.$cls.NAV_HIDE_TAB_EVENT,
+                    self.rootElement,
+                    self.hideTab_handler,
+                    self
+                )
+                self.events[self.$cls.NAV_HIDDEN_TAB_EVENT] = new Mrbr_System_Events_EventHandler(
+                    self.$cls.NAV_HIDDEN_TAB_EVENT,
+                    self.rootElement,
+                    self.hiddenTab_handler,
+                    self
+                )
+                self.events[self.$cls.NAV_SHOW_TAB_EVENT] = new Mrbr_System_Events_EventHandler(
+                    self.$cls.NAV_SHOW_TAB_EVENT,
+                    self.rootElement,
+                    self.showTab_handler,
+                    self
+                )
+                self.events[self.$cls.NAV_SHOWN_TAB_EVENT] = new Mrbr_System_Events_EventHandler(
+                    self.$cls.NAV_SHOWN_TAB_EVENT,
+                    self.rootElement,
+                    self.shownTab_handler,
+                    self
+                )
+
+
                 initialisePromise.resolve(self);
             });
         return initialisePromise;
+    }
+
+    private getTabPanelNameFromEvent(event: Event): InstanceType<typeof Mrbr_UI_Bootstrap_Controls_TabPanelsContainer.TabPanel> {
+        const self = this;
+        if (self.navbarControls.size === 0) return null;
+        let keys = Array.from(self.navbarControls.keys()),
+            retVal: InstanceType<typeof Mrbr_UI_Bootstrap_Controls_TabPanelsContainer.TabPanel>;
+
+        for (let keyCounter = 0; keyCounter < keys.length; keyCounter++) {
+            const key = keys[keyCounter],
+                value = self.navbarControls.get(key);
+            if (value.tab.id === (event.target as HTMLElement).id) {
+                retVal = value;
+                break;
+            }
+        }
+        return retVal;
+    }
+    private hideTab_handler(event: Event) {
+        const self = this;
+        event.stopPropagation();
+        self.dispatchEvent(new CustomEvent(self.$cls.NAV_HIDE_TAB_EVENT, { detail: { tabPanelName: self.getTabPanelNameFromEvent(event)?.name, event: event } }));
+    }
+    private hiddenTab_handler(event: Event) {
+        const self = this;
+        event.stopPropagation();
+        self.dispatchEvent(new CustomEvent(self.$cls.NAV_HIDDEN_TAB_EVENT, { detail: { tabPanelName: self.getTabPanelNameFromEvent(event)?.name, event: event } }));
+    }
+    private showTab_handler(event: Event) {
+        const self = this;
+        event.stopPropagation();
+        self.dispatchEvent(new CustomEvent(self.$cls.NAV_SHOW_TAB_EVENT, { detail: { tabPanelName: self.getTabPanelNameFromEvent(event)?.name, event: event } }));
+    }
+    private shownTab_handler(event: Event) {
+        const self = this;
+        event.stopPropagation();
+        self.dispatchEvent(new CustomEvent(self.$cls.NAV_SHOWN_TAB_EVENT, { detail: { tabPanelName: self.getTabPanelNameFromEvent(event)?.name, event: event } }));
     }
 
     setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_TabPanelsContainer> {
@@ -149,10 +236,12 @@ export class Mrbr_UI_Bootstrap_Controls_TabPanelsContainer extends Mrbr_UI_Contr
             self = this,
             tabId = self.$cls.createId("tab"),
             panelId = self.$cls.createId("panel"),
+            linkToggleStyle = self.linkToggleStyle(),
             tabPanel = new Mrbr_UI_Bootstrap_Controls_TabPanelsContainer.TabPanel(
+                name,
                 <HTMLButtonElement>self.createElement(new self.$ctrlCfg(`${self.rootElementName}_tab_${name}`, "button", self.navButtonConfig
                     .Id(tabId)
-                    .Data({ "bsTarget": `#${panelId}`, "bsToggle": self._tabStyle })
+                    .Data({ "bsTarget": `#${panelId}`, "bsToggle": linkToggleStyle })
                     .Aria({ "controls": panelId, "selected": "false" })
                     .Properties({ innerText: text }))),
                 <HTMLDivElement>self.createElement(new self.$ctrlCfg(`${self.rootElementName}_panel_${name}`, "div", self.panelConfig

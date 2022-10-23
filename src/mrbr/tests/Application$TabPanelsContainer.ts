@@ -19,7 +19,10 @@ export class Mrbr_Tests_Application$TabPanelsContainer {
           nav.setActive("contactTab");
           aboutPanel.disabled = false;
         }, 5000);
-
+        nav.addEventListener(Mrbr_UI_Bootstrap_Controls_TabPanelsContainer.NAV_SHOW_TAB_EVENT,
+          (e: Event) => {
+            console.log("NAV_SHOW_TAB_EVENT", (e as CustomEvent).detail);
+          });
 
         setTimeout(() => {
           nav.horizontal = true;
