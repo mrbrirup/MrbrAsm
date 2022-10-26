@@ -1,9 +1,12 @@
+import { MrbrBase } from "../../../system/MrbrBase";
+import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_UI_Controls_Control } from "../../controls/control";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 import { Mrbr_UI_Bootstrap_Controls_INavbarControls } from "./INavbarControls";
 import { Mrbr_UI_Bootstrap_Controls_Navbar } from "./Navbar";
 
 
-export class Mrbr_UI_Bootstrap_Controls_Navbar$Toggler implements Mrbr_UI_Bootstrap_Controls_INavbarControls {
+export class Mrbr_UI_Bootstrap_Controls_Navbar$Toggler extends Mrbr_UI_Controls_Control implements Mrbr_UI_Bootstrap_Controls_INavbarControls {
     private static _navbar_toggler_config: Mrbr_UI_Controls_ControlConfigOptionalParameters
     private static _navbar_toggler_collapse_config: Mrbr_UI_Controls_ControlConfigOptionalParameters;
     public static get NAVBAR_TOGGLER_CONFIG(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
@@ -30,7 +33,10 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$Toggler implements Mrbr_UI_Bootst
     private _navCollapseElement: HTMLDivElement;
     private _togglerElement: HTMLButtonElement;
 
-    constructor(name: string) { this.name = name; }
+    constructor(name: string) {
+        super(name);
+        this.name = name;
+    }
 
     public get active(): boolean { return this._active; }
     public set active(value: boolean) { this._active = value; }
@@ -47,6 +53,25 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$Toggler implements Mrbr_UI_Bootst
     public set navCollapseElement(value: HTMLDivElement) { this._navCollapseElement = value; }
     public get togglerElement(): HTMLButtonElement { return this._togglerElement; }
     public set togglerElement(value: HTMLButtonElement) { this._togglerElement = value; }
+
+
+    public initialise<T>(...args): Mrbr_System_MrbrPromise<T> {
+        const self = this,
+            initialisePromise = self.$promise.create("initialise");
+        super.initialise(args)
+            .then(() => {
+                self.$mrbr.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar$Toggler[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                    .then(() => {
+                        initialisePromise.resolve(self);
+                    })
+            })
+            .catch((error) => {
+                initialisePromise.reject(error);
+            });
+        return initialisePromise;
+    }
+
+
 
     public build(hostNavbar: Mrbr_UI_Bootstrap_Controls_Navbar, hostElement: HTMLElement = hostNavbar.defaultContainerElement): Mrbr_UI_Bootstrap_Controls_Navbar$Toggler {
 

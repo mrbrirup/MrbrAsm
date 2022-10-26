@@ -23,16 +23,16 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     private _events: Map<string, Mrbr_System_Events_EventHandler>;
     private _updateTheme: boolean = false;
     get $cls(): typeof Mrbr_UI_Controls_Control { return Mrbr_UI_Controls_Control; }
-    public $clsActions = Mrbr_UI_Controls_ClassActions;
-    public $promise = Mrbr_System_MrbrPromise;
-    public $mrbr = MrbrBase.mrbrInstance;
-    public $themeChange = Mrbr_UI_Controls_ThemeChangeEvent;
-    public $ctrlCol = Mrbr_UI_Controls_ControlDefaultsCollection;
-    public $ctrlTheme = Mrbr_UI_Controls_Themes;
-    public $styleCls = Mrbr_UI_Html_StyleClasses
-    public $ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-    public $ctrlPrm = Mrbr_UI_Controls_ControlConfigOptionalParameters;
-    public $ctrl = Mrbr_UI_Controls_Control;
+    public get $clsActions() { return Mrbr_UI_Controls_ClassActions; }
+    public get $promise() { return Mrbr_System_MrbrPromise; }
+    public get $mrbr() { return MrbrBase.mrbrInstance; }
+    public get $themeChange() { return Mrbr_UI_Controls_ThemeChangeEvent; }
+    public get $ctrlCol() { return Mrbr_UI_Controls_ControlDefaultsCollection; }
+    public get $ctrlTheme() { return Mrbr_UI_Controls_Themes; }
+    public get $styleCls() { return Mrbr_UI_Html_StyleClasses }
+    public get $ctrlCfg() { return Mrbr_UI_Controls_ControlConfig; }
+    public get $ctrlPrm() { return Mrbr_UI_Controls_ControlConfigOptionalParameters; }
+    public get $ctrl() { return Mrbr_UI_Controls_Control; }
     private static themeMediaMatch = "(prefers-color-scheme: dark)";
     private static windowThemeChangeEventName: string = "change";
     private static get _theme() { return window.matchMedia(Mrbr_UI_Controls_Control.themeMediaMatch).matches ? Mrbr_UI_Controls_Themes.dark : Mrbr_UI_Controls_Themes.light; }
@@ -161,9 +161,8 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
     }
     initialise(...args: any[]): Mrbr_System_MrbrPromise<any> {
         const self = this,
-            initialisePromise = self.$promise.create<Mrbr_UI_Controls_Control>("Mrbr_UI_Controls_Control:initialise"),
-            manifestPromise = self.$mrbr.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
-        manifestPromise
+            initialisePromise = self.$promise.create<Mrbr_UI_Controls_Control>("Mrbr_UI_Controls_Control:initialise");
+        self.$mrbr.loadManifest(Mrbr_UI_Controls_Control[MrbrBase.MRBR_COMPONENT_MANIFEST])
             .then(manifest => {
                 self._defaultConfiguration = new self.$ctrlCol();
                 self._customConfiguration = new self.$ctrlCol();

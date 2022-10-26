@@ -8,17 +8,16 @@ export class Mrbr_Tests_Application$Navbar$OffCanvas {
 
   constructor() {
     const navbar = new Mrbr_UI_Bootstrap_Controls_Navbar("navbar");
-    navbar.initialise()
-      .then(_ => {
+    navbar
+      .initialise()
+      .then(async _ => {
         navbar.addBrand(new Mrbr_UI_Bootstrap_Controls_Navbar$Brand("brand").Text("Brand"));
-        navbar.addToggler(new Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas("toggler"));
+        let tog = new Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas("toggler");
+        await tog.initialise();
+        tog.build(navbar);
+        navbar.addToggler(tog);
         let toggler = (navbar.navbarControls.get("toggler") as Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas)
-        toggler.position = Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas.positions.start;
-        toggler.disabled = true;
-        toggler.headerVisible = false;
-        // navbar.navbarControls.get("brand").disabled = true;
-        // navbar.expandSize = Mrbr_UI_Bootstrap_Controls_Navbar.expandSizes.md;
-        // navbar.backgroundVariant = Mrbr_UI_Bootstrap_Controls_Navbar.backgroundVariants.dark;
+        navbar.backgroundVariant = Mrbr_UI_Bootstrap_Controls_Navbar.backgroundVariants.dark;
         navbar.backgroundColour = Mrbr_UI_Bootstrap_Controls_Navbar.backgroundColours.secondary;
         navbar.placement = Mrbr_UI_Bootstrap_Controls_Navbar.placements.fixedBottom;
 
@@ -44,19 +43,11 @@ export class Mrbr_Tests_Application$Navbar$OffCanvas {
                   </ul>
                 </li>
               </ul>`;
-        navbar.defaultContainerElement.innerHTML = template;
-
+        toggler.defaultContainerElement.innerHTML = template;
+        toggler.offCanvasTheme = Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas.themes.dark;
         document.body.appendChild(navbar.rootElement);
-
-        setTimeout(() => {
-          navbar.navbarControls.get("toggler").disabled = false;
-          navbar.navbarControls.get("brand").disabled = false;
-        }, 10000);
-
-        setTimeout(() => {
-          toggler.headerVisible = true;
-        }, 15000);
-
+        navbar.defaultContainerElement.appendChild(toggler.togglerElement)
+        navbar.defaultContainerElement.appendChild(toggler.offCanvasElement)
       });
   }
 }

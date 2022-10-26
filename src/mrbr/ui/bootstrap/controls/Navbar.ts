@@ -1,3 +1,4 @@
+import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
 import { Mrbr_UI_Controls_Control } from "../../controls/control";
 import { Mrbr_UI_Bootstrap_Controls_INavbarControls } from "./INavbarControls";
@@ -113,21 +114,23 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar extends Mrbr_UI_Controls_Control 
         const self = this,
             initialisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Navbar>("Mrbr_UI_Bootstrap_Controls_Navbar:initialise");
         super.initialise()
-            .then(async _ => {
-                await self.setDefaultConfig();
-                self.rootElement = <HTMLElement>self.createElement(new self.$ctrlCfg(self.rootElementName, "nav", self.configuration(self.$cls.NAVBAR_NAME))
-                    .Children([
-                        <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.NAVBAR_CONTAINER_NAME, "div", self.configuration(self.$cls.NAVBAR_CONTAINER_NAME)))
-                    ]));
-                self.defaultContainerElementName = self.$cls.NAVBAR_CONTAINER_NAME;
+            .then(superInitialised => {
+                self.$mrbr.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                    .then(async manifest => {
+                        await self.setDefaultConfig();
+                        self.rootElement = <HTMLElement>self.createElement(new self.$ctrlCfg(self.rootElementName, "nav", self.configuration(self.$cls.NAVBAR_NAME))
+                            .Children([
+                                <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.NAVBAR_CONTAINER_NAME, "div", self.configuration(self.$cls.NAVBAR_CONTAINER_NAME)))
+                            ]));
+                        self.defaultContainerElementName = self.$cls.NAVBAR_CONTAINER_NAME;
+                        self.expandSize = self._expandSize;
+                        self.backgroundColour = self._backgroundColour;
+                        self.backgroundVariant = self._backgroundVariant;
+                        self.placement = self._placement;
 
-                self.expandSize = self._expandSize;
-                self.backgroundColour = self._backgroundColour;
-                self.backgroundVariant = self._backgroundVariant;
-                self.placement = self._placement;
-
-                initialisePromise.resolve(self);
-            });
+                        initialisePromise.resolve(self);
+                    })
+            })
         return initialisePromise;
     }
 
