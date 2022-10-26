@@ -4,6 +4,10 @@ import { Mrbr_UI_Controls_Control } from "../../controls/control";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 
 export class Mrbr_UI_Bootstrap_Controls_OffCanvas extends Mrbr_UI_Controls_Control {
+
+    get $cls(): typeof Mrbr_UI_Bootstrap_Controls_OffCanvas { return Mrbr_UI_Bootstrap_Controls_OffCanvas; }
+
+
     //#region Private Static Configuration
     private static _offcanvas_toggler_config: Mrbr_UI_Controls_ControlConfigOptionalParameters;
     private static _offcanvas_config: Mrbr_UI_Controls_ControlConfigOptionalParameters;
@@ -28,50 +32,50 @@ export class Mrbr_UI_Bootstrap_Controls_OffCanvas extends Mrbr_UI_Controls_Contr
     //#endregion Private Property Fields
     //#region Public Configuration Properties
     public get OFFCANVAS_TOGGLER_CONFIG(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        const cls = Mrbr_UI_Bootstrap_Controls_OffCanvas;
-        (!cls._offcanvas_toggler_config) && (cls._offcanvas_toggler_config = new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+        const self = this;
+        (!self.$cls._offcanvas_toggler_config) && (self.$cls._offcanvas_toggler_config = new self.$ctrlPrm()
             .Classes("navbar-toggler")
             .Attributes({ "type": "button" })
             .Properties({ type: "button" })
             .Data({ bsToggle: "offcanvas" })
             .Template(`<i class="bi bi-list"></i>`))
 
-        return Object.assign(new Mrbr_UI_Controls_ControlConfigOptionalParameters(), cls._offcanvas_toggler_config);
+        return Object.assign(new self.$ctrlPrm(), self.$cls._offcanvas_toggler_config);
     }
 
     public get OFFCANVAS_CONFIG(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        const cls = Mrbr_UI_Bootstrap_Controls_OffCanvas;
-        (!cls._offcanvas_config) && (cls._offcanvas_config = new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+        const self = this;;
+        (!self.$cls._offcanvas_config) && (self.$cls._offcanvas_config = new self.$ctrlPrm()
             .Classes("offcanvas"))
-        return Object.assign(new Mrbr_UI_Controls_ControlConfigOptionalParameters(), cls._offcanvas_config);
+        return Object.assign(new self.$ctrlPrm(), self.$cls._offcanvas_config);
     }
     public get OFFCANVAS_HEADER_CONFIG(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        const cls = Mrbr_UI_Bootstrap_Controls_OffCanvas;
-        (!cls._offcanvas_header_config) && (cls._offcanvas_header_config = new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+        const self = this;
+        (!self.$cls._offcanvas_header_config) && (self.$cls._offcanvas_header_config = new self.$ctrlPrm()
             .Classes("offcanvas-header"))
-        return Object.assign(new Mrbr_UI_Controls_ControlConfigOptionalParameters(), cls._offcanvas_header_config);
+        return Object.assign(new self.$ctrlPrm(), self.$cls._offcanvas_header_config);
     }
 
     public get CLOSE_BUTTON_CONFIG(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        const cls = Mrbr_UI_Bootstrap_Controls_OffCanvas;
-        (!cls._close_button_config) && (cls._close_button_config = new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+        const self = this;
+        (!self.$cls._close_button_config) && (self.$cls._close_button_config = new self.$ctrlPrm()
             .Classes("btn-close")
             .Attributes({ "type": "button" })
             .Aria({ label: "Close" })
             .Data({ bsDismiss: "offcanvas" }))
-        return Object.assign(new Mrbr_UI_Controls_ControlConfigOptionalParameters(), cls._close_button_config);
+        return Object.assign(new self.$ctrlPrm(), self.$cls._close_button_config);
     }
     public get OFFCANVAS_BODY_CONFIG(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        const cls = Mrbr_UI_Bootstrap_Controls_OffCanvas;
-        (!cls._offcanvas_body_config) && (cls._offcanvas_body_config = new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+        const self = this;
+        (!self.$cls._offcanvas_body_config) && (self.$cls._offcanvas_body_config = new self.$ctrlPrm()
             .Classes("offcanvas-body"))
-        return Object.assign(new Mrbr_UI_Controls_ControlConfigOptionalParameters(), cls._offcanvas_body_config);
+        return Object.assign(new self.$ctrlPrm(), self.$cls._offcanvas_body_config);
     }
     public get OFFCANVAS_TITLE_CONFIG(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        const cls = Mrbr_UI_Bootstrap_Controls_OffCanvas;
-        (!cls._offcanvas_title_config) && (cls._offcanvas_title_config = new Mrbr_UI_Controls_ControlConfigOptionalParameters()
+        const self = this;
+        (!self.$cls._offcanvas_title_config) && (self.$cls._offcanvas_title_config = new self.$ctrlPrm()
             .Classes("offcanvas-title"))
-        return Object.assign(new Mrbr_UI_Controls_ControlConfigOptionalParameters(), cls._offcanvas_title_config);
+        return Object.assign(new self.$ctrlPrm(), self.$cls._offcanvas_title_config);
     }
     //#endregion Public Configuration Properties
     //#region Public Static Enums
@@ -92,7 +96,6 @@ export class Mrbr_UI_Bootstrap_Controls_OffCanvas extends Mrbr_UI_Controls_Contr
     constructor(rootElementName: string) {
         super(rootElementName);
     }
-    get $cls(): typeof Mrbr_UI_Bootstrap_Controls_OffCanvas { return Mrbr_UI_Bootstrap_Controls_OffCanvas; }
 
     //#region Protected OffCanvas Ids
     protected get togglerName(): string { return `${this.name}_toggler`; }
