@@ -466,7 +466,7 @@ export class Mrbr_UI_Controls_Control extends EventTarget implements Mrbr_UI_Con
         const self = this;
         Array.from(Reflect.ownKeys(self._events))?.forEach(eventName => {
             try {
-                self.events[eventName].remove();
+                self.events[eventName]?.remove && self.events[eventName]?.remove();
             } catch (error) {
                 console.log(error)
             }
