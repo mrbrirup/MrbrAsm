@@ -1,7 +1,7 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
-import { Mrbr_UI_Controls_Control } from "../../controls/control";
+import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 type carouselItemType = InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Carousel.CarouselItem>;
 export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Control {
     //#region Public Static Members
@@ -328,7 +328,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
             initalisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_Carousel:initialise");
         super.initialise(...args).then(async () => {
             await self.setDefaultConfig();
-            await self.$mrbr.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);
+            await self.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);
             const carouselInner: HTMLElement = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.CAROUSEL_INNER_NAME, "div", self.defaultConfig.get(self.$cls.CAROUSEL_INNER_NAME)));
             self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.defaultConfig.get(self.$cls.CAROUSEL_NAME))
                 .Children([carouselInner])
@@ -357,7 +357,8 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
         });
         return initalisePromise;
     }
-    public mutation_handler(event: InstanceType<typeof Mrbr_UI_Controls_Control.MutationEvent>): void {
+    //public mutation_handler(event: InstanceType<typeof Mrbr_UI_Controls_Control.MutationEvent>): void {
+    public mutation_handler(event: any): void {
         const self = this;
         let nodedAdded: boolean = false;
         for (let mutationIndex = 0; mutationIndex < event.detail.length; mutationIndex++) {

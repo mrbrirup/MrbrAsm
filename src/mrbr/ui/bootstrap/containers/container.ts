@@ -1,5 +1,5 @@
 import { Mrbr_UI_Html_StyleClasses } from "../../html/StyleClasses";
-import { Mrbr_UI_Controls_Control } from "../../controls/control";
+import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Height } from "../utilities/sizing$height";
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Width } from "../utilities/sizing$width";

@@ -1,11 +1,10 @@
 export class Mrbr_System_Events_EventHandler {
     constructor(eventName: string, eventTarget: EventTarget, eventHandler: Function, context?: any, options?: object) {
-        const self = this;
-        self.eventName = eventName;
-        self.eventTarget = eventTarget;
-        self.eventHandler = eventHandler;
-        self.context = context;
-        self.options = options;
+        this.eventName = eventName;
+        this.eventTarget = eventTarget;
+        this.eventHandler = eventHandler;
+        this.context = context;
+        this.options = options;
     }
     private _eventName: string;
     private _eventTarget: EventTarget;
@@ -32,29 +31,24 @@ export class Mrbr_System_Events_EventHandler {
     public get count(): number { return this._count; }
     public set count(value: number) { this._count = value; }
     public EventName(eventName: string): Mrbr_System_Events_EventHandler {
-        const self = this;
-        self.eventName = eventName;
-        return self;
+        this.eventName = eventName;
+        return this;
     }
     public EventTarget(eventTarget: EventTarget): Mrbr_System_Events_EventHandler {
-        const self = this;
-        self.eventTarget = eventTarget;
-        return self;
+        this.eventTarget = eventTarget;
+        return this;
     }
     public EventHandler(eventHandler: Function): Mrbr_System_Events_EventHandler {
-        const self = this;
-        self.eventHandler = eventHandler;
-        return self;
+        this.eventHandler = eventHandler;
+        return this;
     }
     public Options(options: any): Mrbr_System_Events_EventHandler {
-        const self = this;
-        self.options = options;
-        return self;
+        this.options = options;
+        return this;
     }
     public Context(context: any): Mrbr_System_Events_EventHandler {
-        const self = this;
-        self.context = context;
-        return self;
+        this.context = context;
+        return this;
     }
 
 };

@@ -2,7 +2,7 @@ import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHan
 import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
 import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
-import { Mrbr_UI_Controls_Control } from "../../controls/control";
+import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 type typeButtonGroupSize = typeof Mrbr_UI_Bootstrap_Controls_ButtonGroup.buttonGroupSizes[keyof typeof Mrbr_UI_Bootstrap_Controls_ButtonGroup.buttonGroupSizes];

@@ -1,5 +1,5 @@
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";//mrbr:exclude
-import { Mrbr_UI_Controls_Control } from "../../controls/control";
+import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 type imageLocationType = typeof Mrbr_UI_Bootstrap_Controls_Card.imageLocations[keyof typeof Mrbr_UI_Bootstrap_Controls_Card.imageLocations];
 type cardStyleType = typeof Mrbr_UI_Bootstrap_Controls_Card.cardStyles[keyof typeof Mrbr_UI_Bootstrap_Controls_Card.cardStyles];
 type imagePropertiesType = InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Card.ImageCardProperties>;

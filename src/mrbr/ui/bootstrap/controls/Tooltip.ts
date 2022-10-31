@@ -1,6 +1,6 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
-import { Mrbr_UI_Controls_Control } from "../../controls/control";
+import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 import { Mrbr_UI_Bootstrap_Controls_Tooltip$Placements } from "./Tooltip$Placements";
 
@@ -85,45 +85,45 @@ export class Mrbr_UI_Bootstrap_Controls_Tooltip extends Mrbr_UI_Controls_Control
                 return defaultBsPopperConfig
             }
         });
-        self.$mrbr.host.bootstrap.Tooltip.getOrCreateInstance(self.rootElement, options);
+        self.mrbrInstance.host.bootstrap.Tooltip.getOrCreateInstance(self.rootElement, options);
         return self;
     }
     public dispose(): void {
         const self = this;
-        self.rootElement && self.$mrbr.host.bootstrap.Tooltip.getInstance(self.rootElement)?.dispose();
+        self.rootElement && self.mrbrInstance.host.bootstrap.Tooltip.getInstance(self.rootElement)?.dispose();
         super.dispose();
     }
     public disable(): void {
         const self = this;
-        self.rootElement && self.$mrbr.host.bootstrap.Tooltip.getInstance(self.rootElement)?.disable();
+        self.rootElement && self.mrbrInstance.host.bootstrap.Tooltip.getInstance(self.rootElement)?.disable();
     }
     public enable(): void {
         const self = this;
-        self.rootElement && self.$mrbr.host.bootstrap.Tooltip.getInstance(self.rootElement)?.enable();
+        self.rootElement && self.mrbrInstance.host.bootstrap.Tooltip.getInstance(self.rootElement)?.enable();
     }
     public toggle(): void {
         const self = this;
-        self.rootElement && self.$mrbr.host.bootstrap.Tooltip.getInstance(self.rootElement)?.toggle();
+        self.rootElement && self.mrbrInstance.host.bootstrap.Tooltip.getInstance(self.rootElement)?.toggle();
     }
     public show(): void {
         const self = this;
-        self.rootElement && self.$mrbr.host.bootstrap.Tooltip.getInstance(self.rootElement)?.show();
+        self.rootElement && self.mrbrInstance.host.bootstrap.Tooltip.getInstance(self.rootElement)?.show();
     }
     public hide(): void {
         const self = this;
-        self.rootElement && self.$mrbr.host.bootstrap.Tooltip.getInstance(self.rootElement)?.hide();
+        self.rootElement && self.mrbrInstance.host.bootstrap.Tooltip.getInstance(self.rootElement)?.hide();
     }
     public update(): void {
         const self = this;
-        self.rootElement && self.$mrbr.host.bootstrap.Tooltip.getInstance(self.rootElement)?.update();
+        self.rootElement && self.mrbrInstance.host.bootstrap.Tooltip.getInstance(self.rootElement)?.update();
     }
     public toggleEnabled(): void {
         const self = this;
-        self.rootElement && self.$mrbr.host.bootstrap.Tooltip.getInstance(self.rootElement)?.toggleEnabled();
+        self.rootElement && self.mrbrInstance.host.bootstrap.Tooltip.getInstance(self.rootElement)?.toggleEnabled();
     }
     public setContent(content: string): void {
         const self = this;
-        self.rootElement && self.$mrbr.host.bootstrap.Tooltip.getInstance(self.rootElement)?.setContent(content);
+        self.rootElement && self.mrbrInstance.host.bootstrap.Tooltip.getInstance(self.rootElement)?.setContent(content);
     }
     public onHide(callback: (e: any) => any, context?: any): Mrbr_System_Events_EventHandler {
         const self = this;

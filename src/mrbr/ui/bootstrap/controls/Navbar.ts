@@ -1,6 +1,6 @@
 import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
-import { Mrbr_UI_Controls_Control } from "../../controls/control";
+import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Bootstrap_Controls_INavbarControls } from "./INavbarControls";
 import { Mrbr_UI_Bootstrap_Controls_Navbar$Brand } from "./Navbar$Brand";
 import { Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas } from "./Navbar$OffCanvas";
@@ -115,7 +115,7 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar extends Mrbr_UI_Controls_Control 
             initialisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Navbar>("Mrbr_UI_Bootstrap_Controls_Navbar:initialise");
         super.initialise()
             .then(superInitialised => {
-                self.$mrbr.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                self.mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(async manifest => {
                         await self.setDefaultConfig();
                         self.rootElement = <HTMLElement>self.createElement(new self.$ctrlCfg(self.rootElementName, "nav", self.configuration(self.$cls.NAVBAR_NAME))

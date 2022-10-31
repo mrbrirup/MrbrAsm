@@ -1,5 +1,5 @@
 import { Mrbr_UI_Controls_ClassActions } from '../../../controls/classActions';
-import { Mrbr_UI_Controls_Control } from '../../../controls/control';
+import { Mrbr_UI_Controls_Control } from '../../../controls/Control';
 import { Mrbr_UI_Controls_ControlConfig } from '../../../controls/ControlConfig';
 import { Mrbr_UI_Bootstrap_Utilities_Backgrounds } from '../../utilities/backgrounds';
 import { Mrbr_UI_Bootstrap_Navigation_NavBar_NavBar$classes } from './navbar$classes';

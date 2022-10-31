@@ -1,7 +1,7 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
-import { Mrbr_UI_Controls_Control } from "../../controls/control";
+import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 
 export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Control {
     public static TOGGLE_NAME: string = "collapse_toggle";
@@ -147,12 +147,13 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Contro
             self.buttonText = self._buttonText;
             self.horizontal = self._horizontal;
             self.parent = self._parent;
-            self.events[`carousel_${self.$cls.MUTATION_EVENT_NAME}`] = new Mrbr_System_Events_EventHandler(
-                self.$ctrl.MUTATION_EVENT_NAME,
-                self.$ctrl.mutations,
-                self.mutation_handler,
-                self
-            );
+            // self.events[`carousel_${self.$cls.MUTATION_EVENT_NAME}`] = new Mrbr_System_Events_EventHandler(
+            //     self.$ctrl.MUTATION_EVENT_NAME,
+            //     self.$ctrl.mutations,
+            //     self.mutation_handler,
+            //     self
+            // );
+            let handlerId = self.$cls.mutationObserver.onChildListChange(self.mutation_handler)
             document.getElementById(self.rootElement.id) && self.rootElementAdded();
             initalisePromise.resolve(self);
         });
@@ -163,7 +164,7 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Contro
         Array.from(self.bootstrapCollapse.keys()).forEach((key) => { self.bootstrapCollapse.get(key).dispose(); });
         super.dispose();
     }
-    private mutation_handler(event: InstanceType<typeof Mrbr_UI_Controls_Control.MutationEvent>): void {
+    private mutation_handler(source: any, event: any, ...args): void {
         const self = this;
         let nodedAdded: boolean = false;
         for (let mutationIndex = 0; mutationIndex < event.detail.length; mutationIndex++) {

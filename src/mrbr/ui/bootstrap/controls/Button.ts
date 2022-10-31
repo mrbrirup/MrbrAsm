@@ -1,7 +1,7 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { MrbrBase } from "../../../system/MrbrBase";//mrbr:exclude
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
-import { Mrbr_UI_Controls_Control } from "../../controls/control";
+import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 type typeButtonColor = typeof Mrbr_UI_Bootstrap_Controls_Button.buttonColours[keyof typeof Mrbr_UI_Bootstrap_Controls_Button.buttonColours];
 type typeButtonSize = typeof Mrbr_UI_Bootstrap_Controls_Button.buttonSizes[keyof typeof Mrbr_UI_Bootstrap_Controls_Button.buttonSizes];
 type typeButtonType = typeof Mrbr_UI_Bootstrap_Controls_Button.buttonTypes[keyof typeof Mrbr_UI_Bootstrap_Controls_Button.buttonTypes];
@@ -211,7 +211,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
             initialisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Button>("Mrbr_UI_Bootstrap_Controls_Button:initialise");
         super.initialise(...args)
             .then(() => {
-                self.$mrbr.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                self.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(_ => {
 
                         self.createElement(new self.$ctrlCfg(self.rootElementName, self.elementType, new self.$ctrlPrm().Classes("btn")));

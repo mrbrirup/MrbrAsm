@@ -175,7 +175,8 @@ export class Mrbr_UI_Controls_ControlConfig {
         //console.log(this.data);
         return this;
     }
-    public Children(value: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[]): Mrbr_UI_Controls_ControlConfig {
+    public Children(value: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[] | Mrbr_UI_Controls_ControlConfig | HTMLElement): Mrbr_UI_Controls_ControlConfig {
+        (!Array.isArray(value)) && (value = [value]);
         if (!this.children) {
             this.children = value;
         }

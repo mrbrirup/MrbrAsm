@@ -1,7 +1,7 @@
 import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
 import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
-import { Mrbr_UI_Controls_Control } from "../../controls/control";
+import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 
@@ -116,7 +116,7 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
             initialisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_Badge:initialise");
         super.initialise(args)
             .then(result => {
-                self.$mrbr.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                self.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(_ => {
 
                         self.setDefaultConfig();

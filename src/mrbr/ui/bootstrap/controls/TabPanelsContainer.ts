@@ -1,6 +1,6 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
-import { Mrbr_UI_Controls_Control } from "../../controls/control";
+import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 
 export class Mrbr_UI_Bootstrap_Controls_TabPanelsContainer extends Mrbr_UI_Controls_Control {
@@ -260,7 +260,7 @@ export class Mrbr_UI_Bootstrap_Controls_TabPanelsContainer extends Mrbr_UI_Contr
     public setActive(name: string): Mrbr_UI_Bootstrap_Controls_TabPanelsContainer {
         const self = this;
         let activetab = self._navbarControls.get(name).tab;
-        activetab && self.$mrbr.host["bootstrap"].Tab.getOrCreateInstance(activetab).show();
+        activetab && self.mrbrInstance.host["bootstrap"].Tab.getOrCreateInstance(activetab).show();
         return self;
     }
     public getActive(): InstanceType<typeof Mrbr_UI_Bootstrap_Controls_TabPanelsContainer.TabPanel> {

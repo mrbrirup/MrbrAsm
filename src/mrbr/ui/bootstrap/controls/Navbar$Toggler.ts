@@ -1,6 +1,6 @@
 import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
-import { Mrbr_UI_Controls_Control } from "../../controls/control";
+import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 import { Mrbr_UI_Bootstrap_Controls_INavbarControls } from "./INavbarControls";
 import { Mrbr_UI_Bootstrap_Controls_Navbar } from "./Navbar";
@@ -60,7 +60,7 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$Toggler extends Mrbr_UI_Controls_
             initialisePromise = self.$promise.create("initialise");
         super.initialise(args)
             .then(() => {
-                self.$mrbr.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar$Toggler[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                self.mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar$Toggler[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(() => {
                         initialisePromise.resolve(self);
                     })

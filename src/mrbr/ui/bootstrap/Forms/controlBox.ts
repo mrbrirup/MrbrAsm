@@ -1,5 +1,5 @@
 import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
-import { Mrbr_UI_Controls_Control } from "../../controls/control";
+import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { Mrbr_UI_Bootstrap_Forms_ControlBox$Event } from "./controlBox$Event";

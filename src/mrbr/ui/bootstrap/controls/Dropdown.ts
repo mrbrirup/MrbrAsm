@@ -1,6 +1,6 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
-import { Mrbr_UI_Controls_Control } from "../../controls/control";
+import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 
 type buttonColourType = typeof Mrbr_UI_Bootstrap_Controls_Dropdown.buttonColours;
 type dropdownAlignmentType = typeof Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownAlignments;
@@ -390,12 +390,12 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
         if (targetDropdownType === self.$cls.menuItemTypes.submenu || targetDropdownType === self.$cls.menuItemTypes.submenuButton) { return; }
         (<HTMLElement[]>Array.from((self.rootElement.querySelectorAll(".dropdown-item.show"))))
             .concat(self.elements[self.$cls.DROPDOWN_BUTTON_NAME])
-            .forEach((element: HTMLElement) => self.$mrbr.host.bootstrap.Dropdown.getInstance(element)?.hide());
+            .forEach((element: HTMLElement) => self.mrbrInstance.host.bootstrap.Dropdown.getInstance(element)?.hide());
         self.events[self.$cls.OUTSIDE_DROPDOWN_CLICK_EVENT_NAME]?.remove();
     }
     private resetSubMenuPosition(event: any) {
         const self = this;
-        self._bootstrapDown && self.$mrbr.host.bootstrap.Dropdown.getOrCreateInstance(event.relatedTarget).dispose();
+        self._bootstrapDown && self.mrbrInstance.host.bootstrap.Dropdown.getOrCreateInstance(event.relatedTarget).dispose();
         self._bootstrapDown = null;
     }
     private setSubMenuPosition(event: any) {
@@ -410,7 +410,7 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
         const self = this;
         let link = self.elements[self.$cls.DROPDOWN_SUBMENU_LINK_NAME],
             offset = [self.rootElement.offsetWidth, -link.offsetHeight - self._paddingTop];
-        !self._bootstrapDown && (self._bootstrapDown = self.$mrbr.host.bootstrap.Dropdown.getOrCreateInstance(event.relatedTarget));
+        !self._bootstrapDown && (self._bootstrapDown = self.mrbrInstance.host.bootstrap.Dropdown.getOrCreateInstance(event.relatedTarget));
         let fnOptions = self._bootstrapDown?._popper?.setOptions;
         if (typeof fnOptions === "function") {
             fnOptions({ modifiers: [{ name: "offset", options: { offset: offset } }] })

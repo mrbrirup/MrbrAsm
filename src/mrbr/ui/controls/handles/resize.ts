@@ -2,7 +2,7 @@ import { Mrbr_Geometry_Bounds2d } from "../../../geometry/bounds2d";
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
-import { Mrbr_UI_Controls_Control } from "../control";
+import { Mrbr_UI_Controls_Control } from "../Control";
 import { Mrbr_UI_Controls_ControlConfig } from "../ControlConfig";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../ControlConfigOptionalParameters";
 

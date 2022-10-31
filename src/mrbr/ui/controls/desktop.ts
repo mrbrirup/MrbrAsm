@@ -1,6 +1,6 @@
 import { Mrbr_UI_Bootstrap_Containers_Container$Breakpoints } from "../bootstrap/containers/container$breakpoints";
 import { Mrbr_UI_Controls_ClassActions } from "./classActions";
-import { Mrbr_UI_Controls_Control } from "./control";
+import { Mrbr_UI_Controls_Control } from "./Control";
 import { Mrbr_UI_Controls_ControlConfig } from "./ControlConfig";
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Height } from "../bootstrap/utilities/sizing$height";
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Width } from "../bootstrap/utilities/sizing$width";
