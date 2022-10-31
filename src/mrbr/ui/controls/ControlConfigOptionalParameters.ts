@@ -181,7 +181,7 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
 
     //#region Public Property Chaining Methods
     /**
-     * Set Dark Theme Settings and returns ControlCofig for chaining
+     * Set Dark Theme Settings and returns this for chaining
      * @date 31/10/2022 - 15:06:12
      *
      * @public
@@ -195,7 +195,7 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     }
 
     /**
-     * Set Light Theme Settings and returns ControlCofig for chaining
+     * Set Light Theme Settings and returns this for chaining
      * @date 31/10/2022 - 15:06:45
      *
      * @public
@@ -208,7 +208,7 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     }
 
     /**
-     * Set Theme Settings and returns ControlCofig for chaining
+     * Set Theme Settings and returns this for chaining
      * @date 31/10/2022 - 15:06:54
      *
      * @public
@@ -224,7 +224,7 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     }
 
     /**
-     * Set Style Settings and returns ControlCofig for chaining
+     * Set Style Settings and returns this for chaining
      * @date 31/10/2022 - 15:07:05
      *
      * @public
@@ -240,7 +240,7 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     }
 
     /**
-     * Set Properties and returns ControlCofig for chaining
+     * Set Properties and returns this for chaining
      * @date 31/10/2022 - 15:07:22
      *
      * @public
@@ -253,7 +253,7 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     }
 
     /**
-     * Sets Id and returns ControlCofig for chaining
+     * Sets Id and returns this for chaining
      * @date 31/10/2022 - 15:08:18
      *
      * @public
@@ -266,7 +266,7 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     }
 
     /**
-     * Sets Classes and returns ControlCofig for chaining
+     * Sets Classes and returns this for chaining
      * @date 31/10/2022 - 15:08:34
      *
      * @public
@@ -283,7 +283,7 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     }
 
     /**
-     * Sets Attributes and returns ControlCofig for chaining
+     * Sets Attributes and returns this for chaining
      * @date 31/10/2022 - 15:10:38
      *
      * @public
@@ -300,7 +300,7 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     }
 
     /**
-     * Sets Data Attributes and returns ControlCofig for chaining
+     * Sets Data Attributes and returns this for chaining
      * @date 31/10/2022 - 15:10:52
      *
      * @public
@@ -314,7 +314,7 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     }
 
     /**
-     * Sets Child Elements and returns ControlCofig for chaining
+     * Sets Child Elements and returns this for chaining
      * @date 31/10/2022 - 15:11:39
      *
      * @public
@@ -328,7 +328,7 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
     }
 
     /**
-     * Sets Template and returns ControlCofig for chaining
+     * Sets Template and returns this for chaining
      * @date 31/10/2022 - 15:12:42
      *
      * @public

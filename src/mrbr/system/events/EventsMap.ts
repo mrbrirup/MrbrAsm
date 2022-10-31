@@ -13,11 +13,11 @@ export class Mrbr_System_Events_EventsMap extends Mrbr_System_Collections_Map<st
             self._events.get(key).count++;
             return;
         }
-        if (!event.handler) {
-            event.handler = event.eventHandler.bind((event.context || event.eventTarget));
+        if (!event.boundHandler) {
+            event.boundHandler = event.eventHandler.bind((event.context || event.eventTarget));
             (event.options !== undefined) ?
-                event.eventTarget.addEventListener(event.eventName, event.handler, event.options) :
-                event.eventTarget.addEventListener(event.eventName, event.handler);
+                event.eventTarget.addEventListener(event.eventName, event.boundHandler, event.options) :
+                event.eventTarget.addEventListener(event.eventName, event.boundHandler);
         }
         event.remove = () => {
             if (!self.has(key)) { return; }
@@ -26,8 +26,8 @@ export class Mrbr_System_Events_EventsMap extends Mrbr_System_Collections_Map<st
                 return;
             }
             (event.options) ?
-                event.eventTarget.removeEventListener(key, event.handler, event.options) :
-                event.eventTarget.removeEventListener(key, event.handler);
+                event.eventTarget.removeEventListener(key, event.boundHandler, event.options) :
+                event.eventTarget.removeEventListener(key, event.boundHandler);
             setTimeout(() => { self.delete(key); }, 0);
         }
         this.map.set(event.eventName, event);
