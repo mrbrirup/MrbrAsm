@@ -17,7 +17,7 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Controls_Control {
     //alert alert-warning alert-dismissible fade show
     private _alertContext: Mrbr_UI_Bootstrap_Controls_Alert$Contexts = Mrbr_UI_Bootstrap_Controls_Alert$Contexts.success;
     private _showCloseButton: boolean = true;
-    override get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Alert { return Mrbr_UI_Bootstrap_Controls_Alert; }
+    get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Alert { return Mrbr_UI_Bootstrap_Controls_Alert; }
     constructor(rootElementName: string) {
         super(rootElementName);
     }
@@ -64,10 +64,10 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Controls_Control {
                 await self.setDefaultConfig();
                 self.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(manifest => {
-                        self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.ALERT_CONTROL_NAME))
+                        self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.ALERT_CONTROL_NAME)
                             .Children([
                                 new self.$ctrlCfg(self.$cls.ALERT_TEXT_CONTAINER_NAME, "div", self.configuration(self.$cls.ALERT_TEXT_CONTAINER_NAME))
-                            ])
+                            ]))
                         )
                         self.defaultContainerElementName = self.$cls.ALERT_TEXT_CONTAINER_NAME;
                         self.alertContext = self._alertContext;

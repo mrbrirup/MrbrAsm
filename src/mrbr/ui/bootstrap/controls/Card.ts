@@ -127,23 +127,23 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Controls_Control {
                                     rightSplit = imageSplit[imageSplit.length - 1],
                                     image = self.createImage(self.$cls.CARD_IMAGE_NAME, self.$cls.imageLocations.LEFT, horizontalImageProperties?.imageCardProperties?.src || "", horizontalImageProperties?.imageCardProperties?.alt || ""),
                                     body = self.createBody(self.$cls.CARD_BODY_NAME),
-                                    imageHolder: HTMLElement = self.createElement(new self.$ctrlCfg(self.$cls.CARD_IMAGE_HOLDER_NAME, "div", self.configuration(self.$cls.CARD_IMAGE_HOLDER_NAME))
+                                    imageHolder: HTMLElement = self.createElement(new self.$ctrlCfg(self.$cls.CARD_IMAGE_HOLDER_NAME, "div", self.configuration(self.$cls.CARD_IMAGE_HOLDER_NAME)
                                         .Children([image])
-                                        .Classes(`${horizontalImageProperties.imageSplit}${leftSplit}`)
+                                        .Classes(`${horizontalImageProperties.imageSplit}${leftSplit}`))
                                     ) as HTMLElement,
-                                    bodyHolder: HTMLElement = self.createElement(new self.$ctrlCfg(self.$cls.CARD_BODY_HOLDER_NAME, "div", self.configuration(self.$cls.CARD_BODY_HOLDER_NAME))
+                                    bodyHolder: HTMLElement = self.createElement(new self.$ctrlCfg(self.$cls.CARD_BODY_HOLDER_NAME, "div", self.configuration(self.$cls.CARD_BODY_HOLDER_NAME)
                                         .Children([body])
-                                        .Classes(`${horizontalImageProperties.imageSplit}${rightSplit}`)
+                                        .Classes(`${horizontalImageProperties.imageSplit}${rightSplit}`))
                                     ) as HTMLElement,
-                                    cardRow = self.createElement(new self.$ctrlCfg(self.$cls.CARD_ROW_NAME, "div", self.configuration(self.$cls.CARD_ROW_NAME))
-                                        .Children([imageHolder, bodyHolder])
+                                    cardRow = self.createElement(new self.$ctrlCfg(self.$cls.CARD_ROW_NAME, "div", self.configuration(self.$cls.CARD_ROW_NAME)
+                                        .Children([imageHolder, bodyHolder]))
                                     );
                                 elements.push(cardRow);
                                 break;
                             case self.$cls.cardStyles.EMPTY:
                                 break;
                         }
-                        self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.CARD_NAME)).Children(elements));
+                        self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.CARD_NAME).Children(elements)));
                         initalisePromise.resolve(self);
                     })
             });
@@ -189,7 +189,7 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Controls_Control {
         const self = this;
         self.defaultConfig.has(self.$cls.CARD_TEXT_NAME) === false
             && self.defaultConfig.add(self.$cls.CARD_TEXT_NAME, new self.$ctrlPrm().Classes("card-text"));
-        const element = self.createElement(new self.$ctrlCfg(id, "p", self.configuration(self.$cls.CARD_TEXT_NAME).Id(self.$ctrl.createId("p")) )) as HTMLParagraphElement;        
+        const element = self.createElement(new self.$ctrlCfg(id, "p", self.configuration(self.$cls.CARD_TEXT_NAME).Id(self.$ctrl.createId("p")))) as HTMLParagraphElement;
         element.textContent = text;
         return element;
     }

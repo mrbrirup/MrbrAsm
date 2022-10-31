@@ -27,7 +27,7 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
     }
 
 
-    override get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Badge { return Mrbr_UI_Bootstrap_Controls_Badge; }
+    get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Badge { return Mrbr_UI_Bootstrap_Controls_Badge; }
 
     private _badgePosition: string = this.$cls.BADGE_POSITION.NONE;
     private _badgeShape: string = this.$cls.BADGE_SHAPE.DEFAULT;
@@ -120,10 +120,10 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
                     .then(_ => {
 
                         self.setDefaultConfig();
-                        self.createElement(new self.$ctrlCfg(self.rootElementName, "span", self.defaultConfig.get(self.$cls.BADGE_NAME))
+                        self.createElement(new self.$ctrlCfg(self.rootElementName, "span", self.defaultConfig.get(self.$cls.BADGE_NAME)
                             .Children([
                                 new self.$ctrlCfg(self.$cls.BADGE_TEXT_NAME, "span", self.defaultConfig.get(self.$cls.BADGE_TEXT_NAME))
-                            ])
+                            ]))
                         )
                         self.badgeText = self._badgeText;
                         self.contextText = self._contextText;

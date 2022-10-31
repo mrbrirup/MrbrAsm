@@ -118,10 +118,10 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar extends Mrbr_UI_Controls_Control 
                 self.mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(async manifest => {
                         await self.setDefaultConfig();
-                        self.rootElement = <HTMLElement>self.createElement(new self.$ctrlCfg(self.rootElementName, "nav", self.configuration(self.$cls.NAVBAR_NAME))
+                        self.rootElement = <HTMLElement>self.createElement(new self.$ctrlCfg(self.rootElementName, "nav", self.configuration(self.$cls.NAVBAR_NAME)
                             .Children([
                                 <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.NAVBAR_CONTAINER_NAME, "div", self.configuration(self.$cls.NAVBAR_CONTAINER_NAME)))
-                            ]));
+                            ])));
                         self.defaultContainerElementName = self.$cls.NAVBAR_CONTAINER_NAME;
                         self.expandSize = self._expandSize;
                         self.backgroundColour = self._backgroundColour;

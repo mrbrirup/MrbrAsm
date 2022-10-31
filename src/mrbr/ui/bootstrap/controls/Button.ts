@@ -46,7 +46,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
     //#endregion enums
     //#region aliases
 
-    override get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Button { return Mrbr_UI_Bootstrap_Controls_Button; }
+    get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Button { return Mrbr_UI_Bootstrap_Controls_Button; }
     //#endregion aliases
     //#region fields
     private _href: string = "";
@@ -89,7 +89,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
             self.classes(root,
                 value === self.$cls.toggleStates.on ? self.$clsActions.Add : self.$clsActions.Remove,
                 "active");
-            self.aria(root, { pressed: value === self.$cls.toggleStates.on });
+            self.elementAria(root, { pressed: value === self.$cls.toggleStates.on });
         }
         this._toggleState = value;
     }
@@ -100,7 +100,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
         const self = this,
             root = self.rootElement;
         //(self.rootElement) && self.dataset(self.rootElement, { bsToggle: value ? "button" : Mrbr_UI_Controls_Control.DELETE });
-        (root && !value) && self.aria(root, { pressed: self.$ctrl.DELETE });
+        (root && !value) && self.elementAria(root, { pressed: self.$ctrl.DELETE });
         self._isToggle = value;
         self.toggleState = this._toggleState;
     }
@@ -121,7 +121,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
     public set buttonType(value: typeButtonType) {
         const self = this,
             root = self.rootElement;
-        root && self.attributes(root, { type: value });
+        root && self.elementAttributes(root, { type: value });
         this._buttonType = value;
     }
     public get elementType(): typeElementType {
@@ -130,7 +130,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
     public set elementType(value: typeElementType) {
         const self = this,
             root = self.rootElement;
-        root && self.attributes(root, {
+        root && self.elementAttributes(root, {
             role: (value === self.$cls.elementTypes.link) ? "button" : self.$ctrl.DELETE
         });
         this._elementType = value;
@@ -168,21 +168,21 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Controls_Control 
             if (value) {
                 if (root.hasAttribute("tabIndex")) {
                     this._tabIndex = root.getAttribute("tabIndex");
-                    self.attributes(root, { tabIndex: "-1" });
+                    self.elementAttributes(root, { tabIndex: "-1" });
                 }
-                self.attributes(root, { disabled: "" });
+                self.elementAttributes(root, { disabled: "" });
                 self.classes(root, self.$clsActions.Add, self.$cls.DISABLED_CLASSES);
-                self.aria(root, { disabled: "true" });
+                self.elementAria(root, { disabled: "true" });
                 if (self.elementType === self.$cls.elementTypes.link) {
                     self._href = (<HTMLAnchorElement>root).href;
                     (<HTMLAnchorElement>root).href = "";
                 }
             }
             else {
-                self._tabIndex && self.attributes(root, { tabIndex: self._tabIndex });
-                self.attributes(root, { disabled: self.$ctrl.DELETE });
+                self._tabIndex && self.elementAttributes(root, { tabIndex: self._tabIndex });
+                self.elementAttributes(root, { disabled: self.$ctrl.DELETE });
                 self.classes(root, self.$clsActions.Remove, self.$cls.DISABLED_CLASSES);
-                self.aria(root, { disabled: self.$ctrl.DELETE });
+                self.elementAria(root, { disabled: self.$ctrl.DELETE });
                 if (self.elementType === self.$cls.elementTypes.link) {
                     (<HTMLAnchorElement>root).href = self._href;
                 }

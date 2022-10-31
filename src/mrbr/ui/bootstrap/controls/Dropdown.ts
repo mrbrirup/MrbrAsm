@@ -151,8 +151,8 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
         }
         const button = self.elements[self.$cls.DROPDOWN_BUTTON_NAME];
         if (button) {
-            if (self.alignment !== self.$cls.dropdownAlignments[self.$cls.dropdownAlignments.default]) { self.dataset(button, { bsDisplay: "static" }); }
-            else { self.dataset(button, { bsDisplay: self.$cls.DELETE }); }
+            if (self.alignment !== self.$cls.dropdownAlignments[self.$cls.dropdownAlignments.default]) { self.elementDataset(button, { bsDisplay: "static" }); }
+            else { self.elementDataset(button, { bsDisplay: self.$cls.DELETE }); }
         }
         self._alignment = value;
     }
@@ -160,7 +160,7 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
     public set autoClose(value: autoClosingType[keyof autoClosingType]) {
         const self = this,
             button = self.isSubMenu ? self.elements[self.$cls.DROPDOWN_SUBMENU_LINK_NAME] : self.elements[self.$cls.DROPDOWN_BUTTON_NAME];
-        (button) && (self.dataset(button, { bsAutoClose: value === self.$cls.autoClosing.default ? self.$cls.DELETE : value }))
+        (button) && (self.elementDataset(button, { bsAutoClose: value === self.$cls.autoClosing.default ? self.$cls.DELETE : value }))
         self._autoClose = value;
     }
     public get buttonColour(): buttonColourType[keyof buttonColourType] { return this._buttonColour; }
@@ -287,15 +287,15 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
     }
     public addMenuItem(id: string, text: string): HTMLElement {
         const self = this;
-        let link = <HTMLAnchorElement>self.createElement(new self.$ctrlCfg(`${id}_anchor`, "a", self.configuration(self.$cls.DROPDOWN_MENUITEM_NAME))
+        let link = <HTMLAnchorElement>self.createElement(new self.$ctrlCfg(`${id}_anchor`, "a", self.configuration(self.$cls.DROPDOWN_MENUITEM_NAME)
             .Properties({
                 href: "#",
                 innerText: text
-            })),
-            item = <HTMLElement>self.createElement(new self.$ctrlCfg(id, "li")
+            }))),
+            item = <HTMLElement>self.createElement(new self.$ctrlCfg(id, "li", new self.$ctrlPrm()
                 .Classes("user-select-none")
                 .Children([link])
-                .Data({ mrbrDropdownType: self.$cls.menuItemTypes.menuitem })
+                .Data({ mrbrDropdownType: self.$cls.menuItemTypes.menuitem }))
             )
 
         self.defaultContainerElement.appendChild(item);
@@ -303,13 +303,13 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
     }
     public addHeaderMenuItem(id: string, text: string): HTMLElement {
         const self = this;
-        let textElement = <HTMLElement>self.createElement(new self.$ctrlCfg(`${id}_text`, "h6")
-            .Properties({ innerText: text })
+        let textElement = <HTMLElement>self.createElement(new self.$ctrlCfg(`${id}_text`, "h6", new self.$ctrlPrm()
+            .Properties({ innerText: text }))
         ),
-            item = <HTMLElement>self.createElement(new self.$ctrlCfg(id, "li")
+            item = <HTMLElement>self.createElement(new self.$ctrlCfg(id, "li", new self.$ctrlPrm()
                 .Classes("dropdown-header user-select-none pointer-events-none")
                 .Children([textElement])
-                .Data({ mrbrDropdownType: self.$cls.menuItemTypes.header })
+                .Data({ mrbrDropdownType: self.$cls.menuItemTypes.header }))
             )
         self.defaultContainerElement.prepend(item);
         return item;
@@ -318,9 +318,9 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
     public addDividerMenuItem(id: string): HTMLElement {
         const self = this;
         let divider = <HTMLElement>self.createElement(new self.$ctrlCfg(`${id}_hr`, "hr", self.configuration(self.$cls.DROPDOWN_DIVIDER_NAME))),
-            item = <HTMLElement>self.createElement(new self.$ctrlCfg(id, "li")
+            item = <HTMLElement>self.createElement(new self.$ctrlCfg(id, "li", new self.$ctrlPrm()
                 .Children([divider])
-                .Data({ mrbrDropdownType: self.$cls.menuItemTypes.header }))
+                .Data({ mrbrDropdownType: self.$cls.menuItemTypes.header })));
         self.defaultContainerElement.appendChild(item);
         return item;
     }

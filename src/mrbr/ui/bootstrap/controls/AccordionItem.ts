@@ -267,7 +267,7 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
                     .then(manifest => {
                         const accordionItemHeadingId = self.$ctrl.createId("accordion_item_heading"),
                             accordionCollapsableId = self.$ctrl.createId("accordion_collapsable"),
-                            accordionToggle = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_TOGGLE_NAME, "button", self.accordionToggleConfig)
+                            accordionToggle = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_TOGGLE_NAME, "button", self.accordionToggleConfig
                                 .Attributes({ "type": "button" })
                                 .Aria({
                                     "aria-expanded": false,
@@ -277,18 +277,18 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
                                     "bsToggle": "collapse",
                                     "bsTarget": `#${accordionCollapsableId}`
                                 })
-                            ),
+                            )),
                             accordionBody = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_BODY, "div", self.accordionBodyConfig)),
-                            accordionHeader = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_HEADER_NAME, "h2", self.accordionHeaderConfig)
+                            accordionHeader = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_HEADER_NAME, "h2", self.accordionHeaderConfig
                                 .Id(accordionItemHeadingId)
-                                .Children(accordionToggle)),
-                            accordionCollapse = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_COLLAPSE, "div", self.accordionCollapseConfig)
+                                .Children(accordionToggle))),
+                            accordionCollapse = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_COLLAPSE, "div", self.accordionCollapseConfig
                                 .Id(accordionCollapsableId)
                                 .Aria({ "aria-labelledby": accordionItemHeadingId })
-                                .Children(accordionBody));
-                        self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.accordionItemConfig)
+                                .Children(accordionBody)));
+                        self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.accordionItemConfig
                             .Children([accordionHeader, accordionCollapse])
-                        );
+                        ));
                         self.defaultContainerElementName = self.$cls.ACCORDION_BODY;
                         self.title = self._title;
                         initialisePromise.resolve(self);

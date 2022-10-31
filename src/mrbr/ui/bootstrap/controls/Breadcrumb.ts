@@ -18,7 +18,7 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
     private _breadcrumbDivider: string = "/";
     private _breadcrumbTrail: Mrbr_Collections_DoubleLinkedList<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem> = new Mrbr_Collections_DoubleLinkedList<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem>(true);
 
-    override get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Breadcrumb { return Mrbr_UI_Bootstrap_Controls_Breadcrumb; }
+    get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Breadcrumb { return Mrbr_UI_Bootstrap_Controls_Breadcrumb; }
 
     constructor(rootElementName: string) {
         super(rootElementName);
@@ -69,7 +69,7 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
             let currentCrumb: HTMLLIElement = self.elements[currentNode.key] || self.createElement(new self.$ctrlCfg(currentNode.key, "li", self.configuration(self.$cls.BREADCRUMB_ITEM_NAME)));
             const linkNode = self.elements[currentNode.key].querySelector("a");
             if (linkNode) { currentCrumb.removeChild(linkNode); }
-            self.aria(currentCrumb, { "current": "page" });
+            self.elementAria(currentCrumb, { "current": "page" });
             currentCrumb.textContent = currentNode.value.crumbText;
             self.classes(currentCrumb, self.$clsActions.Add, "active");
         }
@@ -102,8 +102,8 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
                 MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(manifest => {
 
-                        self.createElement(new self.$ctrlCfg(self.rootElementName, "nav", self.configuration(self.$cls.BREADCRUMB_NAV_NAME))
-                            .Children([new self.$ctrlCfg(self.defaultContainerElementName, "ol", self.configuration(self.$cls.BREADCRUMB_LIST_NAME))]
+                        self.createElement(new self.$ctrlCfg(self.rootElementName, "nav", self.configuration(self.$cls.BREADCRUMB_NAV_NAME)
+                            .Children([new self.$ctrlCfg(self.defaultContainerElementName, "ol", self.configuration(self.$cls.BREADCRUMB_LIST_NAME))])
                             ));
                         self.events[self.$cls.BREADCRUMB_CLICK_EVENT_NAME] = new Mrbr_System_Events_EventHandler(
                             "click",

@@ -141,19 +141,19 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
         const controlBoxControl: ControlBoxControl = self.controlBoxControls[name],
             imageConfig = self.controlImageConfig,
             buttonConfig: Mrbr_UI_Controls_ControlConfig = self.controlButtonConfig,
-            buttonData = buttonConfig.data || {};
+            buttonData = buttonConfig.optionalParameters.data || {};
         buttonConfig.elementName = name;
         imageConfig.elementName = controlBoxControl.imageName;
-        imageConfig.attributes = imageConfig.attributes || {};
-        Object.assign(imageConfig.attributes, { src: `${MrbrBase.mrbrInstance.paths.get("Mrbr")}${controlBoxControl.src}` });
+        imageConfig.optionalParameters.attributes = imageConfig.optionalParameters.attributes || {};
+        Object.assign(imageConfig.optionalParameters.attributes, { src: `${MrbrBase.mrbrInstance.paths.get("Mrbr")}${controlBoxControl.src}` });
 
         Object.assign(buttonConfig, {
             data: Object.assign(buttonData, {
                 eventType: controlBoxControl.eventType.toString(),
                 order: controlBoxControl.order.toString()
-            }),
-            children: [...buttonConfig.children || [], imageConfig]
+            })
         });
+        buttonConfig.optionalParameters.children = [...buttonConfig.optionalParameters.children || [], imageConfig]
         self.rootElement.appendChild(<HTMLElement>self.createElement(buttonConfig));
     }
 
@@ -218,19 +218,19 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
         self._dialogState = value
         switch (value) {
             case states.FullScreen:
-                if (self.elements["fullscreen"]) { self.attributes(self.elements["fullscreen_image"], { src: `${rootPath}mrbr/images/forms/fullscreenRestore.svg` }); }
+                if (self.elements["fullscreen"]) { self.elementAttributes(self.elements["fullscreen_image"], { src: `${rootPath}mrbr/images/forms/fullscreenRestore.svg` }); }
                 setTimeout(() => {
                     if (self.elements["maximise"]) { self.classes(self.elements["maximise"], classActions.Add, "d-none"); }
                 }, 0);
                 break;
             case states.Maximised:
-                if (self.elements["maximise"]) { self.attributes(self.elements["maximise_image"], { src: `${rootPath}mrbr/images/forms/restoreWindow.svg` }); }
+                if (self.elements["maximise"]) { self.elementAttributes(self.elements["maximise_image"], { src: `${rootPath}mrbr/images/forms/restoreWindow.svg` }); }
                 break;
             case states.Minimised:
                 break;
             case states.Normal:
-                if (self.elements["maximise"]) { self.attributes(self.elements["maximise_image"], { src: `${rootPath}mrbr/images/forms/maximise.svg` }); }
-                if (self.elements["fullscreen"]) { self.attributes(self.elements["fullscreen_image"], { src: `${rootPath}mrbr/images/forms/fullscreen.svg` }); }
+                if (self.elements["maximise"]) { self.elementAttributes(self.elements["maximise_image"], { src: `${rootPath}mrbr/images/forms/maximise.svg` }); }
+                if (self.elements["fullscreen"]) { self.elementAttributes(self.elements["fullscreen_image"], { src: `${rootPath}mrbr/images/forms/fullscreen.svg` }); }
                 setTimeout(() => {
                     if (self.elements["maximise"]) { self.classes(self.elements["maximise"], classActions.Remove, "d-none"); }
                     if (self.elements["fullscreen"]) { self.classes(self.elements["fullscreen"], classActions.Remove, "d-none"); }

@@ -51,7 +51,7 @@ export class Mrbr_UI_Bootstrap_Controls_Tooltip extends Mrbr_UI_Controls_Control
     public set placement(value: Mrbr_UI_Bootstrap_Controls_Tooltip$Placements) {
         const self = this;
         self._placement = value;
-        self.rootElement && self.dataset(self.rootElement, { bsPlacement: value });
+        self.rootElement && self.elementDataset(self.rootElement, { bsPlacement: value });
     }
     constructor(rootElement: string | HTMLElement)
     constructor(rootElement: string | HTMLElement, options: object | string)
@@ -71,7 +71,7 @@ export class Mrbr_UI_Bootstrap_Controls_Tooltip extends Mrbr_UI_Controls_Control
                 if (!self.elements[self.rootElementName]) {
                     self.createElement(new self.$ctrlCfg(self.rootElementName, "div"));
                 }
-                self.dataset(self.rootElement, { bsToggle: "tooltip" })
+                self.elementDataset(self.rootElement, { bsToggle: "tooltip" })
                 initalisePromise.resolve(self);
             });
         return initalisePromise;

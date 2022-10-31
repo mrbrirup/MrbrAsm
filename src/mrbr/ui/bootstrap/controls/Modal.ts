@@ -77,7 +77,7 @@ export class Mrbr_UI_Bootstrap_Controls_Modal extends Mrbr_UI_Controls_Control {
     public set staticBackdrop(value: boolean) {
         const self = this;
         self._staticBackdrop = value;
-        self.rootElement && self.dataset(self.rootElement, { bsBackdrop: value ? "static" : self.$cls.DELETE });
+        self.rootElement && self.elementDataset(self.rootElement, { bsBackdrop: value ? "static" : self.$cls.DELETE });
     }
     public get verticalCenter(): boolean { return this._verticalCenter; }
     public set verticalCenter(value: boolean) {
@@ -124,34 +124,34 @@ export class Mrbr_UI_Bootstrap_Controls_Modal extends Mrbr_UI_Controls_Control {
                     modalHeader;
 
                 if (self.footer) {
-                    modalFooter = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.MODAL_FOOTER_NAME, "div", self.configuration(self.$cls.MODAL_FOOTER_NAME))
-                        .Properties({ innerText: "Footer" }))
+                    modalFooter = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.MODAL_FOOTER_NAME, "div", self.configuration(self.$cls.MODAL_FOOTER_NAME)
+                        .Properties({ innerText: "Footer" })))
                 }
-                modalBody = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.MODAL_BODY_NAME, "div", self.configuration(self.$cls.MODAL_BODY_NAME))
-                    .Properties({ innerText: "..." })
+                modalBody = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.MODAL_BODY_NAME, "div", self.configuration(self.$cls.MODAL_BODY_NAME)
+                    .Properties({ innerText: "..." }))
                 );
                 if (self.closeButton) {
                     closeButton = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.MODAL_CLOSE_BUTTON_NAME, "div", self.configuration(self.$cls.MODAL_CLOSE_BUTTON_NAME)));
                 }
                 if (self.title) {
-                    modalTitleBar = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.MODAL_TITLE_NAME, "h1", self.configuration(self.$cls.MODAL_TITLE_NAME))
+                    modalTitleBar = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.MODAL_TITLE_NAME, "h1", self.configuration(self.$cls.MODAL_TITLE_NAME)
                         .Id(modelLabelId)
-                        .Properties({ innerText: self.dialogTitleText }))
+                        .Properties({ innerText: self.dialogTitleText })))
                 }
                 if (self.header) {
-                    modalHeader = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.MODAL_HEADER_NAME, "div", self.configuration(self.$cls.MODAL_HEADER_NAME))
-                        .Children([modalTitleBar, closeButton].filter(element => element !== null && element !== undefined)))
+                    modalHeader = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.MODAL_HEADER_NAME, "div", self.configuration(self.$cls.MODAL_HEADER_NAME)
+                        .Children([modalTitleBar, closeButton].filter(element => element !== null && element !== undefined))))
                 }
                 const
-                    modalContent = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.MODAL_CONTENT_NAME, "div", self.configuration(self.$cls.MODAL_CONTENT_NAME))
-                        .Children([modalHeader, modalBody, modalFooter].filter(element => element !== null && element !== undefined))
+                    modalContent = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.MODAL_CONTENT_NAME, "div", self.configuration(self.$cls.MODAL_CONTENT_NAME)
+                        .Children([modalHeader, modalBody, modalFooter].filter(element => element !== null && element !== undefined)))
                     ),
-                    modalDialog = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.MODAL_DIALOG_NAME, "div", self.configuration(self.$cls.MODAL_DIALOG_NAME))
-                        .Children([modalContent])
+                    modalDialog = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.MODAL_DIALOG_NAME, "div", self.configuration(self.$cls.MODAL_DIALOG_NAME)
+                        .Children([modalContent]))
                     ),
-                    modal = self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.MODAL_NAME))
+                    modal = self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.MODAL_NAME)
                         .Aria({ "labelledby": `#${modelLabelId}`, hidden: true })
-                        .Children([modalDialog])
+                        .Children([modalDialog]))
                     );
                 self.defaultContainerElementName = self.$cls.MODAL_BODY_NAME;
                 self.fade = self._fade;

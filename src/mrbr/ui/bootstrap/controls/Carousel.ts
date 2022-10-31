@@ -81,7 +81,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
     public set pauseOnHover(value: boolean) {
         const self = this;
         if (self.rootElement) {
-            self.dataset(self.rootElement, { bsPause: value ? "hover" : "false" });
+            self.elementDataset(self.rootElement, { bsPause: value ? "hover" : "false" });
         }
         this._pauseOnHover = value;
     }
@@ -91,7 +91,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
     public set interval(value: number) {
         const self = this;
         if (self.rootElement && value > 0) {
-            self.dataset(self.rootElement, { bsInterval: value });
+            self.elementDataset(self.rootElement, { bsInterval: value });
             this._interval = value;
         }
     }
@@ -101,7 +101,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
     public set keyboard(value: boolean) {
         const self = this;
         if (self.rootElement) {
-            self.dataset(self.rootElement, { bsKeyboard: value });
+            self.elementDataset(self.rootElement, { bsKeyboard: value });
         }
         this._keyboard = value;
     }
@@ -111,7 +111,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
     public set touch(value: boolean) {
         const self = this;
         if (self.rootElement) {
-            self.dataset(self.rootElement, { bsTouch: value });
+            self.elementDataset(self.rootElement, { bsTouch: value });
         }
         this._touch = value;
     }
@@ -121,7 +121,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
     public set wrap(value: boolean) {
         const self = this;
         if (self.rootElement) {
-            self.dataset(self.rootElement, { bsWrap: value });
+            self.elementDataset(self.rootElement, { bsWrap: value });
         }
         this._wrap = value;
     }
@@ -131,9 +131,9 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
         const self = this;
         if (self.rootElement) {
             if (value) {
-                self.dataset(self.rootElement, { bsRide: "carousel" });
+                self.elementDataset(self.rootElement, { bsRide: "carousel" });
             } else {
-                self.dataset(self.rootElement, { bsRide: "true" });
+                self.elementDataset(self.rootElement, { bsRide: "true" });
             }
         }
         self._autoPlay = value;
@@ -155,17 +155,17 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
                     nextText = document.createElement("span");
                 self.classes(prevIcon, self.$clsActions.Add, "carousel-control-prev-icon");
                 self.classes(nextIcon, self.$clsActions.Add, "carousel-control-next-icon");
-                self.aria([prevIcon, nextIcon], { hidden: "true" });
+                self.elementAria([prevIcon, nextIcon], { hidden: "true" });
                 self.classes([prevText, nextText], self.$clsActions.Add, "visually-hidden");
                 prevText.innerText = "Previous";
                 nextText.innerText = "Next";
-                let prev = <HTMLButtonElement>self.createElement(new this.$ctrlCfg(self.$cls.CAROUSEL_CONTROL_PREV_NAME, "button", self.configuration(self.$cls.CAROUSEL_CONTROL_PREV_NAME))
+                let prev = <HTMLButtonElement>self.createElement(new this.$ctrlCfg(self.$cls.CAROUSEL_CONTROL_PREV_NAME, "button", self.configuration(self.$cls.CAROUSEL_CONTROL_PREV_NAME)
                     .Data({ bsTarget: `#${self.rootElement.id}` })
-                    .Children([prevIcon, prevText])
+                    .Children([prevIcon, prevText]))
                 );
-                let next = <HTMLButtonElement>self.createElement(new this.$ctrlCfg(self.$cls.CAROUSEL_CONTROL_NEXT_NAME, "button", self.configuration(self.$cls.CAROUSEL_CONTROL_NEXT_NAME))
+                let next = <HTMLButtonElement>self.createElement(new this.$ctrlCfg(self.$cls.CAROUSEL_CONTROL_NEXT_NAME, "button", self.configuration(self.$cls.CAROUSEL_CONTROL_NEXT_NAME)
                     .Data({ bsTarget: `#${self.rootElement.id}` })
-                    .Children([nextIcon, nextText])
+                    .Children([nextIcon, nextText]))
                 );
                 self.rootElement.appendChild(self.elements[self.$cls.CAROUSEL_CONTROL_PREV_NAME]);
                 self.rootElement.appendChild(self.elements[self.$cls.CAROUSEL_CONTROL_NEXT_NAME]);
@@ -181,15 +181,15 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
                 let indicators = [];
                 Array.from(self.carouselItems.values()).forEach((item: carouselItemType) => {
                     let isActive = item.container.classList.contains("active");
-                    let indicator = <HTMLElement>self.createElement(new self.$ctrlCfg(`indicator_${indicators.length}`, "button", self.configuration(self.$cls.CAROUSEL_INDICATOR_NAME))
+                    let indicator = <HTMLElement>self.createElement(new self.$ctrlCfg(`indicator_${indicators.length}`, "button", self.configuration(self.$cls.CAROUSEL_INDICATOR_NAME)
                         .Data({ bsTarget: `#${self.rootElement.id}`, bsSlideTo: indicators.length })
-                        .Aria({ label: item.slideName, current: isActive ? "true" : "false" })
+                        .Aria({ label: item.slideName, current: isActive ? "true" : "false" }))
                     );
                     (isActive) && self.classes(indicator, self.$clsActions.Add, "active");
                     indicators.push(indicator);
                 });
-                self.createElement(new this.$ctrlCfg(self.$cls.CAROUSEL_INDICATORS_NAME, "div", self.configuration(self.$cls.CAROUSEL_INDICATORS_NAME))
-                    .Children(indicators)
+                self.createElement(new this.$ctrlCfg(self.$cls.CAROUSEL_INDICATORS_NAME, "div", self.configuration(self.$cls.CAROUSEL_INDICATORS_NAME)
+                    .Children(indicators))
                 )
                 self.rootElement.prepend(self.elements[self.$cls.CAROUSEL_INDICATORS_NAME]);
             }
@@ -231,9 +231,9 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
         const self = this;
         if (self.rootElement) {
             if (value) {
-                self.dataset(self.rootElement, { bsTouch: "false" });
+                self.elementDataset(self.rootElement, { bsTouch: "false" });
             } else {
-                self.dataset(self.rootElement, { bsTouch: self.$cls.DELETE });
+                self.elementDataset(self.rootElement, { bsTouch: self.$cls.DELETE });
             }
         }
         self._disableTouchSwipe = value;
@@ -275,13 +275,13 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
             throw new Error(`Carousel item with id ${item.id} already exists`);
         }
         self.carouselItems.set(item.id, item);
-        const image: HTMLImageElement = <HTMLImageElement>self.createElement(new self.$ctrlCfg(`${item.id}_image`, "img", self.configuration(self.$cls.CAROUSEL_ITEM_IMAGE_NAME))
-            .Attributes({ src: item.src, alt: item.alt })),
-            carouselItem: HTMLElement = <HTMLElement>self.createElement(new self.$ctrlCfg(item.id, "div", self.configuration(self.$cls.CAROUSEL_ITEM_NAME))
-                .Children([image])
+        const image: HTMLImageElement = <HTMLImageElement>self.createElement(new self.$ctrlCfg(`${item.id}_image`, "img", self.configuration(self.$cls.CAROUSEL_ITEM_IMAGE_NAME)
+            .Attributes({ src: item.src, alt: item.alt }))),
+            carouselItem: HTMLElement = <HTMLElement>self.createElement(new self.$ctrlCfg(item.id, "div", self.configuration(self.$cls.CAROUSEL_ITEM_NAME)
+                .Children([image]))
             );
         if (item.interval > 0) {
-            self.dataset(carouselItem, { bsInterval: item.interval });
+            self.elementDataset(carouselItem, { bsInterval: item.interval });
         }
         item.container = carouselItem;
         item.image = image;
@@ -330,8 +330,8 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
             await self.setDefaultConfig();
             await self.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);
             const carouselInner: HTMLElement = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.CAROUSEL_INNER_NAME, "div", self.defaultConfig.get(self.$cls.CAROUSEL_INNER_NAME)));
-            self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.defaultConfig.get(self.$cls.CAROUSEL_NAME))
-                .Children([carouselInner])
+            self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.defaultConfig.get(self.$cls.CAROUSEL_NAME)
+                .Children([carouselInner]))
             );
             self.withControls = self._withControls;
             self.withIndicators = self._withIndicators;
@@ -347,6 +347,9 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
                 let [first] = self.carouselItems.keys();
                 self.setActiveItem(first);
             }
+
+
+            //TODO: Update to new Mutation Observer 
             self.events[`carousel_${self.$cls.MUTATION_EVENT_NAME}`] = new Mrbr_System_Events_EventHandler(
                 self.$cls.MUTATION_EVENT_NAME,
                 self.$cls.mutations,

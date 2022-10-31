@@ -129,15 +129,15 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     protected _rootElementConfig(): Mrbr_UI_Controls_ControlConfig {
         const self = this,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-        return new ctrlCfg(this.rootElementName, "div", self.configuration(this.rootElementName))
-            .Children([new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME, "div", self.configuration(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME))]);
+        return new ctrlCfg(this.rootElementName, "div", self.configuration(this.rootElementName)
+            .Children([new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME, "div", self.configuration(Mrbr_UI_Bootstrap_Forms_Dialog.CONTENT_CONTAINER_CONTROL_NAME))]));
     }
 
     protected _titleBarConfig(): Mrbr_UI_Controls_ControlConfig {
         const self = this,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-        return new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME, "div", self.configuration(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME))
-            .Children([new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.TITLE_TEXT_CONTROL_NAME, "span", self.configuration(Mrbr_UI_Bootstrap_Forms_Dialog.TITLE_TEXT_CONTROL_NAME))]);
+        return new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME, "div", self.configuration(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME)
+            .Children([new ctrlCfg(Mrbr_UI_Bootstrap_Forms_Dialog.TITLE_TEXT_CONTROL_NAME, "span", self.configuration(Mrbr_UI_Bootstrap_Forms_Dialog.TITLE_TEXT_CONTROL_NAME))]));
     }
     protected _footerConfig(): Mrbr_UI_Controls_ControlConfig {
         const self = this,

@@ -36,7 +36,7 @@ export class Mrbr_UI_Controls_NavbarWindowManager extends Mrbr_UI_Bootstrap_Navi
                 //var mrbr = _mrbr;
                 let id = Mrbr_UI_Controls_NavbarWindowManager.createId("mainMenu");
                 self.mainMenu = new Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu("mainMenu");
-                self.dataset(self.menuButton, {
+                self.elementDataset(self.menuButton, {
                     bsToggle: "offcanvas",
                     bsTarget: `#${self.mainMenu.menuId}`
                 })

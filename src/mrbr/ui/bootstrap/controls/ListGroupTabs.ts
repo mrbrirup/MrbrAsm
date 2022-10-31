@@ -52,21 +52,21 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroupTabs extends Mrbr_UI_Controls_C
 
                 const listGroupId = self.$cls.createId("listGroup"),
                     panesPanelId = self.$cls.createId("panesPanel"),
-                    listGroup = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.TABS_LISTGROUP_NAME, "div", self.configuration(self.$cls.TABS_LISTGROUP_NAME))
-                        .Id(listGroupId)),
+                    listGroup = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.TABS_LISTGROUP_NAME, "div", self.configuration(self.$cls.TABS_LISTGROUP_NAME)
+                        .Id(listGroupId))),
                     listGroupColumn = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.TABS_LISTGROUP_COLUMN_NAME, "div", self.configuration(self.$cls.TABS_LISTGROUP_COLUMN_NAME)
                         .Classes("col-4")
                         .Children([listGroup]),
                     )),
-                    panesPanel = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.TABS_PANES_NAME, "div", self.configuration(self.$cls.TABS_PANES_NAME))
-                        .Id(panesPanelId),
+                    panesPanel = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.TABS_PANES_NAME, "div", self.configuration(self.$cls.TABS_PANES_NAME)
+                        .Id(panesPanelId)),
                     ),
-                    panesColumn = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.TABS_PANES_COLUMN_NAME, "div", self.configuration(self.$cls.TABS_PANES_COLUMN_NAME))
+                    panesColumn = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.TABS_PANES_COLUMN_NAME, "div", self.configuration(self.$cls.TABS_PANES_COLUMN_NAME)
                         .Classes("col-8")
-                        .Children([panesPanel])
+                        .Children([panesPanel]))
                     );
-                self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.LISTGROUPTABS_CONTROL_NAME))
-                    .Children([listGroupColumn, panesColumn])
+                self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.LISTGROUPTABS_CONTROL_NAME)
+                    .Children([listGroupColumn, panesColumn]))
                 )
                 self.events["tab_click"] = new Mrbr_System_Events_EventHandler("shown.bs.tab", self.elements[self.$cls.TABS_LISTGROUP_NAME], (e: Event) => {
                     e.stopPropagation();
@@ -119,18 +119,18 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroupTabs extends Mrbr_UI_Controls_C
             tabId = `${id}_tab`,
             tabPaneId = `${id}_pane`,
             listItemText = document.createElement("span"),
-            listItem = <HTMLElement>self.createElement(new self.$ctrlCfg(tabName, "a", self.configuration(self.$cls.TABS_LISTGROUP_ITEM_NAME))
+            listItem = <HTMLElement>self.createElement(new self.$ctrlCfg(tabName, "a", self.configuration(self.$cls.TABS_LISTGROUP_ITEM_NAME)
                 .Id(tabId)
                 .Properties({ href: `#${tabPaneId}` })
                 .Aria({ controls: tabPaneId })
-                .Children([listItemText])
+                .Children([listItemText]))
             ),
-            pane = <HTMLElement>self.createElement(new self.$ctrlCfg(`${tabName}_pane`, "div", self.configuration(self.$cls.TABS_PANE_ITEM_NAME))
+            pane = <HTMLElement>self.createElement(new self.$ctrlCfg(`${tabName}_pane`, "div", self.configuration(self.$cls.TABS_PANE_ITEM_NAME)
                 .Id(tabPaneId)
-                .Aria({ labelledby: tabId })),
+                .Aria({ labelledby: tabId }))),
             tabPane = new self.$cls.TabPane(listItem, pane);
-        self.properties(listItemText, { innerText: title, id: `${id}_text` });
-        panelContents && self.properties(pane, { innerHTML: panelContents })
+        self.elementProperties(listItemText, { innerText: title, id: `${id}_text` });
+        panelContents && self.elementProperties(pane, { innerHTML: panelContents })
         self.elements[self.$cls.TABS_LISTGROUP_NAME].appendChild(listItem);
         self.elements[self.$cls.TABS_PANES_NAME].appendChild(pane);
         self.tabPanes.set(tabName, tabPane);

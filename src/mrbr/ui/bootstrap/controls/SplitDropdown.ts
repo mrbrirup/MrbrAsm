@@ -60,14 +60,14 @@ export class Mrbr_UI_Bootstrap_Controls_SplitDropdown extends Mrbr_UI_Bootstrap_
             await this.setDefaultConfig();
             let
                 nonVisualText = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.SPLIT_DROPDOWN_NON_VISUAL_TEXT_NAME, "span", self.configuration(self.$cls.SPLIT_DROPDOWN_NON_VISUAL_TEXT_NAME))),
-                mainButton = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.SPLIT_MAIN_BUTTON_NAME, "button", self.configuration(self.$cls.SPLIT_MAIN_BUTTON_NAME))
-                    .Classes(super.buttonColour)),
-                splitButton = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.SPLIT_DROPDOWN_NAME, "button", self.configuration(self.$cls.SPLIT_DROPDOWN_NAME))
-                    .Children([nonVisualText])
+                mainButton = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.SPLIT_MAIN_BUTTON_NAME, "button", self.configuration(self.$cls.SPLIT_MAIN_BUTTON_NAME)
+                    .Classes(super.buttonColour))),
+                splitButton = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.SPLIT_DROPDOWN_NAME, "button", self.configuration(self.$cls.SPLIT_DROPDOWN_NAME)
+                    .Children([nonVisualText]))
                 ),
                 menuItemContainer = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME, (self.menuStyle === self.$cls.menuStyles.default ? "ul" : "div"), self.configuration(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME)));
-            self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.SPLIT_DROPDOWN_CONTAINER_NAME))
-                .Children([mainButton, splitButton, menuItemContainer]));
+            self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.SPLIT_DROPDOWN_CONTAINER_NAME)
+                .Children([mainButton, splitButton, menuItemContainer])));
             self.classes(mainButton, self.$clsActions.Remove, "dropdown-toggle")
             self.splitHiddenText = self._splitHiddenText;
             self.defaultContainerElementName = self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME;

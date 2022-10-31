@@ -27,11 +27,11 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Contro
         const self = this;
         if (self.targetElements) {
             if (value) {
-                self.aria(self.targetElements, { "expanded": value });
+                self.elementAria(self.targetElements, { "expanded": value });
                 self.classes(self.targetElements, self.$clsActions.Add, "show");
             }
             else {
-                self.aria(self.targetElements, { "expanded": self.$cls.DELETE });
+                self.elementAria(self.targetElements, { "expanded": self.$cls.DELETE });
                 self.classes(self.targetElements, self.$clsActions.Remove, "show");
             }
             self._startOpen = value;
@@ -79,7 +79,7 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Contro
     public get parent(): string { return this._parent; }
     public set parent(value: string) {
         const self = this;
-        self.targetElements && self.targetElements.forEach((target) => { self.dataset(target, { bsParent: value ? value : self.$cls.DELETE }) });
+        self.targetElements && self.targetElements.forEach((target) => { self.elementDataset(target, { bsParent: value ? value : self.$cls.DELETE }) });
         self._parent = value;
     }
     public get buttonStyleClass(): string { return this._buttonStyleClass; }
@@ -110,13 +110,13 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Contro
             }
             if (self.targetElements.length > 1) {
                 let controlIds = self._targetElements.map((target) => { return `${target.id}`; }).join(" ");
-                self.rootElement && self.dataset(self.rootElement, { bsTarget: ".multi-collapse" });
-                self.rootElement && self.aria(self.rootElement, { controls: controlIds });
+                self.rootElement && self.elementDataset(self.rootElement, { bsTarget: ".multi-collapse" });
+                self.rootElement && self.elementAria(self.rootElement, { controls: controlIds });
                 self.classes(self._targetElements, self.$clsActions.Add, "multi-collapse");
             }
             else {
                 let controlIds = self._targetElements.map((target) => { return `#${target.id}`; }).join(" ");
-                self.rootElement && self.dataset(self.rootElement, { bsTarget: controlIds });
+                self.rootElement && self.elementDataset(self.rootElement, { bsTarget: controlIds });
             }
             self.setTargetEvents();
         }

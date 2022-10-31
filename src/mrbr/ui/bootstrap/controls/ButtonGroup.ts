@@ -24,7 +24,7 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Controls_Con
 
     //#region Aliases
 
-    override get $cls(): typeof Mrbr_UI_Bootstrap_Controls_ButtonGroup { return Mrbr_UI_Bootstrap_Controls_ButtonGroup; }
+    get $cls(): typeof Mrbr_UI_Bootstrap_Controls_ButtonGroup { return Mrbr_UI_Bootstrap_Controls_ButtonGroup; }
 
     //#endregion Aliases
     //#region Private Properties
@@ -43,7 +43,7 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Controls_Con
     public set ariaLabel(value: string) {
         const self = this,
             root = self.rootElement;
-        root && self.attributes(root, { "aria-label": value });
+        root && self.elementAttributes(root, { "aria-label": value });
         this._ariaLabel = value;
     }
     public get buttonGroupSize(): typeButtonGroupSize {
