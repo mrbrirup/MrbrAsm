@@ -76,7 +76,7 @@ export class Mrbr_UI_Bootstrap_Controls_Tooltip extends Mrbr_UI_Controls_Control
             });
         return initalisePromise;
     }
-    public mount() { }
+    
     public render(): Mrbr_UI_Bootstrap_Controls_Tooltip {
         const self = this;
         let options = Object.assign(self.options, {

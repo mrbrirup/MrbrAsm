@@ -6,6 +6,17 @@ import { Mrbr_UI_Bootstrap_Forms_Dialog } from "../ui/bootstrap/Forms/Dialog";
 import { Mrbr_UI_Bootstrap_Forms_UrlDialog } from "../ui/bootstrap/Forms/UrlDialog";
 import { Mrbr_UI_Controls_Desktop } from "../ui/controls/desktop";
 
+
+/**
+ * Create a new Bootstrap Accordion control.
+ * Add AccordionItems
+ * Run Open/Close
+ * @date 31/10/2022 - 06:01:11
+ *
+ * @export
+ * @class Mrbr_Tests_Application
+ * @typedef {Mrbr_Tests_Application$Accordion}
+ */
 export class Mrbr_Tests_Application$Accordion {
     //    container = null
     //    desktop: Mrbr_UI_Controls_Desktop
@@ -33,7 +44,8 @@ export class Mrbr_Tests_Application$Accordion {
                 (<Mrbr_UI_Bootstrap_Controls_Accordion>accordion).addItems([accItem1, accItem2]);
                 self.accordion.alwaysOpen = true;
                 (window as any).accordion = self.accordion;
-                document.body.appendChild((<Mrbr_UI_Bootstrap_Controls_Accordion>accordion).rootElement);
+                self.accordion.mount(document.body);
+                //document.body.appendChild((<Mrbr_UI_Bootstrap_Controls_Accordion>accordion).rootElement);
                 setTimeout(() => {
                     accItem2.expand();
                 }, 2000);
@@ -46,39 +58,5 @@ export class Mrbr_Tests_Application$Accordion {
                 }, 3000);
 
             })
-        // this.desktop = new Mrbr_UI_Controls_Desktop("desktop");
-        // MrbrBase.mrbrInstance.loadManifest(Mrbr_IO_File.component(Mrbr_UI_Bootstrap_Forms_UrlDialog))
-        //     .then(async _ => {
-        //         let form = new Mrbr_UI_Bootstrap_Forms_UrlDialog(
-        //             "newDialog1");
-        //         form.parentElement = this.desktop.windowContainer;
-        //         form.resizable = true;
-        //         form.draggable = true;
-        //         form.title = "title1";
-        //         form.maximiseBox = true;
-        //         form.url = "https://en.wikipedia.org/wiki/Avocado";
-        //         await form.initialise();
-        //         setTimeout(() => {
-        //             form.draggable = false;
-        //             form.resizable = false;
-        //             form.title = "title2";
-        //             form.closeBox = true;
-        //             setTimeout(() => {
-        //                 form.resizable = true;
-        //                 form.draggable = true;
-        //                 form.title = "title3";
-        //                 form.fullScreenBox = true;
-        //                 setTimeout(() => {
-        //                     form.controlBox = false;
-        //                     setTimeout(() => {
-        //                         form.controlBox = true;
-        //                     }, 500);
-
-        //                 }, 500);
-
-        //             }, 500);
-        //         }, 500);
-        //         form.show();
-        //     })
     }
 }

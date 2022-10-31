@@ -14,6 +14,7 @@ import { Mrbr_UI_Controls_ElementsMap } from "./ElementsMap";
 import { Mrbr_UI_Controls_ControlsMap } from "./ControlsMap";
 import { Mrbr_System_Object } from "../../system/Object";
 import { Mrbr_UI_DOM_MutationObserver } from "../dom/mutationObserver";
+import { Mrbr_System_IComponent } from "../../system/IComponent";
 
 export class Mrbr_UI_Controls_Control extends Mrbr_System_Object implements Mrbr_UI_Controls_IControl {
     public static CONTROL_KEYS: symbol = Symbol("control_keys");
@@ -111,7 +112,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Object implements Mrbr
                 initialisePromise.resolve(this);
             })
             .catch(error => {
-                initialisePromise.reject(error);
+                initialisePromise.reject({ location: "Mrbr_UI_Controls_Control.Initialise.loadManifest", error: error });
             })
         return initialisePromise;
     }
@@ -369,6 +370,20 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Object implements Mrbr
     static createId(prefix: string) {
         return `${prefix}_` + (new Date()).toISOString().replace(/[:z.-]/gmi, "").split("T").map(part => parseInt(part).toString(36)).concat((Math.floor(Math.random() * 10000)).toString(36)).join("_");
     }
+
+    public mount(element: HTMLElement, position: "replace" | "prepend" | "before" | "after" | "append" = "append", ...args: any): Mrbr_UI_Controls_IControl {
+        const self = this;
+        switch (position) {
+            case "append": element.appendChild(self.rootElement); break;
+            case "before": element.before(self.rootElement); break;
+            case "after": element.after(self.rootElement); break;
+            case "prepend": element.prepend(self.rootElement); break;
+            case "replace": element.replaceWith(self.rootElement); break;
+        }
+        return self;// as any as Mrbr_UI_Controls_IControl;
+    }
+
+
 
 }
 
