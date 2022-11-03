@@ -31,12 +31,12 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
  * @public
  * @type {Array<string>}
  */
-    public get darkTheme(): Array<string> { return <Array<string>>this.darkTheme }
+    public get darkTheme(): Array<string> { return <Array<string>>this._darkTheme }
 
     /**
      * Dark Theme Classes for control
      */
-    public set darkTheme(value: Array<string> | string) { let _value = value || ""; this.darkTheme = Array.isArray(_value) ? _value : this.darkTheme = _value.split(" ").map(_val => _val.trim()); }
+    public set darkTheme(value: Array<string> | string) { let _value = value || ""; this._darkTheme = Array.isArray(_value) ? _value : this._darkTheme = _value.split(" ").map(_val => _val.trim()); }
 
     /**
      * Light Theme Classes for control
@@ -45,12 +45,12 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
      * @public
      * @type {Array<string>}
      */
-    public get lightTheme(): Array<string> { return <Array<string>>this.lightTheme; }
+    public get lightTheme(): Array<string> { return <Array<string>>this._lightTheme; }
 
     /**
      * Light Theme Classes for control
      */
-    public set lightTheme(value: Array<string> | string) { let _value = value || ""; this.lightTheme = Array.isArray(_value) ? _value : this.lightTheme = _value.split(" ").map(_val => _val.trim()); }
+    public set lightTheme(value: Array<string> | string) { let _value = value || ""; this._lightTheme = Array.isArray(_value) ? _value : this._lightTheme = _value.split(" ").map(_val => _val.trim()); }
 
     /**
      * Aria Properties for Control
@@ -59,12 +59,12 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
      * @public
      * @type {object} Object Properties and values for aria properties
      */
-    public get aria(): object { return this.aria; }
+    public get aria(): object { return this._aria; }
 
     /**
      * Aria Properties for Control
      */
-    public set aria(value: object) { this.aria = value; }
+    public set aria(value: object) { this._aria = value; }
 
     /**
      * Styles for the Control
@@ -73,12 +73,12 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
      * @public
      * @type {object}
      */
-    public get styles(): object { return this.styles; }
+    public get styles(): object { return this._styles; }
 
     /**
      * Styles for the Control
      */
-    public set styles(value: object) { this.styles = value; }
+    public set styles(value: object) { this._styles = value; }
 
     /**
      * Properties for the Control
@@ -87,12 +87,12 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
      * @public
      * @type {object} Object Properties and values for control
      */
-    public get properties(): object { return this.properties; }
+    public get properties(): object { return this._properties; }
 
     /**
      * Properties for the Control
      */
-    public set properties(value: object) { this.properties = value; }
+    public set properties(value: object) { this._properties = value; }
 
     /**
      * Element Id
@@ -101,12 +101,12 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
      * @public
      * @type {string}
      */
-    public get id(): string { return this.id; }
+    public get id(): string { return this._id; }
 
     /**
      * Element Id
      */
-    public set id(value: string) { this.id = value; }
+    public set id(value: string) { this._id = value; }
 
     /**
      * Classes for the Control
@@ -115,12 +115,12 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
      * @public
      * @type {(Array<string> | string)}
      */
-    public get classes(): Array<string> | string { return this.classes; }
+    public get classes(): Array<string> | string { return this._classes; }
 
     /**
      * Classes for the Control
      */
-    public set classes(value: Array<string> | string) { this.classes = value; }
+    public set classes(value: Array<string> | string) { this._classes = value; }
 
     /**
      * Attributes for the Control
@@ -129,12 +129,12 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
      * @public
      * @type {object} Object Properties and values for attributes
      */
-    public get attributes(): object { return this.attributes; }
+    public get attributes(): object { return this._attributes; }
 
     /**
      * Attributes for the Control
      */
-    public set attributes(value: object) { this.attributes = value; }
+    public set attributes(value: object) { this._attributes = value; }
 
     /**
      * Data Attributes for the Control
@@ -143,12 +143,12 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
      * @public
      * @type {object} Object Properties and values for data attributes
      */
-    public get data(): object { return this.data; }
+    public get data(): object { return this._data; }
 
     /**
      * Data Attributes for the Control
      */
-    public set data(value: object) { this.data = value; }
+    public set data(value: object) { this._data = value; }
 
     /**
      * Child Controls or Elements for the Control
@@ -157,12 +157,12 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
      * @public
      * @type {((Mrbr_UI_Controls_ControlConfig | HTMLElement)[])}
      */
-    public get children(): (Mrbr_UI_Controls_ControlConfig | HTMLElement)[] { return this.children; }
+    public get children(): (Mrbr_UI_Controls_ControlConfig | HTMLElement)[] { return this._children; }
 
     /**
      * Child Controls or Elements for the Control
      */
-    public set children(value: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[]) { this.children = value; }
+    public set children(value: (Mrbr_UI_Controls_ControlConfig | HTMLElement)[]) { this._children = value; }
 
     /**
      * HTML Template for the Control
@@ -171,12 +171,12 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
      * @public
      * @type {string}
      */
-    public get template(): string { return this.template; }
+    public get template(): string { return this._template; }
 
     /**
      * HTML Template for the Control
      */
-    public set template(value: string) { this.template = value; }
+    public set template(value: string) { this._template = value; }
     //#endregion Public Properties
 
     //#region Public Property Chaining Methods

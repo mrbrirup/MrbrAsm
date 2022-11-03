@@ -5,7 +5,7 @@ import { Mrbr_System_Events_EventHandler } from "../../system/events/EventHandle
 import { Mrbr_UI_Controls_Themes } from "./themes";
 import { Mrbr_UI_Controls_ThemeChangeEvent } from "./themeChangeEvent";
 import { Mrbr_UI_Controls_IControl } from "./IControl";
-import { Mrbr_System_MrbrPromise } from "../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../system/Promise";
 import { Mrbr_UI_Controls_ControlDefaultsCollection } from "./ControlDefaultsCollection";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "./ControlConfigOptionalParameters";
 import { MrbrBase } from "../../system/MrbrBase";
@@ -14,8 +14,10 @@ import { Mrbr_UI_Controls_ElementsMap } from "./ElementsMap";
 import { Mrbr_UI_Controls_ControlsMap } from "./ControlsMap";
 import { Mrbr_System_Object } from "../../system/Object";
 import { Mrbr_UI_DOM_MutationObserver } from "../dom/mutationObserver";
+import { Mrbr_System_IComponent } from "../../system/IComponent";
+import { Mrbr_IO_ManifestPromise } from "../../io/ManifestPromise";
 
-export class Mrbr_UI_Controls_Control extends Mrbr_System_Object implements Mrbr_UI_Controls_IControl {
+export class Mrbr_UI_Controls_Control extends Mrbr_System_Object implements Mrbr_UI_Controls_IControl, Mrbr_System_IComponent {
     //#region Public Symbols
 
     /**
@@ -321,7 +323,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Object implements Mrbr
     public addEventListener(...args) { throw new Error("Not implemented"); }
     public removeEventListener(...args) { throw new Error("Not implemented"); }
     public dispatchEvent(...args) { throw new Error("Not implemented"); }
-    setDefaultConfig(...args: any[]): Mrbr_System_MrbrPromise<any> {
+    setDefaultConfig(...args: any[]): Mrbr_System_Promise<any> {
         return this.$promise.createResolved(null);
     }
     //#endregion Dummy Methods to be removed after refactor
@@ -514,13 +516,15 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Object implements Mrbr
      *
      * @public
      * @param {...any[]} args
-     * @returns {Mrbr_System_MrbrPromise<any>}
+     * @returns {Mrbr_System_Promise<any>}
      */
-    public initialise(...args: any[]): Mrbr_System_MrbrPromise<any> {
+    public initialise(...args: any[]): Mrbr_System_Promise<any> {
         const
             self = this,
-            initialisePromise = this.$promise.create<Mrbr_UI_Controls_Control>("Mrbr_UI_Controls_Control:initialise");
-        this.mrbrInstance.loadManifest(Mrbr_UI_Controls_Control[MrbrBase.MRBR_COMPONENT_MANIFEST])
+            initialisePromise = this.$promise.create<Mrbr_UI_Controls_Control>("Mrbr_UI_Controls_Control:initialise"),
+            cls = Mrbr_UI_Controls_Control;
+        !cls.componentManifest && (cls.componentManifest = MrbrBase.mrbrInstance.loadManifest(cls[MrbrBase.MRBR_COMPONENT_MANIFEST]));
+        cls.componentManifest
             .then(manifest => {
                 (!self.$ctrl.mutationObserver) && (self.$ctrl.mutationObserver = new Mrbr_UI_DOM_MutationObserver(document.body, { attributes: false, childList: true }));
                 this._defaultConfiguration = new this.$ctrlCol();
@@ -538,6 +542,18 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Object implements Mrbr
             })
         return initialisePromise;
     }
+
+    /**
+     * Cached Component Manifest
+     * @date 02/11/2022 - 05:52:28
+     *
+     * @private
+     * @static
+     * @type {Mrbr_IO_ManifestPromise}
+     */
+    private static componentManifest: Mrbr_IO_ManifestPromise = null;
+
+
 
     /**
      * Create an Element for the control, assign properties and attributes

@@ -1,4 +1,4 @@
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";

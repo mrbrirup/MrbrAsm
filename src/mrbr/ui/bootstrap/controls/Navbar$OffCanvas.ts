@@ -1,6 +1,6 @@
 import { Mrbr_IO_ManifestPromise } from "../../../io/ManifestPromise";
 import { MrbrBase } from "../../../system/MrbrBase";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 import { Mrbr_UI_Bootstrap_Controls_INavbarControls } from "./INavbarControls";
 import { Mrbr_UI_Bootstrap_Controls_Navbar } from "./Navbar";
@@ -26,7 +26,7 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas extends Mrbr_UI_Bootstr
     }
 
 
-    public override initialise<T>(...args): Mrbr_System_MrbrPromise<T> {
+    public override initialise<T>(...args): Mrbr_System_Promise<T> {
         const self = this,
             togglerName = self.togglerName,
             id = self.$cls.createId(togglerName),
@@ -35,7 +35,7 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas extends Mrbr_UI_Bootstr
         super.offCanvasId = `${id}_offcanvas`;
         super.initialise()
             .then(manifest => {
-                self.mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                self.$mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(_ => {
 
                         super.setDefaultConfig()

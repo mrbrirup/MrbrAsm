@@ -1,6 +1,6 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { MrbrBase } from "../../../system/MrbrBase";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
@@ -68,7 +68,7 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Controls_Con
         this._orientation = value;
     }
     //#endregion Properties
-    initialise(...args): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_ButtonGroup> {
+    initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_ButtonGroup> {
         const self = this,
             initalisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_ButtonGroup>("Mrbr_UI_Bootstrap_Controls_ButtonGroup:initialise");
         super.initialise(args).then(() => {
@@ -124,7 +124,7 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Controls_Con
         (self.groupItems.has(id)) && self.classes(self.groupItems.get(id), self.$clsActions.Add, "active");
 
     }
-    public setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_ButtonGroup> {
+    public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_ButtonGroup> {
         const self = this;
         self.defaultConfig.add(self.$cls.BUTTON_GROUP_NAME, new self.$ctrlPrm().Attributes({ role: "group" }));
         return self.$promise.createResolved("Mrbr_UI_Bootstrap_Controls_ButtonGroup:setDefaultConfiguration", self);

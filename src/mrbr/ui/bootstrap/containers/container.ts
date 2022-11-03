@@ -4,7 +4,7 @@ import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Height } from "../utilities/sizing$height";
 import { Mrbr_UI_Bootstrap_Utilities_Sizing$Width } from "../utilities/sizing$width";
 import { Mrbr_UI_Bootstrap_Containers_Container$Breakpoints } from "./container$breakpoints";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { MrbrBase } from "../../../system/MrbrBase";
 
 export class Mrbr_UI_Bootstrap_Containers_Container extends Mrbr_UI_Controls_Control {
@@ -64,9 +64,9 @@ export class Mrbr_UI_Bootstrap_Containers_Container extends Mrbr_UI_Controls_Con
         style.addClasses(element, value)
 
     }
-    initialise(...args: any[]): Mrbr_System_MrbrPromise<any> {
+    initialise(...args: any[]): Mrbr_System_Promise<any> {
         const self = this,
-            initialisePromise = Mrbr_System_MrbrPromise.create<Mrbr_UI_Controls_Control>("Mrbr_UI_Controls_Control:initialise");
+            initialisePromise = Mrbr_System_Promise.create<Mrbr_UI_Controls_Control>("Mrbr_UI_Controls_Control:initialise");
         super.initialise(args)
             .then(result => {
                 const manifestPromise = MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);

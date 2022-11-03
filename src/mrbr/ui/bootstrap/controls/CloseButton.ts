@@ -1,5 +1,5 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 
 export class Mrbr_UI_Bootstrap_Controls_CloseButton extends Mrbr_UI_Controls_Control {
@@ -31,7 +31,7 @@ export class Mrbr_UI_Bootstrap_Controls_CloseButton extends Mrbr_UI_Controls_Con
         self._disabled = value;
     }
     //#endregion Public Properties
-    public initialise(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_CloseButton> {
+    public initialise(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_CloseButton> {
         const self = this,
             initalisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_CloseButton:initialise");
         super.initialise().then(async _ => {
@@ -50,7 +50,7 @@ export class Mrbr_UI_Bootstrap_Controls_CloseButton extends Mrbr_UI_Controls_Con
         return initalisePromise;
     }
     //#region Private Methods
-    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_CloseButton> {
+    setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_CloseButton> {
         const self = this,
             setDefaultConfigPromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_CloseButton:setDefaultConfig");
         super.setDefaultConfig().then(() => {

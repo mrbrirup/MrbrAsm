@@ -1,4 +1,4 @@
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 
 export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Control {
@@ -97,7 +97,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
 
 
 
-    public initialise(...args): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_ListGroup> {
+    public initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_ListGroup> {
         const self = this,
             initialisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_ListGroup>("Mrbr_UI_Bootstrap_Controls_ListGroup:initilise");
         super.initialise(args).then(async _ => {
@@ -113,7 +113,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
         });
         return initialisePromise;
     }
-    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_ListGroup> {
+    setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_ListGroup> {
         const self = this,
             setDefaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_ListGroup>("Mrbr_UI_Bootstrap_Controls_ListGroup:setDefaultConfig");
         super.setDefaultConfig().then(async _ => {

@@ -1,5 +1,5 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 
 export class Mrbr_UI_Bootstrap_Controls_ListGroupTabs extends Mrbr_UI_Controls_Control {
@@ -43,7 +43,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroupTabs extends Mrbr_UI_Controls_C
 
     constructor(rootElementName: string) { super(rootElementName); }
 
-    initialise(...args: any[]): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_ListGroupTabs> {
+    initialise(...args: any[]): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_ListGroupTabs> {
         const self = this,
             initalisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_ListGroupTabs>("Mrbr_UI_Bootstrap_Controls_ListGroupTabs:initialise");
         super.initialise(args)
@@ -78,7 +78,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroupTabs extends Mrbr_UI_Controls_C
 
         return initalisePromise;
     }
-    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_ListGroupTabs> {
+    setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_ListGroupTabs> {
         const self = this,
             setDefaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_ListGroupTabs>("Mrbr_UI_Bootstrap_Controls_ListGroupTabs:setDefaultConfig");
 
@@ -180,7 +180,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroupTabs extends Mrbr_UI_Controls_C
             activeTab = self.tabPanes.get(tabName);
             self.classes(activeTab.tab, self.$clsActions.Add, "active");
             self.classes(activeTab.pane, self.$clsActions.Add, "active show");
-            let bootstrapTab = self.mrbrInstance.host["bootstrap"]?.Tab?.getOrCreateInstance(activeTab.tab);
+            let bootstrapTab = self.$mrbrInstance.host["bootstrap"]?.Tab?.getOrCreateInstance(activeTab.tab);
             bootstrapTab?.show();
         }
         return activeTab;

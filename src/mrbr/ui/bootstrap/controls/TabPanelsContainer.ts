@@ -1,5 +1,5 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 
@@ -135,7 +135,7 @@ export class Mrbr_UI_Bootstrap_Controls_TabPanelsContainer extends Mrbr_UI_Contr
     }
 
 
-    public initialise(...args): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_TabPanelsContainer> {
+    public initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_TabPanelsContainer> {
         const self = this,
             initialisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_TabPanelsContainer>("Mrbr_UI_Bootstrap_Controls_TabPanelsContainer:initialise"),
             tabsContainerName = `${self.rootElementName}_tabsContainer`,
@@ -221,7 +221,7 @@ export class Mrbr_UI_Bootstrap_Controls_TabPanelsContainer extends Mrbr_UI_Contr
         self.dispatchEvent(new CustomEvent(self.$cls.NAV_SHOWN_TAB_EVENT, { detail: { tabPanelName: self.getTabPanelNameFromEvent(event)?.name, event: event } }));
     }
 
-    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_TabPanelsContainer> {
+    setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_TabPanelsContainer> {
         const self = this,
             setDefaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_TabPanelsContainer>("Mrbr_UI_Bootstrap_Controls_TabPanelsContainer:setDefaultConfig");
         super.setDefaultConfig()
@@ -260,7 +260,7 @@ export class Mrbr_UI_Bootstrap_Controls_TabPanelsContainer extends Mrbr_UI_Contr
     public setActive(name: string): Mrbr_UI_Bootstrap_Controls_TabPanelsContainer {
         const self = this;
         let activetab = self._navbarControls.get(name).tab;
-        activetab && self.mrbrInstance.host["bootstrap"].Tab.getOrCreateInstance(activetab).show();
+        activetab && self.$mrbrInstance.host["bootstrap"].Tab.getOrCreateInstance(activetab).show();
         return self;
     }
     public getActive(): InstanceType<typeof Mrbr_UI_Bootstrap_Controls_TabPanelsContainer.TabPanel> {

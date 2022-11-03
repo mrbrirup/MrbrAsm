@@ -1,5 +1,5 @@
 import { MrbrBase } from "../../../system/MrbrBase";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 import { Mrbr_UI_Bootstrap_Controls_Toast } from "./Toast";
@@ -54,14 +54,14 @@ export class Mrbr_UI_Bootstrap_Controls_ToastRack extends Mrbr_UI_Controls_Contr
         maxToasts && (this._maxToasts = maxToasts);
     }
 
-    initialise(...args): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_ToastRack> {
+    initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_ToastRack> {
         const self = this,
             initalisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_ToastRack>("Mrbr_UI_Bootstrap_Controls_ToastRack:initialise");
 
 
         super.initialise(args)
             .then(async () => {
-                await self.mrbrInstance.loadManifest(self.$cls[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                await self.$mrbrInstance.loadManifest(self.$cls[MrbrBase.MRBR_COMPONENT_MANIFEST])
                 self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.toastRackConfig))
                 let bodyElement = self.rootElement.querySelector("div");
                 bodyElement.id = self.$cls.createId("toastRack");

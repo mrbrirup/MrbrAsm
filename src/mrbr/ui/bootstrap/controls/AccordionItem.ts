@@ -1,5 +1,5 @@
 import { MrbrBase } from "../../../system/MrbrBase";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 import { Mrbr_UI_Controls_IControl } from "../../controls/IControl";
@@ -254,15 +254,15 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
      *
      * @public
      * @param {...*} args
-     * @returns {Mrbr_System_MrbrPromise<any>}
+     * @returns {Mrbr_System_Promise<any>}
      */
-    public initialise(...args: any): Mrbr_System_MrbrPromise<any> {
+    public initialise(...args: any): Mrbr_System_Promise<any> {
         const self = this,
             initialisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_AccordionItem:initialise");
         super
             .initialise(args)
             .then(control => {
-                self.mrbrInstance
+                self.$mrbrInstance
                     .loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(manifest => {
                         const accordionItemHeadingId = self.$ctrl.createId("accordion_item_heading"),
@@ -306,7 +306,7 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
     public expand() {
         const collapseElement = this.elements.get(this.$cls.ACCORDION_COLLAPSE);
         if (!collapseElement.classList.contains("collapse")) { return; }
-        (this.mrbrInstance.host.bootstrap as any).Collapse.getOrCreateInstance(collapseElement)?.show();
+        (this.$mrbrInstance.host.bootstrap as any).Collapse.getOrCreateInstance(collapseElement)?.show();
     }
 
     /**
@@ -318,7 +318,7 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
     public collapse() {
         const collapseElement = this.elements.get(this.$cls.ACCORDION_COLLAPSE);
         if (!(collapseElement.classList.contains("collapse") && collapseElement.classList.contains("show"))) { return; }
-        (this.mrbrInstance.host.bootstrap as any).Collapse.getOrCreateInstance(collapseElement)?.hide();
+        (this.$mrbrInstance.host.bootstrap as any).Collapse.getOrCreateInstance(collapseElement)?.hide();
     }
     public setParent(parentId: string) { this.elements.get(this.$cls.ACCORDION_COLLAPSE).dataset["bsParent"] = `#${parentId}`; }
     //endregion Public Methods

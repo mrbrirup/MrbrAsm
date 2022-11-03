@@ -1,5 +1,5 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 
 export class Mrbr_UI_Bootstrap_Controls_Modal extends Mrbr_UI_Controls_Control {
@@ -109,7 +109,7 @@ export class Mrbr_UI_Bootstrap_Controls_Modal extends Mrbr_UI_Controls_Control {
         super(rootElementName);
     }
     //#region Public Methods
-    public initialise(...args): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Modal> {
+    public initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Modal> {
         const self = this,
             initalisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Modal>("Modal:initialise");
         super.initialise(args)
@@ -175,7 +175,7 @@ export class Mrbr_UI_Bootstrap_Controls_Modal extends Mrbr_UI_Controls_Control {
     }
     //#endregion Public Methods
     //#region Private Methods
-    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Modal> {
+    setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Modal> {
         const self = this,
             setDefaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Modal>("Modal:setDefaultConfig");
         super.setDefaultConfig()

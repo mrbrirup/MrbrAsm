@@ -1,6 +1,6 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { MrbrBase } from "../../../system/MrbrBase";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 type carouselItemType = InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Carousel.CarouselItem>;
 export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Control {
@@ -323,12 +323,12 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
         self.carouselItems.delete(item.id);
         return self;
     }
-    public initialise(...args): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Carousel> {
+    public initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Carousel> {
         const self = this,
             initalisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_Carousel:initialise");
         super.initialise(...args).then(async () => {
             await self.setDefaultConfig();
-            await self.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);
+            await self.$mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);
             const carouselInner: HTMLElement = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.CAROUSEL_INNER_NAME, "div", self.defaultConfig.get(self.$cls.CAROUSEL_INNER_NAME)));
             self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.defaultConfig.get(self.$cls.CAROUSEL_NAME)
                 .Children([carouselInner]))
@@ -407,7 +407,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
         const self = this;
         self.dispatchEvent(new CustomEvent(self.$cls.CAROUSEL_SLIDE_EVENT_NAME, { detail: event }));
     }
-    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Carousel> {
+    setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Carousel> {
         super.setDefaultConfig();
         const self = this,
             setDefaultConfigPromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_Carousel:setDefaultConfig");

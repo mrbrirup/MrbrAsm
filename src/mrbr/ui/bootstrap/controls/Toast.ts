@@ -1,6 +1,6 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { MrbrBase } from "../../../system/MrbrBase";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 
@@ -148,10 +148,10 @@ export class Mrbr_UI_Bootstrap_Controls_Toast extends Mrbr_UI_Controls_Control {
     }
 
 
-    public initialise(...args): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Toast> {
+    public initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Toast> {
         const self = this,
-            initialisePromise = Mrbr_System_MrbrPromise.create<Mrbr_UI_Bootstrap_Controls_Toast>("Mrbr_UI_Bootstrap_Controls_Toast.initialise");
-        self.mrbrInstance.loadManifest(self.$cls[MrbrBase.MRBR_COMPONENT_MANIFEST])
+            initialisePromise = Mrbr_System_Promise.create<Mrbr_UI_Bootstrap_Controls_Toast>("Mrbr_UI_Bootstrap_Controls_Toast.initialise");
+        self.$mrbrInstance.loadManifest(self.$cls[MrbrBase.MRBR_COMPONENT_MANIFEST])
             .then(() => {
                 let header = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.HEADER_NAME, "div", self.headerConfig)),
                     body = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.BODY_NAME, "div", self.bodyConfig));
@@ -174,7 +174,7 @@ export class Mrbr_UI_Bootstrap_Controls_Toast extends Mrbr_UI_Controls_Control {
     }
     public get boostrapInstance() {
         const self = this;
-        return self.mrbrInstance.host.bootstrap.Toast.getOrCreateInstance(self.rootElement);
+        return self.$mrbrInstance.host.bootstrap.Toast.getOrCreateInstance(self.rootElement);
     }
 
     public show(): Mrbr_UI_Bootstrap_Controls_Toast {

@@ -1,3 +1,11 @@
+
+/**
+ * File type to load
+ * @date 03/11/2022 - 05:48:45
+ *
+ * @export
+ * @enum {number}
+ */
 export enum Mrbr_IO_FileType {
     Text = "text",
     Json = "json",

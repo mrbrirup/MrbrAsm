@@ -1,5 +1,5 @@
 import { MrbrBase } from "../../../system/MrbrBase";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 import { Mrbr_UI_Controls_IControl } from "../../controls/IControl";
@@ -75,7 +75,7 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
      */
     public get accordionConfig(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
         (!this.$cls._accordion_config) && (this.$cls._accordion_config = new this.$ctrlPrm().Classes(["accordion"]));
-        return this.$cls._accordion_config;
+        return Object.assign(new this.$ctrlPrm(), this.$cls._accordion_config);
     }
     //#endregion Private Properties
 
@@ -168,15 +168,15 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
      *
      * @public
      * @param {...*} args
-     * @returns {Mrbr_System_MrbrPromise<any>}
+     * @returns {Mrbr_System_Promise<any>}
      */
-    public initialise(...args: any): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Accordion> {
+    public initialise(...args: any): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Accordion> {
         const self = this,
             initialisePromise = self.$promise.create(`Mrbr_UI_Bootstrap_Controls_Accordion:${self.rootElementName}`);
         super
             .initialise(args)
             .then(async _ => {
-                self.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                self.$mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(manifest => {
                         self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.accordionConfig))
                         self.flush = self._flush;

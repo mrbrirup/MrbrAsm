@@ -1,5 +1,5 @@
 import { MrbrBase } from "../../../system/MrbrBase";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 import { Mrbr_UI_Bootstrap_Controls_INavbarControls } from "./INavbarControls";
@@ -55,12 +55,12 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$Toggler extends Mrbr_UI_Controls_
     public set togglerElement(value: HTMLButtonElement) { this._togglerElement = value; }
 
 
-    public initialise<T>(...args): Mrbr_System_MrbrPromise<T> {
+    public initialise<T>(...args): Mrbr_System_Promise<T> {
         const self = this,
             initialisePromise = self.$promise.create("initialise");
         super.initialise(args)
             .then(() => {
-                self.mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar$Toggler[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                self.$mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar$Toggler[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(() => {
                         initialisePromise.resolve(self);
                     })

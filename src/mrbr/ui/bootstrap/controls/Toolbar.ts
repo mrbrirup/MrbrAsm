@@ -1,5 +1,5 @@
 import { MrbrBase } from "../../../system/MrbrBase";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
@@ -13,13 +13,13 @@ export class Mrbr_UI_Bootstrap_Controls_Toolbar extends Mrbr_UI_Controls_Control
         super(rootElementName);
         this.defaultContainerElementName = rootElementName;
     }
-    initialise(...args: any): Mrbr_System_MrbrPromise<any> {
+    initialise(...args: any): Mrbr_System_Promise<any> {
         const self = this,
             initialisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Toolbar:initialise");
         super.initialise(args)
             .then(async result => {
                 await self.setDefaultConfig();
-                await self.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);
+                await self.$mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);
                 self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.TOOLBAR_NAME)))
                 initialisePromise.resolve(self);
             })
@@ -35,7 +35,7 @@ export class Mrbr_UI_Bootstrap_Controls_Toolbar extends Mrbr_UI_Controls_Control
         }
         self.classes(<HTMLElement>children[childrenLength - 1], self.$clsActions.Remove, self.$cls.DIVIDER_CLASS);
     }
-    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Toolbar> {
+    setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Toolbar> {
         const self = this;
         self.defaultConfig.add(self.$cls.TOOLBAR_NAME, new self.$ctrlPrm()
             .Classes("btn-toolbar")

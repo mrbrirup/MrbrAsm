@@ -1,4 +1,4 @@
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";//mrbr:exclude
+import { Mrbr_System_Promise } from "../../../system/Promise";//mrbr:exclude
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 type imageLocationType = typeof Mrbr_UI_Bootstrap_Controls_Card.imageLocations[keyof typeof Mrbr_UI_Bootstrap_Controls_Card.imageLocations];
 type cardStyleType = typeof Mrbr_UI_Bootstrap_Controls_Card.cardStyles[keyof typeof Mrbr_UI_Bootstrap_Controls_Card.cardStyles];
@@ -100,7 +100,7 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Controls_Control {
         }
         this._cardImageProperties = cardImageProperties;
     }
-    initialise(...args): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Card> {
+    initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Card> {
         const self = this,
             initalisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Card>("Mrbr_UI_Bootstrap_Controls_Card:initialise");
         self.defaultContainerElementName = self.rootElementName;
@@ -151,7 +151,7 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Controls_Control {
     }
     public get imageLocation(): imageLocationType { return this._imageLocation; }
     public set imageLocation(value: imageLocationType) { this._imageLocation = value; }
-    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Card> {
+    setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Card> {
         const self = this;
         self.defaultConfig.add(self.$cls.CARD_NAME, new self.$ctrlPrm().Classes("card"));
         self.defaultConfig.add(self.$cls.CARD_ROW_NAME, new self.$ctrlPrm().Classes("row g-0"));

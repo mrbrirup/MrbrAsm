@@ -1,4 +1,4 @@
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 
@@ -126,7 +126,7 @@ export class Mrbr_UI_Bootstrap_Controls_Nav extends Mrbr_UI_Controls_Control {
     }
 
 
-    public initialise(...args): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Nav> {
+    public initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Nav> {
         const self = this,
             initalisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_Nav:initialise");
         super.initialise(...args)
@@ -144,7 +144,7 @@ export class Mrbr_UI_Bootstrap_Controls_Nav extends Mrbr_UI_Controls_Control {
         return initalisePromise;
     }
 
-    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Nav> {
+    setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Nav> {
         const self = this,
             setDefaultConfigPromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_Nav:setDefaultConfig");
         super.setDefaultConfig()

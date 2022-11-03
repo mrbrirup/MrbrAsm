@@ -1,4 +1,4 @@
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Bootstrap_Controls_Dropdown } from "./DropDown";
 type buttonColourType = typeof Mrbr_UI_Bootstrap_Controls_Dropdown.buttonColours;
 type dropdownButtonSizeType = typeof Mrbr_UI_Bootstrap_Controls_Dropdown.buttonSizes;
@@ -53,7 +53,7 @@ export class Mrbr_UI_Bootstrap_Controls_SplitDropdown extends Mrbr_UI_Bootstrap_
         (splitHiddenText && value !== splitHiddenText.innerText) && (splitHiddenText.innerText = value);
         self._splitHiddenText = value;
     }
-    public override initialise(...args): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Dropdown> {
+    public override initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Dropdown> {
         const self = this,
             initalisePromise = self.$promise.create("Mrbr_UI_Bootstrap_SplitDropdown:initialise");
         super.initialise(args).then(async _ => {
@@ -83,7 +83,7 @@ export class Mrbr_UI_Bootstrap_Controls_SplitDropdown extends Mrbr_UI_Bootstrap_
         return initalisePromise;
     }
 
-    override setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Dropdown> {
+    override setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Dropdown> {
         const self = this,
             setDefaultConfigPromise = self.$promise.create("Mrbr_UI_Bootstrap_SplitDropdown:setDefaultConfig");
         super.setDefaultConfig().then(_ => {

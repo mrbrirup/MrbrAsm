@@ -42,23 +42,20 @@
     }
   </style>
   <script>
-    let arr = [1, 2, 3]
-    function* fn(arr) {
-      for (let i = 0; i < arr.length; i++) {
-        yield arr[i]
+    class a {
+      static b = false;
+    }
+    class b extends a {
+      constructor() {
+        super();
+        this.constructor.b = false;
       }
     }
-    let gen = fn(arr)
-    // console.log(gen.next())
-    // console.log(gen.next())
-    // console.log(gen.next())
-    // console.log(gen.next())
-
-    for (let i of gen) {
-      console.log(i)
-    }
-
-
+    let a1 = new a(), b1 = new b();
+    a.b = true;
+    console.log(a1, b1)
+    console.log(a1.b, b1.b)
+    console.log(a.b, b.b)
   </script>
 </head>
 

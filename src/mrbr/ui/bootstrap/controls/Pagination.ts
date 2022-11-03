@@ -1,6 +1,6 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { MrbrBase } from "../../../system/MrbrBase";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 
@@ -169,12 +169,12 @@ export class Mrbr_UI_Bootstrap_Controls_Pagination extends Mrbr_UI_Controls_Cont
 
 
     //#region Public Methods
-    public initialise<T>(...args): Mrbr_System_MrbrPromise<T> {
+    public initialise<T>(...args): Mrbr_System_Promise<T> {
         const self = this,
             initialisePromise = self.$promise.create("initialise");
         super.initialise(args)
             .then(async superInit => {
-                await self.mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Pagination[MrbrBase.MRBR_COMPONENT_MANIFEST]);
+                await self.$mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Pagination[MrbrBase.MRBR_COMPONENT_MANIFEST]);
                 const paginationList = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.PAGINATION_LIST_NAME, "ul", self.pagination_list_config));
                 self.createElement(new this.$ctrlCfg(self.rootElementName, "nav", self.pagination_config
                     .Children([paginationList])

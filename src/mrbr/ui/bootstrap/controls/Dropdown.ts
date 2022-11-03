@@ -1,5 +1,5 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 
 type buttonColourType = typeof Mrbr_UI_Bootstrap_Controls_Dropdown.buttonColours;
@@ -226,7 +226,7 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
         self._menuStyle = dropdownMenuStyle;
     }
     //#region Public Methods
-    public initialise(...args): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Dropdown> {
+    public initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Dropdown> {
         const self = this,
             initalisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Dropdown:initialise");
         super.initialise(args).then(async _ => {
@@ -390,12 +390,12 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
         if (targetDropdownType === self.$cls.menuItemTypes.submenu || targetDropdownType === self.$cls.menuItemTypes.submenuButton) { return; }
         (<HTMLElement[]>Array.from((self.rootElement.querySelectorAll(".dropdown-item.show"))))
             .concat(self.elements[self.$cls.DROPDOWN_BUTTON_NAME])
-            .forEach((element: HTMLElement) => self.mrbrInstance.host.bootstrap.Dropdown.getInstance(element)?.hide());
+            .forEach((element: HTMLElement) => self.$mrbrInstance.host.bootstrap.Dropdown.getInstance(element)?.hide());
         self.events[self.$cls.OUTSIDE_DROPDOWN_CLICK_EVENT_NAME]?.remove();
     }
     private resetSubMenuPosition(event: any) {
         const self = this;
-        self._bootstrapDown && self.mrbrInstance.host.bootstrap.Dropdown.getOrCreateInstance(event.relatedTarget).dispose();
+        self._bootstrapDown && self.$mrbrInstance.host.bootstrap.Dropdown.getOrCreateInstance(event.relatedTarget).dispose();
         self._bootstrapDown = null;
     }
     private setSubMenuPosition(event: any) {
@@ -410,7 +410,7 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
         const self = this;
         let link = self.elements[self.$cls.DROPDOWN_SUBMENU_LINK_NAME],
             offset = [self.rootElement.offsetWidth, -link.offsetHeight - self._paddingTop];
-        !self._bootstrapDown && (self._bootstrapDown = self.mrbrInstance.host.bootstrap.Dropdown.getOrCreateInstance(event.relatedTarget));
+        !self._bootstrapDown && (self._bootstrapDown = self.$mrbrInstance.host.bootstrap.Dropdown.getOrCreateInstance(event.relatedTarget));
         let fnOptions = self._bootstrapDown?._popper?.setOptions;
         if (typeof fnOptions === "function") {
             fnOptions({ modifiers: [{ name: "offset", options: { offset: offset } }] })
@@ -422,7 +422,7 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Contro
 
     //#endregion Private EventHandlers
     //#region Private Methods
-    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Dropdown> {
+    setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Dropdown> {
         const self = this;
         super.setDefaultConfig();
         !self.hasConfiguration(self.$cls.DROPDOWN_NAME) && self.defaultConfig.add(self.$cls.DROPDOWN_NAME, new self.$ctrlPrm()

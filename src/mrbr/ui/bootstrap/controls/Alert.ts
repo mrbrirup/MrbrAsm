@@ -1,6 +1,6 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { MrbrBase } from "../../../system/MrbrBase";//mrbr:exclude
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
@@ -56,13 +56,13 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Controls_Control {
 
         this._alertContext = value;
     }
-    initialise(...args: any): Mrbr_System_MrbrPromise<any> {
+    initialise(...args: any): Mrbr_System_Promise<any> {
         const self = this,
             initialisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_Alert:initialise");
         super.initialise(args)
             .then(async result => {
                 await self.setDefaultConfig();
-                self.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                self.$mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(manifest => {
                         self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.ALERT_CONTROL_NAME)
                             .Children([
@@ -87,7 +87,7 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Controls_Control {
     public alertClosing() {
         this.dispatchEvent(new CustomEvent(this.$cls.ALERT_CLOSING_EVENT_NAME));
     }
-    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Alert> {
+    setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Alert> {
 
         const self = this;
         self.defaultConfig.add(self.$cls.ALERT_CONTROL_NAME, new self.$ctrlPrm()

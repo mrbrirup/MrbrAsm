@@ -1,7 +1,8 @@
 import { Mrbr_System_Events_EventSubscribers } from "../../system/events/EventSubscribers";
 import { Mrbr_System_IComponent } from "../../system/IComponent";
-import { Mrbr_System_MrbrPromise } from "../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../system/Promise";
 import { Mrbr_System_Object } from "../../system/Object";
+import { MrbrBase } from "../../system/MrbrBase";
 
 /**
  * Creates a new instance of the Mrbr_UI_Controls_ElementsMap class.
@@ -106,12 +107,14 @@ export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Object implements 
      *
      * @public
      * @param {...any[]} args
-     * @returns {Mrbr_System_MrbrPromise<Mrbr_System_IComponent>}
+     * @returns {Mrbr_System_Promise<Mrbr_System_IComponent>}
      */
-    public initialise(...args: any[]): Mrbr_System_MrbrPromise<Mrbr_System_IComponent> {
+    public initialise(...args: any[]): Mrbr_System_Promise<Mrbr_System_IComponent> {
         const self = this,
+            componentManifest = Symbol.for(`${self.$cls[MrbrBase.MRBR_COMPONENT_NAME]}:componentManifest`),
             initalisePromise = self.$promise.create<Mrbr_UI_DOM_MutationObserver>("MutationObserver.initialise");
-        self.mrbrInstance.loadManifest(self.$cls[self.$mrbrBase.MRBR_COMPONENT_MANIFEST])
+        !self.$cls[componentManifest] && (self.$cls[componentManifest] = MrbrBase.mrbrInstance.loadManifest(self.$cls[MrbrBase.MRBR_COMPONENT_MANIFEST]));
+        self.$cls[componentManifest]
             .then(() => {
                 self.eventSubscribers = new Mrbr_System_Events_EventSubscribers();
                 initalisePromise.resolve(self);

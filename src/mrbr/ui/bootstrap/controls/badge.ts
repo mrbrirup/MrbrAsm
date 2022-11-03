@@ -1,5 +1,5 @@
 import { MrbrBase } from "../../../system/MrbrBase";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
@@ -111,12 +111,12 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
             requestAnimationFrame(_ => { self.setParentAttributes(self.rootElement.parentElement); })
         }
     }
-    initialise(...args: any): Mrbr_System_MrbrPromise<any> {
+    initialise(...args: any): Mrbr_System_Promise<any> {
         const self = this,
             initialisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_Badge:initialise");
         super.initialise(args)
             .then(result => {
-                self.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                self.$mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
                     .then(_ => {
 
                         self.setDefaultConfig();
@@ -143,7 +143,7 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
     private logMutation(mutation: any) {
         console.log(mutation);
     }
-    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Badge> {
+    setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Badge> {
         const self = this;
         self.defaultConfig.add(self.$cls.BADGE_NAME, new self.$ctrlPrm().Classes(["badge"]));
         self.defaultConfig.add(self.$cls.BADGE_TEXT_NAME, new self.$ctrlPrm());

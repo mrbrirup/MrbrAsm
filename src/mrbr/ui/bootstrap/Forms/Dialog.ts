@@ -10,7 +10,7 @@ import { Mrbr_UI_Bootstrap_Forms_Dialog$States } from "./Dialog$States";
 import { Mrbr_UI_Controls_Handles_Drag } from "../../controls/handles/drag";
 import { Mrbr_UI_Controls_Handles_Resize } from "../../controls/handles/resize";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Bootstrap_Controls_Defaults } from "../controls/defaults";
 import { MrbrBase } from "../../../system/MrbrBase";
 
@@ -58,10 +58,10 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
         if (!self._drawDialog) { self._drawDialog = self.drawDialog.bind(self) }
     }
 
-    initialise(...args): Mrbr_System_MrbrPromise<any> {
+    initialise(...args): Mrbr_System_Promise<any> {
         const self = this,
             muccop = Mrbr_UI_Controls_ControlConfigOptionalParameters,
-            initialisePromise = Mrbr_System_MrbrPromise.create("");
+            initialisePromise = Mrbr_System_Promise.create("");
         super.initialise(args)
             .then(async _ => {
                 MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])

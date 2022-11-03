@@ -1,6 +1,6 @@
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { MrbrBase } from "../../../system/MrbrBase";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 
 export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Control {
@@ -134,7 +134,7 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Contro
     public hide() { Array.from(this.bootstrapCollapse.keys()).forEach(key => this.bootstrapCollapse.get(key).hide()); }
     public toggle() { Array.from(this.bootstrapCollapse.keys()).forEach(key => this.bootstrapCollapse.get(key).toggle()); }
     //#endregion Public Methods
-    public initialise(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Collapse> {
+    public initialise(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Collapse> {
         const self = this,
             initalisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_Collapse:initialise");
         super.initialise().then(async _ => {
@@ -234,7 +234,7 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Contro
         self.rootElement.innerText = self.collapsedText || self.buttonText;
     }
     //#region Private Methods
-    setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Collapse> {
+    setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Collapse> {
         const self = this,
             setDefaultConfigPromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_Collapse:setDefaultConfig");
         super.setDefaultConfig().then(() => {

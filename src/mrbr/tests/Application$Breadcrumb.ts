@@ -1,4 +1,4 @@
-import { Mrbr_System_MrbrPromise } from "../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../system/Promise";
 import { Mrbr_UI_Bootstrap_Controls_Breadcrumb } from "../ui/bootstrap/controls/Breadcrumb";
 import { Mrbr_UI_Bootstrap_Controls_BreadcrumbItem } from "../ui/bootstrap/controls/BreadcrumbItem";
 
@@ -8,9 +8,9 @@ export class Mrbr_Tests_Application$Breadcrumb {
         const self = this;
         self.breadCrumb = new Mrbr_UI_Bootstrap_Controls_Breadcrumb("breadCrumb1");
     }
-    initialise(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Breadcrumb> {
+    initialise(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Breadcrumb> {
         const self = this,
-            initialisePromise = Mrbr_System_MrbrPromise.create<Mrbr_UI_Bootstrap_Controls_Breadcrumb>("Mrbr_Tests_Application$Breadcrumb:initialise");
+            initialisePromise = Mrbr_System_Promise.create<Mrbr_UI_Bootstrap_Controls_Breadcrumb>("Mrbr_Tests_Application$Breadcrumb:initialise");
         self.breadCrumb
             .initialise()
             .then(_ => {

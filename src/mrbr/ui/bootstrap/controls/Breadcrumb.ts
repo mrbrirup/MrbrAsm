@@ -2,7 +2,7 @@ import { Mrbr_Collections_DoubleLinkedList } from "../../../collections/DoubleLi
 import { Mrbr_Collections_DoubleLinkedListNode } from "../../../collections/DoubleLinkedListNode";
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { MrbrBase } from "../../../system/MrbrBase";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
@@ -93,7 +93,7 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
     }
 
 
-    public initialise(...args): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Breadcrumb> {
+    public initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Breadcrumb> {
         const self = this,
             initlialisepromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Breadcrumb>("Mrbr_UI_Bootstrap_Controls_Breadcrumb:initialise");
         super.initialise(args)
@@ -127,7 +127,7 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
         }
     }
 
-    public setDefaultConfig(): Mrbr_System_MrbrPromise<Mrbr_UI_Bootstrap_Controls_Breadcrumb> {
+    public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Breadcrumb> {
         const self = this;
         self.defaultConfig.addEntries([
             [self.$cls.BREADCRUMB_NAV_NAME, new self.$ctrlPrm().Aria({ label: "breadcrumb" })],

@@ -7,7 +7,7 @@ import { Mrbr_UI_Bootstrap_Forms_ControlBox$Events } from "./controlBox$Events";
 import { Mrbr_UI_Bootstrap_Forms_Dialog$States } from "./Dialog$States";
 import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
-import { Mrbr_System_MrbrPromise } from "../../../system/MrbrPromise";
+import { Mrbr_System_Promise } from "../../../system/Promise";
 type ControlBoxControl = {
     name: string,
     src: string,
@@ -30,9 +30,9 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
 
         //this.createControls();
     }
-    initialise(...args): Mrbr_System_MrbrPromise<any> {
+    initialise(...args): Mrbr_System_Promise<any> {
         const self = this,
-            initalisePromise = Mrbr_System_MrbrPromise.create("");
+            initalisePromise = Mrbr_System_Promise.create("");
         super.initialise(args)
             .then(_ => {
                 MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
