@@ -13,6 +13,8 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTH
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 import { Mrbr_Assembly_MrbrConfig } from '../assembly/mrbrConfig';
+import { Mrbr_System_Object } from '../system/object';
+import { Mrbr_System_Component } from '../system/component';
 import { Mrbr_System_Promise } from './Promise';
 import { Mrbr_IO_Fetch } from '../io/Fetch';
 import { Mrbr_IO_File } from '../io/File';

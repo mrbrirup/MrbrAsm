@@ -1,4 +1,3 @@
-import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
@@ -16,6 +15,28 @@ import { Mrbr_UI_Bootstrap_Controls_AccordionItem } from "./AccordionItem";
  * @implements {Mrbr_UI_Controls_IControl}
  */
 export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Control implements Mrbr_UI_Controls_IControl {
+    //#region Aliases
+    /**
+     * Alias for Accordion type
+     * @date 31/10/2022 - 05:02:44
+     *
+     * @public
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Controls_Accordion}
+     */
+    public get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Accordion { return Mrbr_UI_Bootstrap_Controls_Accordion; }
+
+    /**
+     * Alias for the AccordionItem class.
+     * @date 31/10/2022 - 05:04:39
+     *
+     * @private
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Controls_AccordionItem}
+     */
+    private get $acrItem(): typeof Mrbr_UI_Bootstrap_Controls_AccordionItem { return Mrbr_UI_Bootstrap_Controls_AccordionItem; }
+    //#endregion Aliases
+
     //#region Static Constants
 
     /**
@@ -43,40 +64,7 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
     //#endregion Private Property Fields
     //#region Properties
 
-    //#region Aliases
-    /**
-     * Alias for Accordion type
-     * @date 31/10/2022 - 05:02:44
-     *
-     * @public
-     * @readonly
-     * @type {typeof Mrbr_UI_Bootstrap_Controls_Accordion}
-     */
-    public get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Accordion { return Mrbr_UI_Bootstrap_Controls_Accordion; }
 
-    /**
-     * Alias for the AccordionItem class.
-     * @date 31/10/2022 - 05:04:39
-     *
-     * @private
-     * @readonly
-     * @type {typeof Mrbr_UI_Bootstrap_Controls_AccordionItem}
-     */
-    private get $acrItem(): typeof Mrbr_UI_Bootstrap_Controls_AccordionItem { return Mrbr_UI_Bootstrap_Controls_AccordionItem; }
-    //#endregion Aliases
-
-    /**
-     * Configuration for the accordion element.
-     * @date 31/10/2022 - 05:03:18
-     *
-     * @public
-     * @readonly
-     * @type {Mrbr_UI_Controls_ControlConfigOptionalParameters}
-     */
-    public get accordionConfig(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        (!this.$cls._accordion_config) && (this.$cls._accordion_config = new this.$ctrlPrm().Classes(["accordion"]));
-        return Object.assign(new this.$ctrlPrm(), this.$cls._accordion_config);
-    }
     //#endregion Private Properties
 
     //#region Private Property Fields
@@ -129,8 +117,8 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
         self.controls
             .forEach(control => {
                 if (control instanceof self.$acrItem) {
-                    !control && control.setParent(self.rootElement.id);
-                    control && delete control.elements.get(self.$acrItem.ACCORDION_COLLAPSE).dataset.bsParent;
+                    !value && control.setParent(self.rootElement.id);
+                    value && delete control.elements.get(self.$acrItem.ACCORDION_COLLAPSE).dataset.bsParent;
                 }
             })
         self._alwaysOpen = value;
@@ -173,19 +161,17 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
     public initialise(...args: any): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Accordion> {
         const self = this,
             initialisePromise = self.$promise.create(`Mrbr_UI_Bootstrap_Controls_Accordion:${self.rootElementName}`);
-        super
-            .initialise(args)
+        super.initialise(args)
             .then(async _ => {
-                self.$mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
-                    .then(manifest => {
-                        self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.accordionConfig))
-                        self.flush = self._flush;
-                        self.defaultContainerElementName = self.rootElementName;
-                        initialisePromise.resolve(self);
-                    })
-                    .catch(error => initialisePromise.reject({ location: "Mrbr_UI_Bootstrap_Controls_Accordion.Initialise.loadManifest", error: error }));
+                await self.loadManifest(self.$cls);
+                await self.setDefaultConfig();
+                self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.elementConfig.getConfig(self.$cls.ACCORDION_NAME)));
+                self.flush = self._flush;
+                self.defaultContainerElementName = self.rootElementName;
+                initialisePromise.resolve(self);
             })
-            .catch(error => initialisePromise.reject({ location: "Mrbr_UI_Bootstrap_Controls_Accordion.Initialise.Super", error: error }));
+            .catch(error => initialisePromise.reject(error))
+
         return initialisePromise;
     }
 
@@ -201,6 +187,30 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
         this.controls.set(item.rootElementName, item)
         this.alwaysOpen = this._alwaysOpen;
         item.mount(this.defaultContainerElement);
+    }
+
+
+
+    /**
+     * Configuration for the Accordion elements
+     * @date 09/11/2022 - 10:54:39
+     *
+     * @public
+     * @returns {Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Accordion>}
+     */
+    public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Accordion> {
+        const self = this,
+            componentName = self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME],
+            defaultConfigPromise = self.$promise.create(`${componentName}:${self.rootElementName}`);
+        try {
+            super.setDefaultConfig().then(_ => {
+                self.elementConfig
+                    .controlName(self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME])
+                    .setIfNotExist(self.$cls.ACCORDION_NAME, new this.$ctrlPrm().Classes(["accordion"]));
+                defaultConfigPromise.resolve(self);
+            })
+        } catch (error) { defaultConfigPromise.reject(error); }
+        return defaultConfigPromise;
     }
     //#endregion Public Methods
 }

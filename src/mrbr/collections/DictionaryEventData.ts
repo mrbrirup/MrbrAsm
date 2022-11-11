@@ -1,4 +1,5 @@
 import { Mrbr_IO_ManifestPromise } from "../io/ManifestPromise";
+import { Mrbr_System_Component } from "../system/Component";
 import { Mrbr_System_IComponent } from "../system/IComponent";
 import { MrbrBase } from "../system/MrbrBase";
 import { Mrbr_System_Promise } from "../system/Promise";
@@ -16,9 +17,9 @@ import { Mrbr_Collections_DictionaryChangeTypes } from "./DictionaryChangeTypes"
  * @template TValue
  * @implements {Mrbr_System_IComponent}
  */
-export class Mrbr_Collections_DictionaryEventData<TKey, TValue> implements Mrbr_System_IComponent {
-    
-    
+export class Mrbr_Collections_DictionaryEventData<TKey, TValue> extends Mrbr_System_Component implements Mrbr_System_IComponent {
+
+
     /**
      * Cached Manifest Promise
      * @date 02/11/2022 - 06:20:08
@@ -37,7 +38,7 @@ export class Mrbr_Collections_DictionaryEventData<TKey, TValue> implements Mrbr_
      * @type {TKey}
      */
     public key: TKey;
-    
+
     /**
      * Current Value
      * @date 02/11/2022 - 06:19:35
@@ -46,7 +47,7 @@ export class Mrbr_Collections_DictionaryEventData<TKey, TValue> implements Mrbr_
      * @type {TValue}
      */
     public value: TValue;
-    
+
     /**
      * Previous Value before update or delete
      * @date 02/11/2022 - 06:19:45
@@ -57,7 +58,7 @@ export class Mrbr_Collections_DictionaryEventData<TKey, TValue> implements Mrbr_
     public oldValue: TValue;
     public action: Mrbr_Collections_DictionaryChangeTypes;
 
-    
+
     /**
      * Creates an instance of Mrbr_Collections_DictionaryEventData.
      * @date 02/11/2022 - 06:19:15
@@ -69,13 +70,14 @@ export class Mrbr_Collections_DictionaryEventData<TKey, TValue> implements Mrbr_
      * @param {Mrbr_Collections_DictionaryChangeTypes} action
      */
     constructor(key: TKey, value: TValue, oldValue: TValue, action: Mrbr_Collections_DictionaryChangeTypes) {
+        super();
         const self = this;
         self.key = key;
         self.value = value;
         self.oldValue = oldValue;
         self.action = action;
     }
-    
+
     /**
      * Initialize Component, set properties and Load Manifest
      * @date 02/11/2022 - 06:20:18

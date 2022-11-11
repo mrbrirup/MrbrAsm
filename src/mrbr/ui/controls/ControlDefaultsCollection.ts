@@ -27,17 +27,18 @@ export class Mrbr_UI_Controls_ControlDefaultsCollection extends Mrbr_Collections
      * @returns {Mrbr_System_Promise<Mrbr_System_IComponent>}
      */
     public initialise(...args): Mrbr_System_Promise<Mrbr_System_IComponent> {
-        const self = this,
+        const
+            self = this,
             cls = Mrbr_System_Promise,
-            componentManifest = Symbol.for(`${cls[MrbrBase.MRBR_COMPONENT_NAME]}:componentManifest`);
-        !cls[componentManifest] && (cls[componentManifest] = MrbrBase.mrbrInstance.loadManifest(cls[MrbrBase.MRBR_COMPONENT_MANIFEST]));
-        const initalisePromise = Mrbr_System_Promise.create<Mrbr_System_IComponent>(`${cls[MrbrBase.MRBR_COMPONENT_NAME]}.initialise`);
-        super.initialise(args)
-            .then(() => {
-                (async () => await cls[componentManifest])();
+            initalisePromise = self.$promise.create<Mrbr_System_IComponent>(`${cls[MrbrBase.MRBR_COMPONENT_NAME]}.initialise`);
+        try {
+            super.initialise(args).then(async () => {
+                await self.loadManifest(cls);
                 initalisePromise.resolve(self);
             });
+        } catch (error) {
+            initalisePromise.reject(error);
+        }
         return initalisePromise;
     }
-
 }

@@ -1,9 +1,10 @@
 import { Mrbr_System_Collections_Map } from "../collections/Map";
 import { Mrbr_System_Promise } from "../Promise";
-import { Mrbr_System_Object } from "../Object";
 import { Mrbr_System_IComponent } from "../IComponent";
 import { Mrbr_IO_ManifestPromise } from "../../io/ManifestPromise";
 import { MrbrBase } from "../MrbrBase";
+import { Mrbr_System_Component } from "../Component";
+import { Mrbr_System_Events_Event } from "./Event";
 
 /**
  * @class Mrbr_System_Events_Event
@@ -16,8 +17,12 @@ import { MrbrBase } from "../MrbrBase";
  * @extends {Mrbr_System_Object}
  * @implements {Mrbr_System_IComponent}
  */
-export class Mrbr_System_Events_EventSubscribers extends Mrbr_System_Object implements Mrbr_System_IComponent {
+export class Mrbr_System_Events_EventSubscribers extends Mrbr_System_Component implements Mrbr_System_IComponent {
     //#region Private Members
+
+
+    private _filters: Mrbr_System_Collections_Map<number, Array<string>> = new Mrbr_System_Collections_Map<number, Array<string>>();
+
 
     /**
      * Event Subscribers Map Field
@@ -26,7 +31,7 @@ export class Mrbr_System_Events_EventSubscribers extends Mrbr_System_Object impl
      * @private
      * @type {Mrbr_System_Collections_Map<string, Map<number, ((source: object, event: object, data: object) => void)>>}
      */
-    private _map: Mrbr_System_Collections_Map<string, Map<number, ((source: object, event: object, data: object) => void)>>
+    private _map: Mrbr_System_Collections_Map<string, Map<number, ((source: object, event: object, data: object) => void)>>;
 
     /**
      * Unique EventKey incremented each time a new event is added.
@@ -135,10 +140,13 @@ export class Mrbr_System_Events_EventSubscribers extends Mrbr_System_Object impl
     public add(key: string, callback: (source: any, event: any, data: any) => void): number {
         const self = this;
         if (!self._map.has(key)) {
-            self._map.add(key, new Map<number, (source: object, event: object, data: object) => void>());
+            self._map.set(key, new Map<number, (source: object, event: object, data: object) => void>());
         }
         let nextKey = self.eventKey++;
         self._map.get(key).set(nextKey, callback);
+
+
+        let m = new Map<number, Array<string>>();
         return nextKey;
     }
 
@@ -189,7 +197,7 @@ export class Mrbr_System_Events_EventSubscribers extends Mrbr_System_Object impl
      * @param {object} event
      * @param {...{}} args
      */
-    public raise(key: string, event: object, ...args): void {
+    public raise(key: string, event: Mrbr_System_Events_Event<any>, ...args): void {
         const self = this;
         if (!self._map.has(key)) { return; }
         const events = Array.from(self._map.get(key).values());
@@ -197,7 +205,7 @@ export class Mrbr_System_Events_EventSubscribers extends Mrbr_System_Object impl
         let callbacks: IterableIterator<((source: object, event: object, data: object) => void)> = self.eventsGenerator(events);
         let callback: IteratorResult<((source: object, event: object, data: object) => void)>;
         while (!(callback = callbacks.next()).done) {
-            callback.value(self, event, ...args);
+            callback.value(event, ...args);
         };
     }
     //#endregion Public Methods

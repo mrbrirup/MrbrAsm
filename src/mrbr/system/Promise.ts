@@ -140,20 +140,41 @@ export class Mrbr_System_Promise<T> implements Mrbr_System_IComponent, Mrbr_Syst
      *
      * @constructor
      */
-    constructor() {
-        const self = this;
-    }
+    constructor() { }
+
+    /**
+     * Initialises the Promise, set properties and loads manifest
+     * @date 05/11/2022 - 09:39:57
+     *
+     * @public
+     * @param {?string} [componentName]
+     * @param {...any[]} args
+     * @returns {Mrbr_System_Promise<Mrbr_System_IComponent>}
+     */
     public initialise(componentName?: string, ...args: any[]): Mrbr_System_Promise<Mrbr_System_IComponent> {
-        const self = this,
-            componentManifest = Symbol.for(`${componentName || self.$msp[MrbrBase.MRBR_COMPONENT_NAME]}:componentManifest`);
-        !self.$msp[componentManifest] && (self.$msp[componentManifest] = MrbrBase.mrbrInstance.loadManifest(self.$msp[MrbrBase.MRBR_COMPONENT_MANIFEST]));
-        const initalisePromise = self.$msp.create<Mrbr_System_Promise<any>>("Mrbr_System_Promise.initialise");
-        self.$msp[componentManifest]
-            .then(manifest => initalisePromise.resolve(this))
+        const
+            self = this,
+            manifest = self.loadManifest(self.$msp);
+        const initalisePromise = self.$msp.create<Mrbr_System_Promise<any>>("Mrbr_System_Promise.initialise", this);
+        manifest
+            .then(_ => initalisePromise.resolve(this))
             .catch(reason => initalisePromise.reject(reason));
         return initalisePromise;
     }
 
+    /**
+     * Create and cache component loadManifest promise
+     * @date 05/11/2022 - 09:40:26
+     *
+     * @public
+     * @param {*} type
+     * @returns {Mrbr_System_Promise<any>}
+     */
+    public loadManifest(type: any): Mrbr_System_Promise<any> {
+        let componentManifest = Symbol.for(`${type[MrbrBase.MRBR_COMPONENT_NAME]}:componentManifest`);
+        !type[componentManifest] && (type[componentManifest] = MrbrBase.mrbrInstance.loadManifest(type[MrbrBase.MRBR_COMPONENT_MANIFEST]));
+        return type[componentManifest];
+    }
     //#region Properties    
 
     /**

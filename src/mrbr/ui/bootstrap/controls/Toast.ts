@@ -18,7 +18,7 @@ export class Mrbr_UI_Bootstrap_Controls_Toast extends Mrbr_UI_Controls_Control {
     //#region Elements Configuration
     private _toastConfig: Mrbr_UI_Controls_ControlConfigOptionalParameters;
     private _headerConfig: Mrbr_UI_Controls_ControlConfigOptionalParameters;
-    private _bodyConfig: Mrbr_UI_Controls_ControlConfigOptionalParameters;
+    private static _bodyConfig: Mrbr_UI_Controls_ControlConfigOptionalParameters;
     public get toastConfig(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
         const self = this;
         (!self._toastConfig) && (self._toastConfig = new self.$ctrlPrm()
@@ -41,10 +41,9 @@ export class Mrbr_UI_Bootstrap_Controls_Toast extends Mrbr_UI_Controls_Control {
     }
     public get bodyConfig(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
         const self = this;
-        (!self._bodyConfig) && (self._bodyConfig = new self.$ctrlPrm()
-            .Classes("toast-body")
-        );
-        return self._bodyConfig;
+        (!self.$cls._bodyConfig) && (self.$cls._bodyConfig = new self.$ctrlPrm()
+            .Classes("toast-body"));
+        return Object.assign(new this.$ctrlPrm(), self.$cls._bodyConfig);
     }
 
     //#endregion Elements Configuration

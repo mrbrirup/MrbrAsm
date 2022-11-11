@@ -1,40 +1,43 @@
+import { Mrbr_System_Events_Event } from "../system/events/Event";
 import { Mrbr_System_Promise } from "../system/Promise";
 import { Mrbr_UI_Bootstrap_Controls_Breadcrumb } from "../ui/bootstrap/controls/Breadcrumb";
 import { Mrbr_UI_Bootstrap_Controls_BreadcrumbItem } from "../ui/bootstrap/controls/BreadcrumbItem";
 
 export class Mrbr_Tests_Application$Breadcrumb {
-    breadCrumb: Mrbr_UI_Bootstrap_Controls_Breadcrumb;
+    breadcrumb: Mrbr_UI_Bootstrap_Controls_Breadcrumb;
     constructor() {
         const self = this;
-        self.breadCrumb = new Mrbr_UI_Bootstrap_Controls_Breadcrumb("breadCrumb1");
+        self.breadcrumb = new Mrbr_UI_Bootstrap_Controls_Breadcrumb("breadCrumb1");
     }
     initialise(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Breadcrumb> {
         const self = this,
             initialisePromise = Mrbr_System_Promise.create<Mrbr_UI_Bootstrap_Controls_Breadcrumb>("Mrbr_Tests_Application$Breadcrumb:initialise");
-        self.breadCrumb
+        self.breadcrumb
             .initialise()
             .then(_ => {
-                self.breadCrumb.add(new Mrbr_UI_Bootstrap_Controls_BreadcrumbItem("Home", "#", "Home"));
-                self.breadCrumb.add(new Mrbr_UI_Bootstrap_Controls_BreadcrumbItem("Home1", "#", "Home 1"));
-                self.breadCrumb.addEventListener(Mrbr_UI_Bootstrap_Controls_Breadcrumb.BREADCRUMB_CLICK_EVENT_NAME, self.breadCrumbClick.bind(self));
+                let breadcrumb = self.breadcrumb;
+                breadcrumb.add(new Mrbr_UI_Bootstrap_Controls_BreadcrumbItem("Home", "#", "Home"));
+                breadcrumb.add(new Mrbr_UI_Bootstrap_Controls_BreadcrumbItem("Home1", "#", "Home 1"));
+                breadcrumb.onCrumbClick(self.breadcrumbClick.bind(self));
 
                 setTimeout(() => {
-                    self.breadCrumb.add(new Mrbr_UI_Bootstrap_Controls_BreadcrumbItem("Home2", "#", "Home 2"));
+                    breadcrumb.add(new Mrbr_UI_Bootstrap_Controls_BreadcrumbItem("Home2", "#", "Home 2"));
                 }, 2000);
                 setTimeout(() => {
-                    self.breadCrumb.add(new Mrbr_UI_Bootstrap_Controls_BreadcrumbItem("Home3", "#", "Home 3"));
+                    breadcrumb.add(new Mrbr_UI_Bootstrap_Controls_BreadcrumbItem("Home3", "#", "Home 3"));
                 }, 4000);
                 setTimeout(() => {
-                    self.breadCrumb.setCurrentCrumb(self.breadCrumb.getNode("Home2").value);
+                    breadcrumb.setCurrentCrumb(breadcrumb.getNode("Home2").value);
                 }, 6000);
-                initialisePromise.resolve(self.breadCrumb);
-                document.body.appendChild(self.breadCrumb.rootElement);
-
+                breadcrumb.mount(document.body);
+                initialisePromise.resolve(breadcrumb);
+                //document.body.appendChild(breadcrumb.rootElement);
 
 
                 setTimeout(() => {
-                    self.breadCrumb.dispose();
-                    self.breadCrumb = null;
+                    breadcrumb.dispose();
+                    self.breadcrumb = null;
+                    breadcrumb = null;
                 }, 60000);
 
 
@@ -42,8 +45,8 @@ export class Mrbr_Tests_Application$Breadcrumb {
 
         return initialisePromise;
     }
-    breadCrumbClick(e: CustomEvent) {
-        console.log(`Crumb clicked: ${e.detail.id}`);
+    breadcrumbClick(e: Mrbr_System_Events_Event<string>) {
+        console.log(`Crumb clicked: ${e.data}`);
     }
 
 }

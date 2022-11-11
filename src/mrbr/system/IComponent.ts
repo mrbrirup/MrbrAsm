@@ -1,3 +1,4 @@
+import { Mrbr_IO_ManifestPromise } from "../io/ManifestPromise";
 import { Mrbr_System_Promise } from "./Promise";
 
 /**
@@ -17,4 +18,5 @@ export interface Mrbr_System_IComponent {
      * @returns {Mrbr_System_Promise<Mrbr_System_IComponent>}
      */
     initialise(...args): Mrbr_System_Promise<Mrbr_System_IComponent>;
+    loadManifest(type: any): Mrbr_IO_ManifestPromise | Mrbr_System_Promise<any>;
 } 

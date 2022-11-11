@@ -1,3 +1,4 @@
+import { Mrbr_System_Component } from "../Component";
 
 /**
  * Event class
@@ -8,8 +9,8 @@
  * @typedef {Mrbr_System_Events_Event}
  * @template TDataType
  */
-export class Mrbr_System_Events_Event<TDataType> {
-    
+export class Mrbr_System_Events_Event<TDataType> extends Mrbr_System_Component {
+
     /**
      * Event Name
      * @date 02/11/2022 - 06:22:39
@@ -18,7 +19,7 @@ export class Mrbr_System_Events_Event<TDataType> {
      * @type {string}
      */
     private _eventName: string;
-    
+
     /**
      * Source of the event
      * @date 02/11/2022 - 06:22:52
@@ -27,7 +28,7 @@ export class Mrbr_System_Events_Event<TDataType> {
      * @type {unknown}
      */
     private _source: unknown;
-    
+
     /**
      * Additional Event Specific Data
      * @date 02/11/2022 - 06:23:02
@@ -37,7 +38,7 @@ export class Mrbr_System_Events_Event<TDataType> {
      */
     private _data: TDataType;
 
-    
+
     /**
      * Creates an instance of Mrbr_System_Events_Event.
      * @date 02/11/2022 - 06:23:29
@@ -48,11 +49,12 @@ export class Mrbr_System_Events_Event<TDataType> {
      * @param {?TDataType} [data]
      */
     constructor(eventName: string, source: unknown, data?: TDataType) {
+        super();
         this._eventName = eventName;
         this._source = source;
         this._data = data;
     }
-    
+
     /**
      * Event Name
      * @date 02/11/2022 - 06:23:35
@@ -62,7 +64,7 @@ export class Mrbr_System_Events_Event<TDataType> {
      * @type {string}
      */
     public get name(): string { return this._eventName; }
-    
+
     /**
      * Source of the event
      * @date 02/11/2022 - 06:23:42
@@ -72,7 +74,7 @@ export class Mrbr_System_Events_Event<TDataType> {
      * @type {*}
      */
     public get source(): any { return this._source; }
-    
+
     /**
      * Additional Event Specific Data
      * @date 02/11/2022 - 06:23:49

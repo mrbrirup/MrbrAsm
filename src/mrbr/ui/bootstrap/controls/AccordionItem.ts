@@ -1,8 +1,6 @@
-import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_Promise } from "../../../system/Promise";
-import { Mrbr_UI_Controls_Control } from "../../controls/Control";
-import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 import { Mrbr_UI_Controls_IControl } from "../../controls/IControl";
+import { Mrbr_UI_Bootstrap_Controls_BootstrapControl } from "./BootstrapControl";
 
 
 /**
@@ -15,7 +13,7 @@ import { Mrbr_UI_Controls_IControl } from "../../controls/IControl";
  * @extends {Mrbr_UI_Controls_Control}
  * @implements {Mrbr_UI_Controls_IControl}
  */
-export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_Control implements Mrbr_UI_Controls_IControl {
+export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Bootstrap_Controls_BootstrapControl implements Mrbr_UI_Controls_IControl {
 
     //#region Static Constants
 
@@ -92,126 +90,6 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
     get $cls(): typeof Mrbr_UI_Bootstrap_Controls_AccordionItem { return Mrbr_UI_Bootstrap_Controls_AccordionItem; }
     //endregion Private Properties
 
-    //#region Private Static Fields
-
-    /**
-     * AccordionItem default Configuration
-     * @date 31/10/2022 - 05:20:41
-     *
-     * @private
-     * @static
-     * @type {Mrbr_UI_Controls_ControlConfigOptionalParameters}
-     */
-    private static _accordion_item_config: Mrbr_UI_Controls_ControlConfigOptionalParameters
-
-    /**
-     * AccordionItem Header Default Configuration
-     * @date 31/10/2022 - 05:21:07
-     *
-     * @private
-     * @static
-     * @type {Mrbr_UI_Controls_ControlConfigOptionalParameters}
-     */
-    private static _accordion_header_config: Mrbr_UI_Controls_ControlConfigOptionalParameters
-
-    /**
-     * AccordionItem Toggle default Configuration
-     * @date 31/10/2022 - 05:21:29
-     *
-     * @private
-     * @static
-     * @type {Mrbr_UI_Controls_ControlConfigOptionalParameters}
-     */
-    private static _accordion_toggle_config: Mrbr_UI_Controls_ControlConfigOptionalParameters
-
-    /**
-     * AccordionItem Collpase Default Configuration
-     * @date 31/10/2022 - 05:21:48
-     *
-     * @private
-     * @static
-     * @type {Mrbr_UI_Controls_ControlConfigOptionalParameters}
-     */
-    private static _accordion_collapse_config: Mrbr_UI_Controls_ControlConfigOptionalParameters
-
-    /**
-     * AccordionItem Body Default Configuration
-     * @date 31/10/2022 - 05:22:10
-     *
-     * @private
-     * @static
-     * @type {Mrbr_UI_Controls_ControlConfigOptionalParameters}
-     */
-    private static _accordion_body_config: Mrbr_UI_Controls_ControlConfigOptionalParameters
-    //#endregion Private Static Fields
-    //#region Private Properties
-
-    /**
-     * AccordionItem Instance Configuration
-     * @date 31/10/2022 - 05:22:53
-     *
-     * @private
-     * @readonly
-     * @type {Mrbr_UI_Controls_ControlConfigOptionalParameters}
-     */
-    private get accordionItemConfig(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        (!this.$cls._accordion_item_config) && (this.$cls._accordion_item_config = new this.$ctrlPrm().Classes(["accordion-item"]))
-        return Object.assign(new this.$ctrlPrm(), this.$cls._accordion_item_config);
-    }
-
-    /**
-     * AccordionItem Header Instance Configuration
-     * @date 31/10/2022 - 05:23:24
-     *
-     * @private
-     * @readonly
-     * @type {Mrbr_UI_Controls_ControlConfigOptionalParameters}
-     */
-    private get accordionHeaderConfig(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        (!this.$cls._accordion_header_config) && (this.$cls._accordion_header_config = new this.$ctrlPrm().Classes(["accordion-header"]))
-        return Object.assign(new this.$ctrlPrm(), this.$cls._accordion_header_config);
-    }
-
-    /**
-     * AccordionItem Toggle Instance Configuration
-     * @date 31/10/2022 - 05:23:37
-     *
-     * @private
-     * @readonly
-     * @type {Mrbr_UI_Controls_ControlConfigOptionalParameters}
-     */
-    private get accordionToggleConfig(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        (!this.$cls._accordion_toggle_config) && (this.$cls._accordion_toggle_config = new this.$ctrlPrm().Classes(["accordion-button", "collapsed"]));
-        return Object.assign(new this.$ctrlPrm(), this.$cls._accordion_toggle_config);
-    }
-
-    /**
-     * AccordionItem Collapse Instance Configuration
-     * @date 31/10/2022 - 05:23:44
-     *
-     * @private
-     * @readonly
-     * @type {Mrbr_UI_Controls_ControlConfigOptionalParameters}
-     */
-    private get accordionCollapseConfig(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        (!this.$cls._accordion_collapse_config) && (this.$cls._accordion_collapse_config = new this.$ctrlPrm().Classes(["accordion-collapse", "collapse"]));
-        return Object.assign(new this.$ctrlPrm(), this.$cls._accordion_collapse_config);
-    }
-
-    /**
-     * AccordionItem Body Instance Configuration
-     * @date 31/10/2022 - 05:23:53
-     *
-     * @private
-     * @readonly
-     * @type {Mrbr_UI_Controls_ControlConfigOptionalParameters}
-     */
-    private get accordionBodyConfig(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        (!this.$cls._accordion_body_config) && (this.$cls._accordion_body_config = new this.$ctrlPrm().Classes(["accordion-body"]))
-        return Object.assign(new this.$ctrlPrm(), this.$cls._accordion_body_config);
-    }
-    //#endregion Private Properties
-
     /**
      * Creates an instance of Mrbr_UI_Bootstrap_Controls_AccordionItem.
      * @date 31/10/2022 - 05:24:09
@@ -259,41 +137,43 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
     public initialise(...args: any): Mrbr_System_Promise<any> {
         const self = this,
             initialisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_AccordionItem:initialise");
-        super
-            .initialise(args)
-            .then(control => {
-                self.$mrbrInstance
-                    .loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
-                    .then(manifest => {
-                        const accordionItemHeadingId = self.$ctrl.createId("accordion_item_heading"),
-                            accordionCollapsableId = self.$ctrl.createId("accordion_collapsable"),
-                            accordionToggle = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_TOGGLE_NAME, "button", self.accordionToggleConfig
-                                .Attributes({ "type": "button" })
-                                .Aria({
-                                    "aria-expanded": false,
-                                    "aria-controls": accordionCollapsableId
-                                })
-                                .Data({
-                                    "bsToggle": "collapse",
-                                    "bsTarget": `#${accordionCollapsableId}`
-                                })
-                            )),
-                            accordionBody = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_BODY, "div", self.accordionBodyConfig)),
-                            accordionHeader = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_HEADER_NAME, "h2", self.accordionHeaderConfig
-                                .Id(accordionItemHeadingId)
-                                .Children(accordionToggle))),
-                            accordionCollapse = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_COLLAPSE, "div", self.accordionCollapseConfig
-                                .Id(accordionCollapsableId)
-                                .Aria({ "aria-labelledby": accordionItemHeadingId })
-                                .Children(accordionBody)));
-                        self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.accordionItemConfig
-                            .Children([accordionHeader, accordionCollapse])
-                        ));
-                        self.defaultContainerElementName = self.$cls.ACCORDION_BODY;
-                        self.title = self._title;
-                        initialisePromise.resolve(self);
-                    })
+        try {
+            super.initialise(args).then(async control => {
+                await self.loadManifest(self.$cls);
+                await self.setDefaultConfig();
+                const
+                    cfg = self.elementConfig,
+                    accordionItemHeadingId = self.$ctrl.createId("accordion_item_heading"),
+                    accordionCollapsableId = self.$ctrl.createId("accordion_collapsable"),
+                    accordionToggle = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_TOGGLE_NAME, "button", cfg.getConfig(self.$cls.ACCORDION_TOGGLE_NAME)
+                        .Attributes({ "type": "button" })
+                        .Aria({
+                            "aria-expanded": false,
+                            "aria-controls": accordionCollapsableId
+                        })
+                        .Data({
+                            "bsToggle": "collapse",
+                            "bsTarget": `#${accordionCollapsableId}`
+                        })
+                    )),
+                    accordionBody = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_BODY, "div", cfg.getConfig(self.$cls.ACCORDION_BODY))),
+                    accordionHeader = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_HEADER_NAME, "h2", cfg.getConfig(self.$cls.ACCORDION_HEADER_NAME)
+                        .Id(accordionItemHeadingId)
+                        .Children(accordionToggle))),
+                    accordionCollapse = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ACCORDION_COLLAPSE, "div", cfg.getConfig(self.$cls.ACCORDION_COLLAPSE)
+                        .Id(accordionCollapsableId)
+                        .Aria({ "aria-labelledby": accordionItemHeadingId })
+                        .Children(accordionBody)));
+                self.createElement(new self.$ctrlCfg(self.rootElementName, "div", cfg.getConfig(self.$cls.ACCORDION_ITEM)
+                    .Children([accordionHeader, accordionCollapse])
+                ));
+                self.defaultContainerElementName = self.$cls.ACCORDION_BODY;
+                self.title = self._title;
+                initialisePromise.resolve(self);
             })
+        } catch (error) {
+            initialisePromise.reject(error);
+        }
         return initialisePromise;
     }
 
@@ -303,10 +183,10 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
      *
      * @public
      */
-    public expand() {
+    public expand(): void {
         const collapseElement = this.elements.get(this.$cls.ACCORDION_COLLAPSE);
         if (!collapseElement.classList.contains("collapse")) { return; }
-        (this.$mrbrInstance.host.bootstrap as any).Collapse.getOrCreateInstance(collapseElement)?.show();
+        this.bootstrap.Collapse.getOrCreateInstance(collapseElement)?.show();
     }
 
     /**
@@ -315,11 +195,54 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Controls_C
      *
      * @public
      */
-    public collapse() {
+    public collapse(): void {
         const collapseElement = this.elements.get(this.$cls.ACCORDION_COLLAPSE);
         if (!(collapseElement.classList.contains("collapse") && collapseElement.classList.contains("show"))) { return; }
-        (this.$mrbrInstance.host.bootstrap as any).Collapse.getOrCreateInstance(collapseElement)?.hide();
+        this.bootstrap.Collapse.getOrCreateInstance(collapseElement)?.hide();
     }
+
+    /**
+     * Parent for the AccordionItem. Remove parent when Accordion is set to stay open
+     * @date 09/11/2022 - 09:43:05
+     *
+     * @public
+     * @param {string} parentId
+     */
     public setParent(parentId: string) { this.elements.get(this.$cls.ACCORDION_COLLAPSE).dataset["bsParent"] = `#${parentId}`; }
+
+
+    /**
+     * Set Default Config for the AccordionItem
+     * @date 10/11/2022 - 14:11:53
+     *
+     * @public
+     * @returns {Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_AccordionItem>}
+     */
+    public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_AccordionItem> {
+        const self = this,
+            componentName = self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME],
+            defaultConfigPromise = self.$promise.create(`${componentName}:${self.rootElementName}`);
+        try {
+            super.setDefaultConfig().then(_ => {
+                self.elementConfig
+                    .controlName(self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME])
+                    .setIfNotExist(this.$cls.ACCORDION_ITEM, new this.$ctrlPrm()
+                        .Classes(["accordion-item"]))
+                    .setIfNotExist(this.$cls.ACCORDION_HEADER_NAME, new this.$ctrlPrm()
+                        .Classes(["accordion-header"]))
+                    .setIfNotExist(this.$cls.ACCORDION_TOGGLE_NAME, new this.$ctrlPrm()
+                        .Classes(["accordion-button", "collapsed"]))
+                    .setIfNotExist(this.$cls.ACCORDION_COLLAPSE, new this.$ctrlPrm()
+                        .Classes(["accordion-collapse", "collapse"]))
+                    .setIfNotExist(this.$cls.ACCORDION_BODY, new this.$ctrlPrm()
+                        .Classes(["accordion-body"]));
+
+                defaultConfigPromise.resolve(self);
+            })
+        } catch (error) { defaultConfigPromise.reject(error); }
+        return defaultConfigPromise;
+    }
+
+
     //endregion Public Methods
 }

@@ -4,13 +4,8 @@ let cfg = {
 };
 function runRes(result) {
     try {
-        MrbrBase.mrbrInstance.loadManifest(Mrbr.Tests.Application$Accordion[MrbrBase.MRBR_COMPONENT_MANIFEST])
-            .then(_ => {
-
-                let applicationAccordion = new Mrbr.Tests.Application$Accordion()
-                applicationAccordion.initialise(document.body);
-
-            })
+        let applicationCard = new Mrbr.Tests.Application$Card();
+        //applicationCard.initialise();
 
     } catch (error) {
         console.log(error)
@@ -29,8 +24,7 @@ async function onReady() {
     try {
         window["mrbrLoadManifest"] =
             [
-                Mrbr.IO.File.component(Mrbr.Tests.Application$Accordion, 0),
-                //Mrbr.IO.File.component(Mrbr.UI.Controls.Control, 0),
+                Mrbr.IO.File.component(Mrbr.Tests.Application$Card, 0),
                 new Mrbr.IO.File(Mrbr.IO.FileType.ScriptLink, null, "https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js", "", {
                     integrity: "sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa",
                     crossorigin: "anonymous"

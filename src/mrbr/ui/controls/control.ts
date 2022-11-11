@@ -8,16 +8,18 @@ import { Mrbr_UI_Controls_IControl } from "./IControl";
 import { Mrbr_System_Promise } from "../../system/Promise";
 import { Mrbr_UI_Controls_ControlDefaultsCollection } from "./ControlDefaultsCollection";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "./ControlConfigOptionalParameters";
-import { MrbrBase } from "../../system/MrbrBase";
 import { Mrbr_System_Events_EventsMap } from "../../system/events/EventsMap";
 import { Mrbr_UI_Controls_ElementsMap } from "./ElementsMap";
 import { Mrbr_UI_Controls_ControlsMap } from "./ControlsMap";
-import { Mrbr_System_Object } from "../../system/Object";
 import { Mrbr_UI_DOM_MutationObserver } from "../dom/mutationObserver";
 import { Mrbr_System_IComponent } from "../../system/IComponent";
 import { Mrbr_IO_ManifestPromise } from "../../io/ManifestPromise";
+import { Mrbr_System_Component } from "../../system/Component";
+import { Mrbr_UI_Controls_ElementsConfigMap } from "./ElementsConfigMap";
+import { Mrbr_System_Events_EventSubscribers } from "../../system/events/EventSubscribers";
+import { Mrbr_UI_Controls_MountPosition } from "./MountPosition";
 
-export class Mrbr_UI_Controls_Control extends Mrbr_System_Object implements Mrbr_UI_Controls_IControl, Mrbr_System_IComponent {
+export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements Mrbr_UI_Controls_IControl, Mrbr_System_IComponent {
     //#region Public Symbols
 
     /**
@@ -132,6 +134,20 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Object implements Mrbr
      * @type {typeof Mrbr_UI_Controls_Control}
      */
     public get $ctrl(): typeof Mrbr_UI_Controls_Control { return Mrbr_UI_Controls_Control; }
+
+
+
+    /**
+     * Alias for the EventHandler class type
+     * @date 10/11/2022 - 15:42:09
+     *
+     * @public
+     * @readonly
+     * @type {typeof Mrbr_System_Events_EventHandler}
+     */
+    public get $evtHandler(): typeof Mrbr_System_Events_EventHandler { return Mrbr_System_Events_EventHandler; }
+
+
     //#endregion Public Aliases
     //#region Private Static Fields
 
@@ -303,6 +319,24 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Object implements Mrbr
     private _id: string;
 
     /**
+     * Control's Element Configurations Field
+     * @date 09/11/2022 - 10:42:31
+     *
+     * @private
+     * @type {Mrbr_UI_Controls_ElementsConfigMap}
+     */
+    private _elementConfig: Mrbr_UI_Controls_ElementsConfigMap;
+
+    /**
+     * EventSubscribers Field
+     * @date 10/11/2022 - 14:37:49
+     *
+     * @private
+     * @type {Mrbr_System_Events_EventSubscribers}
+     */
+    private _eventSubscribers: Mrbr_System_Events_EventSubscribers;
+
+    /**
      * Mutation Observer for DOM
      * @date 31/10/2022 - 14:06:17
      *
@@ -324,7 +358,8 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Object implements Mrbr
     public removeEventListener(...args) { throw new Error("Not implemented"); }
     public dispatchEvent(...args) { throw new Error("Not implemented"); }
     setDefaultConfig(...args: any[]): Mrbr_System_Promise<any> {
-        return this.$promise.createResolved(null);
+        this.elementConfig = new Mrbr_UI_Controls_ElementsConfigMap(this.$ctrl[this.$mrbrBase.MRBR_COMPONENT_NAME]);
+        return this.$promise.createResolved("");
     }
     //#endregion Dummy Methods to be removed after refactor
 
@@ -340,7 +375,30 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Object implements Mrbr
         super();
         this.rootElementName = rootElementName;
     }
+
     //#region Public Properties
+
+
+    /**
+     * Mutation Observer for DOM
+     */
+    public get mutationObserver(): Mrbr_UI_DOM_MutationObserver { return Mrbr_UI_Controls_Control._mutationObserver; }
+
+
+    /**
+     * Controls Elements Configuration Property
+     * @date 09/11/2022 - 10:43:07
+     *
+     * @public
+     * @type {Mrbr_UI_Controls_ElementsConfigMap}
+     */
+    public get elementConfig(): Mrbr_UI_Controls_ElementsConfigMap { return this._elementConfig; }
+
+    /**
+     * Controls Elements Configuration Property
+     */
+    public set elementConfig(value: Mrbr_UI_Controls_ElementsConfigMap) { this._elementConfig = value; }
+
 
     /**
      * Control's Id Property
@@ -359,6 +417,23 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Object implements Mrbr
     //#endregion Public Properties
 
     //#region Public Properties
+
+
+    /**
+     * Event Subscribers Property
+     * @date 10/11/2022 - 14:37:24
+     *
+     * @public
+     * @type {Mrbr_System_Events_EventSubscribers}
+     */
+    public get eventSubscribers(): Mrbr_System_Events_EventSubscribers { return this._eventSubscribers; }
+
+    /**
+     * Event Subscribers Property
+     */
+    public set eventSubscribers(value: Mrbr_System_Events_EventSubscribers) { this._eventSubscribers = value; }
+
+
 
     /**
      * Themed Elements Collection. Used to swap between light and dark themes
@@ -521,28 +596,34 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Object implements Mrbr
     public initialise(...args: any[]): Mrbr_System_Promise<any> {
         const
             self = this,
-            initialisePromise = this.$promise.create<Mrbr_UI_Controls_Control>("Mrbr_UI_Controls_Control:initialise"),
-            cls = Mrbr_UI_Controls_Control;
-        !cls.componentManifest && (cls.componentManifest = MrbrBase.mrbrInstance.loadManifest(cls[MrbrBase.MRBR_COMPONENT_MANIFEST]));
-        cls.componentManifest
-            .then(manifest => {
-                (!self.$ctrl.mutationObserver) && (self.$ctrl.mutationObserver = new Mrbr_UI_DOM_MutationObserver(document.body, { attributes: false, childList: true }));
+            initialisePromise = this.$promise.create<Mrbr_UI_Controls_Control>(`${self.$ctrl[self.$mrbrBase.MRBR_COMPONENT_NAME]}:initialise`);
+        try {
+            self.loadManifest(self.$ctrl).then(async manifest => {
+                if (!self.$ctrl.mutationObserver) {
+                    self.$ctrl.mutationObserver = new Mrbr_UI_DOM_MutationObserver(document.body, { attributes: false, childList: true, subtree: true });
+                };
+                this._eventSubscribers = new Mrbr_System_Events_EventSubscribers();
+                this._events = new Mrbr_System_Events_EventsMap();
+                await Promise.all([
+                    self.$ctrl.mutationObserver.initialise(),
+                    self._eventSubscribers.initialise(),
+                    self._events.initialise()
+                ]);
                 this._defaultConfiguration = new this.$ctrlCol();
                 this._customConfiguration = new this.$ctrlCol();
-                this.events[this.$themeChange.themeChangeEvent] = new Mrbr_System_Events_EventHandler(
+                this.events.add(this.$themeChange.themeChangeEvent, new self.$evtHandler(
                     this.$themeChange.themeChangeEvent,
                     this.controlEvents,
                     this.themeChanged,
                     this
-                )
+                ));
                 initialisePromise.resolve(this);
             })
-            .catch(error => {
-                initialisePromise.reject({ location: "Mrbr_UI_Controls_Control.Initialise.loadManifest", error: error });
-            })
+        } catch (error) {
+            initialisePromise.reject(error);
+        }
         return initialisePromise;
     }
-
     /**
      * Cached Component Manifest
      * @date 02/11/2022 - 05:52:28
@@ -859,7 +940,10 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Object implements Mrbr
      * @param {...*} args
      * @returns {Mrbr_UI_Controls_IControl}
      */
-    public mount(element: HTMLElement, position: "replace" | "prepend" | "before" | "after" | "append" = "append", ...args: any): Mrbr_UI_Controls_IControl {
+    public mount(element: HTMLElement | Mrbr_UI_Controls_Control, position: Mrbr_UI_Controls_MountPosition = Mrbr_UI_Controls_MountPosition.append, ...args: any): Mrbr_UI_Controls_IControl {
+        if (element instanceof Mrbr_UI_Controls_Control) {
+            element = element.defaultContainerElement || element.rootElement;
+        }
         switch (position) {
             case "append": element.appendChild(this.rootElement); break;
             case "before": element.before(this.rootElement); break;

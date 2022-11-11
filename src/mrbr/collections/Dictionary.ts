@@ -1,4 +1,5 @@
 import { Mrbr_IO_ManifestPromise } from "../io/ManifestPromise";
+import { Mrbr_System_Component } from "../system/Component";
 import { Mrbr_System_Events_EventSubscribers } from "../system/events/EventSubscribers";
 import { Mrbr_System_IComponent } from "../system/IComponent";
 import { MrbrBase } from "../system/MrbrBase";
@@ -19,7 +20,7 @@ import { Mrbr_Collections_KeyValuePair } from "./KeyValuePair";
  * @template TValue
  * @extends {EventTarget}
  */
-export class Mrbr_Collections_Dictionary<TKey, TValue> implements Mrbr_System_IComponent {
+export class Mrbr_Collections_Dictionary<TKey, TValue> extends Mrbr_System_Component implements Mrbr_System_IComponent {
 
     //#region Private Static Fields
     private static componentManifest: Mrbr_IO_ManifestPromise = null;
@@ -88,6 +89,7 @@ export class Mrbr_Collections_Dictionary<TKey, TValue> implements Mrbr_System_IC
      * @param {?Map<TKey, TValue>} [sourceMap] Optional source map to populate the dictionary with.
      */
     constructor(sourceMap?: Map<TKey, TValue>) {
+        super();
         const self = this;
         self._dictionary = sourceMap ? sourceMap : new Map<TKey, TValue>()
         self.index = new Proxy(self._dictionary,

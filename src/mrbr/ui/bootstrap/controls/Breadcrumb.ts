@@ -1,83 +1,210 @@
 import { Mrbr_Collections_DoubleLinkedList } from "../../../collections/DoubleLinkedList";
 import { Mrbr_Collections_DoubleLinkedListNode } from "../../../collections/DoubleLinkedListNode";
+import { Mrbr_System_Events_Event } from "../../../system/events/Event";
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
-import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_Promise } from "../../../system/Promise";
-import { Mrbr_UI_Controls_ClassActions } from "../../controls/classActions";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
-import { Mrbr_UI_Controls_ControlConfig } from "../../controls/ControlConfig";
-import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
 import { Mrbr_UI_Bootstrap_Controls_BreadcrumbItem } from "./BreadcrumbItem";
 
 export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Control {
-    public static BREADCRUMB_NAV_NAME = "breadcrumb_nav";
-    public static BREADCRUMB_LIST_NAME = "breadcrumb_list";
-    public static BREADCRUMB_ITEM_NAME = "breadcrumb_item";
-    public static BREADCRUMB_ITEM_LINK_NAME = "breadcrumb_item_link";
-    public static BREADCRUMB_CLICK_EVENT_NAME = "breadcrumb_click_event";
+    //#region Public Static Members
+
+    /**
+     * Internal BreadCrumb Nav Element Name
+     * @date 11/11/2022 - 07:18:53
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {"breadcrumb_nav"}
+     */
+    public static readonly BREADCRUMB_NAV_NAME = "breadcrumb_nav";
+
+    /**
+     * Internal Breadcrumb List Element Name
+     * @date 11/11/2022 - 07:19:18
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {"breadcrumb_list"}
+     */
+    public static readonly BREADCRUMB_LIST_NAME = "breadcrumb_list";
+
+    /**
+     * Internal Breadcrumb Item Element Name 
+     * @date 11/11/2022 - 07:19:40
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {"breadcrumb_item"}
+     */
+    public static readonly BREADCRUMB_ITEM_NAME = "breadcrumb_item";
+
+    /**
+     * Internal Breadcrumb Item Link Element Name
+     * @date 11/11/2022 - 07:20:11
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {"breadcrumb_item_link"}
+     */
+    public static readonly BREADCRUMB_ITEM_LINK_NAME = "breadcrumb_item_link";
+
+    /**
+     * Internal Breadcrumb Click Event Name
+     * @date 11/11/2022 - 07:20:28
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {"breadcrumb_click_event"}
+     */
+    public static readonly BREADCRUMB_CLICK_EVENT_NAME = "breadcrumb_click_event";
+    //#endregion Public Static Members
+    //#region Private Properties' Fields
+
+    /**
+     * Breadbrumb divider character
+     * @date 11/11/2022 - 07:20:44
+     *
+     * @private
+     * @type {string}
+     */
     private _breadcrumbDivider: string = "/";
+
+    /**
+     * Double linked list for breadcrumb trail
+     * @date 11/11/2022 - 07:20:59
+     *
+     * @private
+     * @type {Mrbr_Collections_DoubleLinkedList<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem>}
+     */
     private _breadcrumbTrail: Mrbr_Collections_DoubleLinkedList<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem> = new Mrbr_Collections_DoubleLinkedList<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem>(true);
+    //#endregion Private Properties' Fields
+    //#region Type Aliases
 
+    /**
+     * Type Alias for Mrbr_UI_Bootstrap_Controls_Breadcrumb
+     * @date 11/11/2022 - 07:21:20
+     *
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Controls_Breadcrumb}
+     */
     get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Breadcrumb { return Mrbr_UI_Bootstrap_Controls_Breadcrumb; }
+    //#endregion Public Methods
 
+
+    /**
+     * Creates an instance of Mrbr_UI_Bootstrap_Controls_Breadcrumb.
+     * @date 11/11/2022 - 07:21:39
+     *
+     * @constructor
+     * @param {string} rootElementName
+     */
     constructor(rootElementName: string) {
         super(rootElementName);
         const self = this;
         self.defaultContainerElementName = self.$cls.BREADCRUMB_LIST_NAME;
     }
-    public get breadcrumbTrail(): Mrbr_Collections_DoubleLinkedList<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem> {
-        return this._breadcrumbTrail;
-    }
-    public set breadcrumbTrail(value: Mrbr_Collections_DoubleLinkedList<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem>) {
-        this._breadcrumbTrail = value;
-    }
-    public get breadcrumbDivider(): string {
-        return this._breadcrumbDivider;
-    }
-    public set breadcrumbDivider(value: string) {
-        this._breadcrumbDivider = value;
-    }
 
+    //#region Public Properties
+
+    /**
+     * Breadcrumb trail
+     * @date 11/11/2022 - 07:22:06
+     *
+     * @public
+     * @type {Mrbr_Collections_DoubleLinkedList<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem>}
+     */
+    public get breadcrumbTrail(): Mrbr_Collections_DoubleLinkedList<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem> { return this._breadcrumbTrail; }
+
+    /**
+     * Breadcrumb trail
+     */
+    public set breadcrumbTrail(value: Mrbr_Collections_DoubleLinkedList<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem>) { this._breadcrumbTrail = value; }
+
+    /**
+     * Breadcrumb divider
+     * @date 11/11/2022 - 07:22:32
+     *
+     * @public
+     * @type {string}
+     */
+    public get breadcrumbDivider(): string { return this._breadcrumbDivider; }
+
+    /**
+     * Breadcrumb divider, default to "/"
+     */
+    public set breadcrumbDivider(value: string) { this._breadcrumbDivider = value; }
+    //#endregion Public Properties
+    //#region Public Methods
+
+    /**
+     * Set the current crumb and remove all crumb after it
+     * @date 11/11/2022 - 07:25:27
+     *
+     * @public
+     * @param {Mrbr_UI_Bootstrap_Controls_BreadcrumbItem} breadcrumbItem
+     */
     public setCurrentCrumb(breadcrumbItem: Mrbr_UI_Bootstrap_Controls_BreadcrumbItem) {
-        const self = this,
-            removedCrumbs = self.breadcrumbTrail.removeAfter(breadcrumbItem);
-        if (removedCrumbs?.length > 0) {
-            removedCrumbs.forEach(crumb => {
-                self.defaultContainerElement.removeChild(self.elements[crumb.key]);
-                self.elements[crumb.key] = self.$ctrl.DELETE_ENTRY;
-            })
-        }
-        self.renderCrumb(self.breadcrumbTrail.head);
+        const removedCrumbs = this.breadcrumbTrail.removeAfter(breadcrumbItem);
+        removedCrumbs.forEach(crumb => {
+            this.defaultContainerElement.removeChild(this.elements.get(crumb.key));
+            this.elements.delete(crumb.key);
+        })
+        this.renderCrumb(this.breadcrumbTrail.head);
     }
 
-    public getNode(key: any): Mrbr_Collections_DoubleLinkedListNode<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem> {
-        return this.breadcrumbTrail.getNode(key);
-    }
+    /**
+     * Get Breadcrumb by key
+     * @date 11/11/2022 - 07:32:45
+     *
+     * @public
+     * @param {*} key
+     * @returns {Mrbr_Collections_DoubleLinkedListNode<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem>}
+     */
+    public getNode(key: any): Mrbr_Collections_DoubleLinkedListNode<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem> { return this.breadcrumbTrail.getNode(key); }
+
+    /**
+     * Add a new crumb to the breadcrumb trail
+     * @date 11/11/2022 - 07:33:01
+     *
+     * @public
+     * @param {Mrbr_UI_Bootstrap_Controls_BreadcrumbItem} breadcrumbItem
+     * @returns {Mrbr_Collections_DoubleLinkedList<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem>}
+     */
     public add(breadcrumbItem: Mrbr_UI_Bootstrap_Controls_BreadcrumbItem): Mrbr_Collections_DoubleLinkedList<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem> {
-        const self = this;
-        self.breadcrumbTrail.add(breadcrumbItem, breadcrumbItem.key);
-        self.createElement(new self.$ctrlCfg(breadcrumbItem.key, "li", self.configuration(self.$cls.BREADCRUMB_ITEM_NAME)));
-
-        self.defaultContainerElement.appendChild(self.elements[breadcrumbItem.key]);
-        self.renderCrumb(self.breadcrumbTrail.head);
-        return self.breadcrumbTrail;
+        this.breadcrumbTrail.add(breadcrumbItem, breadcrumbItem.key);
+        this.createElement(new this.$ctrlCfg(breadcrumbItem.key, "li", this.elementConfig.get(this.$cls.BREADCRUMB_ITEM_NAME)));
+        this.defaultContainerElement.appendChild(this.elements.get(breadcrumbItem.key));
+        this.renderCrumb(this.breadcrumbTrail.head);
+        return this.breadcrumbTrail;
     }
-    protected renderCrumb(currentNode: Mrbr_Collections_DoubleLinkedListNode<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem>) {
-        const self = this;
+
+    /**
+     * Render the crumb to the DOM
+     * @date 11/11/2022 - 07:33:15
+     *
+     * @public
+     * @param {Mrbr_Collections_DoubleLinkedListNode<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem>} currentNode
+     */
+    public renderCrumb(currentNode: Mrbr_Collections_DoubleLinkedListNode<Mrbr_UI_Bootstrap_Controls_BreadcrumbItem>) {
         if (!currentNode) { return; }
-        if (currentNode === self.breadcrumbTrail.tail) {
-            let currentCrumb: HTMLLIElement = self.elements[currentNode.key] || self.createElement(new self.$ctrlCfg(currentNode.key, "li", self.configuration(self.$cls.BREADCRUMB_ITEM_NAME)));
-            const linkNode = self.elements[currentNode.key].querySelector("a");
+        if (currentNode === this.breadcrumbTrail.tail) {
+            let currentCrumb: HTMLLIElement = <HTMLLIElement>this.elements.get(currentNode.key) || <HTMLLIElement>this.createElement(new this.$ctrlCfg(currentNode.key, "li", this.elementConfig.get(this.$cls.BREADCRUMB_ITEM_NAME)));
+            const linkNode = this.elements.get(currentNode.key).querySelector("a");
             if (linkNode) { currentCrumb.removeChild(linkNode); }
-            self.elementAria(currentCrumb, { "current": "page" });
+            this.elementAria(currentCrumb, { "current": "page" });
             currentCrumb.textContent = currentNode.value.crumbText;
-            self.classes(currentCrumb, self.$clsActions.Add, "active");
+            this.classes(currentCrumb, this.$clsActions.Add, "active");
         }
         else {
-            let currentCrumb: HTMLLIElement = self.elements[currentNode.key] || self.createElement(new self.$ctrlCfg(currentNode.key, "li", self.configuration(self.$cls.BREADCRUMB_ITEM_NAME)));
-            let linkNode: HTMLAnchorElement = self.elements[currentNode.key].querySelector("a");
-            debugger
-            self.classes(currentCrumb, self.$clsActions.Remove, "active");
+            let currentCrumb: HTMLLIElement = <HTMLLIElement>this.elements.get(currentNode.key) || <HTMLLIElement>this.createElement(new this.$ctrlCfg(currentNode.key, "li", this.elementConfig.get(this.$cls.BREADCRUMB_ITEM_NAME)));
+            let linkNode: HTMLAnchorElement = this.elements.get(currentNode.key).querySelector("a");
+            this.classes(currentCrumb, this.$clsActions.Remove, "active");
             if (!linkNode) {
                 currentCrumb.textContent = "";
                 currentCrumb.removeAttribute("aria-current");
@@ -87,54 +214,101 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
                 currentCrumb.appendChild(linkNode);
             }
         }
-        if (currentNode.next) {
-            self.renderCrumb(currentNode.next);
-        }
+        (currentNode.next) && (this.renderCrumb(currentNode.next));
     }
 
 
+    /**
+     * Initialise the control, load manifest and set properties
+     * @date 11/11/2022 - 07:33:59
+     *
+     * @public
+     * @param {...{}} args
+     * @returns {Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Breadcrumb>}
+     */
     public initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Breadcrumb> {
-        const self = this,
-            initlialisepromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Breadcrumb>("Mrbr_UI_Bootstrap_Controls_Breadcrumb:initialise");
-        super.initialise(args)
-            .then(result => {
-                self.setDefaultConfig();
-                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
-                    .then(manifest => {
-
-                        self.createElement(new self.$ctrlCfg(self.rootElementName, "nav", self.configuration(self.$cls.BREADCRUMB_NAV_NAME)
-                            .Children([new self.$ctrlCfg(self.defaultContainerElementName, "ol", self.configuration(self.$cls.BREADCRUMB_LIST_NAME))])
-                            ));
-                        self.events[self.$cls.BREADCRUMB_CLICK_EVENT_NAME] = new Mrbr_System_Events_EventHandler(
-                            "click",
-                            self.rootElement,
-                            self.crumbClick_handler,
-                            self
-                        )
-                        initlialisepromise.resolve(self);
-                    })
+        const
+            self = this,
+            initialisepromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Breadcrumb>(`${self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME]}:initialise`);
+        try {
+            super.initialise(args).then(async result => {
+                await self.loadManifest(self.$cls);
+                await self.setDefaultConfig();
+                self.createElement(new self.$ctrlCfg(self.rootElementName, "nav", self.elementConfig.get(self.$cls.BREADCRUMB_NAV_NAME)
+                    .Children([new self.$ctrlCfg(self.defaultContainerElementName, "ol", self.elementConfig.get(self.$cls.BREADCRUMB_LIST_NAME))])
+                ));
+                initialisepromise.resolve(self);
             })
-        return initlialisepromise;
+        } catch (error) { initialisepromise.reject(error); }
+        return initialisepromise;
     }
 
-    crumbClick_handler(event: MouseEvent) {
+
+    /**
+     * Set the default configuration for the control
+     * @date 11/11/2022 - 07:34:41
+     *
+     * @public
+     * @returns {Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Breadcrumb>}
+     */
+    public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Breadcrumb> {
+        const self = this,
+            controlName = self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME],
+            defaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Breadcrumb>(`${controlName}:setDefaultConfig`);
+        try {
+            super.setDefaultConfig().then(result => {
+                self.elementConfig
+                    .controlName(controlName)
+                    .setIfNotExist(self.$cls.BREADCRUMB_NAV_NAME, new self.$ctrlPrm()
+                        .Aria({ label: "breadcrumb" }))
+                    .setIfNotExist(self.$cls.BREADCRUMB_LIST_NAME, new self.$ctrlPrm()
+                        .Classes(["breadcrumb"]))
+                    .setIfNotExist(self.$cls.BREADCRUMB_ITEM_NAME, new self.$ctrlPrm()
+                        .Classes(["breadcrumb-item user-select-none"]))
+                    .setIfNotExist(self.$cls.BREADCRUMB_ITEM_LINK_NAME, new self.$ctrlPrm());
+                defaultConfigPromise.resolve(self);
+            });
+        } catch (error) { defaultConfigPromise.reject(error); }
+        return defaultConfigPromise;
+    }
+    //#endregion Public Methods
+
+    //#region Event Handlers
+
+    /**
+     * Handle the click event on the breadcrumb
+     * @date 11/11/2022 - 07:38:24
+     *
+     * @private
+     * @param {MouseEvent} event
+     */
+    private crumbClick_handler(event: MouseEvent) {
         const eventTarget = event.target as HTMLElement,
             self = this;
         event.stopPropagation();
-        if (eventTarget instanceof HTMLAnchorElement || eventTarget instanceof HTMLLIElement) {
-            let id = eventTarget instanceof HTMLAnchorElement ? (<HTMLElement>eventTarget.closest(".breadcrumb-item")).dataset.id : eventTarget.dataset.id;
-            self.dispatchEvent(new CustomEvent(self.$cls.BREADCRUMB_CLICK_EVENT_NAME, { detail: { id: id } }));
-        }
+        if ((!(eventTarget instanceof HTMLAnchorElement) && (!(eventTarget instanceof HTMLLIElement)))) { return; }
+        const id = eventTarget instanceof HTMLAnchorElement ? (<HTMLElement>eventTarget.closest(".breadcrumb-item")).dataset.mrbrId : eventTarget.dataset.mrbrId;
+        self.eventSubscribers.raise(self.$cls.BREADCRUMB_CLICK_EVENT_NAME, new Mrbr_System_Events_Event(self.$cls.BREADCRUMB_CLICK_EVENT_NAME, this, id));
     }
 
-    public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Breadcrumb> {
+    /**
+     * Add eventHandler to the control for the crumb click event
+     * @date 11/11/2022 - 07:52:00
+     *
+     * @public
+     * @param {(event: Mrbr_System_Events_Event<string>) => void} callback
+     * @returns {number}
+     */
+    public onCrumbClick(callback: (event: Mrbr_System_Events_Event<string>) => void): number {
         const self = this;
-        self.defaultConfig.addEntries([
-            [self.$cls.BREADCRUMB_NAV_NAME, new self.$ctrlPrm().Aria({ label: "breadcrumb" })],
-            [self.$cls.BREADCRUMB_LIST_NAME, new self.$ctrlPrm().Classes(["breadcrumb"])],
-            [self.$cls.BREADCRUMB_ITEM_NAME, new self.$ctrlPrm().Classes(["breadcrumb-item user-select-none"])],
-            [self.$cls.BREADCRUMB_ITEM_LINK_NAME, new self.$ctrlPrm()]
-        ])
-        return self.$promise.createResolved("Mrbr_UI_Bootstrap_Controls_Breadcrumb:setDefaultConfiguration", self);
+        self.events.has(self.$cls.BREADCRUMB_CLICK_EVENT_NAME) ||
+            self.events.add(self.$cls.BREADCRUMB_CLICK_EVENT_NAME, new Mrbr_System_Events_EventHandler(
+                "click",
+                self.rootElement,
+                self.crumbClick_handler,
+                self
+            ));
+        return self.eventSubscribers.add(self.$cls.BREADCRUMB_CLICK_EVENT_NAME, callback);
     }
+    //#endregion Event Handlers
 }

@@ -1,3 +1,4 @@
+import { Mrbr_System_Events_Event } from "../../../system/events/Event";
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_Promise } from "../../../system/Promise";
@@ -164,12 +165,12 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Contro
         Array.from(self.bootstrapCollapse.keys()).forEach((key) => { self.bootstrapCollapse.get(key).dispose(); });
         super.dispose();
     }
-    private mutation_handler(source: any, event: any, ...args): void {
+    private mutation_handler(event: Mrbr_System_Events_Event<MutationRecord[]>): void {
         const self = this;
         let nodedAdded: boolean = false;
-        for (let mutationIndex = 0; mutationIndex < event.detail.length; mutationIndex++) {
+        for (let mutationIndex = 0; mutationIndex < event.data.length; mutationIndex++) {
             if (nodedAdded === true) { break; }
-            const mutation = event.detail[mutationIndex];
+            const mutation = event.data[mutationIndex];
             for (let nodeIndex = 0; nodeIndex < mutation.addedNodes.length; nodeIndex++) {
                 const node = mutation.addedNodes[nodeIndex];
                 if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).id === self.rootElement.id) {

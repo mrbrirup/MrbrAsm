@@ -1,8 +1,8 @@
 import { Mrbr_System_Events_EventSubscribers } from "../../system/events/EventSubscribers";
 import { Mrbr_System_IComponent } from "../../system/IComponent";
 import { Mrbr_System_Promise } from "../../system/Promise";
-import { Mrbr_System_Object } from "../../system/Object";
-import { MrbrBase } from "../../system/MrbrBase";
+import { Mrbr_System_Component } from "../../system/Component";
+import { Mrbr_System_Events_Event } from "../../system/events/Event";
 
 /**
  * Creates a new instance of the Mrbr_UI_Controls_ElementsMap class.
@@ -15,7 +15,7 @@ import { MrbrBase } from "../../system/MrbrBase";
  * @extends {Mrbr_System_Object}
  * @implements {Mrbr_System_IComponent}
  */
-export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Object implements Mrbr_System_IComponent {
+export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Component implements Mrbr_System_IComponent {
 
     //#region Private Static Members
     /**
@@ -32,8 +32,11 @@ export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Object implements 
         "childList": "onChildListChange",
         "custom": "onCustomChange"
     } as const
+    private static NODE_EVENT_NAMES = {
+        "onAddNodes": "onAddNodes",
+        "onRemoveNodes": "onRemoveNodes",
+    } as const;
     //#region Private Members
-
     /**
      * EventSubscribers for MutationObserver events
      * @date 31/10/2022 - 04:53:15
@@ -41,7 +44,7 @@ export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Object implements 
      * @private
      * @type {Mrbr_System_Events_EventSubscribers}
      */
-    private eventSubscribers: Mrbr_System_Events_EventSubscribers
+    private eventSubscribers: Mrbr_System_Events_EventSubscribers = new Mrbr_System_Events_EventSubscribers();
 
     /**
      * HTMLElement being observed
@@ -111,14 +114,18 @@ export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Object implements 
      */
     public initialise(...args: any[]): Mrbr_System_Promise<Mrbr_System_IComponent> {
         const self = this,
-            componentManifest = Symbol.for(`${self.$cls[MrbrBase.MRBR_COMPONENT_NAME]}:componentManifest`),
             initalisePromise = self.$promise.create<Mrbr_UI_DOM_MutationObserver>("MutationObserver.initialise");
-        !self.$cls[componentManifest] && (self.$cls[componentManifest] = MrbrBase.mrbrInstance.loadManifest(self.$cls[MrbrBase.MRBR_COMPONENT_MANIFEST]));
-        self.$cls[componentManifest]
-            .then(() => {
+        super.initialise().then(async () => {
+            try {
+                await self.loadManifest(self.$cls);
                 self.eventSubscribers = new Mrbr_System_Events_EventSubscribers();
+                await self.eventSubscribers.initialise();
                 initalisePromise.resolve(self);
-            })
+            } catch (error) {
+
+                initalisePromise.reject(error);
+            }
+        });
         return initalisePromise;
     }
 
@@ -132,16 +139,37 @@ export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Object implements 
      */
     private observerCallback(mutations: MutationRecord[]): void {
         const
+            self = this,
             eventNames = this.$cls.MUTATION_EVENT_NAMES,
-            eventSubscribers = this.eventSubscribers;
-        (function* () {
-            for (let mutation of mutations) {
-                let mutationType = mutation.type;
-                (!mutationType) && (mutationType = eventNames[eventNames.custom]);
-                eventSubscribers.raise(eventNames[mutationType], mutation);
+            eventSubscribers = this.eventSubscribers,
+            evt = Mrbr_System_Events_Event
+
+        for (const mutation of self.mutationGenerator(mutations)) {
+            const eventSubscriberName = eventNames[mutation.type];
+            eventSubscribers.raise(eventSubscriberName, new evt(eventSubscriberName, self, mutation.mutation));
+            if (mutation.type === "childList") {
+                (mutation.mutation.addedNodes) && eventSubscribers.raise(this.$cls.NODE_EVENT_NAMES.onAddNodes, new evt(eventSubscriberName, self, mutation.mutation.addedNodes));
+                (mutation.mutation.removedNodes) && eventSubscribers.raise(this.$cls.NODE_EVENT_NAMES.onRemoveNodes, new evt(eventSubscriberName, self, mutation.mutation.removedNodes));
             }
-        })();
+        }
     }
+
+    /**
+     * Generator function to yield mutation records
+     * @date 08/11/2022 - 21:27:12
+     *
+     * @private
+     * @param {MutationRecord[]} mutations
+     * @returns {IterableIterator<{ type: keyof typeof Mrbr_UI_DOM_MutationObserver.MUTATION_EVENT_NAMES, mutation: MutationRecord }>}
+     */
+    private *mutationGenerator(mutations: MutationRecord[]): IterableIterator<{ type: keyof typeof Mrbr_UI_DOM_MutationObserver.MUTATION_EVENT_NAMES, mutation: MutationRecord }> {
+        const eventNames = this.$cls.MUTATION_EVENT_NAMES;
+        for (let mutation of mutations) {
+            let mutationType = mutation.type;
+            (!mutationType) && (mutationType = eventNames[eventNames.custom]);
+            yield { type: mutationType, mutation: mutation }
+        }
+    };
 
     /**
      * Disconnects the MutationObserver
@@ -168,7 +196,34 @@ export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Object implements 
      */
     public takeRecords(): MutationRecord[] { return this._observer.takeRecords(); }
     //#endregion Public Methods
+
+
+
+    /**
+     * Event Raised when a childList Mutation with addedNodes is observed
+     * @date 08/11/2022 - 21:26:16
+     *
+     * @public
+     * @param {(event: Mrbr_System_Events_Event<NodeList>) => void} callback
+     * @returns {number}
+     */
+    public onAddNodes(callback: (event: Mrbr_System_Events_Event<NodeList>) => void): number {
+        return this.eventSubscribers.add(this.$cls.NODE_EVENT_NAMES.onAddNodes, callback);
+    }
+
+    /**
+     * Event Raised when a childList Mutation with removedNodes is observed
+     * @date 08/11/2022 - 21:26:52
+     *
+     * @public
+     * @param {(event: Mrbr_System_Events_Event<NodeList>) => void} callback
+     * @returns {number}
+     */
+    public onRemoveNodes(callback: (event: Mrbr_System_Events_Event<NodeList>) => void): number {
+        return this.eventSubscribers.add(this.$cls.NODE_EVENT_NAMES.onRemoveNodes, callback);
+    }
     //#region Public Events
+
 
     /**
      * Event raised when attributes change
@@ -178,7 +233,7 @@ export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Object implements 
      * @param {(source: Mrbr_UI_DOM_MutationObserver, event: any, mutation: MutationRecord) => void} callback
      * @returns {number} Id of the event
      */
-    public onAttributesChange(callback: (source: Mrbr_UI_DOM_MutationObserver, event: any, mutation: MutationRecord) => void): number {
+    public onAttributesChange(callback: (event: Mrbr_System_Events_Event<MutationRecord[]>) => void): number {
         return this.eventSubscribers.add(this.$cls.MUTATION_EVENT_NAMES.attributes, callback);
     }
 
@@ -190,7 +245,7 @@ export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Object implements 
      * @param {(source: Mrbr_UI_DOM_MutationObserver, event: any, mutation: MutationRecord) => void} callback
      * @returns {number} Id of the event
      */
-    public onCharacterDataChange(callback: (source: Mrbr_UI_DOM_MutationObserver, event: any, mutation: MutationRecord) => void): number {
+    public onCharacterDataChange(callback: (event: Mrbr_System_Events_Event<MutationRecord[]>) => void): number {
         return this.eventSubscribers.add(this.$cls.MUTATION_EVENT_NAMES.characterData, callback);
     }
 
@@ -202,7 +257,7 @@ export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Object implements 
      * @param {(source: Mrbr_UI_DOM_MutationObserver, event: any, mutation: MutationRecord) => void} callback
      * @returns {number} Id of the event
      */
-    public onChildListChange(callback: (source: Mrbr_UI_DOM_MutationObserver, event: any, mutation: MutationRecord) => void): number {
+    public onChildListChange(callback: (event: Mrbr_System_Events_Event<MutationRecord[]>) => void): number {
         return this.eventSubscribers.add(this.$cls.MUTATION_EVENT_NAMES.childList, callback);
     }
 
@@ -214,8 +269,45 @@ export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Object implements 
      * @param {(source: Mrbr_UI_DOM_MutationObserver, event: any, mutation: MutationRecord) => void} callback
      * @returns {number} Id of the event
      */
-    public onCustomChange(callback: (source: Mrbr_UI_DOM_MutationObserver, event: any, mutation: MutationRecord) => void): number {
+    public onCustomChange(callback: (event: Mrbr_System_Events_Event<MutationRecord[]>) => void): number {
         return this.eventSubscribers.add(this.$cls.MUTATION_EVENT_NAMES.custom, callback);
+    }
+
+    /**
+     * Check if an element, using the element or its id, is contained in the NodeList, returned from Mutation Added or Removed Nodes
+     * @date 06/11/2022 - 05:56:06
+     *
+     * @public
+     * @param {(string | HTMLElement)} element HTMLElement or Id of the element to check
+     * @param {NodeList} nodeList
+     * @returns {boolean}
+     */
+    public inNodeList(element: string | HTMLElement, nodeList: NodeList): boolean {
+        let inNodeList = false;
+        if ((nodeList?.length ?? 0) === 0) { return inNodeList; }
+        if (typeof element === "string") {
+            for (let nodeCounter = 0; nodeCounter < nodeList.length; nodeCounter++) {
+                const item = nodeList[nodeCounter];
+                console.log(item);
+                if (!(item instanceof HTMLElement)) { continue; }
+                if (item.id !== element) { continue; }
+                inNodeList = true;
+                break;
+            }
+            return inNodeList;
+        }
+        for (let nodeCounter = 0; nodeCounter < nodeList.length; nodeCounter++) {
+            const item = nodeList[nodeCounter];
+            if (!(item instanceof HTMLElement)) { continue; }
+            if (item !== element) { continue; }
+            inNodeList = true;
+            break;
+        }
+        return inNodeList;
+
+
+
+
     }
     //#endregion Public Events
 }

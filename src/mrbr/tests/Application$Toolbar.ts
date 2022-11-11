@@ -29,8 +29,8 @@ export class Mrbr_Tests_Application$Toolbar {
                 button3.text = "Button 3";
                 button4.text = "Button 4";
 
-                buttonGroup0.buttonGroupSize = self.$buttonGroup.buttonGroupSizes.small;
-                buttonGroup1.buttonGroupSize = self.$buttonGroup.buttonGroupSizes.small;
+                buttonGroup0.buttonGroupSize = self.$buttonGroup.groupSizes.small;
+                buttonGroup1.buttonGroupSize = self.$buttonGroup.groupSizes.small;
 
 
                 Promise.all([button1.initialise(), button2.initialise(), button3.initialise(), button4.initialise()])
