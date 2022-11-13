@@ -1,9 +1,9 @@
+import { Mrbr_System_Events_Event } from "../../../system/events/Event";
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
-import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_Promise } from "../../../system/Promise";
-import { Mrbr_UI_Controls_Control } from "../../controls/Control";
+import { Mrbr_UI_Bootstrap_Controls_BootstrapControl } from "./BootstrapControl";
 type carouselItemType = InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Carousel.CarouselItem>;
-export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Control {
+export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Bootstrap_Controls_BootstrapControl {
     //#region Public Static Members
     public static CAROUSEL_NAME: string = "carousel";
     public static CAROUSEL_INNER_NAME: string = "carousel_inner";
@@ -71,367 +71,338 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
     private _pauseOnHover: boolean = true;
     //#endregion Private Members
     get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Carousel { return Mrbr_UI_Bootstrap_Controls_Carousel; }
-    constructor(rootElementName: string) {
-        super(rootElementName);
-    }
+    constructor(rootElementName: string) { super(rootElementName); }
     //#region Public Properties
-    public get pauseOnHover(): boolean {
-        return this._pauseOnHover;
-    }
+    public get pauseOnHover(): boolean { return this._pauseOnHover; }
     public set pauseOnHover(value: boolean) {
-        const self = this;
-        if (self.rootElement) {
-            self.elementDataset(self.rootElement, { bsPause: value ? "hover" : "false" });
-        }
+        (this.rootElement) && (this.elementDataset(this.rootElement, { bsPause: value ? "hover" : "false" }))
         this._pauseOnHover = value;
     }
-    public get interval(): number {
-        return this._interval;
-    }
+    public get interval(): number { return this._interval; }
     public set interval(value: number) {
-        const self = this;
-        if (self.rootElement && value > 0) {
-            self.elementDataset(self.rootElement, { bsInterval: value });
-            this._interval = value;
-        }
+        value = Math.max(0, value);
+        (this.rootElement) && (this.elementDataset(this.rootElement, { bsInterval: value }));
+        this._interval = value;
     }
-    public get keyboard(): boolean {
-        return this._keyboard;
-    }
+    public get keyboard(): boolean { return this._keyboard; }
     public set keyboard(value: boolean) {
-        const self = this;
-        if (self.rootElement) {
-            self.elementDataset(self.rootElement, { bsKeyboard: value });
-        }
+        (this.rootElement) && (this.elementDataset(this.rootElement, { bsKeyboard: value }));
         this._keyboard = value;
     }
-    public get touch(): boolean {
-        return this._touch;
-    }
+    public get touch(): boolean { return this._touch; }
     public set touch(value: boolean) {
-        const self = this;
-        if (self.rootElement) {
-            self.elementDataset(self.rootElement, { bsTouch: value });
-        }
+        (this.rootElement) && (this.elementDataset(this.rootElement, { bsTouch: value }));
         this._touch = value;
     }
-    public get wrap(): boolean {
-        return this._wrap;
-    }
+    public get wrap(): boolean { return this._wrap; }
     public set wrap(value: boolean) {
-        const self = this;
-        if (self.rootElement) {
-            self.elementDataset(self.rootElement, { bsWrap: value });
-        }
+        (this.rootElement) && (this.elementDataset(this.rootElement, { bsWrap: value }));
         this._wrap = value;
     }
 
     public get autoPlay(): boolean { return this._autoPlay; }
     public set autoPlay(value: boolean) {
-        const self = this;
-        if (self.rootElement) {
-            if (value) {
-                self.elementDataset(self.rootElement, { bsRide: "carousel" });
-            } else {
-                self.elementDataset(self.rootElement, { bsRide: "true" });
-            }
-        }
-        self._autoPlay = value;
+        (this.rootElement) && (this.elementDataset(this.rootElement, { bsRide: value ? "carousel" : "true" }));
+        this._autoPlay = value;
     }
-    public get bootstrapCarousel(): any {
-        return this._bootstrapCarousel;
-    }
-    public set bootstrapCarousel(value: any) {
-        this._bootstrapCarousel = value;
-    }
+    public get bootstrapCarousel(): any { return this._bootstrapCarousel; }
+    public set bootstrapCarousel(value: any) { this._bootstrapCarousel = value; }
     public get withControls(): boolean { return this._withControls; }
     public set withControls(value: boolean) {
-        const self = this;
-        if (self.rootElement) {
-            if (value) {
-                let prevIcon = document.createElement("span"),
-                    prevText = document.createElement("span"),
-                    nextIcon = document.createElement("span"),
-                    nextText = document.createElement("span");
-                self.classes(prevIcon, self.$clsActions.Add, "carousel-control-prev-icon");
-                self.classes(nextIcon, self.$clsActions.Add, "carousel-control-next-icon");
-                self.elementAria([prevIcon, nextIcon], { hidden: "true" });
-                self.classes([prevText, nextText], self.$clsActions.Add, "visually-hidden");
-                prevText.innerText = "Previous";
-                nextText.innerText = "Next";
-                let prev = <HTMLButtonElement>self.createElement(new this.$ctrlCfg(self.$cls.CAROUSEL_CONTROL_PREV_NAME, "button", self.configuration(self.$cls.CAROUSEL_CONTROL_PREV_NAME)
-                    .Data({ bsTarget: `#${self.rootElement.id}` })
-                    .Children([prevIcon, prevText]))
-                );
-                let next = <HTMLButtonElement>self.createElement(new this.$ctrlCfg(self.$cls.CAROUSEL_CONTROL_NEXT_NAME, "button", self.configuration(self.$cls.CAROUSEL_CONTROL_NEXT_NAME)
-                    .Data({ bsTarget: `#${self.rootElement.id}` })
-                    .Children([nextIcon, nextText]))
-                );
-                self.rootElement.appendChild(self.elements[self.$cls.CAROUSEL_CONTROL_PREV_NAME]);
-                self.rootElement.appendChild(self.elements[self.$cls.CAROUSEL_CONTROL_NEXT_NAME]);
-            }
+        this._withControls = value;
+        if (!this.rootElement) { return; }
+        const controlNames = [this.$cls.CAROUSEL_CONTROL_PREV_NAME, this.$cls.CAROUSEL_CONTROL_NEXT_NAME];
+        if (value) {
+            controlNames.forEach((controlName: string) =>
+                this.rootElement.appendChild(
+                    <HTMLButtonElement>this.createElement(new this.$ctrlCfg(controlName, "button", this.elementConfig.getConfig(controlName)
+                        .Data({ bsTarget: `#${this.rootElement.id}` })
+                    ))));
         }
-        self._withControls = value;
+        else {
+            controlNames.forEach((controlName: string) => {
+                this.elements.get(controlName)?.remove();
+                this.elements.delete(controlName);
+            });
+        }
+
     }
     public get withIndicators(): boolean { return this._withIndicators; }
     public set withIndicators(value: boolean) {
-        const self = this;
-        if (self.rootElement) {
-            if (value && !self.elements[self.$cls.CAROUSEL_INDICATORS_NAME]) {
-                let indicators = [];
-                Array.from(self.carouselItems.values()).forEach((item: carouselItemType) => {
-                    let isActive = item.container.classList.contains("active");
-                    let indicator = <HTMLElement>self.createElement(new self.$ctrlCfg(`indicator_${indicators.length}`, "button", self.configuration(self.$cls.CAROUSEL_INDICATOR_NAME)
-                        .Data({ bsTarget: `#${self.rootElement.id}`, bsSlideTo: indicators.length })
-                        .Aria({ label: item.slideName, current: isActive ? "true" : "false" }))
-                    );
-                    (isActive) && self.classes(indicator, self.$clsActions.Add, "active");
-                    indicators.push(indicator);
-                });
-                self.createElement(new this.$ctrlCfg(self.$cls.CAROUSEL_INDICATORS_NAME, "div", self.configuration(self.$cls.CAROUSEL_INDICATORS_NAME)
-                    .Children(indicators))
-                )
-                self.rootElement.prepend(self.elements[self.$cls.CAROUSEL_INDICATORS_NAME]);
-            }
-            else if (!value && self.elements[self.$cls.CAROUSEL_INDICATORS_NAME]) {
-                self.rootElement.removeChild(self.elements[self.$cls.CAROUSEL_INDICATORS_NAME]);
-            }
-        }
         this._withIndicators = value;
+        const
+            root = this.rootElement,
+            indicatorsControlName = this.$cls.CAROUSEL_INDICATORS_NAME;
+        if (!root) { return; }
+        if (value && !this.elements.get(indicatorsControlName)) {
+            let indicatorCount = 0;
+            const
+                indicatorConfig = this.elementConfig.getConfig(this.$cls.CAROUSEL_INDICATOR_NAME),
+                bsTarget = `#${root.id}`,
+                indicators = Array.from(this.carouselItems.values())
+                    .map((item: carouselItemType) => {
+                        const
+                            isActive = item.container.classList.contains("active"),
+                            indicatorId = `indicator_${indicatorCount}`,
+                            indicator = <HTMLElement>this.createElement(new this.$ctrlCfg(indicatorId, "button", indicatorConfig
+                                .Data({ bsTarget: bsTarget, bsSlideTo: indicatorCount })
+                                .Aria({ label: item.slideName, current: isActive ? "true" : "false" })));
+                        (isActive) && this.classes(indicator, this.$clsActions.Add, "active");
+                        indicatorCount++;
+                        return indicator;
+                    });
+            root.prepend(
+                <HTMLDivElement>this.createElement(new this.$ctrlCfg(indicatorsControlName, "div", this.elementConfig.getConfig(indicatorsControlName)
+                    .Children(indicators))
+                ));
+        }
+        else if (!value && this.elements.has(indicatorsControlName)) {
+            root.removeChild(this.elements.get(indicatorsControlName));
+        }
     }
     public get withCaptions(): boolean { return this._withCaptions; }
     public set withCaptions(value: boolean) {
-        const self = this;
-        if (self.rootElement) {
-            if (value) {
-                Array.from(self.carouselItems.values()).forEach((item: carouselItemType) => {
-                    if (!item.captionContainer) {
-                        item.captionContainer = <HTMLElement>self.createElement(new self.$ctrlCfg(`${item.id}_caption`, "div", self.configuration(self.$cls.CAROUSEL_ITEM_CAPTION_NAME)));
-                        item.container.appendChild(item.captionContainer);
-                    }
-                });
-            }
-            self._withCaptions = value;
+        this._withCaptions = value;
+        const
+            root = this.rootElement,
+            carouselCaptionItemName = this.$cls.CAROUSEL_ITEM_CAPTION_NAME,
+            carouselItems = Array.from(this.carouselItems.values());
+        if (!root) { return; }
+        if (value) {
+            carouselItems.forEach((item: carouselItemType) => (!item.captionContainer) && (this.addCaptionContainer(item)));
         }
+        else {
+            carouselItems.forEach((item: carouselItemType) => {
+                item.captionContainer?.remove();
+                item.captionContainer = null;
+            });
+        }
+    }
+    private addCaptionContainer(item: carouselItemType) {
+        const
+            carouselCaptionItemName = this.$cls.CAROUSEL_ITEM_CAPTION_NAME,
+            captionId = `${item.id}_caption`;
+        item.captionContainer = <HTMLElement>this.createElement(new this.$ctrlCfg(captionId, "div", this.elementConfig.getConfig(carouselCaptionItemName)));
+        item.container.appendChild(item.captionContainer);
+
     }
     public get useCrossFade(): boolean { return this._useCrossFade; }
     public set useCrossFade(value: boolean) {
-        const self = this;
-        if (self.rootElement) {
-            if (value) {
-                self.classes(self.rootElement, self.$clsActions.Add, "carousel-fade");
-            } else {
-                self.classes(self.rootElement, self.$clsActions.Remove, "carousel-fade");
-            }
-        }
-        self._useCrossFade = value;
+        (this.rootElement) && (this.classes(this.rootElement, value ? this.$clsActions.Add : this.$clsActions.Remove, "carousel-fade"));
+        this._useCrossFade = value;
     }
     public get disableTouchSwipe(): boolean { return this._disableTouchSwipe; }
     public set disableTouchSwipe(value: boolean) {
-        const self = this;
-        if (self.rootElement) {
-            if (value) {
-                self.elementDataset(self.rootElement, { bsTouch: "false" });
-            } else {
-                self.elementDataset(self.rootElement, { bsTouch: self.$cls.DELETE });
-            }
-        }
-        self._disableTouchSwipe = value;
+        (this.rootElement) && (this.elementDataset(this.rootElement, { bsTouch: value ? "false" : this.$cls.DELETE }));
+        this._disableTouchSwipe = value;
     }
     public get darkVariant(): boolean { return this._darkVariant; }
     public set darkVariant(value: boolean) {
-        const self = this;
-        if (self.rootElement) {
-            if (value) {
-                self.classes(self.rootElement, self.$clsActions.Add, "carousel-dark");
-            } else {
-                self.classes(self.rootElement, self.$clsActions.Remove, "carousel-dark");
-            }
-        }
-        self._darkVariant = value;
+        (this.rootElement) && (this.classes(this.rootElement, value ? this.$clsActions.Add : this.$clsActions.Remove, "carousel-dark"));
+        this._darkVariant = value;
     }
     public get carouselItems(): Map<string, carouselItemType> { return this._carouselItems; }
     public set carouselItems(value: Map<string, carouselItemType>) { this._carouselItems = value; }
     //#endregion Public Properties
+    //#region Public Methods
     public setActiveItem(item: string | carouselItemType): Mrbr_UI_Bootstrap_Controls_Carousel {
-        const self = this;
+        if (!item) { throw new Error("item is required"); }
         if (typeof item === "string") {
-            if (!self.carouselItems.has(item)) {
-                throw new Error(`Carousel item with id ${item} does not exist`);
-            }
-            item = self.carouselItems.get(item);
+            item = this.carouselItems.get(item);
+            if (!item) { throw new Error(`Carousel item with id ${item} does not exist`) };
+            return this.setActiveItem(item);
         }
-        self.carouselItems.forEach((value, key) => self.classes(value.container, self.$clsActions.Remove, "active"));
-        self.carouselItems.forEach((value, key) => {
-            if (value.id === (item as carouselItemType).id) {
-                self.classes(value.container, self.$clsActions.Add, "active");
-            }
-        })
-        return self;
+        const act = this.$clsActions
+        this.carouselItems.forEach((value, key) => this.classes(value.container, value.id === (item as carouselItemType).id ? act.Add : act.Remove, "active"));
+        return this;
+
     }
     public addCarouselItem(item: carouselItemType): Mrbr_UI_Bootstrap_Controls_Carousel {
-        const self = this;
-        if (self.carouselItems.has(item.id)) {
-            throw new Error(`Carousel item with id ${item.id} already exists`);
-        }
-        self.carouselItems.set(item.id, item);
-        const image: HTMLImageElement = <HTMLImageElement>self.createElement(new self.$ctrlCfg(`${item.id}_image`, "img", self.configuration(self.$cls.CAROUSEL_ITEM_IMAGE_NAME)
-            .Attributes({ src: item.src, alt: item.alt }))),
-            carouselItem: HTMLElement = <HTMLElement>self.createElement(new self.$ctrlCfg(item.id, "div", self.configuration(self.$cls.CAROUSEL_ITEM_NAME)
+        if (this.carouselItems.has(item.id)) { throw new Error(`Carousel item with id ${item.id} already exists`); }
+        this.carouselItems.set(item.id, item);
+        const
+            cfg = this.elementConfig,
+            image: HTMLImageElement = <HTMLImageElement>this.createElement(new this.$ctrlCfg(`${item.id}_image`, "img", cfg.getConfig(this.$cls.CAROUSEL_ITEM_IMAGE_NAME)
+                .Attributes({ src: item.src, alt: item.alt }))),
+            carouselItem: HTMLElement = <HTMLElement>this.createElement(new this.$ctrlCfg(item.id, "div", cfg.getConfig(this.$cls.CAROUSEL_ITEM_NAME)
                 .Children([image]))
             );
-        if (item.interval > 0) {
-            self.elementDataset(carouselItem, { bsInterval: item.interval });
-        }
+        if (item.interval > 0) { this.elementDataset(carouselItem, { bsInterval: item.interval }); }
         item.container = carouselItem;
         item.image = image;
-
-        if (self.withCaptions) {
-            const captionContainer: HTMLElement = <HTMLElement>self.createElement(new self.$ctrlCfg(`${item.id}_caption`, "div", self.configuration(self.$cls.CAROUSEL_ITEM_CAPTION_NAME)));
-            item.captionContainer = captionContainer;
-            carouselItem.appendChild(captionContainer);
-        }
-
-        if (self.elements[self.$cls.CAROUSEL_INNER_NAME]) {
-            self.elements[self.$cls.CAROUSEL_INNER_NAME].appendChild(carouselItem);
-        }
-        return self;
+        (this.withCaptions) && (this.addCaptionContainer(item));
+        this.elements.get(this.$cls.CAROUSEL_INNER_NAME)?.appendChild(carouselItem);
+        return this;
     }
     public addCarouselItems(items: Array<carouselItemType>): Mrbr_UI_Bootstrap_Controls_Carousel {
-        const self = this;
-        const errors = [];
-        items.forEach((item) => {
-            if (self.carouselItems.has(item.id)) {
-                errors.push(`Carousel item with id ${item.id} already exists`);
-            }
-        })
-        if (errors.length > 0) {
-            throw new Error(errors.join(", "));
-        }
+        const
+            self = this,
+            carouselItems = self.carouselItems,
+            errors = items.filter((item) => carouselItems.has(item.id)).map((item) => item.id);
+        if (errors.length > 0) { throw new Error(`Carousel items with ids ${errors.join(", ")} already exists`); }
         items.forEach((item) => self.addCarouselItem(item));
         return self;
     }
     public removeCarouselItem(item: carouselItemType): Mrbr_UI_Bootstrap_Controls_Carousel {
-        const self = this;
-        if (!self.carouselItems.has(item.id)) {
-            throw new Error(`Carousel item with id ${item.id} does not exist`);
+        if (!this.carouselItems.has(item.id)) { throw new Error(`Carousel item with id ${item.id} does not exist`); }
+        const carouselInner = this.elements.get(this.$cls.CAROUSEL_INNER_NAME)
+        if (carouselInner) {
+            const carouselItem: HTMLElement = this.carouselItems.get(item.id).container;
+            this.elements.get(this.$cls.CAROUSEL_INNER_NAME).removeChild(carouselItem);
         }
-        if (self.elements[self.$cls.CAROUSEL_INNER_NAME]) {
-            const carouselItem: HTMLElement = self.carouselItems.get(item.id).container;
-            self.elements[self.$cls.CAROUSEL_INNER_NAME].removeChild(carouselItem);
-        }
-        self.carouselItems.delete(item.id);
-        return self;
+        this.carouselItems.delete(item.id);
+        return this;
     }
     public initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Carousel> {
         const self = this,
             initalisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_Carousel:initialise");
         super.initialise(...args).then(async () => {
             await self.setDefaultConfig();
-            await self.$mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);
-            const carouselInner: HTMLElement = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.CAROUSEL_INNER_NAME, "div", self.defaultConfig.get(self.$cls.CAROUSEL_INNER_NAME)));
-            self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.defaultConfig.get(self.$cls.CAROUSEL_NAME)
+            await self.loadManifest(self.$cls[self.$mrbrBase.MRBR_COMPONENT_MANIFEST]);
+            const carouselInner: HTMLElement = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.CAROUSEL_INNER_NAME, "div", self.elementConfig.getConfig(self.$cls.CAROUSEL_INNER_NAME)));
+            self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.elementConfig.getConfig(self.$cls.CAROUSEL_NAME)
                 .Children([carouselInner]))
             );
-            self.withControls = self._withControls;
-            self.withIndicators = self._withIndicators;
-            self.withCaptions = self._withCaptions;
-            self.disableTouchSwipe = self._disableTouchSwipe;
-            self.darkVariant = self._darkVariant;
-            self.autoPlay = self._autoPlay;
-            self.useCrossFade = self._useCrossFade;
-            self.interval = self._interval;
-            self.pauseOnHover = self._pauseOnHover;
+            Object.assign(self, {
+                withControls: self._withControls,
+                withIndicators: self._withIndicators,
+                withCaptions: self._withCaptions,
+                disableTouchSwipe: self._disableTouchSwipe,
+                darkVariant: self._darkVariant,
+                autoPlay: self._autoPlay,
+                useCrossFade: self._useCrossFade,
+                interval: self._interval,
+                pauseOnHover: self._pauseOnHover
+            });
             let active = Array.from(self.carouselItems.keys()).find((value, key) => self.carouselItems.get(value).container.classList.contains("active"));
             if (!active) {
                 let [first] = self.carouselItems.keys();
-                self.setActiveItem(first);
+                first && self.setActiveItem(first);
             }
 
 
             //TODO: Update to new Mutation Observer 
-            self.events[`carousel_${self.$cls.MUTATION_EVENT_NAME}`] = new Mrbr_System_Events_EventHandler(
-                self.$cls.MUTATION_EVENT_NAME,
-                self.$cls.mutations,
-                self.mutation_handler,
-                self
-            );
+            // self.events.add(`carousel_${self.$cls.MUTATION_EVENT_NAME}`, new Mrbr_System_Events_EventHandler(
+            //     self.$cls.MUTATION_EVENT_NAME,
+            //     self.$cls.mutations,
+            //     self.mutation_handler,
+            //     self
+            // ));
+
+            self.onMounted(() => {
+                self.bootstrapCarousel = self.bootstrap.Carousel.getOrCreateInstance(`#${self.rootElement.id}`);
+                (self.autoPlay) && self.bootstrapCarousel.cycle();
+            });
+
+
+
+
             initalisePromise.resolve(self);
         });
         return initalisePromise;
     }
     //public mutation_handler(event: InstanceType<typeof Mrbr_UI_Controls_Control.MutationEvent>): void {
-    public mutation_handler(event: any): void {
+    // public mutation_handler(event: any): void {
+    //     const self = this;
+    //     let nodedAdded: boolean = false;
+    //     for (let mutationIndex = 0; mutationIndex < event.detail.length; mutationIndex++) {
+    //         if (nodedAdded === true) { break; }
+    //         const mutation = event.detail[mutationIndex];
+    //         for (let nodeIndex = 0; nodeIndex < mutation.addedNodes.length; nodeIndex++) {
+    //             const node = mutation.addedNodes[nodeIndex];
+    //             if (node.nodeType === Node.ELEMENT_NODE) {
+    //                 const element = <HTMLElement>node;
+    //                 if (element.id === self.rootElement.id) {
+    //                     self.events.get(`carousel_${self.$cls.MUTATION_EVENT_NAME}`).remove();
+    //                     self.bootstrapCarousel = new MrbrBase.mrbrInstance.host["bootstrap"].Carousel(`#${self.rootElement.id}`)
+    //                     nodedAdded = true;
+    //                     (self.autoPlay) && self.bootstrapCarousel.cycle();
+    //                     self.events.add(`slid.bs.carousel`, new Mrbr_System_Events_EventHandler(
+    //                         "slid.bs.carousel",
+    //                         self.rootElement,
+    //                         self.carouselSlid_handler,
+    //                         self
+    //                     ));
+    //                     //     eventName: "slid.bs.carousel",
+    //                     //     eventTarget: self.rootElement,
+    //                     //     eventHandler: self.carouselSlid_handler,
+    //                     //     context: self
+    //                     // };
+    //                     self.events.add(`slide.bs.carousel`, new Mrbr_System_Events_EventHandler(
+    //                         "slide.bs.carousel",
+    //                         self.rootElement,
+    //                         self.carouselSlide_handler,
+    //                         self
+    //                     ))
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+
+    public onSlide(handler: (event: Mrbr_System_Events_Event<any>) => void): Mrbr_UI_Bootstrap_Controls_Carousel {
         const self = this;
-        let nodedAdded: boolean = false;
-        for (let mutationIndex = 0; mutationIndex < event.detail.length; mutationIndex++) {
-            if (nodedAdded === true) { break; }
-            const mutation = event.detail[mutationIndex];
-            for (let nodeIndex = 0; nodeIndex < mutation.addedNodes.length; nodeIndex++) {
-                const node = mutation.addedNodes[nodeIndex];
-                if (node.nodeType === Node.ELEMENT_NODE) {
-                    const element = <HTMLElement>node;
-                    if (element.id === self.rootElement.id) {
-                        self.events[`carousel_${self.$cls.MUTATION_EVENT_NAME}`].remove();
-                        self.bootstrapCarousel = new MrbrBase.mrbrInstance.host["bootstrap"].Carousel(`#${self.rootElement.id}`)
-                        nodedAdded = true;
-                        (self.autoPlay) && self.bootstrapCarousel.cycle();
-                        self.events[`slid.bs.carousel`] = new Mrbr_System_Events_EventHandler(
-                            "slid.bs.carousel",
-                            self.rootElement,
-                            self.carouselSlid_handler,
-                            self
-                        );
-                        //     eventName: "slid.bs.carousel",
-                        //     eventTarget: self.rootElement,
-                        //     eventHandler: self.carouselSlid_handler,
-                        //     context: self
-                        // };
-                        self.events[`slide.bs.carousel`] = new Mrbr_System_Events_EventHandler(
-                            "slide.bs.carousel",
-                            self.rootElement,
-                            self.carouselSlide_handler,
-                            self
-                        )
-                        break;
-                    }
-                }
-            }
-        }
+        self.events.add(`slide.bs.carousel`, new Mrbr_System_Events_EventHandler(
+            "slide.bs.carousel",
+            self.rootElement,
+            self.carouselSlide_handler,
+            self
+        ));
+        self.eventSubscribers.add("slide.bs.carousel", handler);
+        return self;
     }
-    private carouselSlid_handler(event): void {
+
+    public onSlid(handler: (event: Mrbr_System_Events_Event<any>) => void): Mrbr_UI_Bootstrap_Controls_Carousel {
         const self = this;
-        self.dispatchEvent(new CustomEvent(self.$cls.CAROUSEL_SLID_EVENT_NAME, { detail: event }));
+        self.events.add(`slid.bs.carousel`, new Mrbr_System_Events_EventHandler(
+            "slid.bs.carousel",
+            self.rootElement,
+            self.carouselSlid_handler,
+            self
+        ));
+        self.eventSubscribers.add("slid.bs.carousel", handler);
+        return self;
+    }
+
+
+    private carouselSlid_handler(event): void {
+        this.eventSubscribers.raise("slid.bs.carousel", event);
     }
     private carouselSlide_handler(event): void {
-        const self = this;
-        self.dispatchEvent(new CustomEvent(self.$cls.CAROUSEL_SLIDE_EVENT_NAME, { detail: event }));
+        this.eventSubscribers.raise("slide.bs.carousel", event);
     }
     setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Carousel> {
-        super.setDefaultConfig();
         const self = this,
             setDefaultConfigPromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_Carousel:setDefaultConfig");
         super.setDefaultConfig().then(() => {
-            self.defaultConfig.add(self.$cls.CAROUSEL_NAME, new self.$ctrlPrm().Classes("carousel slide"));
-            self.defaultConfig.add(self.$cls.CAROUSEL_INNER_NAME, new self.$ctrlPrm().Classes("carousel-inner"));
-            self.defaultConfig.add(self.$cls.CAROUSEL_ITEM_NAME, new self.$ctrlPrm().Classes("carousel-item"));
-            self.defaultConfig.add(self.$cls.CAROUSEL_INDICATOR_NAME, new self.$ctrlPrm()
-                .Attributes({ type: "button" })
-            );
-            self.defaultConfig.add(self.$cls.CAROUSEL_INDICATORS_NAME, new self.$ctrlPrm().Classes("carousel-indicators"));
-            self.defaultConfig.add(self.$cls.CAROUSEL_CONTROL_PREV_NAME, new self.$ctrlPrm()
-                .Classes("carousel-control-prev")
-                .Attributes({ type: "button" })
-                .Data({ bsSlide: "prev" })
-            );
-            self.defaultConfig.add(self.$cls.CAROUSEL_CONTROL_NEXT_NAME, new self.$ctrlPrm()
-                .Classes("carousel-control-next")
-                .Attributes({ type: "button" })
-                .Data({ bsSlide: "next" })
-            );
-            self.defaultConfig.add(self.$cls.CAROUSEL_ITEM_IMAGE_NAME, new self.$ctrlPrm().Classes("d-block w-100"));
-            self.defaultConfig.add(self.$cls.CAROUSEL_ITEM_CAPTION_NAME, new self.$ctrlPrm().Classes("carousel-caption d-none d-md-block"));
-
+            self.elementConfig
+                .controlName(self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME])
+                .setIfNotExist(self.$cls.CAROUSEL_NAME, new self.$ctrlPrm()
+                    .Classes("carousel slide"))
+                .setIfNotExist(self.$cls.CAROUSEL_INNER_NAME, new self.$ctrlPrm()
+                    .Classes("carousel-inner"))
+                .setIfNotExist(self.$cls.CAROUSEL_ITEM_NAME, new self.$ctrlPrm()
+                    .Classes("carousel-item"))
+                .setIfNotExist(self.$cls.CAROUSEL_INDICATOR_NAME, new self.$ctrlPrm()
+                    .Attributes({ type: "button" }))
+                .setIfNotExist(self.$cls.CAROUSEL_INDICATORS_NAME, new self.$ctrlPrm()
+                    .Classes("carousel-indicators"))
+                .setIfNotExist(self.$cls.CAROUSEL_CONTROL_PREV_NAME, new self.$ctrlPrm()
+                    .Classes("carousel-control-prev")
+                    .Attributes({ type: "button" })
+                    .Data({ bsSlide: "prev" })
+                    .Template("<span class='carousel-control-prev-icon' aria-hidden='true'></span><span class='visually-hidden'>Previous</span>"))
+                .setIfNotExist(self.$cls.CAROUSEL_CONTROL_NEXT_NAME, new self.$ctrlPrm()
+                    .Classes("carousel-control-next")
+                    .Attributes({ type: "button" })
+                    .Data({ bsSlide: "next" })
+                    .Template("<span class='carousel-control-next-icon' aria-hidden='true'></span><span class='visually-hidden'>Next</span>"))
+                .setIfNotExist(self.$cls.CAROUSEL_ITEM_IMAGE_NAME, new self.$ctrlPrm()
+                    .Classes("d-block w-100"))
+                .setIfNotExist(self.$cls.CAROUSEL_ITEM_CAPTION_NAME, new self.$ctrlPrm()
+                    .Classes("carousel-caption d-none d-md-block"));
             setDefaultConfigPromise.resolve(self);
         })
         return setDefaultConfigPromise;
@@ -442,5 +413,5 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Controls_Contro
     pause() { this.bootstrapCarousel.pause(); }
     prev() { this.bootstrapCarousel.prev(); }
     to() { this.bootstrapCarousel.to(); }
-
+    //#endregion Public Methods
 }

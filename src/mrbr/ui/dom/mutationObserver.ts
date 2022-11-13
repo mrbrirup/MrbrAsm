@@ -198,6 +198,17 @@ export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Component implemen
     //#endregion Public Methods
 
 
+    /**
+     * Remove Event Subscriber from the MutationObserver
+     * @date 13/11/2022 - 12:24:28
+     *
+     * @public
+     * @param {string} eventName
+     * @param {number} id
+     */
+    public removeSubscriber(eventName: string, id: number) {
+        this.eventSubscribers.remove(eventName, id);
+    }
 
     /**
      * Event Raised when a childList Mutation with addedNodes is observed

@@ -18,6 +18,7 @@ import { Mrbr_System_Component } from "../../system/Component";
 import { Mrbr_UI_Controls_ElementsConfigMap } from "./ElementsConfigMap";
 import { Mrbr_System_Events_EventSubscribers } from "../../system/events/EventSubscribers";
 import { Mrbr_UI_Controls_MountPosition } from "./MountPosition";
+import { Mrbr_System_Events_Event } from "../../system/events/Event";
 
 export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements Mrbr_UI_Controls_IControl, Mrbr_System_IComponent {
     //#region Public Symbols
@@ -41,9 +42,21 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @type {symbol}
      */
     public static readonly DELETE_ENTRY: symbol = Symbol("delete_entry");
+    //#endregion Public Symbols
+    //#region Public Static Constants
 
     /**
-     * Static Muation Event Name
+     * Mounted Event Name
+     * @date 13/11/2022 - 12:06:25
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly MOUNTED_EVENT_NAME: string = "mounted_event";
+    /**
+     * Static Mutation Event Name
      * @date 31/10/2022 - 12:49:48
      *
      * @public
@@ -51,7 +64,6 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @type {string}
      */
     public static readonly MUTATION_EVENT_NAME: string = "mutation_event";
-    //#endregion Public Symbols
 
     //#region Private Aliases
 
@@ -146,6 +158,9 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @type {typeof Mrbr_System_Events_EventHandler}
      */
     public get $evtHandler(): typeof Mrbr_System_Events_EventHandler { return Mrbr_System_Events_EventHandler; }
+
+
+    public get $event(): typeof Mrbr_System_Events_Event { return Mrbr_System_Events_Event; }
 
 
     //#endregion Public Aliases
@@ -245,6 +260,17 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
     public static set mutationObserver(value: Mrbr_UI_DOM_MutationObserver) { Mrbr_UI_Controls_Control._mutationObserver = value; }
     //#region Public Static Properties
     //#region Private Properties Fields
+
+
+
+    /**
+     * Handle for the Mutation Observer onAddNodes from Mount event;
+     * @date 13/11/2022 - 12:10:57
+     *
+     * @private
+     * @type {number}
+     */
+    private addNodesHandle: number = null;
 
     /**
      * Root Element Name for the control. Single Element to add to the DOM
@@ -941,9 +967,9 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @returns {Mrbr_UI_Controls_IControl}
      */
     public mount(element: HTMLElement | Mrbr_UI_Controls_Control, position: Mrbr_UI_Controls_MountPosition = Mrbr_UI_Controls_MountPosition.append, ...args: any): Mrbr_UI_Controls_IControl {
-        if (element instanceof Mrbr_UI_Controls_Control) {
-            element = element.defaultContainerElement || element.rootElement;
-        }
+        (element instanceof Mrbr_UI_Controls_Control) && (element = element.defaultContainerElement || element.rootElement);
+        const id = this.id;
+        this.addMountHandler(id);
         switch (position) {
             case "append": element.appendChild(this.rootElement); break;
             case "before": element.before(this.rootElement); break;
@@ -952,10 +978,56 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
             case "replace": element.replaceWith(this.rootElement); break;
         }
         return this;
+
+    }
+
+
+
+    /**
+     * Add a subscriber to the Mount Event
+     * @date 13/11/2022 - 12:19:42
+     *
+     * @public
+     * @param {(event: Mrbr_System_Events_Event<HTMLElement>) => void} callback
+     * @returns {void) => any}
+     */
+    public onMounted(callback: (event: Mrbr_System_Events_Event<HTMLElement>) => void) {
+        return this.eventSubscribers.add(this.$ctrl.MOUNTED_EVENT_NAME, callback);
     }
     //#endregion Public Methods
     //region Private Methods
 
+
+    /**
+     * Add a mount handler to the control
+     * @date 13/11/2022 - 12:19:28
+     *
+     * @private
+     * @param {string} id
+     */
+    private addMountHandler(id: string) {
+        if (!this.addNodesHandle) {
+            const mountEventName = this.$ctrl.MOUNTED_EVENT_NAME
+            this.addNodesHandle = this.mutationObserver.onAddNodes((event: Mrbr_System_Events_Event<NodeList>) => {
+
+                let mounted;
+                for (let nodeCounter = 0; nodeCounter < event.data.length; nodeCounter++) {
+                    console.log("Mounted");
+                    const node = event.data[nodeCounter];
+                    if (node instanceof HTMLElement) {
+                        if (node.id === id) {
+                            mounted = node;
+                            break;
+                        }
+                    }
+                }
+                //= event.data.find((node: Node) => { return node instanceof HTMLElement && node.id === id; });
+                (mounted) && (this.eventSubscribers.raise(mountEventName, new Mrbr_System_Events_Event<HTMLElement>(mountEventName, this, this.rootElement)));
+                this.mutationObserver.removeSubscriber(mountEventName, this.addNodesHandle);
+                this.addNodesHandle = null;
+            });
+        };
+    }
     /**
      * Change theme on ThemedElements from window themeChange event
      * @date 31/10/2022 - 14:28:18
