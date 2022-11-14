@@ -30,7 +30,7 @@ export class Mrbr_UI_Controls_ControlDefaultsCollection extends Mrbr_Collections
         const
             self = this,
             cls = Mrbr_System_Promise,
-            initalisePromise = self.$promise.create<Mrbr_System_IComponent>(`${cls[MrbrBase.MRBR_COMPONENT_NAME]}.initialise`);
+            initalisePromise = self.$promise.create<Mrbr_System_IComponent>(`${cls[MrbrBase.COMPONENT_NAME]}.initialise`);
         try {
             super.initialise(args).then(async () => {
                 await self.loadManifest(cls);

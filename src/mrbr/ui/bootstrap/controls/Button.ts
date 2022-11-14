@@ -490,7 +490,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      */
     public initialise(...args: any[]): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Button> {
         const self = this,
-            initialisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Button>(`${self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME]}:initialise`);
+            initialisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Button>(`${self.$cls[self.$mrbr.COMPONENT_NAME]}:initialise`);
         try {
             super.initialise(args).then(async _ => {
                 await self.loadManifest(self.$cls);
@@ -521,11 +521,11 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      */
     public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Button> {
         const self = this,
-            setDefaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Button>(`${self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME]}:setDefaultConfig`);
+            setDefaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Button>(`${self.$cls[self.$mrbr.COMPONENT_NAME]}:setDefaultConfig`);
         try {
             super.setDefaultConfig().then(_ => {
                 self.elementConfig
-                    .controlName(self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME])
+                    .controlName(self.$cls[self.$mrbr.COMPONENT_NAME])
                     .setIfNotExist(self.$cls.BUTTON_NAME, new self.$ctrlPrm()
                         .Classes("btn"));
                 setDefaultConfigPromise.resolve(self);

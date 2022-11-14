@@ -118,7 +118,7 @@ export class Mrbr_UI_Bootstrap_Controls_OffCanvas extends Mrbr_UI_Controls_Contr
 
         super.initialise(args)
             .then(manifest => {
-                self.$mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_OffCanvas[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                self.$mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_OffCanvas[MrbrBase.MANIFEST])
                     .then(() => {
                         (self.togglerElement) ?
                             (self.assignElementConfig(self.togglerElement, self.OFFCANVAS_TOGGLER_CONFIG

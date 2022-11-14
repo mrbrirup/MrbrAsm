@@ -174,7 +174,7 @@ export class Mrbr_UI_Bootstrap_Controls_Pagination extends Mrbr_UI_Controls_Cont
             initialisePromise = self.$promise.create("initialise");
         super.initialise(args)
             .then(async superInit => {
-                await self.$mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Pagination[MrbrBase.MRBR_COMPONENT_MANIFEST]);
+                await self.$mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Pagination[MrbrBase.MANIFEST]);
                 const paginationList = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.PAGINATION_LIST_NAME, "ul", self.pagination_list_config));
                 self.createElement(new this.$ctrlCfg(self.rootElementName, "nav", self.pagination_config
                     .Children([paginationList])

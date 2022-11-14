@@ -61,7 +61,7 @@ export class Mrbr_UI_Bootstrap_Controls_ToastRack extends Mrbr_UI_Controls_Contr
 
         super.initialise(args)
             .then(async () => {
-                await self.$mrbrInstance.loadManifest(self.$cls[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                await self.$mrbrInstance.loadManifest(self.$cls[MrbrBase.MANIFEST])
                 self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.toastRackConfig))
                 let bodyElement = self.rootElement.querySelector("div");
                 bodyElement.id = self.$cls.createId("toastRack");

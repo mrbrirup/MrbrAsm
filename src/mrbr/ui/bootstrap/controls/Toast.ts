@@ -150,7 +150,7 @@ export class Mrbr_UI_Bootstrap_Controls_Toast extends Mrbr_UI_Controls_Control {
     public initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Toast> {
         const self = this,
             initialisePromise = Mrbr_System_Promise.create<Mrbr_UI_Bootstrap_Controls_Toast>("Mrbr_UI_Bootstrap_Controls_Toast.initialise");
-        self.$mrbrInstance.loadManifest(self.$cls[MrbrBase.MRBR_COMPONENT_MANIFEST])
+        self.$mrbrInstance.loadManifest(self.$cls[MrbrBase.MANIFEST])
             .then(() => {
                 let header = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.HEADER_NAME, "div", self.headerConfig)),
                     body = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.BODY_NAME, "div", self.bodyConfig));

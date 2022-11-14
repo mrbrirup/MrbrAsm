@@ -200,12 +200,12 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
      */
     public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Accordion> {
         const self = this,
-            componentName = self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME],
+            componentName = self.$cls[self.$mrbr.COMPONENT_NAME],
             defaultConfigPromise = self.$promise.create(`${componentName}:${self.rootElementName}`);
         try {
             super.setDefaultConfig().then(_ => {
                 self.elementConfig
-                    .controlName(self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME])
+                    .controlName(self.$cls[self.$mrbr.COMPONENT_NAME])
                     .setIfNotExist(self.$cls.ACCORDION_NAME, new this.$ctrlPrm().Classes(["accordion"]));
                 defaultConfigPromise.resolve(self);
             })

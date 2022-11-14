@@ -9,8 +9,8 @@ export class Mrbr_System_Component extends Mrbr_System_Object implements Mrbr_Sy
         return Mrbr_System_Promise.createResolved("Mrbr_System_Component", this);
     }
     public loadManifest(type: any): Mrbr_IO_ManifestPromise {
-        let componentManifest = Symbol.for(`${type[MrbrBase.MRBR_COMPONENT_NAME]}:componentManifest`);
-        !type[componentManifest] && (type[componentManifest] = MrbrBase.mrbrInstance.loadManifest(type[MrbrBase.MRBR_COMPONENT_MANIFEST]));
+        let componentManifest = Symbol.for(`${type[MrbrBase.COMPONENT_NAME]}:componentManifest`);
+        !type[componentManifest] && (type[componentManifest] = MrbrBase.mrbrInstance.loadManifest(type[MrbrBase.MANIFEST]));
         return type[componentManifest];
     }
 }

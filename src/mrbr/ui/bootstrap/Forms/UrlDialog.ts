@@ -68,7 +68,7 @@ export class Mrbr_UI_Bootstrap_Forms_UrlDialog extends Mrbr_UI_Bootstrap_Forms_D
             initalisePromise = Mrbr_System_Promise.create("");
         super.initialise(args)
             .then(_ => {
-                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MANIFEST])
                     .then(_ => {
                         self.customConfiguration.add(Mrbr_UI_Bootstrap_Forms_Dialog.TITLEBAR_CONTROL_NAME,
                             new Mrbr_UI_Controls_ControlConfigOptionalParameters()

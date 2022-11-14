@@ -5,12 +5,12 @@ import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 
 export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Control {
-    public static TOGGLE_NAME: string = "collapse_toggle";
-    public static TARGET_NAME: string = "collapse_target";
-    public static HIDE_COLLAPSE_EVENT_NAME: string = "hide.bs.collapse";
-    public static HIDDEN_COLLAPSE_EVENT_NAME: string = "hidden.bs.collapse";
-    public static SHOW_COLLAPSE_EVENT_NAME: string = "show.bs.collapse";
-    public static SHOWN_COLLAPSE_EVENT_NAME: string = "shown.bs.collapse";
+    public static readonly TOGGLE_NAME: string = "collapse_toggle";
+    public static readonly TARGET_NAME: string = "collapse_target";
+    public static readonly HIDE_COLLAPSE_EVENT_NAME: string = "hide.bs.collapse";
+    public static readonly HIDDEN_COLLAPSE_EVENT_NAME: string = "hidden.bs.collapse";
+    public static readonly SHOW_COLLAPSE_EVENT_NAME: string = "show.bs.collapse";
+    public static readonly SHOWN_COLLAPSE_EVENT_NAME: string = "shown.bs.collapse";
 
     //#region Private Fields
     private _collapsed: boolean = false;
@@ -23,22 +23,6 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Contro
     private _collapsedText: string;
     private _expandedText: string;
     private _startOpen: boolean = true;
-    public get startOpen(): boolean { return this._startOpen; }
-    public set startOpen(value: boolean) {
-        const self = this;
-        if (self.targetElements) {
-            if (value) {
-                self.elementAria(self.targetElements, { "expanded": value });
-                self.classes(self.targetElements, self.$clsActions.Add, "show");
-            }
-            else {
-                self.elementAria(self.targetElements, { "expanded": self.$cls.DELETE });
-                self.classes(self.targetElements, self.$clsActions.Remove, "show");
-            }
-            self._startOpen = value;
-        }
-
-    }
     //#endregion Private Fields
     constructor(toggle: string | HTMLElement, target?: string | HTMLElement | Array<string> | Array<HTMLElement>) {
         super((toggle instanceof HTMLElement ? (toggle.id || (Mrbr_UI_Controls_Control.createId(Mrbr_UI_Bootstrap_Controls_Collapse.TOGGLE_NAME))) : toggle));
@@ -60,18 +44,22 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Contro
     get $cls() { return Mrbr_UI_Bootstrap_Controls_Collapse; }
     //#endregion Private Property
     //#region Public Properties
+    public get startOpen(): boolean { return this._startOpen; }
+    public set startOpen(value: boolean) {
+        const
+            act = this.$clsActions,
+            targetElements = this.targetElements;
+        this.elementAria(targetElements, { "expanded": value ? value : this.$cls.DELETE });
+        this.classes(targetElements, value ? act.Add : act.Remove, "show");
+        this._startOpen = value;
+    }
     public get buttonText(): string { return this._buttonText; }
     public set buttonText(value: string) {
-        const self = this;
-        let _value = value;
-        if (self.rootElement?.ariaExpanded == "false") {
-            self.collapsedText && (_value = self.collapsedText);
-        }
-        else {
-            self.expandedText && (_value = self.expandedText);
-        }
-        self.rootElement && (self.rootElement.innerHTML = _value || value);
-        self._buttonText = value;
+        this._buttonText = value;
+        const root = this.rootElement;
+        if (!root) { return; }
+        this.collapsedText = (this.rootElement?.ariaExpanded === "false") ? this.collapsedText : this.expandedText;
+        root && (this.rootElement.innerHTML = value);
     }
     public get bootstrapCollapse(): Map<string, any> { return this._bootstrapCollapse; }
     public set bootstrapCollapse(value: Map<string, any>) { this._bootstrapCollapse = value; }
@@ -79,15 +67,13 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Contro
     public set collapsed(value: boolean) { this._collapsed = value; }
     public get parent(): string { return this._parent; }
     public set parent(value: string) {
-        const self = this;
-        self.targetElements && self.targetElements.forEach((target) => { self.elementDataset(target, { bsParent: value ? value : self.$cls.DELETE }) });
-        self._parent = value;
+        this.targetElements && this.targetElements.forEach((target) => { this.elementDataset(target, { bsParent: value ? value : this.$cls.DELETE }) });
+        this._parent = value;
     }
     public get buttonStyleClass(): string { return this._buttonStyleClass; }
     public set buttonStyleClass(value: string) {
-        const self = this;
-        self.classes(self.rootElement, self.$clsActions.Remove, self._buttonStyleClass);
-        self.classes(self.rootElement, self.$clsActions.Add, value);
+        this.classes(this.rootElement, this.$clsActions.Remove, this._buttonStyleClass);
+        this.classes(this.rootElement, this.$clsActions.Add, value);
         this._buttonStyleClass = value;
     }
     public get collapsedText(): string { return this._collapsedText; }
@@ -96,37 +82,31 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Contro
     public set expandedText(value: string) { this._expandedText = value; this.buttonText = this._buttonText; }
     public get targetElements(): Array<HTMLElement> { return this._targetElements; }
     public set targetElements(value: Array<HTMLElement> | Array<string> | HTMLElement | string) {
-        const self = this;
-        if (value) {
-            if ((self._targetElements?.length || 0) === 0) { self._targetElements = []; }
-            if (!Array.isArray(value)) {
-                if (value instanceof HTMLElement) { self._targetElements.push(value); }
-                else if (typeof value === "string") { self._targetElements.push(document.getElementById(value)); }
-            }
-            else {
-                value.forEach((_target) => {
-                    if (_target instanceof HTMLElement) { self._targetElements.push(_target); }
-                    else if (typeof _target === "string") { self._targetElements.push(document.getElementById(_target)); }
-                });
-            }
-            if (self.targetElements.length > 1) {
-                let controlIds = self._targetElements.map((target) => { return `${target.id}`; }).join(" ");
-                self.rootElement && self.elementDataset(self.rootElement, { bsTarget: ".multi-collapse" });
-                self.rootElement && self.elementAria(self.rootElement, { controls: controlIds });
-                self.classes(self._targetElements, self.$clsActions.Add, "multi-collapse");
-            }
-            else {
-                let controlIds = self._targetElements.map((target) => { return `#${target.id}`; }).join(" ");
-                self.rootElement && self.elementDataset(self.rootElement, { bsTarget: controlIds });
-            }
-            self.setTargetEvents();
+        if (!value) { return; }
+        (!this._targetElements) && (this._targetElements = []);
+
+        const _value = (!Array.isArray(value)) ? [value] : value,
+            root = this.rootElement,
+            targetElements = this._targetElements;
+        _value.forEach((_target) => targetElements.push((typeof _target === "string") ? document.getElementById(_target) : _target));
+        const hashId = (targetElements.length < 2) ? "" : "#";
+        let controlIds = targetElements.map((target) => { return `${hashId}${target.id}`; }).join(" ");
+        if (this.targetElements.length > 1) {
+            if (root) {
+                this.elementDataset(root, { bsTarget: ".multi-collapse" });
+                this.elementAria(root, { controls: controlIds })
+            };
+            this.classes(targetElements, this.$clsActions.Add, "multi-collapse");
         }
+        else {
+            root && this.elementDataset(root, { bsTarget: controlIds });
+        }
+        this.setTargetEvents();
     }
     public get horizontal(): boolean { return this._horizontal; }
     public set horizontal(value: boolean) {
-        const self = this;
-        self.targetElements && self.classes(self.targetElements, value ? self.$clsActions.Add : self.$clsActions.Remove, "collapse-horizontal");
-        self._horizontal = value;
+        this.targetElements && this.classes(this.targetElements, value ? this.$clsActions.Add : this.$clsActions.Remove, "collapse-horizontal");
+        this._horizontal = value;
     }
     public get toggleElement(): HTMLElement { return this.rootElement; }
     //#endregion Public Properties
@@ -137,23 +117,16 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Controls_Contro
     //#endregion Public Methods
     public initialise(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Collapse> {
         const self = this,
-            initalisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Controls_Collapse:initialise");
+            initalisePromise = self.$promise.create(`${self.$cls[self.$mrbr.COMPONENT_NAME]}` + ":initialise");
         super.initialise().then(async _ => {
+            await self.loadManifest(self.$cls);
             await self.setDefaultConfig();
-            if (!self.rootElement) {
-                self.createElement(new self.$ctrlCfg(self.rootElementName, "button", self.defaultConfig.get(self.$cls.TOGGLE_NAME)));
-            }
+            (!self.rootElement) && (self.createElement(new self.$ctrlCfg(self.rootElementName, "button", self.elementConfig.getConfig(self.$cls.TOGGLE_NAME))));
             self.targetElements = self._targetElements;
             self.buttonStyleClass = self.buttonStyleClass;
             self.buttonText = self._buttonText;
             self.horizontal = self._horizontal;
             self.parent = self._parent;
-            // self.events[`carousel_${self.$cls.MUTATION_EVENT_NAME}`] = new Mrbr_System_Events_EventHandler(
-            //     self.$ctrl.MUTATION_EVENT_NAME,
-            //     self.$ctrl.mutations,
-            //     self.mutation_handler,
-            //     self
-            // );
             let handlerId = self.$cls.mutationObserver.onChildListChange(self.mutation_handler)
             document.getElementById(self.rootElement.id) && self.rootElementAdded();
             initalisePromise.resolve(self);

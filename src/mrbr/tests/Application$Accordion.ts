@@ -28,7 +28,7 @@ export class Mrbr_Tests_Application$Accordion extends Mrbr_UI_Controls_Control {
     }
     initialise(targetElement: HTMLElement, ...args): Mrbr_System_Promise<Mrbr_Tests_Application$Accordion> {
         const self = this,
-            initialisePromise = self.$promise.create<Mrbr_System_Promise<Mrbr_UI_Bootstrap_Containers_Container>>(`${self.$mubcc[MrbrBase.MRBR_COMPONENT_NAME]}.initialise`);
+            initialisePromise = self.$promise.create<Mrbr_System_Promise<Mrbr_UI_Bootstrap_Containers_Container>>(`${self.$mubcc[MrbrBase.COMPONENT_NAME]}.initialise`);
         super.initialise(targetElement, args).then(async _ => {
             await self.loadManifest(self.$mta$a);
             await Promise.all([

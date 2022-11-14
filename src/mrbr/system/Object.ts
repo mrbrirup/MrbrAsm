@@ -19,7 +19,7 @@ export class Mrbr_System_Object {
      * @public
      * @type {typeof MrbrBase}
      */
-    public $mrbrBase: typeof MrbrBase = MrbrBase;
+    public $mrbr: typeof MrbrBase = MrbrBase;
     
     /**
      * Alias to global Mrbr instance

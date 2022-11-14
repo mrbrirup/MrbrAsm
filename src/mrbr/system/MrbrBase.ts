@@ -58,8 +58,8 @@ type loadFunction = (file: Mrbr_IO_File) => Mrbr_IO_FilePromise;
  * @extends {EventTarget}
  */
 export class MrbrBase extends EventTarget {
-    public static MRBR_COMPONENT_NAME: any = Symbol("mrbr_component_name");
-    public static MRBR_COMPONENT_MANIFEST: any = Symbol("mrbr_component_manifest");
+    public static readonly COMPONENT_NAME: symbol = Symbol("mrbr_component_name");
+    public static readonly MANIFEST: symbol = Symbol("mrbr_component_manifest");
     static cacheTimeOut: number = 5000;
     static temporaryObjectTimeOut: number = 5000;
     static defaultMrbrPath: string = "/mrbr/";
@@ -254,8 +254,8 @@ export class MrbrBase extends EventTarget {
             self[ns.PARENT] = parent;
             self[ns.NAME] = name;
             self[ns.IS_NAMESPACE] = true;
-            self[MrbrBase.MRBR_COMPONENT_NAME] = "Mrbr.System.MrbrBase.Namespace";
-            self[MrbrBase.MRBR_COMPONENT_MANIFEST] = null;
+            self[MrbrBase.COMPONENT_NAME] = "Mrbr.System.MrbrBase.Namespace";
+            self[MrbrBase.MANIFEST] = null;
             /// returns this as a Proxied Map    
             return new Proxy(self, ns.PROXY_HANDLER);
         }
@@ -706,8 +706,8 @@ export class MrbrBase extends EventTarget {
         const ns = MrbrBase.Namespace,
             nsNamespace = ns.namespace,
             nsIsNamespace = ns.isNamespace,
-            _compName = MrbrBase.MRBR_COMPONENT_NAME,
-            _compManifest = MrbrBase.MRBR_COMPONENT_MANIFEST,
+            _compName = MrbrBase.COMPONENT_NAME,
+            _compManifest = MrbrBase.MANIFEST,
             namespaceComponentName: string = MrbrBase.Namespace.NAMESPACE_COMPONENT_NAME,
             componentParameters: string = "mrbr,data,resolve,reject,symbols",
             instance = MrbrBase.mrbrInstance,

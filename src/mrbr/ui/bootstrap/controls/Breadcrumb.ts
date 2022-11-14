@@ -229,7 +229,7 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
     public initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Breadcrumb> {
         const
             self = this,
-            initialisepromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Breadcrumb>(`${self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME]}:initialise`);
+            initialisepromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Breadcrumb>(`${self.$cls[self.$mrbr.COMPONENT_NAME]}:initialise`);
         try {
             super.initialise(args).then(async result => {
                 await self.loadManifest(self.$cls);
@@ -253,7 +253,7 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
      */
     public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Breadcrumb> {
         const self = this,
-            controlName = self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME],
+            controlName = self.$cls[self.$mrbr.COMPONENT_NAME],
             defaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Breadcrumb>(`${controlName}:setDefaultConfig`);
         try {
             super.setDefaultConfig().then(result => {

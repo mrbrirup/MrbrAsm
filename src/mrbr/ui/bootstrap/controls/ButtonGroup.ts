@@ -198,7 +198,7 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Bootstrap_Co
      */
     public initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_ButtonGroup> {
         const self = this,
-            initalisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_ButtonGroup>(`${self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME]}:initialise`);
+            initalisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_ButtonGroup>(`${self.$cls[self.$mrbr.COMPONENT_NAME]}:initialise`);
         super.initialise(args).then(async _ => {
             await self.loadManifest(self.$cls);
             await self.setDefaultConfig();
@@ -320,7 +320,7 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Bootstrap_Co
     public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_ButtonGroup> {
         const
             self = this,
-            controlName = self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME],
+            controlName = self.$cls[self.$mrbr.COMPONENT_NAME],
             setDefaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_ButtonGroup>(`${controlName}:setDefaultConfig`);
         try {
             super.setDefaultConfig().then(_ => {

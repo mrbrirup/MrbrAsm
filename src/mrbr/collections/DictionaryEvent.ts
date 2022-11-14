@@ -68,7 +68,7 @@ export class Mrbr_Collections_DictionaryEvent<TKey, TValue> extends Mrbr_System_
             self = this,
             promise = Mrbr_System_Promise,
             cls = Mrbr_Collections_DictionaryEvent;
-        !cls.componentManifest && (cls.componentManifest = MrbrBase.mrbrInstance.loadManifest([MrbrBase.MRBR_COMPONENT_MANIFEST]));
+        !cls.componentManifest && (cls.componentManifest = MrbrBase.mrbrInstance.loadManifest(cls[MrbrBase.MANIFEST]));
         const initialisePromise = promise.create<Mrbr_System_IComponent>("Mrbr_Collections_DictionaryEvent.initialise");
         cls.componentManifest
             .then(() => {

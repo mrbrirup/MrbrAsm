@@ -19,7 +19,7 @@ export class Mrbr_UI_Bootstrap_Controls_Toolbar extends Mrbr_UI_Controls_Control
         super.initialise(args)
             .then(async result => {
                 await self.setDefaultConfig();
-                await self.$mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST]);
+                await self.$mrbrInstance.loadManifest(self[MrbrBase.MANIFEST]);
                 self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.TOOLBAR_NAME)))
                 initialisePromise.resolve(self);
             })

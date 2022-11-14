@@ -13,7 +13,7 @@ export class Mrbr_Tests_Application$Container extends Mrbr_UI_Controls_Control {
     initialise(targetElement: HTMLElement, ...args): Mrbr_System_Promise<Mrbr_Tests_Application$Container> {
         const self = this,
             cls: typeof Mrbr_Tests_Application$Container = Mrbr_Tests_Application$Container,
-            initialisePromise = self.$promise.create<Mrbr_System_Promise<Mrbr_UI_Bootstrap_Containers_Container>>(`${cls[MrbrBase.MRBR_COMPONENT_NAME]}:initialise`);
+            initialisePromise = self.$promise.create<Mrbr_System_Promise<Mrbr_UI_Bootstrap_Containers_Container>>(`${cls[MrbrBase.COMPONENT_NAME]}:initialise`);
         try {
 
             super.initialise(targetElement, args).then(async _ => {

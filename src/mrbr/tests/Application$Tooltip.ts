@@ -9,7 +9,7 @@ export class Mrbr_Tests_Application$Tooltip {
     document.body.appendChild(button);
 
 
-    MrbrBase.mrbrInstance.loadManifest(Mrbr_Tests_Application$Tooltip[MrbrBase.MRBR_COMPONENT_MANIFEST])
+    MrbrBase.mrbrInstance.loadManifest(Mrbr_Tests_Application$Tooltip[MrbrBase.MANIFEST])
       .then(async () => {
         const tooltip = new Mrbr_UI_Bootstrap_Controls_Tooltip(button, { title: "This is a tooltip too", popperPlacement: "top" });
         await tooltip.initialise();

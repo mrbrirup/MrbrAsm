@@ -482,7 +482,7 @@ export class Mrbr_Collections_Dictionary<TKey, TValue> extends Mrbr_System_Compo
         const
             self = this,
             initialisePromise = Mrbr_System_Promise.create<Mrbr_System_IComponent>("Dictionary.initialise");
-        !self.$cls.componentManifest && (self.$cls.componentManifest = MrbrBase.mrbrInstance.loadManifest([MrbrBase.MRBR_COMPONENT_MANIFEST]));
+        !self.$cls.componentManifest && (self.$cls.componentManifest = MrbrBase.mrbrInstance.loadManifest(self.$cls[MrbrBase.MANIFEST]));
         self.$cls.componentManifest
             .then(async () => {
                 self._eventSubscribers = await new Mrbr_System_Events_EventSubscribers().initialise() as Mrbr_System_Events_EventSubscribers;

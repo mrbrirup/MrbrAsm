@@ -384,7 +384,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
     public removeEventListener(...args) { throw new Error("Not implemented"); }
     public dispatchEvent(...args) { throw new Error("Not implemented"); }
     setDefaultConfig(...args: any[]): Mrbr_System_Promise<any> {
-        this.elementConfig = new Mrbr_UI_Controls_ElementsConfigMap(this.$ctrl[this.$mrbrBase.MRBR_COMPONENT_NAME]);
+        this.elementConfig = new Mrbr_UI_Controls_ElementsConfigMap(this.$ctrl[this.$mrbr.COMPONENT_NAME]);
         return this.$promise.createResolved("");
     }
     //#endregion Dummy Methods to be removed after refactor
@@ -622,7 +622,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
     public initialise(...args: any[]): Mrbr_System_Promise<any> {
         const
             self = this,
-            initialisePromise = this.$promise.create<Mrbr_UI_Controls_Control>(`${self.$ctrl[self.$mrbrBase.MRBR_COMPONENT_NAME]}:initialise`);
+            initialisePromise = this.$promise.create<Mrbr_UI_Controls_Control>(`${self.$ctrl[self.$mrbr.COMPONENT_NAME]}:initialise`);
         try {
             self.loadManifest(self.$ctrl).then(async manifest => {
                 if (!self.$ctrl.mutationObserver) {
@@ -968,7 +968,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      */
     public mount(element: HTMLElement | Mrbr_UI_Controls_Control, position: Mrbr_UI_Controls_MountPosition = Mrbr_UI_Controls_MountPosition.append, ...args: any): Mrbr_UI_Controls_IControl {
         (element instanceof Mrbr_UI_Controls_Control) && (element = element.defaultContainerElement || element.rootElement);
-        const id = this.id;
+        const id = this.rootElement.id;
         this.addMountHandler(id);
         switch (position) {
             case "append": element.appendChild(this.rootElement); break;
@@ -980,8 +980,6 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
         return this;
 
     }
-
-
 
     /**
      * Add a subscriber to the Mount Event
@@ -1009,22 +1007,20 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
         if (!this.addNodesHandle) {
             const mountEventName = this.$ctrl.MOUNTED_EVENT_NAME
             this.addNodesHandle = this.mutationObserver.onAddNodes((event: Mrbr_System_Events_Event<NodeList>) => {
-
-                let mounted;
-                for (let nodeCounter = 0; nodeCounter < event.data.length; nodeCounter++) {
-                    console.log("Mounted");
-                    const node = event.data[nodeCounter];
-                    if (node instanceof HTMLElement) {
-                        if (node.id === id) {
-                            mounted = node;
-                            break;
-                        }
+                let mounted = document.getElementById(id);
+                if (!(mounted?.isConnected)) {
+                    for (let nodeCounter = 0; nodeCounter < event.data.length; nodeCounter++) {
+                        const node = event.data[nodeCounter];
+                        if (!(node instanceof HTMLElement) || node.id !== id) { continue; }
+                        mounted = node;
+                        break;
                     }
                 }
-                //= event.data.find((node: Node) => { return node instanceof HTMLElement && node.id === id; });
-                (mounted) && (this.eventSubscribers.raise(mountEventName, new Mrbr_System_Events_Event<HTMLElement>(mountEventName, this, this.rootElement)));
-                this.mutationObserver.removeSubscriber(mountEventName, this.addNodesHandle);
-                this.addNodesHandle = null;
+                if (mounted) {
+                    (this.eventSubscribers.raise(mountEventName, new Mrbr_System_Events_Event<HTMLElement>(mountEventName, this, this.rootElement)));
+                    this.mutationObserver.removeSubscriber(mountEventName, this.addNodesHandle);
+                    this.addNodesHandle = null;
+                }
             });
         };
     }

@@ -116,7 +116,7 @@ export class Mrbr_System_Events_EventSubscribers extends Mrbr_System_Component i
         const self = this,
             cls = Mrbr_System_Events_EventSubscribers,
             initalisePromise = self.$promise.create<Mrbr_System_Events_EventSubscribers>("Mrbr_System_Events_EventSubscriber.initialise");
-        !cls.componentManifest && (cls.componentManifest = MrbrBase.mrbrInstance.loadManifest(cls[MrbrBase.MRBR_COMPONENT_MANIFEST]));
+        !cls.componentManifest && (cls.componentManifest = MrbrBase.mrbrInstance.loadManifest(cls[MrbrBase.MANIFEST]));
         cls.componentManifest
             .then(() => {
                 self._map = new Mrbr_System_Collections_Map<string, any>();
@@ -208,5 +208,15 @@ export class Mrbr_System_Events_EventSubscribers extends Mrbr_System_Component i
             callback.value(event, ...args);
         };
     }
+
+    /**
+     * Raises all events for a given key taken from event.name
+     * @date 13/11/2022 - 13:47:44
+     *
+     * @public
+     * @param {Mrbr_System_Events_Event<any>} event
+     * @param {...{}} args
+     */
+    public raiseEvent(event: Mrbr_System_Events_Event<any>, ...args): void { this.raise(event.name, event, ...args); }
     //#endregion Public Methods
 }

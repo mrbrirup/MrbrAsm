@@ -254,7 +254,7 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
      */
     public initialise(...args: any): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Badge> {
         const self = this,
-            initialisePromise = self.$promise.create(`${self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME]}:initialise`);
+            initialisePromise = self.$promise.create(`${self.$cls[self.$mrbr.COMPONENT_NAME]}:initialise`);
         super.initialise(args)
             .then(async result => {
                 await self.loadManifest(self.$cls);
@@ -303,11 +303,11 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
      */
     public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Badge> {
         const self = this,
-            setDefaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Badge>(`${self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME]}:setDefaultConfig`);
+            setDefaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Badge>(`${self.$cls[self.$mrbr.COMPONENT_NAME]}:setDefaultConfig`);
         try {
             super.setDefaultConfig().then(_ => {
                 self.elementConfig
-                    .controlName(self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME])
+                    .controlName(self.$cls[self.$mrbr.COMPONENT_NAME])
                     .setIfNotExist(self.$cls.BADGE_NAME, new self.$ctrlPrm()
                         .Classes(["badge"]))
                     .setIfNotExist(self.$cls.BADGE_TEXT_NAME, new self.$ctrlPrm())

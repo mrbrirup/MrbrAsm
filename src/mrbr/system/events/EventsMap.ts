@@ -43,8 +43,8 @@ export class Mrbr_System_Events_EventsMap extends Mrbr_System_Collections_Map<st
     public initialise(...args): Mrbr_System_Promise<Mrbr_System_Events_EventsMap> {
         const self = this,
             cls = Mrbr_System_Events_EventsMap,
-            initialisePromise = Mrbr_System_Promise.create<Mrbr_System_Events_EventsMap>(`${cls[MrbrBase.MRBR_COMPONENT_NAME]}:initialise`);
-        MrbrBase.mrbrInstance.loadManifest(cls[MrbrBase.MRBR_COMPONENT_MANIFEST])
+            initialisePromise = Mrbr_System_Promise.create<Mrbr_System_Events_EventsMap>(`${cls[MrbrBase.COMPONENT_NAME]}:initialise`);
+        MrbrBase.mrbrInstance.loadManifest(cls[MrbrBase.MANIFEST])
             .then(() => {
                 self._events = new Map<string, Mrbr_System_Events_EventHandler>();
                 initialisePromise.resolve(self);

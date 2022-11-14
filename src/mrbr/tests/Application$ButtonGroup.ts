@@ -21,11 +21,11 @@ export class Mrbr_Tests_Application$ButtonGroup extends Mrbr_UI_Controls_Control
     public initialise(...args): Mrbr_System_Promise<any> {
         const
             self = this,
-            controlName = self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME],
+            controlName = self.$cls[self.$mrbr.COMPONENT_NAME],
             initalisePromise = self.$promise.create(`${controlName}.initialise`);
         try {
             super.initialise(args).then(async _ => {
-                await self.loadManifest(self.$cls[self.$mrbrBase.MRBR_COMPONENT_MANIFEST])
+                await self.loadManifest(self.$cls[self.$mrbr.MANIFEST])
                 const
                     buttonGroup = self.mrbrButtonGroup = new self.$buttonGroup("buttonGroup1"),
                     button = self.mrbrButton = new self.$button("button1"),

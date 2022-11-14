@@ -60,7 +60,7 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$Toggler extends Mrbr_UI_Controls_
             initialisePromise = self.$promise.create("initialise");
         super.initialise(args)
             .then(() => {
-                self.$mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar$Toggler[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                self.$mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar$Toggler[MrbrBase.MANIFEST])
                     .then(() => {
                         initialisePromise.resolve(self);
                     })

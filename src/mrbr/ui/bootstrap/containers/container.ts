@@ -31,7 +31,7 @@ export class Mrbr_UI_Bootstrap_Containers_Container extends Mrbr_UI_Controls_Con
     }
     public initialise(...args: any[]): Mrbr_System_Promise<Mrbr_System_IComponent> {
         const self = this,
-            initialisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Containers_Container>(`${self.$mubcc[MrbrBase.MRBR_COMPONENT_NAME]}.initialise`);
+            initialisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Containers_Container>(`${self.$mubcc[MrbrBase.COMPONENT_NAME]}.initialise`);
         try {
             super.initialise(args).then(async result => {
                 await self.loadManifest(self.$cls);
@@ -46,8 +46,8 @@ export class Mrbr_UI_Bootstrap_Containers_Container extends Mrbr_UI_Controls_Con
     }
     public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Containers_Container> {
         const self = this,
-            defaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Containers_Container>(`${self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME]}:setDefaultConfig`);
-        this.elementConfig = new Mrbr_UI_Controls_ElementsConfigMap(this.$ctrl[this.$mrbrBase.MRBR_COMPONENT_NAME]);
+            defaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Containers_Container>(`${self.$cls[self.$mrbr.COMPONENT_NAME]}:setDefaultConfig`);
+        this.elementConfig = new Mrbr_UI_Controls_ElementsConfigMap(this.$ctrl[this.$mrbr.COMPONENT_NAME]);
         const cfg = self.elementConfig;
         super.setDefaultConfig().then(result => {
             !cfg.has(self.$cls.CONTAINER_NAME) && cfg.add(self.$cls.CONTAINER_NAME, new self.$ctrlPrm()

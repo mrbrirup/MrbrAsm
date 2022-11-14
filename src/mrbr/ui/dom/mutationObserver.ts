@@ -147,10 +147,10 @@ export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Component implemen
         for (const mutation of self.mutationGenerator(mutations)) {
             const eventSubscriberName = eventNames[mutation.type];
             eventSubscribers.raise(eventSubscriberName, new evt(eventSubscriberName, self, mutation.mutation));
-            if (mutation.type === "childList") {
-                (mutation.mutation.addedNodes) && eventSubscribers.raise(this.$cls.NODE_EVENT_NAMES.onAddNodes, new evt(eventSubscriberName, self, mutation.mutation.addedNodes));
-                (mutation.mutation.removedNodes) && eventSubscribers.raise(this.$cls.NODE_EVENT_NAMES.onRemoveNodes, new evt(eventSubscriberName, self, mutation.mutation.removedNodes));
-            }
+            if (mutation.type !== "childList") { continue; }
+            ((mutation.mutation.addedNodes?.length || 0) > 0) && eventSubscribers.raise(this.$cls.NODE_EVENT_NAMES.onAddNodes, new evt(eventSubscriberName, self, mutation.mutation.addedNodes));
+            ((mutation.mutation.removedNodes?.length || 0) > 0) && eventSubscribers.raise(this.$cls.NODE_EVENT_NAMES.onRemoveNodes, new evt(eventSubscriberName, self, mutation.mutation.removedNodes));
+
         }
     }
 
@@ -175,7 +175,7 @@ export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Component implemen
      * Disconnects the MutationObserver
      * @date 31/10/2022 - 04:56:40
      */
-    disconnect(): void { this._observer.disconnect(); }
+    public disconnect(): void { this._observer.disconnect(); }
 
     /**
      * Starts MutationObserver
@@ -299,7 +299,6 @@ export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Component implemen
         if (typeof element === "string") {
             for (let nodeCounter = 0; nodeCounter < nodeList.length; nodeCounter++) {
                 const item = nodeList[nodeCounter];
-                console.log(item);
                 if (!(item instanceof HTMLElement)) { continue; }
                 if (item.id !== element) { continue; }
                 inNodeList = true;
@@ -315,10 +314,6 @@ export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Component implemen
             break;
         }
         return inNodeList;
-
-
-
-
     }
     //#endregion Public Events
 }

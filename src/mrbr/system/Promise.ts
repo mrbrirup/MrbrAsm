@@ -171,8 +171,8 @@ export class Mrbr_System_Promise<T> implements Mrbr_System_IComponent, Mrbr_Syst
      * @returns {Mrbr_System_Promise<any>}
      */
     public loadManifest(type: any): Mrbr_System_Promise<any> {
-        let componentManifest = Symbol.for(`${type[MrbrBase.MRBR_COMPONENT_NAME]}:componentManifest`);
-        !type[componentManifest] && (type[componentManifest] = MrbrBase.mrbrInstance.loadManifest(type[MrbrBase.MRBR_COMPONENT_MANIFEST]));
+        let componentManifest = Symbol.for(`${type[MrbrBase.COMPONENT_NAME]}:componentManifest`);
+        !type[componentManifest] && (type[componentManifest] = MrbrBase.mrbrInstance.loadManifest(type[MrbrBase.MANIFEST]));
         return type[componentManifest];
     }
     //#region Properties    

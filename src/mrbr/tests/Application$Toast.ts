@@ -6,7 +6,7 @@ import { Mrbr_UI_Bootstrap_Controls_ToastRack } from "../ui/bootstrap/controls/T
 export class Mrbr_Tests_Application$Toast {
   constructor() {
     //div2.classList.add("bg-dark", "position-relative");
-    MrbrBase.mrbrInstance.loadManifest(Mrbr_Tests_Application$Toast[MrbrBase.MRBR_COMPONENT_MANIFEST])
+    MrbrBase.mrbrInstance.loadManifest(Mrbr_Tests_Application$Toast[MrbrBase.MANIFEST])
       .then(async () => {
         let toastRack = new Mrbr_UI_Bootstrap_Controls_ToastRack("toastRack", Mrbr_UI_Bootstrap_Controls_Toast$Placements.bottomRight, 5);
         await toastRack.initialise();

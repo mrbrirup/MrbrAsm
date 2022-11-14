@@ -169,7 +169,7 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Bootstrap_Controls
      */
     public initialise(...args: any): Mrbr_System_Promise<any> {
         const self = this,
-            initialisePromise = self.$promise.create(`${self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME]}:initialise`);
+            initialisePromise = self.$promise.create(`${self.$cls[self.$mrbr.COMPONENT_NAME]}:initialise`);
         try {
             super.initialise(args).then(async result => {
                 await self.loadManifest(self.$cls);
@@ -198,11 +198,11 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Bootstrap_Controls
     public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Alert> {
         const
             self = this,
-            defaultConfigPromise = self.$promise.create(`${self.$cls[self.$mrbrBase.MRBR_COMPONENT_MANIFEST]}:setDefaultConfig`);
+            defaultConfigPromise = self.$promise.create(`${self.$cls[self.$mrbr.MANIFEST]}:setDefaultConfig`);
         try {
             super.setDefaultConfig().then(result => {
                 self.elementConfig
-                    .controlName(self.$cls[self.$mrbrBase.MRBR_COMPONENT_NAME])
+                    .controlName(self.$cls[self.$mrbr.COMPONENT_NAME])
                     .setIfNotExist(self.$cls.ALERT_CONTROL_NAME, new self.$ctrlPrm()
                         .Classes(["alert", self.alertContext])
                         .Attributes({ role: "alert" }))

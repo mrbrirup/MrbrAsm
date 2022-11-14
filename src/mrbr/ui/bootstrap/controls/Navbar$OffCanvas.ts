@@ -35,7 +35,7 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas extends Mrbr_UI_Bootstr
         super.offCanvasId = `${id}_offcanvas`;
         super.initialise()
             .then(manifest => {
-                self.$mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                self.$mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas[MrbrBase.MANIFEST])
                     .then(_ => {
 
                         super.setDefaultConfig()

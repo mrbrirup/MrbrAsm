@@ -115,7 +115,7 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar extends Mrbr_UI_Controls_Control 
             initialisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Navbar>("Mrbr_UI_Bootstrap_Controls_Navbar:initialise");
         super.initialise()
             .then(superInitialised => {
-                self.$mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                self.$mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar[MrbrBase.MANIFEST])
                     .then(async manifest => {
                         await self.setDefaultConfig();
                         self.rootElement = <HTMLElement>self.createElement(new self.$ctrlCfg(self.rootElementName, "nav", self.configuration(self.$cls.NAVBAR_NAME)

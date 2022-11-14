@@ -64,7 +64,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
             initialisePromise = Mrbr_System_Promise.create("");
         super.initialise(args)
             .then(async _ => {
-                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MANIFEST])
                     .then(_ => {
 
                         if (!self._drawDialog) { self._drawDialog = self.drawDialog.bind(self) }

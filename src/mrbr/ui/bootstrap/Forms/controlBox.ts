@@ -35,7 +35,7 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
             initalisePromise = Mrbr_System_Promise.create("");
         super.initialise(args)
             .then(_ => {
-                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MANIFEST])
                     .then(_ => {
                         self.createControls();
                         initalisePromise.resolve(this);

@@ -53,7 +53,7 @@ export class Mrbr_UI_Controls_Handles_Resize extends Mrbr_UI_Controls_Control {
             initalisePromise = Mrbr_System_Promise.create("Mrbr_UI_Controls_Handles_Drag:initalise", self);
         super.initialise(...args)
             .then(() => {
-                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MRBR_COMPONENT_MANIFEST])
+                MrbrBase.mrbrInstance.loadManifest(self[MrbrBase.MANIFEST])
                     .then(() => {
                         initalisePromise.resolve(self);
                     })
