@@ -1,3 +1,4 @@
+import { Mrbr_UI_HTML_ElementTagEnum } from "../html/ElementTagEnum";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "./ControlConfigOptionalParameters";
 
 /**
@@ -20,13 +21,13 @@ export class Mrbr_UI_Controls_ControlConfig {
      * @date 31/10/2022 - 14:56:11
      *
      * @constructor
-     * @param {string} elementName
-     * @param {string} elementType
+     * @param {string} elementName     
+     * @param {(string | typeof HTMLElement)} elementType String tag name or lookup from HTMLElement type .
      * @param {?Mrbr_UI_Controls_ControlConfigOptionalParameters} [optionalParameters]
-     */
-    constructor(elementName: string, elementType: string, optionalParameters?: Mrbr_UI_Controls_ControlConfigOptionalParameters) {
+     */    
+    constructor(elementName: string, elementType: string | typeof HTMLElement, optionalParameters?: Mrbr_UI_Controls_ControlConfigOptionalParameters) {
         this.elementName = elementName;
-        this.elementType = elementType;
+        this.elementType = (typeof elementType === "string") ? elementType : Mrbr_UI_HTML_ElementTagEnum[elementType.name];
         this._optionalParameters = optionalParameters;
     }
     //#region Public Properties
@@ -53,25 +54,25 @@ export class Mrbr_UI_Controls_ControlConfig {
      * @public
      * @type {string}
      */
-     public get elementName(): string { return this._elementName; }
+    public get elementName(): string { return this._elementName; }
 
-     /**
-      * Element Name
-      */
-     public set elementName(value: string) { this._elementName = value; }
- 
-     /**
-      * Element Tag Name
-      * @date 31/10/2022 - 15:03:32
-      *
-      * @public
-      * @type {string}
-      */
-     public get elementType(): string { return this._elementType; }
- 
-     /**
-      * Element Tag Name
-      */
-     public set elementType(value: string) { this._elementType = value; }
+    /**
+     * Element Name
+     */
+    public set elementName(value: string) { this._elementName = value; }
+
+    /**
+     * Element Tag Name
+     * @date 31/10/2022 - 15:03:32
+     *
+     * @public
+     * @type {string}
+     */
+    public get elementType(): string { return this._elementType; }
+
+    /**
+     * Element Tag Name
+     */
+    public set elementType(value: string) { this._elementType = value; }
 
 }

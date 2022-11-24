@@ -10,6 +10,6 @@ import { Mrbr_UI_Controls_Control } from "../../controls/Control";
  * @extends {Mrbr_UI_Controls_Control}
  */
 export class Mrbr_UI_Bootstrap_Controls_BootstrapControl extends Mrbr_UI_Controls_Control {
-    constructor(rootElementName: string) { super(rootElementName); }
+    constructor(rootElementName?: string, rootElement?: HTMLElement | string) { super(rootElementName, rootElement); }
     public get bootstrap(): any { return this.$mrbrInstance.host.bootstrap; }
 }

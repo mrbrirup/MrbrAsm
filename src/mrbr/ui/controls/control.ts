@@ -45,6 +45,8 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
     //#endregion Public Symbols
     //#region Public Static Constants
 
+    public static readonly ROOT_ELEMENT_NAME: string = "root_element";
+
     /**
      * Mounted Event Name
      * @date 13/11/2022 - 12:06:25
@@ -370,7 +372,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @static
      * @type {Mrbr_UI_DOM_MutationObserver}
      */
-    private static _mutationObserver: Mrbr_UI_DOM_MutationObserver = null;
+    private static _mutationObserver: Mrbr_UI_DOM_MutationObserver;
     //#endregion Private Properties Fields
 
     //TODO: Remove After Carousel is refactored to use new MutationObserver events 
@@ -395,11 +397,19 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @date 31/10/2022 - 14:06:57
      *
      * @constructor
-     * @param {string} rootElementName Name of root element for control. Each control should have a single root element
+     * @param {string} rootElementName Name of root element for control. Each control should have a single root element. Optional else must be supplied by inheriting class
+     * @param {?(HTMLElement | string)} [rootElement] Optional HTMLElement or string Id of the root element. If not supplied then the root element will be created by the control
      */
-    constructor(rootElementName: string) {
+    constructor(rootElementName?: string, rootElement?: HTMLElement | string) {
         super();
-        this.rootElementName = rootElementName;
+        this.rootElementName = rootElementName || this.$ctrl.ROOT_ELEMENT_NAME;
+        if (rootElement) {
+            if (typeof rootElement === "string") {
+                let _ele = document?.getElementById(rootElement);
+                if (_ele) this.rootElement = _ele;
+            }
+            else { this.rootElement = rootElement; }
+        }
     }
 
     //#region Public Properties
@@ -553,8 +563,8 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @type {Mrbr_UI_Controls_ElementsMap}
      */
     get elements(): Mrbr_UI_Controls_ElementsMap {
-        (!this._elements) && (this._elements = new Mrbr_UI_Controls_ElementsMap());
-        return this._elements
+        return this._elements ??= new Mrbr_UI_Controls_ElementsMap();
+        //return this._elements
     }
 
     /**
@@ -565,7 +575,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @type {Mrbr_UI_Controls_ControlsMap}
      */
     get controls(): Mrbr_UI_Controls_ControlsMap {
-        (!this._controls) && (this._controls = new Mrbr_UI_Controls_ControlsMap());
+        this._controls ??= new Mrbr_UI_Controls_ControlsMap();
         return this._controls
     }
 
@@ -577,7 +587,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @type {Mrbr_System_Events_EventsMap}
      */
     get events(): Mrbr_System_Events_EventsMap {
-        (!this._events) && (this._events = new Mrbr_System_Events_EventsMap())
+        this._events ??= new Mrbr_System_Events_EventsMap();
         return this._events
     }
 
@@ -625,9 +635,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
             initialisePromise = this.$promise.create<Mrbr_UI_Controls_Control>(`${self.$ctrl[self.$mrbr.COMPONENT_NAME]}:initialise`);
         try {
             self.loadManifest(self.$ctrl).then(async manifest => {
-                if (!self.$ctrl.mutationObserver) {
-                    self.$ctrl.mutationObserver = new Mrbr_UI_DOM_MutationObserver(document.body, { attributes: false, childList: true, subtree: true });
-                };
+                self.$ctrl.mutationObserver ??= new Mrbr_UI_DOM_MutationObserver(document.body, { attributes: false, childList: true, subtree: true });
                 this._eventSubscribers = new Mrbr_System_Events_EventSubscribers();
                 this._events = new Mrbr_System_Events_EventsMap();
                 await Promise.all([
@@ -989,13 +997,82 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @param {(event: Mrbr_System_Events_Event<HTMLElement>) => void} callback
      * @returns {void) => any}
      */
-    public onMounted(callback: (event: Mrbr_System_Events_Event<HTMLElement>) => void) {
-        return this.eventSubscribers.add(this.$ctrl.MOUNTED_EVENT_NAME, callback);
+    public onMounted(callback: number | ((event: Mrbr_System_Events_Event<HTMLElement>) => void)) {
+        const eventName = this.$ctrl.MOUNTED_EVENT_NAME;
+        if (typeof callback === "number") {
+            this.eventSubscribers.remove(eventName, callback);
+            return null;
+        }
+        return this.eventSubscribers.add(eventName, callback);
     }
     //#endregion Public Methods
     //region Private Methods
 
 
+    /**
+     * Run Deferred Mount Handlers
+     * @date 16/11/2022 - 14:11:46
+     *
+     * @private
+     */
+    private runDeferedMountFunctions() {
+        const self = this;
+        let fn;
+        while (!!(fn = self.deferredOnMountFunctions.shift())) { fn(); }
+    }
+
+    /**
+     * Handle Issues with MutationObserver failing to observe. Runs in parallel for mounting
+     * @date 16/11/2022 - 14:12:31
+     *
+     * @private
+     * @param {string} id
+     */
+    private onMountedShim(id: string) {
+        if (this._mounted) {
+            this._onMountedShimHandler && cancelAnimationFrame(this._onMountedShimHandler);
+            this._onMountedShimHandler = null;
+            return;
+        }
+        if (!(document.getElementById(id)?.isConnected)) {
+            this._onMountedShimHandler = requestAnimationFrame(() => this.onMountedShim(id));
+            return;
+        }
+        this._mounted = true;
+        this.mounted();
+    }
+
+    /**
+     * RequestAnimationFrame handle for onMountedShim
+     * @date 16/11/2022 - 14:13:23
+     *
+     * @private
+     * @type {number}
+     */
+    private _onMountedShimHandler: number;
+
+    /**
+     * Is Element mounted. Required as MutationObserver and onMountedShim are not always reliable 
+     * @date 16/11/2022 - 14:13:49
+     *
+     * @private
+     * @type {boolean}
+     */
+    private _mounted: boolean = false;
+
+    /**
+     * Runs onMounted Functions when element is mounted called from MutationObserver or onMountedShim
+     * @date 16/11/2022 - 14:14:22
+     *
+     * @private
+     */
+    private mounted() {
+        const mountEventName = this.$ctrl.MOUNTED_EVENT_NAME;
+        (this.eventSubscribers.raise(mountEventName, new Mrbr_System_Events_Event<HTMLElement>(mountEventName, this, this.rootElement)));
+        this.mutationObserver.removeSubscriber(mountEventName, this.addNodesHandle);
+        this.addNodesHandle = null;
+        this.runDeferedMountFunctions();
+    }
     /**
      * Add a mount handler to the control
      * @date 13/11/2022 - 12:19:28
@@ -1004,23 +1081,20 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @param {string} id
      */
     private addMountHandler(id: string) {
+        this.onMountedShim(id);
         if (!this.addNodesHandle) {
             const mountEventName = this.$ctrl.MOUNTED_EVENT_NAME
+            const self = this;
             this.addNodesHandle = this.mutationObserver.onAddNodes((event: Mrbr_System_Events_Event<NodeList>) => {
-                let mounted = document.getElementById(id);
-                if (!(mounted?.isConnected)) {
-                    for (let nodeCounter = 0; nodeCounter < event.data.length; nodeCounter++) {
-                        const node = event.data[nodeCounter];
-                        if (!(node instanceof HTMLElement) || node.id !== id) { continue; }
-                        mounted = node;
-                        break;
-                    }
+                if (self._mounted) { return; }
+                let mounted
+                for (let nodeCounter = 0; nodeCounter < event.data.length; nodeCounter++) {
+                    const node = event.data[nodeCounter];
+                    if (!(node instanceof HTMLElement) || node.id !== id) { continue; }
+                    mounted = node;
+                    break;
                 }
-                if (mounted) {
-                    (this.eventSubscribers.raise(mountEventName, new Mrbr_System_Events_Event<HTMLElement>(mountEventName, this, this.rootElement)));
-                    this.mutationObserver.removeSubscriber(mountEventName, this.addNodesHandle);
-                    this.addNodesHandle = null;
-                }
+                (mounted) && (self.mounted());
             });
         };
     }
@@ -1041,6 +1115,51 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
         });
     }
 
+    /**
+     * Array of EventHandler functions added before mounting to be called after mounting
+     * @date 16/11/2022 - 12:16:02
+     *
+     * @private
+     * @type {{}}
+     */
+    protected deferredOnMountFunctions = []
+    /**
+     * Add a deferred function to the deferredOnMountFunctions array. Is called when root element is mounted or immediately if already mounted
+     * @date 14/11/2022 - 15:36:45
+     *
+     * @protected
+     * @param {string} eventName
+     * @param {((event: Mrbr_System_Events_Event<Mrbr_System_Component>) => void | number)} callback
+     * @param {Function} fn
+     * @returns {number}
+     */
+    protected addDeferredOnMountFn(
+        eventName: string,
+        targetElements: Array<HTMLElement> | HTMLElement,
+        handlerFunction: Function,
+        context: unknown,
+        callback: (event: Mrbr_System_Events_Event<Mrbr_System_Component>) => void | number): number {
+        const self = this,
+            deferredFns = self.deferredOnMountFunctions;
+        if (typeof callback === "number") {
+            this.eventSubscribers.remove(eventName, callback);
+            return null;
+        }
+        deferredFns.push((() => {
+            [targetElements].flat().forEach((targetElement) => {
+                self.events.add(eventName, new self.$evtHandler(
+                    eventName,
+                    targetElement,
+                    handlerFunction,
+                    context));
+                return self.eventSubscribers.add(eventName, callback);
+            });
+        }));
+        if (self.rootElement?.isConnected) {
+            let fn;
+            while ((fn = deferredFns.shift()) !== undefined) { fn(); }
+        }
+    }
     /**
      * Change theme on ThemedElement
      * @date 31/10/2022 - 14:29:08
@@ -1068,6 +1187,10 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
         const self = this;
         self.themedElements.forEach(themedElement => self.changeElementTheme(themedElement, theme));
     }
+
+
+
+
     //#region Private Methods
 }
 

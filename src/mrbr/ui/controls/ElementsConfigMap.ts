@@ -4,12 +4,11 @@ import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "./ControlConfi
 export class Mrbr_UI_Controls_ElementsConfigMap extends Mrbr_System_Collections_Map<string, Mrbr_UI_Controls_ControlConfigOptionalParameters> {
     private _controlName: string;
     public controlName(controlName: string): this { this._controlName = controlName; return this; }
-    //private static setInstance: symbol = Symbol("setInstance");
     constructor(controlName: string) {
         super();
         const cls = Mrbr_UI_Controls_ElementsConfigMap;
         this._controlName = controlName;
-        !cls._instance && (cls._instance = new Mrbr_System_Collections_Map<string, Mrbr_UI_Controls_ControlConfigOptionalParameters>());
+        cls._instance ??= new Mrbr_System_Collections_Map<string, Mrbr_UI_Controls_ControlConfigOptionalParameters>();
         this._map = cls._instance;
     }
     private controlNameKey(key: string): string { return `${this._controlName}:${key}`; }

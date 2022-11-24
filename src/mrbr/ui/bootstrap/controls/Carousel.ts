@@ -416,12 +416,13 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Bootstrap_Contr
 
     /**
      * Creates an instance of Mrbr_UI_Bootstrap_Controls_Carousel.
-     * @date 14/11/2022 - 08:22:51
+     * @date 24/11/2022 - 22:58:55
      *
      * @constructor
-     * @param {string} rootElementName
+     * @param {?string} [rootElementName]
+     * @param {?(HTMLElement | string)} [rootElement]
      */
-    constructor(rootElementName: string) { super(rootElementName); }
+    constructor(rootElementName?: string, rootElement?: HTMLElement | string) { super(rootElementName, rootElement); }
     //#region Public Properties
 
     /**

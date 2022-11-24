@@ -4,8 +4,10 @@ let cfg = {
 };
 function runRes(result) {
     try {
-        let applicationCarousel = new Mrbr.Tests.Application$Carousel();
-        //applicationCarousel.initialise();
+        MrbrBase.mrbrInstance.loadManifest(Mrbr.Tests.Application$Collapse[MrbrBase.MRBR_COMPONENT_MANIFEST])
+            .then(_ => {
+                let application = new Mrbr.Tests.Application$Collapse();
+            })
 
     } catch (error) {
         console.log(error)
@@ -24,7 +26,7 @@ async function onReady() {
     try {
         window["mrbrLoadManifest"] =
             [
-                Mrbr.IO.File.component(Mrbr.Tests.Application$Carousel, 0),
+                Mrbr.IO.File.component(Mrbr.Tests.Application$Collapse, 0),
                 new Mrbr.IO.File(Mrbr.IO.FileType.ScriptLink, null, "https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js", "", {
                     integrity: "sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa",
                     crossorigin: "anonymous"

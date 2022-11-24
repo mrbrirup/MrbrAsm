@@ -117,10 +117,7 @@ export class Mrbr_UI_Bootstrap_Controls_CloseButton extends Mrbr_UI_Controls_Con
             self.whiteVariant = self._whiteVariant;
             self.onMounted((evt) => {
                 let fn;
-                while ((fn = self.deferredOnMountFunctions.shift()) !== undefined) {
-                    fn();
-                    fn = self.deferredOnMountFunctions.shift();
-                }
+                while ((fn = self.deferredOnMountFunctions.shift()) !== undefined) { fn(); }
             });
             initalisePromise.resolve(self);
         });
@@ -192,14 +189,5 @@ export class Mrbr_UI_Bootstrap_Controls_CloseButton extends Mrbr_UI_Controls_Con
             }).bind(self));
         if (self.rootElement?.isConnected) { self.deferredOnMountFunctions.forEach(d => d()); self.deferredOnMountFunctions = []; }
     }
-
-    /**
-     * Array of EventHandler functions added before mounting to be called after mounting
-     * @date 14/11/2022 - 08:36:45
-     *
-     * @private
-     * @type {{}}
-     */
-    private deferredOnMountFunctions = [];
     //#endregion Event Handlers
 }

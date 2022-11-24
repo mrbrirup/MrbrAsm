@@ -83,9 +83,10 @@ export class Mrbr_UI_DOM_MutationObserver extends Mrbr_System_Component implemen
      */
     constructor(element: HTMLElement, config: MutationObserverInit) {
         super();
+        const self = this;
         this._element = element;
         this._config = config;
-        this._observer = new MutationObserver(this.observerCallback.bind(this));
+        this._observer = new MutationObserver(self.observerCallback.bind(self));
         this.observe(this._element, this._config);
     }
     //#region Private Properties

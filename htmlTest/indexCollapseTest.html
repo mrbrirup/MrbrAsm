@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mrbr Test</title>
+  <script src="../dist/asm/mrbr.js"></script>
+  <script async data-path-mrbr="../dist/asm" src="./scripts/initTestCollapse.js"></script>
+  <link href="./style/mrbrDialog.css" rel="stylesheet" type="text/css">
+  <link href="./style/mrbrDefaults.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+  <script>
+
+    // Array linking all HTMLElements Types to their tagNames
+    const htmlElements = new Map();
+    [
+      [HTMLAnchorElement, "a"],
+      [HTMLAreaElement, "area"],
+      [HTMLAudioElement, "audio"],
+      [HTMLBaseElement, "base"],
+      [HTMLBodyElement, "body"],
+      [HTMLBRElement, "br"],
+      [HTMLButtonElement, "button"],
+      [HTMLCanvasElement, "canvas"],
+      [HTMLDataElement, "data"],
+      [HTMLDataListElement, "datalist"],
+      [HTMLDetailsElement, "details"],
+      [HTMLDialogElement, "dialog"],
+      [HTMLDirectoryElement, "dir"],
+      [HTMLDivElement, "div"],
+      [HTMLDListElement, "dl"],
+      [HTMLEmbedElement, "embed"],
+      [HTMLFieldSetElement, "fieldset"],
+      [HTMLFontElement, "font"],
+      [HTMLFormElement, "form"],
+      [HTMLFrameElement, "frame"],
+      [HTMLFrameSetElement, "frameset"],
+      [HTMLHeadingElement, "h1"],
+      [HTMLHeadElement, "head"],
+      [HTMLHRElement, "hr"],
+      [HTMLHtmlElement, "html"],
+      [HTMLIFrameElement, "iframe"],
+      [HTMLImageElement, "img"],
+      [HTMLInputElement, "input"],
+      [HTMLLabelElement, "label"],
+      [HTMLLegendElement, "legend"],
+      [HTMLLIElement, "li"],
+      [HTMLLinkElement, "link"],
+      [HTMLMarqueeElement, "marquee"],
+      [HTMLMapElement, "map"],
+      [HTMLMediaElement, "media"],
+      [HTMLMenuElement, "menu"],
+      [HTMLMetaElement, "meta"],
+      [HTMLMeterElement, "meter"],
+      [HTMLModElement, "mod"],
+      [HTMLObjectElement, "object"],
+      [HTMLOListElement, "ol"],
+      [HTMLOptGroupElement, "optgroup"],
+      [HTMLOptionElement, "option"],
+      [HTMLOutputElement, "output"],
+      [HTMLParagraphElement, "p"],
+      [HTMLParamElement, "param"],
+      [HTMLPictureElement, "picture"],
+      [HTMLPreElement, "pre"],
+      [HTMLProgressElement, "progress"],
+      [HTMLQuoteElement, "q"],
+      [HTMLScriptElement, "script"],
+      [HTMLSelectElement, "select"],
+      [HTMLSlotElement, "slot"],
+      [HTMLSourceElement, "source"],
+      [HTMLSpanElement, "span"],
+      [HTMLStyleElement, "style"],
+      [HTMLTableCaptionElement, "caption"],
+      [HTMLTableCellElement, "td"],
+      [HTMLTableColElement, "col"],
+      [HTMLTableElement, "table"],
+      [HTMLTableRowElement, "tr"],
+      [HTMLTableSectionElement, "tbody"],
+      [HTMLTemplateElement, "template"],
+      [HTMLTextAreaElement, "textarea"],
+      [HTMLTimeElement, "time"],
+      [HTMLTitleElement, "title"],
+      [HTMLTrackElement, "track"],
+      [HTMLUListElement, "ul"],
+      [HTMLUnknownElement, "unknown"],
+      [HTMLVideoElement, "video"]
+    ].filter(entry => !!entry && !!entry[0] && !!entry[1])
+      .forEach(entry => htmlElements.set(entry[0], entry[1]))
+
+
+
+    props = Object.getOwnPropertyNames(window)
+    for (var idx in props) {
+      (new RegExp("HTML.*Element").test(props[idx])) &&
+
+        (!htmlElements.has(window[props[idx]])) &&
+        console.log("Missing element type: " + window[props[idx]])
+
+      //console.log(props[idx], htmlElements.get(elementType));
+
+    }
+    //check if htmldivelement is instance of htmlelement
+    console.log(HTMLDivElement.prototype instanceof HTMLElement);
+    console.log(typeof htmlElements.get(HTMLDivElement) === HTMLElement)
+
+
+    let c = class {
+      _a;
+      get a() {
+        // set a to current time
+        return this._a ??= new Date();
+      }
+    }
+    let c1 = new c();
+    console.log(c1.a);
+    setTimeout(() => {
+      console.log(c1.a);
+    }, 5000);
+  </script>
+
+</body>
+
+</html>

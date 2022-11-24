@@ -6,7 +6,7 @@ export class Mrbr_Tests_Application$Carousel {
         const ctrlType = Mrbr_UI_Bootstrap_Controls_Carousel,
             carouselItem = Mrbr_UI_Bootstrap_Controls_Carousel.CarouselItem;
 
-        let carousel = new ctrlType("carousel1");
+        let carousel = new ctrlType();
         carousel.initialise()
             .then(result => {
                 let item1 = new carouselItem("item1", "https://picsum.photos/640/480", "An image 1", "Caption 1");
