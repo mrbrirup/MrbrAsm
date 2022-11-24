@@ -249,7 +249,7 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Bootstrap_Contr
                 root.ariaExpanded !== "true" ||
                 !root.ariaExpanded ||
                 root.classList.contains("collapsed"));
-            isCollapsed &&= !!this.targetElements.find((target) => target.classList.contains("show"));
+            isCollapsed &&= !this.targetElements.find((target) => target.classList.contains("show"));
             const text = isCollapsed ? this.collapsedText : this.expandedText;
             root && (this.rootElement.textContent = text || value);
         });
