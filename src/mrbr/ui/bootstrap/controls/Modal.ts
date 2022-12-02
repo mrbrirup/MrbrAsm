@@ -77,7 +77,7 @@ export class Mrbr_UI_Bootstrap_Controls_Modal extends Mrbr_UI_Controls_Control {
     public set staticBackdrop(value: boolean) {
         const self = this;
         self._staticBackdrop = value;
-        self.rootElement && self.elementDataset(self.rootElement, { bsBackdrop: value ? "static" : self.$cls.DELETE });
+        self.rootElement && self.dataset(self.rootElement, { bsBackdrop: value ? "static" : self.$cls.DELETE });
     }
     public get verticalCenter(): boolean { return this._verticalCenter; }
     public set verticalCenter(value: boolean) {

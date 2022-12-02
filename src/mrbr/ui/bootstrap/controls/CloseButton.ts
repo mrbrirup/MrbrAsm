@@ -93,7 +93,7 @@ export class Mrbr_UI_Bootstrap_Controls_CloseButton extends Mrbr_UI_Controls_Con
      */
     public set disabled(value: boolean) {
         const root = this.rootElement;
-        root && this.elementAttributes(root, { disabled: value ? "" : super.$ctrl.DELETE });
+        root && this.attributes(root, { disabled: value ? "" : super.$ctrl.DELETE });
         this._disabled = value;
     }
     //#endregion Public Properties

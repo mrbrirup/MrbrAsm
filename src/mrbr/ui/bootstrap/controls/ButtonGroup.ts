@@ -141,7 +141,7 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Bootstrap_Co
      */
     public set ariaLabel(value: string) {
         const root = this.rootElement;
-        root && this.elementAria(root, { label: value });
+        root && this.aria(root, { label: value });
         this._ariaLabel = value;
     }
 

@@ -104,7 +104,7 @@ export class Mrbr_UI_Bootstrap_Controls_TabPanelsContainer extends Mrbr_UI_Contr
         self.tabsContainer && self.classes(self.tabsContainer, self.$clsActions.Add, `nav-${value}`);
         self._tabStyle = value;
         const linkToggleStyle = self.linkToggleStyle();
-        self.navbarControls.forEach((element, key) => self.elementDataset(element.tab, { bsToggle: linkToggleStyle }));
+        self.navbarControls.forEach((element, key) => self.dataset(element.tab, { bsToggle: linkToggleStyle }));
     }
 
     public get navbarControls(): Map<string, InstanceType<typeof Mrbr_UI_Bootstrap_Controls_TabPanelsContainer.TabPanel>> { return this._navbarControls; }

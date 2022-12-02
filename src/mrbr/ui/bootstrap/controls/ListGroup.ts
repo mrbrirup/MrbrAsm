@@ -166,9 +166,9 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
                 .Id(checkBoxId)
                 .Properties({ checked: checked }))),
             label = <HTMLElement>self.createElement(new self.$ctrlCfg(`${checkBoxId}_label`, "label", self.configuration(self.$cls.LISTGROUP_ITEM_CONTROL_LABEL_NAME)));
-        self.elementAttributes(label, { "for": checkBoxId });
+        self.attributes(label, { "for": checkBoxId });
         label.innerText = text;
-        self.elementChildren(listGroupItem, [checkbox, label]);
+        self.children(listGroupItem, [checkbox, label]);
         return listGroupItem;
     }
 
@@ -181,9 +181,9 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
                 .Id(radioId)
                 .Properties({ checked: checked, name: self.rootElement.id }))),
             label = <HTMLElement>self.createElement(new self.$ctrlCfg(`${radioId}_label`, "label", self.configuration(self.$cls.LISTGROUP_ITEM_CONTROL_LABEL_NAME)));
-        self.elementAttributes(label, { "for": radioId });
+        self.attributes(label, { "for": radioId });
         label.innerText = text;
-        self.elementChildren(listGroupItem, [radio, label]);
+        self.children(listGroupItem, [radio, label]);
         return listGroupItem;
     }
 
@@ -225,21 +225,21 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
         Reflect.ownKeys(self.elements).forEach(key => {
             const _element: HTMLElement = self.elements[key as string];
             _element.dataset?.mrbrListItemType === "list-group-item" && self.classes(_element, self.$clsActions.Remove, "active");
-            self.elementAria(_element, { "current": self.$cls.DELETE });
+            self.aria(_element, { "current": self.$cls.DELETE });
         });
-        (listGroupItem) && self.classes(listGroupItem, self.$clsActions.Add, "active") && self.elementAria(listGroupItem, { "current": true });
+        (listGroupItem) && self.classes(listGroupItem, self.$clsActions.Add, "active") && self.aria(listGroupItem, { "current": true });
         return listGroupItem;
     }
     public disableItem(element: string | HTMLElement): HTMLElement {
         const self = this,
             listGroupItem: HTMLElement = typeof element === "string" ? self.elements[element] : element;
-        (listGroupItem) && self.classes(listGroupItem, self.$clsActions.Add, "disabled") && self.elementAria(listGroupItem, { "disabled": true });
+        (listGroupItem) && self.classes(listGroupItem, self.$clsActions.Add, "disabled") && self.aria(listGroupItem, { "disabled": true });
         return listGroupItem;
     }
     public enableItem(element: string | HTMLElement): HTMLElement {
         const self = this,
             listGroupItem: HTMLElement = typeof element === "string" ? self.elements[element] : element;
-        (listGroupItem) && self.classes(listGroupItem, self.$clsActions.Remove, "disabled") && self.elementAria(listGroupItem, { "disabled": self.$cls.DELETE });
+        (listGroupItem) && self.classes(listGroupItem, self.$clsActions.Remove, "disabled") && self.aria(listGroupItem, { "disabled": self.$cls.DELETE });
         return listGroupItem;
     }
 

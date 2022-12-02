@@ -161,11 +161,11 @@ export class Mrbr_UI_Bootstrap_Controls_Nav extends Mrbr_UI_Controls_Control {
             case Mrbr_UI_Bootstrap_Controls_Nav.navContainerTypes.ul:
             case Mrbr_UI_Bootstrap_Controls_Nav.navContainerTypes.ol:
                 link = <HTMLElement>self.createElement(new self.$ctrlCfg(name, "li", self.navLinkListItemConfig));
-                self.elementProperties(link.querySelector("a"), { innerHTML: text, href: href });
+                self.properties(link.querySelector("a"), { innerHTML: text, href: href });
                 break;
             case Mrbr_UI_Bootstrap_Controls_Nav.navContainerTypes.nav:
                 link = <HTMLElement>self.createElement(new self.$ctrlCfg(name, "a", self.navLinkNavConfig));
-                self.elementProperties(link, { innerHTML: text, href: href });
+                self.properties(link, { innerHTML: text, href: href });
                 break;
             default:
                 throw new Error("Invalid nav container type");

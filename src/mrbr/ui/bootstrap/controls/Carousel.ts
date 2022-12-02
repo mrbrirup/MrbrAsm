@@ -438,7 +438,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Bootstrap_Contr
      * Pause on Hover
      */
     public set pauseOnHover(value: boolean) {
-        (this.rootElement) && (this.elementDataset(this.rootElement, { bsPause: value ? "hover" : "false" }))
+        (this.rootElement) && (this.dataset(this.rootElement, { bsPause: value ? "hover" : "false" }))
         this._pauseOnHover = value;
     }
 
@@ -456,7 +456,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Bootstrap_Contr
      */
     public set interval(value: number) {
         value = Math.max(0, value);
-        (this.rootElement) && (this.elementDataset(this.rootElement, { bsInterval: value }));
+        (this.rootElement) && (this.dataset(this.rootElement, { bsInterval: value }));
         this._interval = value;
     }
 
@@ -473,7 +473,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Bootstrap_Contr
      * Enable/disable Keyboard Navigation
      */
     public set keyboard(value: boolean) {
-        (this.rootElement) && (this.elementDataset(this.rootElement, { bsKeyboard: value }));
+        (this.rootElement) && (this.dataset(this.rootElement, { bsKeyboard: value }));
         this._keyboard = value;
     }
 
@@ -490,7 +490,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Bootstrap_Contr
      * Enable/disable Touch Controls
      */
     public set touch(value: boolean) {
-        (this.rootElement) && (this.elementDataset(this.rootElement, { bsTouch: value }));
+        (this.rootElement) && (this.dataset(this.rootElement, { bsTouch: value }));
         this._touch = value;
     }
 
@@ -507,7 +507,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Bootstrap_Contr
      * Enable/disable wrap around from last to first slide
      */
     public set wrap(value: boolean) {
-        (this.rootElement) && (this.elementDataset(this.rootElement, { bsWrap: value }));
+        (this.rootElement) && (this.dataset(this.rootElement, { bsWrap: value }));
         this._wrap = value;
     }
 
@@ -524,7 +524,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Bootstrap_Contr
      * AutoPlay Carousel on mount
      */
     public set autoPlay(value: boolean) {
-        (this.rootElement) && (this.elementDataset(this.rootElement, { bsRide: value ? "carousel" : "true" }));
+        (this.rootElement) && (this.dataset(this.rootElement, { bsRide: value ? "carousel" : "true" }));
         this._autoPlay = value;
     }
 
@@ -690,7 +690,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Bootstrap_Contr
      * Enable/disable Touch Swipe
      */
     public set disableTouchSwipe(value: boolean) {
-        (this.rootElement) && (this.elementDataset(this.rootElement, { bsTouch: value ? "false" : this.$cls.DELETE }));
+        (this.rootElement) && (this.dataset(this.rootElement, { bsTouch: value ? "false" : this.$cls.DELETE }));
         this._disableTouchSwipe = value;
     }
 
@@ -766,7 +766,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Bootstrap_Contr
             carouselItem: HTMLElement = <HTMLElement>this.createElement(new this.$ctrlCfg(item.id, "div", cfg.getConfig(this.$cls.CAROUSEL_ITEM_NAME)
                 .Children([image]))
             );
-        if (item.interval > 0) { this.elementDataset(carouselItem, { bsInterval: item.interval }); }
+        if (item.interval > 0) { this.dataset(carouselItem, { bsInterval: item.interval }); }
         item.container = carouselItem;
         item.image = image;
         (this.withCaptions) && (this.addCaptionContainer(item));

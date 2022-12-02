@@ -223,7 +223,7 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Bootstrap_Contr
             targetElements = this.targetElements;
         this._startOpen = value;
         if ((this.targetElements?.length || 0) === 0) { return; }
-        this.elementAria(targetElements, { "expanded": value ? value : this.$cls.DELETE });
+        this.aria(targetElements, { "expanded": value ? value : this.$cls.DELETE });
         this.classes(targetElements, value ? act.Add : act.Remove, "show");
     }
 
@@ -292,7 +292,7 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Bootstrap_Contr
      * Parent Element
      */
     public set parent(value: string) {
-        this.targetElements && this.targetElements.forEach((target) => { this.elementDataset(target, { bsParent: value ? value : this.$cls.DELETE }) });
+        this.targetElements && this.targetElements.forEach((target) => { this.dataset(target, { bsParent: value ? value : this.$cls.DELETE }) });
         this._parent = value;
     }
 
@@ -369,13 +369,13 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Bootstrap_Contr
         const controlIds = targetElements.map((target) => { return `#${target.id}`; }).join(" ");
         if (targetElements.length > 1) {
             if (root) {
-                this.elementDataset(root, { bsTarget: ".multi-collapse" });
-                this.elementAria(root, { controls: controlIds })
+                this.dataset(root, { bsTarget: ".multi-collapse" });
+                this.aria(root, { controls: controlIds })
             };
             this.classes(targetElements, this.$clsActions.Add, "multi-collapse");
         }
         else {
-            root && this.elementDataset(root, { bsTarget: controlIds });
+            root && this.dataset(root, { bsTarget: controlIds });
         }
     }
 
@@ -495,6 +495,7 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Bootstrap_Contr
     public onClick(callback: (event: Mrbr_System_Events_Event<any>) => void | number): number {
         return this.addDeferredOnMountFn(
             this.$cls.CLICK_EVENT_NAME,
+            this.$cls.CLICK_EVENT_NAME,
             this.rootElement,
             this.click_handler,
             this,
@@ -512,6 +513,7 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Bootstrap_Contr
     public onShow(callback: (event: Mrbr_System_Events_Event<any>) => void | number): number {
         return this.addDeferredOnMountFn(
             this.$cls.SHOW_COLLAPSE_EVENT_NAME,
+            this.$cls.SHOW_COLLAPSE_EVENT_NAME,
             this.targetElements,
             this.show_handler,
             this,
@@ -528,6 +530,7 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Bootstrap_Contr
      */
     public onShown(callback: (event: Mrbr_System_Events_Event<any>) => void | number): number {
         return this.addDeferredOnMountFn(
+            this.$cls.SHOWN_COLLAPSE_EVENT_NAME,
             this.$cls.SHOWN_COLLAPSE_EVENT_NAME,
             this.targetElements,
             this.shown_handler,
@@ -547,6 +550,7 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Bootstrap_Contr
     public onHide(callback: (event: Mrbr_System_Events_Event<any>) => void | number): number {
         return this.addDeferredOnMountFn(
             this.$cls.HIDE_COLLAPSE_EVENT_NAME,
+            this.$cls.HIDE_COLLAPSE_EVENT_NAME,
             this.targetElements,
             this.hide_handler,
             this,
@@ -563,6 +567,7 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Bootstrap_Contr
      */
     public onHidden(callback: (event: Mrbr_System_Events_Event<any>) => void | number): number {
         return this.addDeferredOnMountFn(
+            this.$cls.HIDDEN_COLLAPSE_EVENT_NAME,
             this.$cls.HIDDEN_COLLAPSE_EVENT_NAME,
             this.targetElements,
             this.hidden_handler,

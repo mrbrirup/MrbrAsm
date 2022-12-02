@@ -129,8 +129,8 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroupTabs extends Mrbr_UI_Controls_C
                 .Id(tabPaneId)
                 .Aria({ labelledby: tabId }))),
             tabPane = new self.$cls.TabPane(listItem, pane);
-        self.elementProperties(listItemText, { innerText: title, id: `${id}_text` });
-        panelContents && self.elementProperties(pane, { innerHTML: panelContents })
+        self.properties(listItemText, { innerText: title, id: `${id}_text` });
+        panelContents && self.properties(pane, { innerHTML: panelContents })
         self.elements[self.$cls.TABS_LISTGROUP_NAME].appendChild(listItem);
         self.elements[self.$cls.TABS_PANES_NAME].appendChild(pane);
         self.tabPanes.set(tabName, tabPane);

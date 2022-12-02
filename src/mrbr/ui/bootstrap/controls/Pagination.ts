@@ -319,7 +319,7 @@ export class Mrbr_UI_Bootstrap_Controls_Pagination extends Mrbr_UI_Controls_Cont
                 const element = <HTMLElement>elements[elementCounter];
                 if (element.dataset.mrbrPaginationPage) {
                     element.classList.toggle("active", parseInt(element.dataset.mrbrPaginationPage) === pageNumber);
-                    self.elementAria(element, { current: parseInt(element.dataset.mrbrPaginationPage) === pageNumber ? "page" : self.$cls.DELETE })
+                    self.aria(element, { current: parseInt(element.dataset.mrbrPaginationPage) === pageNumber ? "page" : self.$cls.DELETE })
                 }
             }
         }

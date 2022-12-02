@@ -66,11 +66,11 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$Brand implements Mrbr_UI_Bootstra
 
         if (self.text) {
             self.textElement = document.createElement("span");
-            hostNavbar.elementProperties(self.textElement, { innerText: self.text });
+            hostNavbar.properties(self.textElement, { innerText: self.text });
         }
         if (self.imageUrl) {
             self.imageElement = document.createElement("img");
-            hostNavbar.elementProperties(self.imageElement, { src: self.imageUrl });
+            hostNavbar.properties(self.imageElement, { src: self.imageUrl });
         }
         self.rootElement = <HTMLElement>hostNavbar.createElement(new hostNavbar.$ctrlCfg(self.name, "a", brandCls.NAVBAR_BRAND_CONFIG
             .Properties({ href: self.url })

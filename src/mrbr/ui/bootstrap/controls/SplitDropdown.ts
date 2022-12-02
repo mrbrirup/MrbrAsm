@@ -1,7 +1,10 @@
 import { Mrbr_System_Promise } from "../../../system/Promise";
+import { Mrbr_UI_Bootstrap_Utilities_ButtonColours } from "../utilities/buttonColours";
 import { Mrbr_UI_Bootstrap_Controls_Dropdown } from "./DropDown";
-type buttonColourType = typeof Mrbr_UI_Bootstrap_Controls_Dropdown.buttonColours;
-type dropdownButtonSizeType = typeof Mrbr_UI_Bootstrap_Controls_Dropdown.buttonSizes;
+import { Mrbr_UI_Bootstrap_Controls_Dropdown$ButtonSizes } from "./Dropdown$ButtonSizes";
+import { Mrbr_UI_Bootstrap_Controls_Dropdown$MenuStyles } from "./Dropdown$MenuStyles";
+type buttonColourType = typeof Mrbr_UI_Bootstrap_Utilities_ButtonColours;
+type dropdownButtonSizeType = typeof Mrbr_UI_Bootstrap_Controls_Dropdown$ButtonSizes;
 export class Mrbr_UI_Bootstrap_Controls_SplitDropdown extends Mrbr_UI_Bootstrap_Controls_Dropdown {
     public static SPLIT_DROPDOWN_NAME = "Mrbr_UI_Bootstrap_SplitDropdown";
     public static SPLIT_DROPDOWN_CONTAINER_NAME = "Mrbr_UI_Bootstrap_SplitDropdown_container";
@@ -59,14 +62,14 @@ export class Mrbr_UI_Bootstrap_Controls_SplitDropdown extends Mrbr_UI_Bootstrap_
         super.initialise(args).then(async _ => {
             await this.setDefaultConfig();
             let
-                nonVisualText = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.SPLIT_DROPDOWN_NON_VISUAL_TEXT_NAME, "span", self.configuration(self.$cls.SPLIT_DROPDOWN_NON_VISUAL_TEXT_NAME))),
-                mainButton = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.SPLIT_MAIN_BUTTON_NAME, "button", self.configuration(self.$cls.SPLIT_MAIN_BUTTON_NAME)
+                nonVisualText = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.SPLIT_DROPDOWN_NON_VISUAL_TEXT_NAME, "span", self.elementConfig.getConfig(self.$cls.SPLIT_DROPDOWN_NON_VISUAL_TEXT_NAME))),
+                mainButton = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.SPLIT_MAIN_BUTTON_NAME, "button", self.elementConfig.getConfig(self.$cls.SPLIT_MAIN_BUTTON_NAME)
                     .Classes(super.buttonColour))),
-                splitButton = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.SPLIT_DROPDOWN_NAME, "button", self.configuration(self.$cls.SPLIT_DROPDOWN_NAME)
+                splitButton = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.SPLIT_DROPDOWN_NAME, "button", self.elementConfig.getConfig(self.$cls.SPLIT_DROPDOWN_NAME)
                     .Children([nonVisualText]))
                 ),
-                menuItemContainer = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME, (self.menuStyle === self.$cls.menuStyles.default ? "ul" : "div"), self.configuration(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME)));
-            self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.SPLIT_DROPDOWN_CONTAINER_NAME)
+                menuItemContainer = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME, (self.menuStyle === Mrbr_UI_Bootstrap_Controls_Dropdown$MenuStyles.default ? "ul" : "div"), self.elementConfig.getConfig(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME)));
+            self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.elementConfig.getConfig(self.$cls.SPLIT_DROPDOWN_CONTAINER_NAME)
                 .Children([mainButton, splitButton, menuItemContainer])));
             self.classes(mainButton, self.$clsActions.Remove, "dropdown-toggle")
             self.splitHiddenText = self._splitHiddenText;

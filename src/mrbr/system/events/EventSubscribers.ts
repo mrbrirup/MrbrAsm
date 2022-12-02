@@ -18,6 +18,18 @@ import { Mrbr_System_Events_Event } from "./Event";
  * @implements {Mrbr_System_IComponent}
  */
 export class Mrbr_System_Events_EventSubscribers extends Mrbr_System_Component implements Mrbr_System_IComponent {
+
+
+    /**
+     * Event Handle is returned as number
+     * @date 02/12/2022 - 00:52:47
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly EVENT_HANDLE: string = "number";
     //#region Private Members
 
 
@@ -103,6 +115,14 @@ export class Mrbr_System_Events_EventSubscribers extends Mrbr_System_Component i
     //#endregion Private Methods
 
     //#region Public Methods
+
+
+
+    public isHandle(handle: number | any): boolean {
+        const self = this;
+        return typeof handle === Mrbr_System_Events_EventSubscribers.EVENT_HANDLE;
+    }
+
 
     /**
      * @description Initialize the component, set properties and loadManifest

@@ -45,6 +45,15 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
     //#endregion Public Symbols
     //#region Public Static Constants
 
+    /**
+     * Default Root Element Name. Used when no element name is provided in the constructor
+     * @date 02/12/2022 - 00:47:51
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
     public static readonly ROOT_ELEMENT_NAME: string = "root_element";
 
     /**
@@ -385,7 +394,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
     public addEventListener(...args) { throw new Error("Not implemented"); }
     public removeEventListener(...args) { throw new Error("Not implemented"); }
     public dispatchEvent(...args) { throw new Error("Not implemented"); }
-    setDefaultConfig(...args: any[]): Mrbr_System_Promise<any> {
+    public setDefaultConfig(...args: any[]): Mrbr_System_Promise<any> {
         this.elementConfig = new Mrbr_UI_Controls_ElementsConfigMap(this.$ctrl[this.$mrbr.COMPONENT_NAME]);
         return this.$promise.createResolved("");
     }
@@ -634,25 +643,27 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
             self = this,
             initialisePromise = this.$promise.create<Mrbr_UI_Controls_Control>(`${self.$ctrl[self.$mrbr.COMPONENT_NAME]}:initialise`);
         try {
-            self.loadManifest(self.$ctrl).then(async manifest => {
-                self.$ctrl.mutationObserver ??= new Mrbr_UI_DOM_MutationObserver(document.body, { attributes: false, childList: true, subtree: true });
-                this._eventSubscribers = new Mrbr_System_Events_EventSubscribers();
-                this._events = new Mrbr_System_Events_EventsMap();
-                await Promise.all([
-                    self.$ctrl.mutationObserver.initialise(),
-                    self._eventSubscribers.initialise(),
-                    self._events.initialise()
-                ]);
-                this._defaultConfiguration = new this.$ctrlCol();
-                this._customConfiguration = new this.$ctrlCol();
-                this.events.add(this.$themeChange.themeChangeEvent, new self.$evtHandler(
-                    this.$themeChange.themeChangeEvent,
-                    this.controlEvents,
-                    this.themeChanged,
-                    this
-                ));
-                initialisePromise.resolve(this);
-            })
+            self
+                .loadManifest(self.$ctrl)
+                .then(async manifest => {
+                    self.$ctrl.mutationObserver ??= new Mrbr_UI_DOM_MutationObserver(document.body, { attributes: false, childList: true, subtree: true });
+                    this._eventSubscribers = new Mrbr_System_Events_EventSubscribers();
+                    this._events = new Mrbr_System_Events_EventsMap();
+                    await Promise.all([
+                        self.$ctrl.mutationObserver.initialise(),
+                        self._eventSubscribers.initialise(),
+                        self._events.initialise()
+                    ]);
+                    this._defaultConfiguration = new this.$ctrlCol();
+                    this._customConfiguration = new this.$ctrlCol();
+                    this.events.add(this.$themeChange.themeChangeEvent, new self.$evtHandler(
+                        this.$themeChange.themeChangeEvent,
+                        this.controlEvents,
+                        this.themeChanged,
+                        this
+                    ));
+                    initialisePromise.resolve(this);
+                })
         } catch (error) {
             initialisePromise.reject(error);
         }
@@ -706,14 +717,14 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
     public assignElementConfig(element: HTMLElement, config: Mrbr_UI_Controls_ControlConfigOptionalParameters): void {
         element.id = config.id || this.$ctrl.createId(element.nodeName?.toLocaleLowerCase() || "element");
         this.classes(element, this.$clsActions.Add, config.classes)
-        this.elementAttributes(element, config.attributes)
-        this.elementDataset(element, config.data)
-        this.elementProperties(element, config.properties)
-        this.elementStyles(element, config.styles)
-        this.elementAria(element, config.aria)
-        this.elementTemplate(element, config.template);
-        config.lightTheme && this.elementDataset(element, { lightTheme: config.lightTheme });
-        config.darkTheme && this.elementDataset(element, { darkTheme: config.darkTheme });
+        this.attributes(element, config.attributes)
+        this.dataset(element, config.data)
+        this.properties(element, config.properties)
+        this.styles(element, config.styles)
+        this.aria(element, config.aria)
+        this.template(element, config.template);
+        config.lightTheme && this.dataset(element, { lightTheme: config.lightTheme });
+        config.darkTheme && this.dataset(element, { darkTheme: config.darkTheme });
         (config.lightTheme || config.darkTheme) && this.themedElements.add(element)
         this.changeElementTheme(element, this.$ctrl._theme);
     }
@@ -818,7 +829,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @param {(Array<string> | string | HTMLElement | Array<HTMLElement>)} value
      * @returns {HTMLElement}
      */
-    public elementChildren(targetElement: string | HTMLElement, value: Array<string> | string | HTMLElement | Array<HTMLElement>): HTMLElement {
+    public children(targetElement: string | HTMLElement, value: Array<string> | string | HTMLElement | Array<HTMLElement>): HTMLElement {
         let _targetElement = (typeof targetElement === "string") ? this.elements.get(targetElement) : targetElement;
         (Array.isArray(value) ? value : [value]).forEach(entry => {
             _targetElement.appendChild((typeof entry === "string") ?
@@ -837,7 +848,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @param {object} attributesSettings
      * @returns {HTMLElement}
      */
-    public elementAttributes(targetElement: string | HTMLElement, attributesSettings: object): HTMLElement {
+    public attributes(targetElement: string | HTMLElement, attributesSettings: object): HTMLElement {
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? this.elements.get(targetElement) : targetElement;
         if (!attributesSettings) { return _targetElement; }
         Object.keys(attributesSettings).forEach(key => {
@@ -857,16 +868,16 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @param {Array<string>} darkThemes
      * @returns {HTMLElement}
      */
-    public elementThemes(targetElement: string | HTMLElement, lightThemes: Array<string>, darkThemes: Array<string>): HTMLElement {
+    public themes(targetElement: string | HTMLElement, lightThemes: Array<string>, darkThemes: Array<string>): HTMLElement {
         const datasetSettings: object = {
             lightTheme: lightThemes.join(" "),
             darkTheme: darkThemes.join(" ")
         }
-        let element = this.elementDataset(targetElement, datasetSettings);
+        let element = this.dataset(targetElement, datasetSettings);
         (this.themedElements.has(element) === false) && (this.themedElements.add(element));
         return element;
     }
-    public elementDataset(targetElement: string | HTMLElement, datasetSettings: object): HTMLElement {
+    public dataset(targetElement: string | HTMLElement, datasetSettings: object): HTMLElement {
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? this.elements.get(targetElement) : targetElement;
         if (!datasetSettings) { return _targetElement; }
         Object.keys(datasetSettings).forEach(key => {
@@ -885,11 +896,11 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @param {object} ariaSettings
      * @returns {(HTMLElement | Array<HTMLElement>)}
      */
-    public elementAria(targetElement: string | HTMLElement | Array<string> | Array<HTMLElement>, ariaSettings: object): HTMLElement | Array<HTMLElement> {
+    public aria(targetElement: string | HTMLElement | Array<string> | Array<HTMLElement>, ariaSettings: object): HTMLElement | Array<HTMLElement> {
         const self = this;
         if (Array.isArray(targetElement)) {
             const returnElements = [];
-            targetElement.forEach(entry => returnElements.push(self.elementAria(entry, ariaSettings)))
+            targetElement.forEach(entry => returnElements.push(self.aria(entry, ariaSettings)))
             return returnElements;
         }
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? self.elements.get(targetElement) : targetElement;
@@ -914,7 +925,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @param {string} template
      * @returns {HTMLElement}
      */
-    public elementTemplate(_element: HTMLElement, template: string): HTMLElement {
+    public template(_element: HTMLElement, template: string): HTMLElement {
         (template) && (_element.innerHTML = template)
         return _element;
     }
@@ -928,7 +939,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @param {object} propertyValues
      * @returns {HTMLElement}
      */
-    public elementProperties(targetElement: string | HTMLElement, propertyValues: object): HTMLElement {
+    public properties(targetElement: string | HTMLElement, propertyValues: object): HTMLElement {
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? this.elements.get(targetElement) : targetElement;
         (propertyValues) && (Object.keys(propertyValues).forEach(key => _targetElement[key] = propertyValues[key]))
         return _targetElement
@@ -943,7 +954,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @param {object} styleValues
      * @returns {HTMLElement}
      */
-    public elementStyles(targetElement: string | HTMLElement, styleValues: object): HTMLElement {
+    public styles(targetElement: string | HTMLElement, styleValues: object): HTMLElement {
         let _targetElement: HTMLElement = (typeof targetElement === "string") ? this.elements.get(targetElement) : targetElement;
         (styleValues) && (Object.keys(styleValues).forEach(key => _targetElement.style[key] = styleValues[key]))
         return _targetElement
@@ -1114,7 +1125,6 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
             self._updateTheme = false;
         });
     }
-
     /**
      * Array of EventHandler functions added before mounting to be called after mounting
      * @date 16/11/2022 - 12:16:02
@@ -1128,31 +1138,32 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @date 14/11/2022 - 15:36:45
      *
      * @protected
-     * @param {string} eventName
+     * @param {string} targetEventName
      * @param {((event: Mrbr_System_Events_Event<Mrbr_System_Component>) => void | number)} callback
      * @param {Function} fn
      * @returns {number}
      */
     protected addDeferredOnMountFn(
-        eventName: string,
+        subscriberEventName: string,
+        targetEventName: string,
         targetElements: Array<HTMLElement> | HTMLElement,
         handlerFunction: Function,
         context: unknown,
-        callback: (event: Mrbr_System_Events_Event<Mrbr_System_Component>) => void | number): number {
+        callback: (event: Mrbr_System_Events_Event<any>) => void | number): number {
         const self = this,
             deferredFns = self.deferredOnMountFunctions;
         if (typeof callback === "number") {
-            this.eventSubscribers.remove(eventName, callback);
+            this.eventSubscribers.remove(subscriberEventName, callback);
             return null;
         }
         deferredFns.push((() => {
             [targetElements].flat().forEach((targetElement) => {
-                self.events.add(eventName, new self.$evtHandler(
-                    eventName,
+                self.events.add(subscriberEventName, new self.$evtHandler(
+                    targetEventName,
                     targetElement,
                     handlerFunction,
                     context));
-                return self.eventSubscribers.add(eventName, callback);
+                return self.eventSubscribers.add(subscriberEventName, callback);
             });
         }));
         if (self.rootElement?.isConnected) {

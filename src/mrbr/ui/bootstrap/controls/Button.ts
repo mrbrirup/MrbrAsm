@@ -305,7 +305,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
         this._toggleState = value;
         if (!root || !this.isToggle) { return; }
         this.classes(root, (value === states.on) ? act.Add : act.Remove, "active");
-        this.elementAria(root, { pressed: value === states.on });
+        this.aria(root, { pressed: value === states.on });
     }
 
     /**
@@ -322,7 +322,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      */
     public set isToggle(value: boolean) {
         const root = this.rootElement;
-        (root && !value) && this.elementAria(root, { pressed: this.$ctrl.DELETE });
+        (root && !value) && this.aria(root, { pressed: this.$ctrl.DELETE });
         this._isToggle = value;
         this.toggleState = this._toggleState;
     }
@@ -362,7 +362,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      */
     public set buttonType(value: typeButtonType) {
         const root = this.rootElement;
-        root && this.elementAttributes(root, { type: value });
+        root && this.attributes(root, { type: value });
         this._buttonType = value;
     }
 
@@ -380,7 +380,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      */
     public set elementType(value: typeElementType) {
         const root = this.rootElement;
-        root && this.elementAttributes(root, { role: (value === this.$cls.elementTypes.link) ? "button" : this.$ctrl.DELETE });
+        root && this.attributes(root, { role: (value === this.$cls.elementTypes.link) ? "button" : this.$ctrl.DELETE });
         this._elementType = value;
     }
 
@@ -453,9 +453,9 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
             (this._tabIndex !== null) && (root.tabIndex = this._tabIndex);
             (this.elementType === this.$cls.elementTypes.link) && ((<HTMLAnchorElement>root).href = this._href)
         }
-        this.elementAttributes(root, { disabled: value ? "" : this.$ctrl.DELETE });
+        this.attributes(root, { disabled: value ? "" : this.$ctrl.DELETE });
         this.classes(root, value ? act.Add : act.Remove, this.$cls.DISABLED_CLASSES);
-        this.elementAria(root, { disabled: value ? "true" : this.$ctrl.DELETE });
+        this.aria(root, { disabled: value ? "true" : this.$ctrl.DELETE });
     }
 
     /**

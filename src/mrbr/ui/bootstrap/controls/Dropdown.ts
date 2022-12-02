@@ -1,456 +1,1181 @@
-import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { Mrbr_System_Promise } from "../../../system/Promise";
-import { Mrbr_UI_Controls_Control } from "../../controls/Control";
+import { Mrbr_UI_HTML_ElementTagEnum } from "../../html/ElementTagEnum";
+import { Mrbr_UI_Bootstrap_Utilities_ButtonColours } from "../utilities/buttonColours";
+import { Mrbr_UI_Bootstrap_Utilities_Interactions } from "../utilities/interactions";
+import { Mrbr_UI_Bootstrap_Controls_BootstrapControl } from "./BootstrapControl";
+import { Mrbr_UI_Bootstrap_Controls_Dropdown$AutoClosing } from "./Dropdown$AutoClosing";
+import { Mrbr_UI_Bootstrap_Controls_Dropdown$ButtonSizes } from "./Dropdown$ButtonSizes";
+import { Mrbr_UI_Bootstrap_Controls_Dropdown$ItemEvents } from "./Dropdown$ItemEvents";
+import { Mrbr_UI_Bootstrap_Controls_Dropdown$MenuAlignments } from "./Dropdown$MenuAlignments";
+import { Mrbr_UI_Bootstrap_Controls_Dropdown$MenuStyles } from "./Dropdown$MenuStyles";
+import { Mrbr_UI_Bootstrap_Controls_Dropdown$MenuTypes } from "./Dropdown$MenuTypes";
+import { Mrbr_UI_Bootstrap_Controls_Dropdown$Positions } from "./Dropdown$Positions";
+import { Mrbr_UI_Bootstrap_Controls_DropdownEvent } from "./DropdownEvent";
+import { Mrbr_UI_Bootstrap_Controls_DropdownEventData } from "./DropdownEventData";
 
-type buttonColourType = typeof Mrbr_UI_Bootstrap_Controls_Dropdown.buttonColours;
-type dropdownAlignmentType = typeof Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownAlignments;
-type dropdownPostionType = typeof Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownPositions;
-type dropdownMenuStyle = typeof Mrbr_UI_Bootstrap_Controls_Dropdown.menuStyles;
-type dropdownButtonSizeType = typeof Mrbr_UI_Bootstrap_Controls_Dropdown.buttonSizes;
-type autoClosingType = typeof Mrbr_UI_Bootstrap_Controls_Dropdown.autoClosing;
 
-export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Controls_Control {
+/**
+ * Internal Type for Getting MenuType from Dropdown$MenuTypes and Target from HTMLElement Event
+ * @date 02/12/2022 - 02:04:41
+ *
+ * @typedef {menuTargetType}
+ */
+type menuTargetType = {
+    element: HTMLElement;
+    targetType: Mrbr_UI_Bootstrap_Controls_Dropdown$MenuTypes;
+}
+
+/**
+ * Dropdown Menu Control
+ * @date 02/12/2022 - 02:05:16
+ *
+ * @export
+ * @class Mrbr_UI_Bootstrap_Controls_Dropdown
+ * @typedef {Mrbr_UI_Bootstrap_Controls_Dropdown}
+ * @extends {Mrbr_UI_Bootstrap_Controls_BootstrapControl}
+ */
+export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Bootstrap_Controls_BootstrapControl {
     //#region Public Static Fields
-    public static readonly DROPDOWN_NAME = "Mrbr_UI_Bootstrap_Dropdown";
-    public static readonly DROPDOWN_BUTTON_NAME = "Mrbr_UI_Bootstrap_Dropdown_button";
-    public static readonly DROPDOWN_MENUITEM_CONTAINER_NAME = "Mrbr_UI_Bootstrap_Dropdown_menuItemContainer";
-    public static readonly DROPDOWN_MENUITEM_NAME = "Mrbr_UI_Bootstrap_Dropdown_menuItem";
-    public static readonly DROPDOWN_DIVIDER_NAME = "Mrbr_UI_Bootstrap_Dropdown_dividerItem";
-    public static readonly DROPDOWN_SUBMENU_NAME = "Mrbr_UI_Bootstrap_Dropdown_submenu";
-    public static readonly DROPDOWN_SUBMENU_LINK_NAME = "Mrbr_UI_Bootstrap_Dropdown_submenuLink";
+
+    /**
+     * HTMLElement Data Attribute for Dropdown Type 
+     * @date 02/12/2022 - 01:07:39
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly DROPDOWN_DATA_TYPE: string = "data-mrbr-dropdown-type";
+
+    /**
+     * Interbal Dropdown Element Name
+     * @date 02/12/2022 - 01:08:22
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly DROPDOWN_NAME: string = "dropdown";
+
+    /**
+     * Internal Dropdown Button Element Name
+     * @date 02/12/2022 - 01:08:40
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly DROPDOWN_BUTTON_NAME: string = "button";
+
+    /**
+     * Internal Dropdown MenuItem Container Element Name
+     * @date 02/12/2022 - 01:08:51
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly DROPDOWN_MENUITEM_CONTAINER_NAME: string = "menuItemContainer";
+
+    /**
+     * Internal Dropdown MenuItem Element Name
+     * @date 02/12/2022 - 01:09:23
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly DROPDOWN_MENUITEM_NAME: string = "menuItem";
+
+    /**
+     * Internal Dropdown Divider Element Name
+     * @date 02/12/2022 - 01:09:43
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly DROPDOWN_DIVIDER_NAME: string = "dividerItem";
+
+    /**
+     * Internal Dropdown Submenu Element Name
+     * @date 02/12/2022 - 01:10:05
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly DROPDOWN_SUBMENU_NAME: string = "submenu";
+
+    /**
+     * Internal Dropdown Submenu Link Element Name
+     * @date 02/12/2022 - 01:10:29
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly DROPDOWN_SUBMENU_LINK_NAME: string = "submenuLink";
+
+    /**
+     * Dropdown Class for Information Text Element
+     * @date 02/12/2022 - 01:10:49
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly DROPDOWN_INFO_TEXT: string = "mrbr-info-text";
+
+    /**
+     * Bootstrap Class for Dark Menu
+     * @date 02/12/2022 - 01:11:19
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly DROPDOWN_DARK_MENU: string = "dropdown-menu-dark";
     //#endregion Public Static Fields
     //#region Private Static Properties
     private static readonly OUTSIDE_DROPDOWN_CLICK_EVENT_NAME = "document_body_outside_menu_click";
     //#endregion Private Static Fields
     //#region Public Static Enums
-    public static buttonColours = {
-        primary: "btn-primary",
-        secondary: "btn-secondary",
-        success: "btn-success",
-        danger: "btn-danger",
-        warning: "btn-warning",
-        info: "btn-info",
-        light: "btn-light",
-        dark: "btn-dark"
-    } as const;
-    public static dropdownPositions = {
-        centred: "dropdown_center",
-        dropUp: "dropup",
-        dropUpCentred: "dropup dropup_center",
-        dropEnd: "dropend",
-        dropStart: "dropstart",
-        default: ""
-    } as const
-    public static dropdownAlignments = {
-        end: "dropdown-menu-end",
-        start: "dropdown-menu-start",
-        smEnd: "dropdown-menu-sm-end",
-        mdEnd: "dropdown-menu-md-end",
-        lgEnd: "dropdown-menu-lg-end",
-        xlEnd: "dropdown-menu-xl-end",
-        xxlEnd: "dropdown-menu-xxl-end",
-        smStart: "dropdown-menu-sm-start",
-        mdStart: "dropdown-menu-md-start",
-        lgStart: "dropdown-menu-lg-start",
-        xlStart: "dropdown-menu-xl-start",
-        xxlStart: "dropdown-menu-xxl-start",
-        default: ""
-    } as const
-    public static menuStyles = {
-        default: "",
-        form: "form",
-        freeText: "free-text",
-        subMenu: "sub-menu"
-    } as const;
-    public static buttonSizes = {
-        large: "btn-lg",
-        small: "btn-sm",
-        default: ""
-    } as const;
-    public static references = {
-        parent: "parent",
-        toggle: "toggle",
-        default: "default"
-    } as const;
-    public static autoClosing = {
-        true: "true",
-        inside: "inside",
-        outside: "outside",
-        false: "false",
-        default: "default"
-    } as const;
-    public static menuItemTypes = {
-        menuitem: "dropdown_menuitem",
-        header: "dropdown_header",
-        divider: "dropdown_divider",
-        container: "dropdown_container",
-        button: "dropdown_button",
-        submenuButton: "dropdown_submenuButton",
-        submenu: "dropdown_submenu"
-    } as const;
-    public static menuItemEvents = {
-        dropdown_button_click: "dropdown_button_click",
-        dropdown_menuitem_click: "dropdown_menuitem_click",
-        dropdown_submenu_click: "dropdown_submenu_click"
-    } as const;
     //#endregion Public Static Enums
-    //#region Public Events
-    public static DropdownEventDetails = class {
-        menuItemId: string;
-        event: Event;
-        target: HTMLElement;
-        menuEvent: typeof Mrbr_UI_Bootstrap_Controls_Dropdown.menuItemEvents[keyof typeof Mrbr_UI_Bootstrap_Controls_Dropdown.menuItemEvents];
-        constructor(menuItemId: string, event: Event, eventName: typeof Mrbr_UI_Bootstrap_Controls_Dropdown.menuItemEvents[keyof typeof Mrbr_UI_Bootstrap_Controls_Dropdown.menuItemEvents], target: HTMLElement) {
-            this.menuItemId = menuItemId;
-            this.event = event;
-            this.target = target;
-            this.menuEvent = eventName;
-        }
-    }
-    public static DropdownEventDetailsInit = class implements CustomEventInit<InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Dropdown.DropdownEventDetails>> {
-        bubbles: boolean;
-        cancelable: boolean;
-        composed: boolean;
-        source: InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Dropdown.DropdownEventDetails>;
-        constructor(source: InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Dropdown.DropdownEventDetails>, bubbles: boolean = false, cancelable: boolean = false, composed: boolean = false) {
-            this.bubbles = bubbles;
-            this.cancelable = cancelable;
-            this.composed = composed;
-            this.source = source;
-        }
-    }
-    public static DropdownEvent = class extends CustomEvent<InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Dropdown.DropdownEventDetailsInit>> {
-        constructor(sourceDetails: InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Dropdown.DropdownEventDetailsInit>) {
-            super(sourceDetails.source.menuEvent, { detail: sourceDetails as InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Dropdown.DropdownEventDetailsInit> });
-        }
-    }
-    //#endregion Public Events
+    //#region Protected Aliases
+
+    /**
+     * Dropdown Menu Types Enum Alias
+     * @date 02/12/2022 - 01:13:23
+     *
+     * @protected
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Controls_Dropdown$MenuTypes}
+     */
+    protected get $ddmt(): typeof Mrbr_UI_Bootstrap_Controls_Dropdown$MenuTypes { return Mrbr_UI_Bootstrap_Controls_Dropdown$MenuTypes; }
+
+    /**
+     * Dropdown Menu Styles Enum Alias
+     * @date 02/12/2022 - 01:13:34
+     *
+     * @protected
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Controls_Dropdown$MenuStyles}
+     */
+    protected get $ddms(): typeof Mrbr_UI_Bootstrap_Controls_Dropdown$MenuStyles { return Mrbr_UI_Bootstrap_Controls_Dropdown$MenuStyles; }
+
+    /**
+     * Dropdown Menu ItemEvents Enum Alias
+     * Bootstrap Dropdown Events or Click Events for different Menu Items Types
+     * @date 02/12/2022 - 01:13:52
+     *
+     * @protected
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Controls_Dropdown$ItemEvents}
+     */
+    protected get $ddie(): typeof Mrbr_UI_Bootstrap_Controls_Dropdown$ItemEvents { return Mrbr_UI_Bootstrap_Controls_Dropdown$ItemEvents; }
+
+    /**
+     * Dropdown Menu Alignment Enum Alias for Rectivale layouts
+     * @date 02/12/2022 - 01:14:55
+     *
+     * @protected
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Controls_Dropdown$MenuAlignments}
+     */
+    protected get $ddma(): typeof Mrbr_UI_Bootstrap_Controls_Dropdown$MenuAlignments { return Mrbr_UI_Bootstrap_Controls_Dropdown$MenuAlignments; }
+
+    /**
+     * Dropdown Autoclosing Enum Alias
+     * @date 02/12/2022 - 01:16:24
+     *
+     * @protected
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Controls_Dropdown$AutoClosing}
+     */
+    protected get $ddac(): typeof Mrbr_UI_Bootstrap_Controls_Dropdown$AutoClosing { return Mrbr_UI_Bootstrap_Controls_Dropdown$AutoClosing; }
+
+    /**
+     * Dropdown Menu Item Positions Enum Alias
+     * DropEnd, dropStart, dropUp, dropDown
+     * @date 02/12/2022 - 01:16:44
+     *
+     * @protected
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Controls_Dropdown$Positions}
+     */
+    protected get $ddp(): typeof Mrbr_UI_Bootstrap_Controls_Dropdown$Positions { return Mrbr_UI_Bootstrap_Controls_Dropdown$Positions; }
+
+    /**
+     * Dropdown ButtonSize Enum Alias
+     * @date 02/12/2022 - 01:17:54
+     *
+     * @protected
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Controls_Dropdown}
+     */
+    protected get $ddbs(): typeof Mrbr_UI_Bootstrap_Controls_Dropdown$ButtonSizes { return Mrbr_UI_Bootstrap_Controls_Dropdown$ButtonSizes; }
+
+    /**
+     * Dropdown ButtonColours Enum Alias
+     * @date 02/12/2022 - 01:18:13
+     *
+     * @protected
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Utilities_ButtonColours}
+     */
+    protected get $bubc(): typeof Mrbr_UI_Bootstrap_Utilities_ButtonColours { return Mrbr_UI_Bootstrap_Utilities_ButtonColours; }
+
+    /**
+     * Dropdown Event EventData Type Alias
+     * @date 02/12/2022 - 01:18:27
+     *
+     * @protected
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Controls_DropdownEventData}
+     */
+    protected get $dded(): typeof Mrbr_UI_Bootstrap_Controls_DropdownEventData { return Mrbr_UI_Bootstrap_Controls_DropdownEventData; }
+
+    /**
+     * Dropdown Event Type Alias
+     * @date 02/12/2022 - 01:18:53
+     *
+     * @protected
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Controls_DropdownEvent}
+     */
+    protected get $dde(): typeof Mrbr_UI_Bootstrap_Controls_DropdownEvent { return Mrbr_UI_Bootstrap_Controls_DropdownEvent; }
+
+    /**
+     * Bootstrap Html Utilities Interactions Class Alias
+     * @date 02/12/2022 - 01:19:21
+     *
+     * @protected
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Utilities_Interactions}
+     */
+    protected get $bui(): typeof Mrbr_UI_Bootstrap_Utilities_Interactions { return Mrbr_UI_Bootstrap_Utilities_Interactions; }
+
+    /**
+     * Html Tag Element Alias
+     * @date 02/12/2022 - 01:19:43
+     *
+     * @protected
+     * @readonly
+     * @type {typeof Mrbr_UI_HTML_ElementTagEnum}
+     */
+    protected get $hmt(): typeof Mrbr_UI_HTML_ElementTagEnum { return Mrbr_UI_HTML_ElementTagEnum; }
+    //#endregion Protected Aliases
     //#region Private Fields
+
+
+    /**
+     * Dropdown Class Type Alias
+     * @date 02/12/2022 - 01:21:00
+     *
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Controls_Dropdown}
+     */
     get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Dropdown { return Mrbr_UI_Bootstrap_Controls_Dropdown; }
-    private _alignment: dropdownAlignmentType[keyof dropdownAlignmentType] = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownAlignments.default;
-    private _autoClose: autoClosingType[keyof autoClosingType] = Mrbr_UI_Bootstrap_Controls_Dropdown.autoClosing.false;
-    private _bootstrapDown: any = null;
-    private _buttonColour: buttonColourType[keyof buttonColourType] = Mrbr_UI_Bootstrap_Controls_Dropdown.buttonColours.primary;
-    private _buttonSize: dropdownButtonSizeType[keyof dropdownButtonSizeType] = Mrbr_UI_Bootstrap_Controls_Dropdown.buttonSizes.default;
-    private _buttonText: string = "Dropdown";
+
+
+    /**
+     * Dropdown Menu Alignment
+     * @date 02/12/2022 - 01:21:25
+     *
+     * @private
+     * @type {Mrbr_UI_Bootstrap_Controls_Dropdown$MenuAlignments}
+     */
+    private _alignment: Mrbr_UI_Bootstrap_Controls_Dropdown$MenuAlignments;
+
+    /**
+     * DropDown AutoClose behaviour
+     * @date 02/12/2022 - 01:21:44
+     *
+     * @private
+     * @type {Mrbr_UI_Bootstrap_Controls_Dropdown$AutoClosing}
+     */
+    private _autoClose: Mrbr_UI_Bootstrap_Controls_Dropdown$AutoClosing;
+
+    /**
+     * Dropdown Button Colour
+     * @date 02/12/2022 - 01:22:04
+     *
+     * @private
+     * @type {Mrbr_UI_Bootstrap_Utilities_ButtonColours}
+     */
+    private _buttonColour: Mrbr_UI_Bootstrap_Utilities_ButtonColours;
+
+    /**
+     * Dropdown Button Size
+     * @date 02/12/2022 - 01:22:16
+     *
+     * @private
+     * @type {Mrbr_UI_Bootstrap_Controls_Dropdown$ButtonSizes}
+     */
+    private _buttonSize: Mrbr_UI_Bootstrap_Controls_Dropdown$ButtonSizes;
+
+    /**
+     * Button Text
+     * @date 02/12/2022 - 01:22:25
+     *
+     * @private
+     * @type {string}
+     */
+    private _buttonText: string = " ";
+
+    /**
+     * Is Dropdown Using Dark Style
+     * @date 02/12/2022 - 01:25:09
+     *
+     * @private
+     * @type {boolean}
+     */
     private _darkDropdown: boolean = false;
-    private _dropdownPosition: dropdownPostionType[keyof dropdownPostionType] = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownPositions.default;
+
+    /**
+     * Dropdown Position
+     * @date 02/12/2022 - 01:25:34
+     *
+     * @private
+     * @type {Mrbr_UI_Bootstrap_Controls_Dropdown$Positions}
+     */
+    private _dropdownPosition: Mrbr_UI_Bootstrap_Controls_Dropdown$Positions;
+
+    /**
+     * Is Dropdown a Sub Menu
+     * @date 02/12/2022 - 01:25:45
+     *
+     * @private
+     * @type {boolean}
+     */
     private _isSubMenu: boolean = false;
-    private _menuStyle: dropdownMenuStyle[keyof dropdownMenuStyle] = Mrbr_UI_Bootstrap_Controls_Dropdown.menuStyles.default;
-    private _paddingTop: number = null;
+
+    /**
+     * Dropdown MenuStyle
+     * @date 02/12/2022 - 01:26:02
+     *
+     * @private
+     * @type {Mrbr_UI_Bootstrap_Controls_Dropdown$MenuStyles}
+     */
+    private _menuStyle: Mrbr_UI_Bootstrap_Controls_Dropdown$MenuStyles;
     private _rootMenu: Mrbr_UI_Bootstrap_Controls_Dropdown = null;
     //#endregion Private Fields
     //#region Public Properties
-    public get alignment(): dropdownAlignmentType[keyof dropdownAlignmentType] { return this._alignment; }
-    public set alignment(value: dropdownAlignmentType[keyof dropdownAlignmentType]) {
-        const self = this,
-            menuItemContainer = self.defaultContainerElement;
-        if (menuItemContainer) {
-            if (self.alignment === self.$cls.dropdownAlignments.default) { (self.classes(menuItemContainer, self.$clsActions.Add, value)) }
-            else { self.classes(menuItemContainer, self.$clsActions.Remove, self._alignment); }
+
+    /**
+     * Dropdown Menu Alignment
+     * @date 02/12/2022 - 01:27:18
+     *
+     * @public
+     * @type {Mrbr_UI_Bootstrap_Controls_Dropdown$MenuAlignments}
+     */
+    public get alignment(): Mrbr_UI_Bootstrap_Controls_Dropdown$MenuAlignments { return this._alignment ??= this.$ddma.default; }
+
+    /**
+     * Dropdown Menu Alignment
+     */
+    public set alignment(value: Mrbr_UI_Bootstrap_Controls_Dropdown$MenuAlignments) {
+        const
+            root = this.rootElement,
+            button = this.elements.get(this.$cls.DROPDOWN_BUTTON_NAME);
+        if (root) {
+            if (value !== this.$ddma.default) { (this.classes(root, this.$clsActions.Add, value)) }
+            else { this.classes(root, this.$clsActions.Remove, this._alignment); }
         }
-        const button = self.elements[self.$cls.DROPDOWN_BUTTON_NAME];
         if (button) {
-            if (self.alignment !== self.$cls.dropdownAlignments[self.$cls.dropdownAlignments.default]) { self.elementDataset(button, { bsDisplay: "static" }); }
-            else { self.elementDataset(button, { bsDisplay: self.$cls.DELETE }); }
+            if (this.alignment !== this.$ddma.default) { this.dataset(button, { bsDisplay: "static" }); }
+            else { this.dataset(button, { bsDisplay: this.$cls.DELETE }); }
         }
-        self._alignment = value;
+        this._alignment = value;
     }
-    public get autoClose(): autoClosingType[keyof autoClosingType] { return this._autoClose; }
-    public set autoClose(value: autoClosingType[keyof autoClosingType]) {
-        const self = this,
-            button = self.isSubMenu ? self.elements[self.$cls.DROPDOWN_SUBMENU_LINK_NAME] : self.elements[self.$cls.DROPDOWN_BUTTON_NAME];
-        (button) && (self.elementDataset(button, { bsAutoClose: value === self.$cls.autoClosing.default ? self.$cls.DELETE : value }))
-        self._autoClose = value;
+
+    /**
+     * DropDown AutoClose behaviour
+     * @date 02/12/2022 - 01:28:30
+     *
+     * @public
+     * @type {Mrbr_UI_Bootstrap_Controls_Dropdown$AutoClosing}
+     */
+    public get autoClose(): Mrbr_UI_Bootstrap_Controls_Dropdown$AutoClosing { return this._autoClose ??= this.$ddac.false; }
+
+    /**
+     * DropDown AutoClose behaviour
+     */
+    public set autoClose(value: Mrbr_UI_Bootstrap_Controls_Dropdown$AutoClosing) {
+        const button = this.elements.get(this.isSubMenu ? this.$cls.DROPDOWN_SUBMENU_LINK_NAME : this.$cls.DROPDOWN_BUTTON_NAME);
+        (button) && (this.dataset(button, { bsAutoClose: value === this.$ddac.default ? this.$cls.DELETE : value }))
+        this._autoClose = value;
     }
-    public get buttonColour(): buttonColourType[keyof buttonColourType] { return this._buttonColour; }
-    public set buttonColour(value: buttonColourType[keyof buttonColourType]) {
-        const self = this,
-            button = self.elements[self.$cls.DROPDOWN_BUTTON_NAME];
-        if (button && self.rootElement) {
-            self.classes(button, self.$clsActions.Remove, self._buttonColour);
-            self.classes(button, self.$clsActions.Add, value);
+
+    /**
+     * Dropdown Button Colour
+     * @date 02/12/2022 - 01:28:46
+     *
+     * @public
+     * @type {Mrbr_UI_Bootstrap_Utilities_ButtonColours}
+     */
+    public get buttonColour(): Mrbr_UI_Bootstrap_Utilities_ButtonColours { return this._buttonColour ??= this.$bubc.primary }
+
+    /**
+     * Dropdown Button Colour
+     */
+    public set buttonColour(value: Mrbr_UI_Bootstrap_Utilities_ButtonColours) {
+        const button = this.elements.get(this.$cls.DROPDOWN_BUTTON_NAME);
+        if (button && this.rootElement) {
+            this.classes(button, this.$clsActions.Remove, this._buttonColour);
+            this.classes(button, this.$clsActions.Add, value);
         }
-        self._buttonColour = value;
+        this._buttonColour = value;
     }
-    public get buttonSize(): dropdownButtonSizeType[keyof dropdownButtonSizeType] { return this._buttonSize; }
-    public set buttonSize(value: dropdownButtonSizeType[keyof dropdownButtonSizeType]) {
-        const self = this,
-            button = self.elements[self.$cls.DROPDOWN_BUTTON_NAME];
+
+    /**
+     * Dropdown Button Size
+     * @date 02/12/2022 - 01:29:02
+     *
+     * @public
+     * @type {Mrbr_UI_Bootstrap_Controls_Dropdown$ButtonSizes}
+     */
+    public get buttonSize(): Mrbr_UI_Bootstrap_Controls_Dropdown$ButtonSizes { return this._buttonSize ??= this.$ddbs.default; }
+
+    /**
+     * Dropdown Button Size
+     */
+    public set buttonSize(value: Mrbr_UI_Bootstrap_Controls_Dropdown$ButtonSizes) {
+        const button = this.elements.get(this.$cls.DROPDOWN_BUTTON_NAME);
         if (button) {
-            self.classes(button, self.$clsActions.Remove, self._buttonSize);
-            self.classes(button, self.$clsActions.Add, value);
+            this.classes(button, this.$clsActions.Remove, this._buttonSize);
+            this.classes(button, this.$clsActions.Add, value);
         }
-        self._buttonSize = value;
+        this._buttonSize = value;
     }
+
+    /**
+     * Button Text
+     * @date 02/12/2022 - 01:29:17
+     *
+     * @public
+     * @type {string}
+     */
     public get buttonText(): string { return this._buttonText; }
+
+    /**
+     * Button Text
+     */
     public set buttonText(value: string) {
-        const self = this,
-            button = self.isSubMenu ? self.elements[self.$cls.DROPDOWN_SUBMENU_LINK_NAME] : self.elements[self.$cls.DROPDOWN_BUTTON_NAME];
-        if (self.isSubMenu) {
-            const textElement = document.querySelector(`${self.$cls.DROPDOWN_SUBMENU_LINK_NAME} > div.mrbr-info-text`)
+        const button = this.isSubMenu ? this.elements.get(this.$cls.DROPDOWN_SUBMENU_LINK_NAME) : this.elements.get(this.$cls.DROPDOWN_BUTTON_NAME);
+        if (this.isSubMenu) {
+            const textElement = document.querySelector(`${this.$cls.DROPDOWN_SUBMENU_LINK_NAME} > ${this.$hmt.HTMLDivElement}.${this.$cls.DROPDOWN_INFO_TEXT}`)
             textElement && (textElement.textContent = value);
         }
         else {
             (button && value !== button.innerText) && (button.innerText = value);
         }
-        self._buttonText = value;
+        this._buttonText = value;
     }
+
+    /**
+     * Dropdown Using Dark Style Option
+     * @date 02/12/2022 - 01:29:39
+     *
+     * @public
+     * @type {boolean}
+     */
     public get darkDropdown(): boolean { return this._darkDropdown; }
+
+    /**
+     * Dropdown Using Dark Style Option
+     */
     public set darkDropdown(value: boolean) {
-        const self = this,
-            menuItemContainer = self.elements[self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME];
-        menuItemContainer && self.classes(menuItemContainer, value ? self.$clsActions.Add : self.$clsActions.Remove, "dropdown-menu-dark");
-        self._darkDropdown = value;
+        const menuItemContainer = this.elements.get(this.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME);
+        menuItemContainer && this.classes(menuItemContainer, value ? this.$clsActions.Add : this.$clsActions.Remove, this.$cls.DROPDOWN_DARK_MENU);
+        this._darkDropdown = value;
     }
-    public get dropdownPosition(): dropdownPostionType[keyof dropdownPostionType] { return this._dropdownPosition; }
-    public set dropdownPosition(value: dropdownPostionType[keyof dropdownPostionType]) {
-        const self = this,
-            menuItemContainer = self.rootElement;
+
+    /**
+     * Dropdown Menu Position
+     * @date 02/12/2022 - 01:30:15
+     *
+     * @public
+     * @type {Mrbr_UI_Bootstrap_Controls_Dropdown$Positions}
+     */
+    public get dropdownPosition(): Mrbr_UI_Bootstrap_Controls_Dropdown$Positions { return this._dropdownPosition ??= this.$ddp.default; }
+
+    /**
+     * Dropdown Menu Position
+     */
+    public set dropdownPosition(value: Mrbr_UI_Bootstrap_Controls_Dropdown$Positions) {
+        const menuItemContainer = this.rootElement;
         if (menuItemContainer) {
-            if (self.dropdownPosition !== self.$cls.dropdownPositions[self.$cls.dropdownPositions.default]) { self.classes(menuItemContainer, self.$clsActions.Remove, self._dropdownPosition); }
-            else { self.classes(menuItemContainer, self.$clsActions.Add, value); }
+            if (this.dropdownPosition !== this.$ddp.default) { this.classes(menuItemContainer, this.$clsActions.Remove, this._dropdownPosition); }
+            else { this.classes(menuItemContainer, this.$clsActions.Add, value); }
         }
-        self._dropdownPosition = value;
+        this._dropdownPosition = value;
     }
+
+    /**
+     * Is Dropdown SubMenu
+     * @date 02/12/2022 - 01:30:58
+     *
+     * @public
+     * @type {boolean}
+     */
     public get isSubMenu(): boolean { return this._isSubMenu; }
+
+    /**
+     * Is Dropdown SubMenu
+     */
     public set isSubMenu(value: boolean) { this._isSubMenu = value; }
-    public get menuStyle(): dropdownMenuStyle[keyof dropdownMenuStyle] { return this._menuStyle; }
+
+    /**
+     * Dropdown Menu Style
+     * @date 02/12/2022 - 01:31:15
+     *
+     * @public
+     * @readonly
+     * @type {Mrbr_UI_Bootstrap_Controls_Dropdown$MenuStyles}
+     */
+    public get menuStyle(): Mrbr_UI_Bootstrap_Controls_Dropdown$MenuStyles { return this._menuStyle ??= this.$ddms.default; }
+
+    /**
+     * RootMenu for SubMenu Dropdowns
+     * @date 02/12/2022 - 01:31:31
+     *
+     * @public
+     * @type {Mrbr_UI_Bootstrap_Controls_Dropdown}
+     */
     public get rootMenu(): Mrbr_UI_Bootstrap_Controls_Dropdown { return this._rootMenu; }
+
+    /**
+     * RootMenu for SubMenu Dropdowns
+     */
     public set rootMenu(value: Mrbr_UI_Bootstrap_Controls_Dropdown) { this._rootMenu = value; }
 
     //#endregion Public Properties
-    constructor(rootElementName: string, dropdownMenuStyle: dropdownMenuStyle[keyof dropdownMenuStyle] = Mrbr_UI_Bootstrap_Controls_Dropdown.menuStyles.default) {
+
+    /**
+     * Creates an instance of Mrbr_UI_Bootstrap_Controls_Dropdown.
+     * @date 02/12/2022 - 01:32:30
+     *
+     * @constructor
+     * @param {string} rootElementName
+     * @param {?Mrbr_UI_Bootstrap_Controls_Dropdown} [dropdownMenuStyle]
+     */
+    constructor(rootElementName: string, dropdownMenuStyle?: Mrbr_UI_Bootstrap_Controls_Dropdown$MenuStyles) {
         super(rootElementName);
-        const self = this;
-        self._menuStyle = dropdownMenuStyle;
+        this._menuStyle = dropdownMenuStyle
     }
     //#region Public Methods
-    public initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Dropdown> {
-        const self = this,
-            initalisePromise = self.$promise.create("Mrbr_UI_Bootstrap_Dropdown:initialise");
-        super.initialise(args).then(async _ => {
-            await this.setDefaultConfig();
-            if (self.isSubMenu === true) {
-                let buttonLink = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.DROPDOWN_SUBMENU_LINK_NAME, "a", self.configuration(self.$cls.DROPDOWN_SUBMENU_LINK_NAME)
-                    .Template(`<div class="d-flex" >` +
-                        `<div class="mrbr-info-text flex-grow-1">Dropdown</div>` +
-                        `<div class="flex-shrink-0" >` +
-                        `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox = "0 0 16 16" >` +
-                        `<path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z" > </path>` +
-                        `</svg>` +
-                        `</div>` +
-                        `</div>`)
-                    .Data({ mrbrDropdownType: self.$cls.menuItemTypes.submenuButton })
-                )),
-                    menuItemContainer = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME, (self.menuStyle === self.$cls.menuStyles.default ? "ul" : "div"), self.configuration(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME)
-                    ));
-                self.createElement(new self.$ctrlCfg(self.rootElementName, "li", self.configuration(self.$cls.DROPDOWN_SUBMENU_NAME)
-                    .Children([buttonLink, menuItemContainer])
-                    .Data({ mrbrDropdownType: self.$cls.menuItemTypes.submenu })
-                ))
-                self.events[`${self.rootElementName}_show.bs.dropdown`] = new Mrbr_System_Events_EventHandler("show.bs.dropdown", self.rootElement, self.setSubMenuPosition, self);
-                self.events[`${self.rootElementName}_hidden.bs.dropdown`] = new Mrbr_System_Events_EventHandler("hidden.bs.dropdown", self.rootElement, self.resetSubMenuPosition, self);
-            }
-            else {
-                let button = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.DROPDOWN_BUTTON_NAME, "button", self.configuration(self.$cls.DROPDOWN_BUTTON_NAME)
-                    .Data({ mrbrDropdownType: self.$cls.menuItemTypes.button })
-                    .Classes(self._buttonColour))),
-                    menuItemContainer = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME, (self.menuStyle === self.$cls.menuStyles.default ? "ul" : "div"), self.configuration(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME)));
-                self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.configuration(self.$cls.DROPDOWN_NAME)
-                    .Children([button, menuItemContainer])
-                    .Data({ mrbrDropdownType: self.$cls.menuItemTypes.container })
-                ));
-                self.events[`${self.rootElementName}_hidden.bs.dropdown`] = new Mrbr_System_Events_EventHandler("hidden.bs.dropdown", self.rootElement, self.closeDropdown, self);
-            }
-            self.defaultContainerElementName = self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME;
-            self.alignment = self._alignment;
-            self.autoClose = self._autoClose;
-            self.buttonColour = self._buttonColour;
-            self.buttonSize = self._buttonSize;
-            self.buttonText = self._buttonText;
-            self.darkDropdown = self._darkDropdown;
-            self.dropdownPosition = self._dropdownPosition;
 
-            (self.isSubMenu === false) && (self.events[`${self.rootElementName}_click`] = new Mrbr_System_Events_EventHandler("click", self.rootElement, self.menu_click, self));
-            initalisePromise.resolve(self);
-        })
+    /**
+     * Initialise Dropdown, load Manifest and set properties
+     * @date 02/12/2022 - 01:33:41
+     *
+     * @public
+     * @param {...{}} args
+     * @returns {Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Dropdown>}
+     */
+    public initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Dropdown> {
+        const
+            self = this,
+            cls = self.$cls,
+            initalisePromise = self.$promise.create(`${cls[self.$mrbr.COMPONENT_NAME]}:initialise`),
+            ctrlCfg = self.$ctrlCfg;
+        super.initialise(args)
+            .then(async _ => {
+                await this.loadManifest(cls);
+                await this.setDefaultConfig();
+                if (self.isSubMenu === true) {
+                    const
+                        buttonLink = <HTMLElement>self.createElement(new ctrlCfg(cls.DROPDOWN_SUBMENU_LINK_NAME, self.$hmt.HTMLAnchorElement,
+                            self.elementConfig
+                                .getConfig(cls.DROPDOWN_SUBMENU_LINK_NAME)
+                                .Data({ mrbrDropdownType: self.$ddmt.submenuButton })
+                        )),
+                        menuItemContainer = <HTMLElement>self.createElement(new ctrlCfg(cls.DROPDOWN_MENUITEM_CONTAINER_NAME,
+                            (self.menuStyle === self.$ddms.default ? self.$hmt.HTMLUListElement : self.$hmt.HTMLDivElement), self.elementConfig.getConfig(cls.DROPDOWN_MENUITEM_CONTAINER_NAME)
+                        ));
+                    self.createElement(new ctrlCfg(self.rootElementName, self.$hmt.HTMLLIElement,
+                        self.elementConfig
+                            .getConfig(cls.DROPDOWN_SUBMENU_NAME)
+                            .Children([buttonLink, menuItemContainer])
+                            .Data({ mrbrDropdownType: self.$ddmt.submenu })
+                    ));
+                }
+                else {
+                    let button = <HTMLElement>self.createElement(new ctrlCfg(cls.DROPDOWN_BUTTON_NAME, self.$hmt.HTMLButtonElement, self.elementConfig.getConfig(cls.DROPDOWN_BUTTON_NAME)
+                        .Data({ mrbrDropdownType: self.$ddmt.button })
+                        .Classes(self.buttonColour))),
+                        menuItemContainer = <HTMLElement>self.createElement(new ctrlCfg(cls.DROPDOWN_MENUITEM_CONTAINER_NAME, (self.menuStyle === self.$ddms.default ? self.$hmt.HTMLUListElement : self.$hmt.HTMLDivElement), self.elementConfig.getConfig(cls.DROPDOWN_MENUITEM_CONTAINER_NAME)));
+                    self.createElement(new ctrlCfg(self.rootElementName, self.$hmt.HTMLDivElement, self.elementConfig.getConfig(cls.DROPDOWN_NAME)
+                        .Children([button, menuItemContainer])
+                        .Data({ mrbrDropdownType: self.$ddmt.container })
+                    ));
+                    let mountId: number = self.onMounted((evt) => {
+                        let eventName = self.$ddie.hidden;
+                        self.events.add("closeDropdown:" + eventName, new self.$evtHandler(
+                            eventName,
+                            self.rootElement,
+                            self.closeDropdown,
+                            self
+                        ));
+                    });
+                }
+                self.defaultContainerElementName = self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME;
+                self.alignment = self.alignment;
+                self.autoClose = self.autoClose;
+                self.buttonColour = self.buttonColour;
+                self.buttonSize = self.buttonSize;
+                self.dropdownPosition = self.dropdownPosition;
+                self.buttonText = self._buttonText;
+                self.darkDropdown = self._darkDropdown;
+                initalisePromise.resolve(self);
+            })
         return initalisePromise;
     }
+
+    /**
+     * Add SubMenu Dropdown
+     * @date 02/12/2022 - 01:38:20
+     *
+     * @public
+     * @param {Mrbr_UI_Bootstrap_Controls_Dropdown} subMenu
+     * @returns {Mrbr_UI_Bootstrap_Controls_Dropdown}
+     */
     public addSubMenuItem(subMenu: Mrbr_UI_Bootstrap_Controls_Dropdown): Mrbr_UI_Bootstrap_Controls_Dropdown {
         const self = this
         subMenu.isSubMenu = true;
-        self.defaultContainerElement.appendChild(subMenu.rootElement);
-        self.events[`${self.rootElementName}_click`] = new Mrbr_System_Events_EventHandler("hide.bs.dropdown", self.elements[self.rootElementName], self.stopPropagation, self);
+        subMenu.mount(self)
         subMenu.rootMenu = self.rootMenu || self;
         return subMenu;
     }
+
+    /**
+     * Add Dropdown Item
+     * @date 02/12/2022 - 01:38:56
+     *
+     * @public
+     * @param {string} id
+     * @param {string} text
+     * @returns {HTMLElement}
+     */
     public addMenuItem(id: string, text: string): HTMLElement {
-        const self = this;
-        let link = <HTMLAnchorElement>self.createElement(new self.$ctrlCfg(`${id}_anchor`, "a", self.configuration(self.$cls.DROPDOWN_MENUITEM_NAME)
-            .Properties({
-                href: "#",
-                innerText: text
-            }))),
-            item = <HTMLElement>self.createElement(new self.$ctrlCfg(id, "li", new self.$ctrlPrm()
-                .Classes("user-select-none")
+        const
+            self = this,
+            anchorElementId: string = `${id}_anchor`,
+            link = <HTMLAnchorElement>self.createElement(new self.$ctrlCfg(anchorElementId, self.$hmt.HTMLAnchorElement, self.elementConfig.getConfig(self.$cls.DROPDOWN_MENUITEM_NAME)
+                .Properties({
+                    href: "#",
+                    innerText: text
+                }))),
+            item = <HTMLElement>self.createElement(new self.$ctrlCfg(id, this.$hmt.HTMLLIElement, new self.$ctrlPrm()
+                .Classes(self.$bui.userSelectNone)
                 .Children([link])
-                .Data({ mrbrDropdownType: self.$cls.menuItemTypes.menuitem }))
+                .Data({ mrbrDropdownType: self.$ddmt.menuitem }))
             )
 
         self.defaultContainerElement.appendChild(item);
         return item;
     }
+
+    /**
+     * Add Header MenuItem
+     * @date 02/12/2022 - 01:39:26
+     *
+     * @public
+     * @param {string} id
+     * @param {string} text
+     * @returns {HTMLElement}
+     */
     public addHeaderMenuItem(id: string, text: string): HTMLElement {
-        const self = this;
-        let textElement = <HTMLElement>self.createElement(new self.$ctrlCfg(`${id}_text`, "h6", new self.$ctrlPrm()
-            .Properties({ innerText: text }))
-        ),
-            item = <HTMLElement>self.createElement(new self.$ctrlCfg(id, "li", new self.$ctrlPrm()
-                .Classes("dropdown-header user-select-none pointer-events-none")
+        const
+            self = this,
+            textElementId = `${id}_text`,
+            textElement = <HTMLElement>self.createElement(new self.$ctrlCfg(textElementId, self.$hmt.HTMLHeading6Element, new self.$ctrlPrm()
+                .Properties({ innerText: text }))
+            ),
+            item = <HTMLElement>self.createElement(new self.$ctrlCfg(id, self.$hmt.HTMLLIElement, new self.$ctrlPrm()
+                .Classes(["dropdown-header", self.$bui.userSelectNone, self.$bui.pointerEventsNone])
                 .Children([textElement])
-                .Data({ mrbrDropdownType: self.$cls.menuItemTypes.header }))
+                .Data({ mrbrDropdownType: self.$ddmt.header }))
             )
         self.defaultContainerElement.prepend(item);
         return item;
     }
 
+    /**
+     * Add Divider MenuItem
+     * @date 02/12/2022 - 01:39:49
+     *
+     * @public
+     * @param {string} id
+     * @returns {HTMLElement}
+     */
     public addDividerMenuItem(id: string): HTMLElement {
-        const self = this;
-        let divider = <HTMLElement>self.createElement(new self.$ctrlCfg(`${id}_hr`, "hr", self.configuration(self.$cls.DROPDOWN_DIVIDER_NAME))),
-            item = <HTMLElement>self.createElement(new self.$ctrlCfg(id, "li", new self.$ctrlPrm()
+        const
+            hrElementId: string = `${id}_hr`,
+            divider = <HTMLElement>this.createElement(new this.$ctrlCfg(hrElementId, this.$hmt.HTMLHRElement, this.elementConfig.getConfig(this.$cls.DROPDOWN_DIVIDER_NAME))),
+            item = <HTMLElement>this.createElement(new this.$ctrlCfg(id, this.$hmt.HTMLLIElement, new this.$ctrlPrm()
                 .Children([divider])
-                .Data({ mrbrDropdownType: self.$cls.menuItemTypes.header })));
-        self.defaultContainerElement.appendChild(item);
+                .Data({ mrbrDropdownType: this.$ddmt.header })));
+        this.defaultContainerElement.appendChild(item);
         return item;
     }
+
+    /**
+     * Set MenuItem Active State
+     * @date 02/12/2022 - 01:40:05
+     *
+     * @public
+     * @param {string} id
+     * @param {boolean} [active=true]
+     */
     public itemActiveState(id: string, active: boolean = true): void {
-        const self = this,
-            item = self.elements[`${id}_anchor`];
-        (item) && (self.classes(id, active ? self.$clsActions.Add : self.$clsActions.Remove, "active"))
+        const
+            anchorElementId: string = `${id}_anchor`,
+            item = this.elements.get(anchorElementId);
+        (item) && (this.classes(id, active ? this.$clsActions.Add : this.$clsActions.Remove, "active"))
     }
+
+    /**
+     * Set MenuItem Disabled State
+     * @date 02/12/2022 - 01:40:39
+     *
+     * @public
+     * @param {string} id
+     * @param {boolean} [disabled=true]
+     */
     public itemDisabledState(id: string, disabled: boolean = true): void {
-        const self = this,
-            item = self.elements[`${id}_anchor`];
-        (item) && (self.classes(id, disabled ? self.$clsActions.Add : self.$clsActions.Remove, "disabled"))
+        const
+            anchorElementId: string = `${id}_anchor`,
+            item = this.elements.get(anchorElementId);
+        (item) && (this.classes(id, disabled ? this.$clsActions.Add : this.$clsActions.Remove, "disabled"))
     }
     //#endregion Public Methods
     //#region Private EventHandlers
-    private menu_click(event: Event) {
+
+
+    /**
+     * Add OnShow Event Subscriber
+     * @date 02/12/2022 - 01:40:55
+     *
+     * @public
+     * @param {((event: Mrbr_UI_Bootstrap_Controls_DropdownEvent) => void | number)} callback
+     * @returns {number}
+     */
+    public onShow(callback: (event: Mrbr_UI_Bootstrap_Controls_DropdownEvent) => void | number): number {
+        const
+            self = this,
+            eventName = self.$ddie.show;
+        if (typeof callback === "number") {
+            this.eventSubscribers.remove(eventName, callback);
+            return null;
+        }
+        return self.addDeferredOnMountFn(
+            eventName,
+            eventName,
+            self.rootElement,
+            self.menuShow_handler,
+            self,
+            callback
+        );
+    }
+
+
+    /**
+     * Add OnHidden Event Subscriber
+     * @date 02/12/2022 - 01:41:20
+     *
+     * @public
+     * @param {((event: Mrbr_UI_Bootstrap_Controls_DropdownEvent) => void | number)} callback
+     * @returns {number}
+     */
+    public onHidden(callback: (event: Mrbr_UI_Bootstrap_Controls_DropdownEvent) => void | number): number {
+        const
+            self = this,
+            eventName = self.$ddie.hidden;
+        if (typeof callback === "number") {
+            this.eventSubscribers.remove(eventName, callback);
+            return null;
+        }
+        return self.addDeferredOnMountFn(
+            eventName,
+            eventName,
+            self.rootElement,
+            self.menuHidden_handler,
+            self,
+            callback
+        );
+    }
+
+    /**
+     * Add OnShown Event Subscriber
+     * @date 02/12/2022 - 01:41:39
+     *
+     * @public
+     * @param {((event: Mrbr_UI_Bootstrap_Controls_DropdownEvent) => void | number)} callback
+     * @returns {number}
+     */
+    public onShown(callback: (event: Mrbr_UI_Bootstrap_Controls_DropdownEvent) => void | number): number {
+        const
+            self = this,
+            eventName = self.$ddie.shown;
+        if (typeof callback === "number") {
+            this.eventSubscribers.remove(eventName, callback);
+            return null;
+        }
+        return self.addDeferredOnMountFn(
+            eventName,
+            eventName,
+            self.rootElement,
+            self.menuShown_handler,
+            self,
+            callback
+        );
+    }
+
+
+    /**
+     * Add OnHide Event Subscriber
+     * @date 02/12/2022 - 01:41:55
+     *
+     * @public
+     * @param {((event: Mrbr_UI_Bootstrap_Controls_DropdownEvent) => void | number)} callback
+     * @returns {number}
+     */
+    public onHide(callback: (event: Mrbr_UI_Bootstrap_Controls_DropdownEvent) => void | number): number {
+        const
+            self = this,
+            eventName = self.$ddie.hide;
+        if (typeof callback === "number") {
+            this.eventSubscribers.remove(eventName, callback);
+            return null;
+        }
+        return self.addDeferredOnMountFn(
+            eventName,
+            eventName,
+            self.rootElement,
+            self.menuHide_handler,
+            self,
+            callback
+        );
+    }
+
+
+    /**
+     * Internal OnShow Event Handler
+     * @date 02/12/2022 - 01:42:38
+     *
+     * @private
+     * @param {Event} event
+     */
+    private menuShow_handler(event: Event): void {
         const self = this,
-            eventTarget = <HTMLElement>event.target;
-        let targetDropdownType,
-            target;
-        if (eventTarget.dataset?.mrbrDropdownType) {
-            target = eventTarget;
-            targetDropdownType = eventTarget.dataset.mrbrDropdownType;
-        }
-        else if (<HTMLElement>eventTarget.closest("[data-mrbr-dropdown-type]")) {
-            target = (<HTMLElement>eventTarget.closest("[data-mrbr-dropdown-type]"));
-            targetDropdownType = target.dataset?.mrbrDropdownType;
-        }
-        event.stopPropagation();
-        if (!targetDropdownType) { return; }
-        let closeMenu: boolean = false,
-            dropdownEventDetails: InstanceType<typeof self.$cls.DropdownEventDetails> = null;
-        switch (targetDropdownType) {
-            case self.$cls.menuItemTypes.button:
-                if (target.id === self.elements[self.$cls.DROPDOWN_BUTTON_NAME].id && self.rootElement.contains(target as any) === true) {
-                    !self.events[self.$cls.OUTSIDE_DROPDOWN_CLICK_EVENT_NAME] && (self.events[self.$cls.OUTSIDE_DROPDOWN_CLICK_EVENT_NAME] = new Mrbr_System_Events_EventHandler("click", document.body, self.closeDropdown, self));
-                }
-                dropdownEventDetails = new self.$cls.DropdownEventDetails(target.dataset.mrbrId, event, self.$cls.menuItemEvents.dropdown_button_click, target)
-                break;
-            case self.$cls.menuItemTypes.submenu:
-                dropdownEventDetails = new self.$cls.DropdownEventDetails(target.dataset.mrbrId, event, self.$cls.menuItemEvents.dropdown_submenu_click, target)
-                break;
-            case self.$cls.menuItemTypes.menuitem:
-                dropdownEventDetails = new self.$cls.DropdownEventDetails(target.dataset.mrbrId, event, self.$cls.menuItemEvents.dropdown_menuitem_click, target)
-                closeMenu = true;
-                break;
-            default:
-                return false;
-                break;
-        }
-        closeMenu && self.closeDropdown(event);
-        (dropdownEventDetails) && self.dispatchEvent(new self.$cls.DropdownEvent(new self.$cls.DropdownEventDetailsInit(dropdownEventDetails)));
+            eventName = self.$ddie.show,
+            target: menuTargetType = this.getMenuTarget(event);
+        if (!target) return;
+        const eventData = new self.$dded(target.element.dataset.mrbrId, event, eventName, target.element);
+        this.eventSubscribers.raiseEvent(new self.$dde(eventName, self, eventData));
+
     }
-    private closeDropdown(event: Event) {
+
+    /**
+     * Internal OnHidden Event Handler
+     * @date 02/12/2022 - 01:42:55
+     *
+     * @private
+     * @param {Event} event
+     */
+    private menuHidden_handler(event: Event): void {
         const self = this,
-            eventTarget = <HTMLElement>event.target;
-        let targetDropdownType,
-            target;
-        if (eventTarget.dataset?.mrbrDropdownType) {
-            target = eventTarget;
-            targetDropdownType = eventTarget.dataset.mrbrDropdownType;
-        }
-        else if (<HTMLElement>eventTarget.closest("[data-mrbr-dropdown-type]")) {
-            target = (<HTMLElement>eventTarget.closest("[data-mrbr-dropdown-type]"));
-            targetDropdownType = target.dataset?.mrbrDropdownType;
-        }
-        if (targetDropdownType === self.$cls.menuItemTypes.submenu || targetDropdownType === self.$cls.menuItemTypes.submenuButton) { return; }
-        (<HTMLElement[]>Array.from((self.rootElement.querySelectorAll(".dropdown-item.show"))))
-            .concat(self.elements[self.$cls.DROPDOWN_BUTTON_NAME])
-            .forEach((element: HTMLElement) => self.$mrbrInstance.host.bootstrap.Dropdown.getInstance(element)?.hide());
-        self.events[self.$cls.OUTSIDE_DROPDOWN_CLICK_EVENT_NAME]?.remove();
+            eventName = self.$ddie.hidden,
+            target: menuTargetType = this.getMenuTarget(event);
+        if (!target) return;
+        const eventData = new this.$dded(target.element.dataset.mrbrId, event, eventName, target.element);
+        this.eventSubscribers.raiseEvent(new self.$dde(eventName, self, eventData));
     }
-    private resetSubMenuPosition(event: any) {
-        const self = this;
-        self._bootstrapDown && self.$mrbrInstance.host.bootstrap.Dropdown.getOrCreateInstance(event.relatedTarget).dispose();
-        self._bootstrapDown = null;
+
+    /**
+     * Internal OnShown Event Handler
+     * @date 02/12/2022 - 01:43:14
+     *
+     * @private
+     * @param {Event} event
+     */
+    private menuShown_handler(event: Event): void {
+        const self = this,
+            eventName = self.$ddie.shown,
+            target: menuTargetType = this.getMenuTarget(event);
+        if (!target) return;
+        const eventData = new this.$dded(target.element.dataset.mrbrId, event, eventName, target.element);
+        this.eventSubscribers.raiseEvent(new this.$dde(eventName, self, eventData));
     }
-    private setSubMenuPosition(event: any) {
-        const self = this;
-        if (self._paddingTop === null) {
-            let top = parseInt(getComputedStyle(self.defaultContainerElement).paddingTop);
-            self._paddingTop = isNaN(top) ? 0 : top;
-        }
-        self.setBootstrapOptions.bind(self)(event);
-    }
-    private setBootstrapOptions(event: any, counter: number = 0) {
-        const self = this;
-        let link = self.elements[self.$cls.DROPDOWN_SUBMENU_LINK_NAME],
-            offset = [self.rootElement.offsetWidth, -link.offsetHeight - self._paddingTop];
-        !self._bootstrapDown && (self._bootstrapDown = self.$mrbrInstance.host.bootstrap.Dropdown.getOrCreateInstance(event.relatedTarget));
-        let fnOptions = self._bootstrapDown?._popper?.setOptions;
-        if (typeof fnOptions === "function") {
-            fnOptions({ modifiers: [{ name: "offset", options: { offset: offset } }] })
-            requestAnimationFrame(() => { self.defaultContainerElement.style.inset = "0px 0px auto 0px"; })
+
+    /**
+     * Internal OnHide Event Handler
+     * @date 02/12/2022 - 01:43:28
+     *
+     * @private
+     * @param {Event} event
+     */
+    private menuHide_handler(event: Event): void {
+        const self = this,
+            eventName = self.$ddie.hide,
+            target: menuTargetType = ((event as any).clickEvent) ? this.getMenuTarget(((event as any).clickEvent)) : this.getMenuTarget(event);
+        if (!target) return;
+        if ((event as any).clickEvent && target.targetType === self.$ddmt.submenuButton) {
+            let ele = self.elements.get(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME);
+            event.preventDefault();
             return;
         }
-        (counter++ < 60) && requestAnimationFrame(() => self.setBootstrapOptions.bind(self)(counter++));
+        const eventData = new self.$dded(target.element.dataset.mrbrId, event, eventName, target.element);
+        this.eventSubscribers.raiseEvent(new self.$dde(eventName, self, eventData));
+    }
+
+    /**
+     * Add OnClick Event Subscriber for DropDown RootMenu Item
+     * @date 02/12/2022 - 01:44:14
+     *
+     * @public
+     * @param {((event: Mrbr_UI_Bootstrap_Controls_DropdownEvent) => void | number)} callback
+     * @returns {number}
+     */
+    public onButtonClick(callback: (event: Mrbr_UI_Bootstrap_Controls_DropdownEvent) => void | number): number {
+        const
+            self = this,
+            eventName = self.$ddie.buttonClick;
+        if (typeof callback === "number") {
+            this.eventSubscribers.remove(eventName, callback);
+            return null;
+        }
+        if (self.isSubMenu === false) {
+            return self.addDeferredOnMountFn(
+                eventName,
+                "click",
+                self.rootElement,
+                self.menuClick_handler,
+                self,
+                callback
+            );
+        }
+        return null;
+    }
+
+    /**
+     * Add OnClick Event Subscriber for SubMenu Buttons
+     * @date 02/12/2022 - 01:46:06
+     *
+     * @public
+     * @param {((event: Mrbr_UI_Bootstrap_Controls_DropdownEvent) => void | number)} callback
+     * @returns {number}
+     */
+    public onSubMenuClick(callback: (event: Mrbr_UI_Bootstrap_Controls_DropdownEvent) => void | number): number {
+        const
+            self = this,
+            eventName = self.$ddie.subMenuClick;
+        if (typeof callback === "number") {
+            this.eventSubscribers.remove(eventName, callback);
+            return null;
+        }
+        if (self.isSubMenu === true) {
+            return self.addDeferredOnMountFn(
+                eventName,
+                "click",
+                self.rootElement,
+                self.subMenuClick_handler,
+                self,
+                callback
+            );
+        }
+        return null;
+    }
+
+    /**
+     * Add OnClick Event Subscriber for MenuItem 
+     * @date 02/12/2022 - 01:46:44
+     *
+     * @public
+     * @param {((event: Mrbr_UI_Bootstrap_Controls_DropdownEvent) => void | number)} callback
+     * @returns {number}
+     */
+    public onMenuItemClick(callback: (event: Mrbr_UI_Bootstrap_Controls_DropdownEvent) => void | number): number {
+        const
+            self = this,
+            eventName = self.$ddie.menuItemClick;
+        if (typeof callback === "number") {
+            this.eventSubscribers.remove(eventName, callback);
+            return null;
+        }
+        return self.addDeferredOnMountFn(
+            eventName,
+            "click",
+            self.rootElement,
+            self.menuItemClick_handler,
+            self,
+            callback
+        );
+    }
+
+    /**
+     * Internal OnClick Event Handler for MenuItem
+     * @date 02/12/2022 - 01:47:11
+     *
+     * @private
+     * @param {Event} event
+     */
+    private menuItemClick_handler(event: Event): void {
+        const self = this,
+            target: menuTargetType = this.getMenuTarget(event);
+        if (!target) { return; }
+        if (target.targetType !== self.$ddmt.menuitem) { return; }
+        const eventData = new self.$dded(target.element.dataset.mrbrId, event, self.$ddie.menuItemClick, target.element);
+        this.eventSubscribers.raiseEvent(new self.$dde(self.$ddie.menuItemClick, self, eventData));
+    }
+
+    /**
+     * Internal OnClick Event Handler for RootMenu Buttons
+     * @date 02/12/2022 - 01:47:31
+     *
+     * @private
+     * @param {Event} event
+     */
+    private menuClick_handler(event: Event): void {
+        const self = this,
+            target: menuTargetType = this.getMenuTarget(event);
+        if (!target) { return; }
+        const eventData = new self.$dded(target.element.dataset.mrbrId, event, self.$ddie.buttonClick, target.element);
+        this.eventSubscribers.raiseEvent(new self.$dde(self.$ddie.buttonClick, self, eventData));
+    }
+
+    /**
+     * Internal OnClick Event Handler for SubMenu Buttons
+     * @date 02/12/2022 - 01:48:59
+     *
+     * @private
+     * @param {Event} event
+     */
+    private subMenuClick_handler(event: Event) {
+        const self = this,
+            target: menuTargetType = this.getMenuTarget(event);
+        if (!target) { return; }
+        const eventData = new self.$dded(target.element.dataset.mrbrId, event, self.$ddie.subMenuClick, target.element);
+        this.eventSubscribers.raiseEvent(new self.$dde(self.$ddie.subMenuClick, self, eventData));
+    }
+
+    /**
+     * Get the target Element for the Event from the EventTarget or closest element with a DropDownDataType data attribute or null if not found
+     * @date 02/12/2022 - 01:49:27
+     *
+     * @private
+     * @param {Event} event
+     * @returns {menuTargetType}
+     */
+    private getMenuTarget(event: Event): menuTargetType {
+        const eventTarget = <HTMLElement>event.target;
+        const result: menuTargetType = {
+            targetType: null,
+            element: null
+        }
+        result.element = (eventTarget.dataset?.mrbrDropdownType) ? eventTarget : <HTMLElement>eventTarget.closest(`[${this.$cls.DROPDOWN_DATA_TYPE}]`);
+        result.targetType = this.$ddmt[Object.entries(this.$ddmt).find(([key, value]) => value === result.element?.dataset?.mrbrDropdownType)[0]];
+        return result.targetType ? result : null;
+    }
+
+    /**
+     * Close Menu dropdown behaviour depending on item type is a SubMenu, MenuItem or RootMenu Button
+     * @date 02/12/2022 - 01:50:52
+     *
+     * @private
+     * @param {Event} event
+     */
+    private closeDropdown(event: Event): void {
+        const self = this,
+            eventTarget = <HTMLElement>event.target;
+        let targetDropdownType,
+            target;
+        if (eventTarget.dataset?.mrbrDropdownType) {
+            target = eventTarget;
+            targetDropdownType = eventTarget.dataset.mrbrDropdownType;
+        }
+        else if (<HTMLElement>eventTarget.closest(`[${self.$cls.DROPDOWN_DATA_TYPE}]`)) {
+            target = (<HTMLElement>eventTarget.closest(`[${self.$cls.DROPDOWN_DATA_TYPE}]`));
+            targetDropdownType = target.dataset?.mrbrDropdownType;
+        }
+        if (targetDropdownType === self.$ddmt.submenu || targetDropdownType === self.$ddmt.submenuButton) { return; }
+        (<HTMLElement[]>Array.from((self.rootElement.querySelectorAll(".dropdown-item.show"))))
+            .concat(self.elements.get(self.$cls.DROPDOWN_BUTTON_NAME))
+            .forEach((element: HTMLElement) => {
+                self.bootstrap.Dropdown.getOrCreateInstance(element)?.hide()
+            });
+        self.events.get(self.$cls.OUTSIDE_DROPDOWN_CLICK_EVENT_NAME)?.remove();
     }
 
     //#endregion Private EventHandlers
     //#region Private Methods
-    setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Dropdown> {
-        const self = this;
-        super.setDefaultConfig();
-        !self.hasConfiguration(self.$cls.DROPDOWN_NAME) && self.defaultConfig.add(self.$cls.DROPDOWN_NAME, new self.$ctrlPrm()
-            .Classes("btn-group user-select-none")
-        );
-        !self.hasConfiguration(self.$cls.DROPDOWN_BUTTON_NAME) && self.defaultConfig.add(self.$cls.DROPDOWN_BUTTON_NAME, new self.$ctrlPrm()
-            .Classes("btn dropdown-toggle user-select-none")
-            .Attributes({ "type": "button" })
-            .Data({ bsToggle: "dropdown" })
-            .Aria({ expanded: false })
-        );
-        !self.hasConfiguration(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME) && self.defaultConfig.add(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME, new self.$ctrlPrm()
-            .Classes("dropdown-menu user-select-none")
-        );
-        !self.hasConfiguration(self.$cls.DROPDOWN_MENUITEM_NAME) && self.defaultConfig.add(self.$cls.DROPDOWN_MENUITEM_NAME, new self.$ctrlPrm()
-            .Classes("dropdown-item user-select-none")
-        )
-        !self.hasConfiguration(self.$cls.DROPDOWN_DIVIDER_NAME) && self.defaultConfig.add(self.$cls.DROPDOWN_DIVIDER_NAME, new self.$ctrlPrm()
-            .Classes("dropdown-divider")
-        )
-        !self.hasConfiguration(self.$cls.DROPDOWN_SUBMENU_NAME) && self.defaultConfig.add(self.$cls.DROPDOWN_SUBMENU_NAME, new self.$ctrlPrm());
-        !this.hasConfiguration(self.$cls.DROPDOWN_SUBMENU_LINK_NAME) && self.defaultConfig.add(self.$cls.DROPDOWN_SUBMENU_LINK_NAME, new self.$ctrlPrm()
-            .Classes("dropdown-item user-select-none")
-            .Data({ bsToggle: "dropdown" })
-            .Aria({ expanded: false })
-        );
-        return self.$promise.createResolved("Mrbr_UI_Bootstrap_Dropdown:setDefaultConfig", self);
+    
+    /**
+     * Set Default config for Dropdown Elements
+     * @date 02/12/2022 - 01:52:18
+     *
+     * @public
+     * @returns {Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Dropdown>}
+     */
+    public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Dropdown> {
+        const
+            self = this,
+            selfCls = self.$cls,
+            componentName = selfCls[self.$mrbr.COMPONENT_NAME],
+            setDefaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Dropdown>(componentName + ":setDefaultConfig"),
+            clsUserSelectNone = self.$bui.userSelectNone,
+            dropdown = "dropdown",
+            clsDropDownItem = `${dropdown}-item`,
+            ctrlPrm = self.$ctrlPrm;
+        super.setDefaultConfig()
+            .then(async _ => {
+                self.elementConfig
+                    .controlName(componentName)
+                    .setIfNotExist(selfCls.DROPDOWN_NAME, new ctrlPrm()
+                        .Classes(`btn-group ${clsUserSelectNone}`))
+                    .setIfNotExist(selfCls.DROPDOWN_BUTTON_NAME, new ctrlPrm()
+                        .Classes(`btn ${dropdown}-toggle ${clsUserSelectNone}`)
+                        .Attributes({ "type": "button" })
+                        .Data({ bsToggle: dropdown })
+                        .Aria({ expanded: false }))
+                    .setIfNotExist(selfCls.DROPDOWN_MENUITEM_CONTAINER_NAME, new ctrlPrm()
+                        .Classes(`${dropdown}-menu ${clsUserSelectNone}`))
+                    .setIfNotExist(selfCls.DROPDOWN_MENUITEM_NAME, new ctrlPrm()
+                        .Classes(`${clsDropDownItem} ${clsUserSelectNone}`))
+                    .setIfNotExist(selfCls.DROPDOWN_DIVIDER_NAME, new ctrlPrm()
+                        .Classes(`${dropdown}-divider`))
+                    .setIfNotExist(selfCls.DROPDOWN_SUBMENU_NAME, new ctrlPrm())
+                    .setIfNotExist(selfCls.DROPDOWN_SUBMENU_LINK_NAME, new ctrlPrm()
+                        .Classes(`${clsDropDownItem} ${clsUserSelectNone}`)
+                        .Data({ bsToggle: dropdown })
+                        .Aria({ expanded: false })
+                        .Template(`<div class="d-flex" >` +
+                            `<div class="mrbr-info-text flex-grow-1">Dropdown</div>` +
+                            `<div class="flex-shrink-0" >` +
+                            `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox = "0 0 16 16" >` +
+                            `<path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z" > </path>` +
+                            `</svg>` +
+                            `</div>` +
+                            `</div>`)
+
+                    );
+                setDefaultConfigPromise.resolve(self);
+            })
+        return setDefaultConfigPromise;
     }
-    private stopPropagation(event: Event) { event.stopPropagation(); }
+    //private stopPropagation(event: Event) { event.stopPropagation(); }
     //#endregion Private Methods
 }

@@ -1,5 +1,8 @@
 import { Mrbr_UI_Bootstrap_Controls_Dropdown } from "../ui/bootstrap/controls/DropDown";
+import { Mrbr_UI_Bootstrap_Controls_Dropdown$AutoClosing } from "../ui/bootstrap/controls/Dropdown$AutoClosing";
+import { Mrbr_UI_Bootstrap_Controls_Dropdown$MenuAlignments } from "../ui/bootstrap/controls/Dropdown$MenuAlignments";
 import { Mrbr_UI_Bootstrap_Controls_SplitDropdown } from "../ui/bootstrap/controls/SplitDropdown";
+import { Mrbr_UI_Bootstrap_Utilities_ButtonColours } from "../ui/bootstrap/utilities/buttonColours";
 
 
 export class Mrbr_Tests_Application$Dropdown {
@@ -12,7 +15,8 @@ export class Mrbr_Tests_Application$Dropdown {
         //Promise.all([dropdown.initialise(), splitDropDown.initialise()])
         Promise.all([dropdown.initialise(), submenu2.initialise()])
             .then(_ => {
-                dropdown.buttonColour = Mrbr_UI_Bootstrap_Controls_Dropdown.buttonColours.danger;
+                dropdown.buttonColour = Mrbr_UI_Bootstrap_Utilities_ButtonColours.secondary;
+                submenu2.buttonColour = Mrbr_UI_Bootstrap_Utilities_ButtonColours.secondary;
                 dropdown.buttonText = "Dropdown";
                 //splitDropDown.buttonColour = Mrbr_UI_Bootstrap_Controls_Dropdown.buttonColours.primary;
                 //splitDropDown.buttonText = "Split Dropdown";
@@ -32,20 +36,28 @@ export class Mrbr_Tests_Application$Dropdown {
                 //let submenu = dropdown.addSubMenuItem("submenu1", "Submenu 1", menu2);
                 submenu2.addMenuItem("submenuItem1", "Submenu Item 1");
                 submenu2.addMenuItem("submenuItem2", "Submenu Item 2");
-                submenu2.alignment = Mrbr_UI_Bootstrap_Controls_Dropdown.dropdownAlignments.end;
+                submenu2.alignment = Mrbr_UI_Bootstrap_Controls_Dropdown$MenuAlignments.end;
                 dropdown.addSubMenuItem(submenu2);
                 //dropdown.autoClose = Mrbr_UI_Bootstrap_Controls_Dropdown.autoClosing.outside;
-                document.body.appendChild(dropdown.rootElement);
-                dropdown.addEventListener(Mrbr_UI_Bootstrap_Controls_Dropdown.menuItemEvents.dropdown_button_click, (e: Event) => {
-                    console.log("dropdown_button_click", (<InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Dropdown.DropdownEvent>>e));
-                });
-                dropdown.addEventListener("dropdown_menuitem_click", (e: Event) => {
-                    //console.log("dropdown_menuitem_click", (<InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Dropdown.DropdownEvent>>e));
-                    console.log("dropdown_menuitem_click", e)
-                });
-                dropdown.addEventListener("dropdown_submenu_click", (e: Event) => {
-                    console.log("dropdown_submenu_click", (<InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Dropdown.DropdownEvent>>e));
-                })
+                dropdown.autoClose = Mrbr_UI_Bootstrap_Controls_Dropdown$AutoClosing.true
+                //document.body.appendChild(dropdown.rootElement);
+                dropdown.mount(document.body);
+                dropdown.onShow(() => { console.log("Dropdown show"); });
+                dropdown.onHidden(() => { console.log("Dropdown hidden"); });
+                dropdown.onShown(() => { console.log("Dropdown shown"); });
+                dropdown.onHide(() => { console.log("Dropdown hide"); });
+                dropdown.onMenuItemClick((e) => { console.log("Menu item click: ", e); });
+                submenu2.onMenuItemClick((e) => { console.log("Submenu item click: ", e); });
+                // dropdown.addEventListener(Mrbr_UI_Bootstrap_Controls_Dropdown.menuItemEvents.buttonClick, (e: Event) => {
+                //     console.log("dropdown_button_click", (<InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Dropdown.DropdownEvent>>e));
+                // });
+                // dropdown.addEventListener("dropdown_menuitem_click", (e: Event) => {
+                //     //console.log("dropdown_menuitem_click", (<InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Dropdown.DropdownEvent>>e));
+                //     console.log("dropdown_menuitem_click", e)
+                // });
+                // dropdown.addEventListener("dropdown_submenu_click", (e: Event) => {
+                //     console.log("dropdown_submenu_click", (<InstanceType<typeof Mrbr_UI_Bootstrap_Controls_Dropdown.DropdownEvent>>e));
+                // })
 
 
 

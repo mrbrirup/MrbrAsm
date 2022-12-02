@@ -218,19 +218,19 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
         self._dialogState = value
         switch (value) {
             case states.FullScreen:
-                if (self.elements["fullscreen"]) { self.elementAttributes(self.elements["fullscreen_image"], { src: `${rootPath}mrbr/images/forms/fullscreenRestore.svg` }); }
+                if (self.elements["fullscreen"]) { self.attributes(self.elements["fullscreen_image"], { src: `${rootPath}mrbr/images/forms/fullscreenRestore.svg` }); }
                 setTimeout(() => {
                     if (self.elements["maximise"]) { self.classes(self.elements["maximise"], classActions.Add, "d-none"); }
                 }, 0);
                 break;
             case states.Maximised:
-                if (self.elements["maximise"]) { self.elementAttributes(self.elements["maximise_image"], { src: `${rootPath}mrbr/images/forms/restoreWindow.svg` }); }
+                if (self.elements["maximise"]) { self.attributes(self.elements["maximise_image"], { src: `${rootPath}mrbr/images/forms/restoreWindow.svg` }); }
                 break;
             case states.Minimised:
                 break;
             case states.Normal:
-                if (self.elements["maximise"]) { self.elementAttributes(self.elements["maximise_image"], { src: `${rootPath}mrbr/images/forms/maximise.svg` }); }
-                if (self.elements["fullscreen"]) { self.elementAttributes(self.elements["fullscreen_image"], { src: `${rootPath}mrbr/images/forms/fullscreen.svg` }); }
+                if (self.elements["maximise"]) { self.attributes(self.elements["maximise_image"], { src: `${rootPath}mrbr/images/forms/maximise.svg` }); }
+                if (self.elements["fullscreen"]) { self.attributes(self.elements["fullscreen_image"], { src: `${rootPath}mrbr/images/forms/fullscreen.svg` }); }
                 setTimeout(() => {
                     if (self.elements["maximise"]) { self.classes(self.elements["maximise"], classActions.Remove, "d-none"); }
                     if (self.elements["fullscreen"]) { self.classes(self.elements["fullscreen"], classActions.Remove, "d-none"); }
