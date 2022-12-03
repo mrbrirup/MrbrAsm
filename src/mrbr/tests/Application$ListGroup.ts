@@ -1,4 +1,7 @@
 import { Mrbr_UI_Bootstrap_Controls_ListGroup } from "../ui/bootstrap/controls/ListGroup";
+import { Mrbr_UI_Bootstrap_Controls_ListGroup$ContextualStyles } from "../ui/bootstrap/controls/ListGroup$ContextualStyles";
+import { Mrbr_UI_Bootstrap_Controls_ListGroupEvent } from "../ui/bootstrap/controls/ListGroupEvent";
+import { Mrbr_UI_Bootstrap_Controls_ListGroupEventData } from "../ui/bootstrap/controls/ListGroupEventData";
 
 export class Mrbr_Tests_Application$ListGroup {
 
@@ -28,18 +31,23 @@ export class Mrbr_Tests_Application$ListGroup {
                 Content for list item
               </div>
               <span class="badge bg-primary rounded-pill">14</span>`
-                listGroupItem.onclick = _ => { alert("ListGroupItem clicked"); };
-                listGroupItem2.onclick = _ => { alert("ListGroupItem2 clicked"); };
-                listGroupItem3.onclick = _ => { alert("ListGroupItem3 clicked"); };
-                listGroupItem4.onclick = _ => { alert("ListGroupItem4 clicked"); };
+                // listGroupItem.onclick = _ => { alert("ListGroupItem clicked"); };
+                // listGroupItem2.onclick = _ => { alert("ListGroupItem2 clicked"); };
+                // listGroupItem3.onclick = _ => { alert("ListGroupItem3 clicked"); };
+                // listGroupItem4.onclick = _ => { alert("ListGroupItem4 clicked"); };
 
 
+                listGroup.onClick((e: Mrbr_UI_Bootstrap_Controls_ListGroupEvent) => {
+                    listGroup.setActiveItem(e.data.id);
+                    //console.log(e);
+                })
 
 
-
-                listGroup.setItemContextStyle(listGroupItem, Mrbr_UI_Bootstrap_Controls_ListGroup.ContextualStyles.danger);
-                document.body.appendChild(listGroup.rootElement);
-                document.body.appendChild(radioGroup.rootElement);
+                listGroup.setItemContextStyle(listGroupItem, Mrbr_UI_Bootstrap_Controls_ListGroup$ContextualStyles.danger);
+                listGroup.mount("mrbr-test-list-group")
+                radioGroup.mount("mrbr-test-radio-group")
+                // document.body.appendChild(listGroup.rootElement);
+                // document.body.appendChild(radioGroup.rootElement);
 
 
 

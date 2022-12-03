@@ -22,6 +22,15 @@ export class Mrbr_UI_Controls_ElementsConfigMap extends Mrbr_System_Collections_
         (!this.has(key)) && (super.set(this.controlNameKey(key), value));
         return this;
     }
+    
+    /**
+     * Get Element Config by Key. Returns copy of the config.
+     * @date 03/12/2022 - 09:06:25
+     *
+     * @public
+     * @param {string} key
+     * @returns {Mrbr_UI_Controls_ControlConfigOptionalParameters}
+     */
     public getConfig(key: string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
         return Object.assign(new Mrbr_UI_Controls_ControlConfigOptionalParameters(), super.get(this.controlNameKey(key)));
     }

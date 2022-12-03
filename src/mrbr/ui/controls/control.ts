@@ -19,9 +19,22 @@ import { Mrbr_UI_Controls_ElementsConfigMap } from "./ElementsConfigMap";
 import { Mrbr_System_Events_EventSubscribers } from "../../system/events/EventSubscribers";
 import { Mrbr_UI_Controls_MountPosition } from "./MountPosition";
 import { Mrbr_System_Events_Event } from "../../system/events/Event";
+import { Mrbr_UI_HTML_ElementTagEnum } from "../html/ElementTagEnum";
 
 export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements Mrbr_UI_Controls_IControl, Mrbr_System_IComponent {
     //#region Public Symbols
+
+    
+    /**
+     * Alias Mrbr.UI.Bootstrap.Controls Namespace
+     * @date 03/12/2022 - 17:19:58
+     *
+     * @public
+     * @readonly
+     * @type {*}
+     */
+    public get $bsc(): any { return this[Symbol.for("Mrbr.UI.Bootstrap.Controls")] ??= this.$mrbrInstance.host["Mrbr"].UI.Bootstrap.Controls; }
+
 
     /**
      * Symbol for deleting properties. Unique value cannot be mistaken for a value
@@ -171,7 +184,25 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
     public get $evtHandler(): typeof Mrbr_System_Events_EventHandler { return Mrbr_System_Events_EventHandler; }
 
 
+    /**
+     * Alias for the Event class type
+     * @date 03/12/2022 - 08:39:36
+     *
+     * @public
+     * @readonly
+     * @type {typeof Mrbr_System_Events_Event}
+     */
     public get $event(): typeof Mrbr_System_Events_Event { return Mrbr_System_Events_Event; }
+
+    /**
+     * Html Tag Element Alias
+     * @date 02/12/2022 - 01:19:43
+     *
+     * @protected
+     * @readonly
+     * @type {typeof Mrbr_UI_HTML_ElementTagEnum}
+     */
+    protected get $hmt(): typeof Mrbr_UI_HTML_ElementTagEnum { return Mrbr_UI_HTML_ElementTagEnum; }
 
 
     //#endregion Public Aliases
@@ -401,6 +432,15 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
     //#endregion Dummy Methods to be removed after refactor
 
 
+    /**
+     * Description placeholder
+     * @date 03/12/2022 - 09:06:01
+     *
+     * @public
+     * @param {string} key
+     * @returns {Mrbr_UI_Controls_ControlConfigOptionalParameters}
+     */
+    public getConfig(key: string): Mrbr_UI_Controls_ControlConfigOptionalParameters { return this.elementConfig.get(key); }
     /**
      * Creates an instance of Mrbr_UI_Controls_Control.
      * @date 31/10/2022 - 14:06:57
@@ -985,8 +1025,10 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @param {...*} args
      * @returns {Mrbr_UI_Controls_IControl}
      */
-    public mount(element: HTMLElement | Mrbr_UI_Controls_Control, position: Mrbr_UI_Controls_MountPosition = Mrbr_UI_Controls_MountPosition.append, ...args: any): Mrbr_UI_Controls_IControl {
-        (element instanceof Mrbr_UI_Controls_Control) && (element = element.defaultContainerElement || element.rootElement);
+    public mount(element: HTMLElement | Mrbr_UI_Controls_Control | string, position: Mrbr_UI_Controls_MountPosition = Mrbr_UI_Controls_MountPosition.append, ...args: any): Mrbr_UI_Controls_IControl {
+        if (typeof element === "string") { element = document.getElementById(element); }
+        else if (element instanceof Mrbr_UI_Controls_Control) { element = element.defaultContainerElement || element.rootElement; }
+        if (!element) { throw new Error("Element not found"); }
         const id = this.rootElement.id;
         this.addMountHandler(id);
         switch (position) {
