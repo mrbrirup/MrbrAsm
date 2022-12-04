@@ -380,7 +380,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
         super.initialise(args).then(async _ => {
             await self.loadManifest(self.$cls);
             await self.setDefaultConfig();
-            self.createElement(new self.$ctrlCfg(self.rootElementName, self.orderedList === true ? self.$hmt.OList : self.$hmt.UList, self.getConfig(self.$cls.LISTGROUP_NAME)));
+            self.createElement(new self.$ctrlCfg(self.rootElementName, self.orderedList === true ? self.$hmt.olist : self.$hmt.ulist, this.elementConfig.getConfig(self.$cls.LISTGROUP_NAME)));
             self.flush = self.flush;
             self.numberedList = self.numberedList;
             self.horizontal = self.horizontal;
@@ -439,7 +439,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
      */
     public addItem(id: string, text: string, actionable: boolean = false): HTMLElement {
         if (!this.rootElement) { throw new Error("Root element not found"); }
-        const listGroupItem: HTMLElement = <HTMLElement>this.createElement(new this.$ctrlCfg(id, "li", this.getConfig(this.$cls.LISTGROUP_ITEM_NAME)));
+        const listGroupItem: HTMLElement = <HTMLElement>this.createElement(new this.$ctrlCfg(id, "li", this.elementConfig.getConfig(this.$cls.LISTGROUP_ITEM_NAME)));
         text && (listGroupItem.innerText = text);
         this.setItemActionState(listGroupItem, actionable);
         this.rootElement.appendChild(listGroupItem);
@@ -463,10 +463,10 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
             ctrlCfg = this.$ctrlCfg,
             listGroupItem: HTMLElement = this.addItem(id, null, actionable),
             checkBoxId = cls.createId("checkbox"),
-            checkbox = <HTMLElement>this.createElement(new ctrlCfg(checkBoxId, "input", this.getConfig(cls.LISTGROUP_ITEM_CHECKBOX_NAME)
+            checkbox = <HTMLElement>this.createElement(new ctrlCfg(checkBoxId, "input", this.elementConfig.getConfig(cls.LISTGROUP_ITEM_CHECKBOX_NAME)
                 .Id(checkBoxId)
                 .Properties({ checked: checked }))),
-            label = <HTMLElement>this.createElement(new ctrlCfg(`${checkBoxId}_label`, "label", this.getConfig(cls.LISTGROUP_ITEM_CONTROL_LABEL_NAME)));
+            label = <HTMLElement>this.createElement(new ctrlCfg(`${checkBoxId}_label`, "label", this.elementConfig.getConfig(cls.LISTGROUP_ITEM_CONTROL_LABEL_NAME)));
         this.attributes(label, { "for": checkBoxId });
         label.innerText = text;
         this.children(listGroupItem, [checkbox, label]);
@@ -490,10 +490,10 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
             ctrlCfg = this.$ctrlCfg,
             listGroupItem: HTMLElement = this.addItem(id, null, actionable),
             radioId = cls.createId("radio"),
-            radio = <HTMLElement>this.createElement(new ctrlCfg(radioId, "input", this.getConfig(cls.LISTGROUP_ITEM_RADIO_NAME)
+            radio = <HTMLElement>this.createElement(new ctrlCfg(radioId, "input", this.elementConfig.getConfig(cls.LISTGROUP_ITEM_RADIO_NAME)
                 .Id(radioId)
                 .Properties({ checked: checked, name: this.rootElement.id }))),
-            label = <HTMLElement>this.createElement(new ctrlCfg(`${radioId}_label`, "label", this.getConfig(cls.LISTGROUP_ITEM_CONTROL_LABEL_NAME)));
+            label = <HTMLElement>this.createElement(new ctrlCfg(`${radioId}_label`, "label", this.elementConfig.getConfig(cls.LISTGROUP_ITEM_CONTROL_LABEL_NAME)));
         this.attributes(label, { "for": radioId });
         label.innerText = text;
         this.children(listGroupItem, [radio, label]);
@@ -519,7 +519,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
             ctrlCfg = this.$ctrlCfg,
             listGroupItem: HTMLElement = this.addItem(id, null, actionable),
             textItem: HTMLElement = <HTMLElement>this.createElement(new ctrlCfg(`${id}_text`, "span")),
-            badgedItem: HTMLElement = <HTMLElement>this.createElement(new ctrlCfg(`${id}_badge`, "span", this.getConfig(cls.LISTGROUP_ITEM_BADGE_NAME))),
+            badgedItem: HTMLElement = <HTMLElement>this.createElement(new ctrlCfg(`${id}_badge`, "span", this.elementConfig.getConfig(cls.LISTGROUP_ITEM_BADGE_NAME))),
             returnValue = new this.$lib(listGroupItem, textItem, badgedItem);
         this.customContentContainerItem(listGroupItem, true);
         this.classes(textItem, this.$clsActions.Add, "ms-2 me-auto");

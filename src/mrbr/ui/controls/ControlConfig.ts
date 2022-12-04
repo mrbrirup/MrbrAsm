@@ -1,4 +1,4 @@
-import { Mrbr_UI_HTML_ElementTagEnum } from "../html/ElementTagEnum";
+import { Mrbr_UI_HTML_ElementTags } from "../html/ElementTags";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "./ControlConfigOptionalParameters";
 
 /**
@@ -27,7 +27,7 @@ export class Mrbr_UI_Controls_ControlConfig {
      */    
     constructor(elementName: string, elementType: string | typeof HTMLElement, optionalParameters?: Mrbr_UI_Controls_ControlConfigOptionalParameters) {
         this.elementName = elementName;
-        this.elementType = (typeof elementType === "string") ? elementType : Mrbr_UI_HTML_ElementTagEnum[elementType.name];
+        this.elementType = (typeof elementType === "string") ? elementType : Mrbr_UI_HTML_ElementTags[elementType.name];
         this._optionalParameters = optionalParameters;
     }
     //#region Public Properties

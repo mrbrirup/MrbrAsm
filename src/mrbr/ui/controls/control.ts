@@ -19,12 +19,12 @@ import { Mrbr_UI_Controls_ElementsConfigMap } from "./ElementsConfigMap";
 import { Mrbr_System_Events_EventSubscribers } from "../../system/events/EventSubscribers";
 import { Mrbr_UI_Controls_MountPosition } from "./MountPosition";
 import { Mrbr_System_Events_Event } from "../../system/events/Event";
-import { Mrbr_UI_HTML_ElementTagEnum } from "../html/ElementTagEnum";
+import { Mrbr_UI_HTML_ElementTags } from "../html/ElementTags";
 
 export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements Mrbr_UI_Controls_IControl, Mrbr_System_IComponent {
     //#region Public Symbols
 
-    
+
     /**
      * Alias Mrbr.UI.Bootstrap.Controls Namespace
      * @date 03/12/2022 - 17:19:58
@@ -200,9 +200,9 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      *
      * @protected
      * @readonly
-     * @type {typeof Mrbr_UI_HTML_ElementTagEnum}
+     * @type {typeof Mrbr_UI_HTML_ElementTags}
      */
-    protected get $hmt(): typeof Mrbr_UI_HTML_ElementTagEnum { return Mrbr_UI_HTML_ElementTagEnum; }
+    protected get $hmt(): typeof Mrbr_UI_HTML_ElementTags { return Mrbr_UI_HTML_ElementTags; }
 
 
     //#endregion Public Aliases
@@ -431,16 +431,6 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
     }
     //#endregion Dummy Methods to be removed after refactor
 
-
-    /**
-     * Description placeholder
-     * @date 03/12/2022 - 09:06:01
-     *
-     * @public
-     * @param {string} key
-     * @returns {Mrbr_UI_Controls_ControlConfigOptionalParameters}
-     */
-    public getConfig(key: string): Mrbr_UI_Controls_ControlConfigOptionalParameters { return this.elementConfig.get(key); }
     /**
      * Creates an instance of Mrbr_UI_Controls_Control.
      * @date 31/10/2022 - 14:06:57

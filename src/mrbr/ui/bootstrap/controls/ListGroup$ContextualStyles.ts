@@ -1,3 +1,11 @@
+
+/**
+ * Context Style for ListGroup Item
+ * @date 04/12/2022 - 03:11:07
+ *
+ * @export
+ * @enum {number}
+ */
 export enum Mrbr_UI_Bootstrap_Controls_ListGroup$ContextualStyles {
     primary = "list-group-item-primary",
     secondary = "list-group-item-secondary",

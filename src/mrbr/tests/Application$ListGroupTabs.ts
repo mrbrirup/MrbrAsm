@@ -12,12 +12,14 @@ export class Mrbr_Tests_Application$ListGroupTabs {
                     tabPanel2 = listGroupTabs.addTab("tab2", "Tab 2", "Tab 2 Content"),
                     tabPanel3 = listGroupTabs.addTab("tab3", "Tab 3", "Tab 3 Content"),
                     tabPanel4 = listGroupTabs.addTab("tab4", "Tab 4", "Tab 4 Content");
-                tabPanel4.pane.innerHTML = `<strong>A simple primary list group item</strong>`;
-                listGroupTabs.setActiveTab("tab3");
-                document.body.appendChild(listGroupTabs.rootElement);
-                listGroupTabs.addEventListener("tab_click", (e: Event) => {
-                    console.log("tab_click", e);
-                });
+                //tabPanel4.pane.innerHTML = `<strong>A simple primary list group item</strong>`;
+                //listGroupTabs.setActiveTab("tab3");
+                listGroupTabs.mount(document.body);
+                //document.body.appendChild(listGroupTabs.rootElement);
+                listGroupTabs.onTabShow((e) => { console.log("tab_show", e); });
+                listGroupTabs.onTabHidden((e) => { console.log("tab_hidden", e); });
+                listGroupTabs.onTabShown((e) => { console.log("tab_shown", e); });
+                listGroupTabs.onTabHide((e) => { console.log("tab_hide", e); });
             });
 
     }
