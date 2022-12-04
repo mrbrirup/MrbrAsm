@@ -161,8 +161,8 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Bootstrap_Co
         const
             root = this.rootElement,
             act = this.$clsActions;
-        root && this.classes(root, act.Remove, this._groupSize);
-        root && this.classes(root, act.Add, value);
+        root && this.classes(root, act.remove, this._groupSize);
+        root && this.classes(root, act.add, value);
         this._groupSize = value;
     }
 
@@ -182,8 +182,8 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Bootstrap_Co
         const
             root = this.rootElement,
             act = this.$clsActions;
-        root && this.classes(root, act.Remove, this._orientation);
-        root && this.classes(root, act.Add, value);
+        root && this.classes(root, act.remove, this._orientation);
+        root && this.classes(root, act.add, value);
         this._orientation = value;
     }
     //#endregion Properties
@@ -306,8 +306,8 @@ export class Mrbr_UI_Bootstrap_Controls_ButtonGroup extends Mrbr_UI_Bootstrap_Co
      * @param {string} id
      */
     public setActive(id: string): void {
-        this.groupItems.forEach((value, key) => this.classes(value, this.$clsActions.Remove, "active"));
-        (this.groupItems.has(id)) && this.classes(this.groupItems.get(id), this.$clsActions.Add, "active");
+        this.groupItems.forEach((value, key) => this.classes(value, this.$clsActions.remove, "active"));
+        (this.groupItems.has(id)) && this.classes(this.groupItems.get(id), this.$clsActions.add, "active");
     }
 
     /**

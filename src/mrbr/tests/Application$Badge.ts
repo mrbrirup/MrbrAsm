@@ -13,7 +13,7 @@ export class Mrbr_Tests_Application$Badge {
                 let badge = self.mrbrBadge;
                 await badge.initialise();
                 let button = document.createElement("button");
-                badge.classes(button, Mrbr_UI_Controls_ClassActions.Add, "btn btn-dark m-4");
+                badge.classes(button, Mrbr_UI_Controls_ClassActions.add, "btn btn-dark m-4");
                 button.textContent = "In-Box";
                 button.id = "button1";
                 badge.badgeText = "9";

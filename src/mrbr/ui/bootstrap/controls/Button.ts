@@ -304,7 +304,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
 
         this._toggleState = value;
         if (!root || !this.isToggle) { return; }
-        this.classes(root, (value === states.on) ? act.Add : act.Remove, "active");
+        this.classes(root, (value === states.on) ? act.add : act.remove, "active");
         this.aria(root, { pressed: value === states.on });
     }
 
@@ -343,8 +343,8 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
         const root = this.rootElement,
             act = this.$clsActions;
         if (!root) { this._size = value; return; }
-        this.classes(root, act.Remove, this.size)
-        this.classes(root, act.Add, value)
+        this.classes(root, act.remove, this.size)
+        this.classes(root, act.add, value)
         this._size = value;
     }
 
@@ -399,7 +399,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
     public set noWrap(value: boolean) {
         const root = this.rootElement,
             act = this.$clsActions;
-        root && this.classes(root, value ? act.Add : act.Remove, "btn-no-wrap");
+        root && this.classes(root, value ? act.add : act.remove, "btn-no-wrap");
         this._noWrap = value;
     }
 
@@ -417,8 +417,8 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
     public set outline(value: boolean) {
         const root = this.rootElement;
         root && (_ => {
-            this.classes(root, this.$clsActions.Remove, `btn-${(this._outline ? "outline-" : "")}${this._colour}`);
-            this.classes(root, this.$clsActions.Add, `btn-${(value ? "outline-" : "")}${this._colour}`);
+            this.classes(root, this.$clsActions.remove, `btn-${(this._outline ? "outline-" : "")}${this._colour}`);
+            this.classes(root, this.$clsActions.add, `btn-${(value ? "outline-" : "")}${this._colour}`);
         })()
         this._outline = value;
     }
@@ -454,7 +454,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
             (this.elementType === this.$cls.elementTypes.link) && ((<HTMLAnchorElement>root).href = this._href)
         }
         this.attributes(root, { disabled: value ? "" : this.$ctrl.DELETE });
-        this.classes(root, value ? act.Add : act.Remove, this.$cls.DISABLED_CLASSES);
+        this.classes(root, value ? act.add : act.remove, this.$cls.DISABLED_CLASSES);
         this.aria(root, { disabled: value ? "true" : this.$ctrl.DELETE });
     }
 
@@ -473,8 +473,8 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
     public set colour(value: typeButtonColor) {
         const root = this.rootElement;
         if (!root) { this._colour = value; return; }
-        this.classes(root, this.$clsActions.Remove, `btn-${(this.outline ? "outline-" : "")}${this._colour}`);
-        this.classes(root, this.$clsActions.Add, `btn-${(this.outline ? "outline-" : "")}${value}`);
+        this.classes(root, this.$clsActions.remove, `btn-${(this.outline ? "outline-" : "")}${this._colour}`);
+        this.classes(root, this.$clsActions.add, `btn-${(this.outline ? "outline-" : "")}${value}`);
         this._colour = value;
 
     }

@@ -100,8 +100,8 @@ export class Mrbr_UI_Bootstrap_Controls_TabPanelsContainer extends Mrbr_UI_Contr
     public get tabStyle(): typeof Mrbr_UI_Bootstrap_Controls_TabPanelsContainer.tabStyles[keyof typeof Mrbr_UI_Bootstrap_Controls_TabPanelsContainer.tabStyles] { return this._tabStyle; }
     public set tabStyle(value: typeof Mrbr_UI_Bootstrap_Controls_TabPanelsContainer.tabStyles[keyof typeof Mrbr_UI_Bootstrap_Controls_TabPanelsContainer.tabStyles]) {
         const self = this;
-        self.tabsContainer && self.classes(self.tabsContainer, self.$clsActions.Remove, `nav-${self._tabStyle}`);
-        self.tabsContainer && self.classes(self.tabsContainer, self.$clsActions.Add, `nav-${value}`);
+        self.tabsContainer && self.classes(self.tabsContainer, self.$clsActions.remove, `nav-${self._tabStyle}`);
+        self.tabsContainer && self.classes(self.tabsContainer, self.$clsActions.add, `nav-${value}`);
         self._tabStyle = value;
         const linkToggleStyle = self.linkToggleStyle();
         self.navbarControls.forEach((element, key) => self.dataset(element.tab, { bsToggle: linkToggleStyle }));
@@ -119,7 +119,7 @@ export class Mrbr_UI_Bootstrap_Controls_TabPanelsContainer extends Mrbr_UI_Contr
     public get horizontal(): boolean { return this._horizontal; }
     public set horizontal(value: boolean) {
         const self = this;
-        (self.rootElement) && self.classes(self.rootElement, value ? self.$clsActions.Add : self.$clsActions.Remove, "d-flex align-items-start");
+        (self.rootElement) && self.classes(self.rootElement, value ? self.$clsActions.add : self.$clsActions.remove, "d-flex align-items-start");
         self._horizontal = value;
     }
     private linkToggleStyle() {
@@ -253,7 +253,7 @@ export class Mrbr_UI_Bootstrap_Controls_TabPanelsContainer extends Mrbr_UI_Contr
             )
         self.tabsContainer.appendChild(tabPanel.tab);
         self.panelsContainer.appendChild(tabPanel.panel);
-        self._navbarControls.size === 0 && (self.classes([tabPanel.tab, tabPanel.panel], self.$clsActions.Add, "active show"));
+        self._navbarControls.size === 0 && (self.classes([tabPanel.tab, tabPanel.panel], self.$clsActions.add, "active show"));
         self._navbarControls.set(name, tabPanel);
         return tabPanel;
     }

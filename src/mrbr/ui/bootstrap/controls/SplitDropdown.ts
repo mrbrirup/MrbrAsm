@@ -19,8 +19,8 @@ export class Mrbr_UI_Bootstrap_Controls_SplitDropdown extends Mrbr_UI_Bootstrap_
         const self = this,
             button = self.elements[self.$cls.SPLIT_DROPDOWN_NAME];
         if (button && self.rootElement) {
-            self.classes(button, self.$clsActions.Remove, self.buttonColour);
-            self.classes(button, self.$clsActions.Add, value);
+            self.classes(button, self.$clsActions.remove, self.buttonColour);
+            self.classes(button, self.$clsActions.add, value);
         }
         super.buttonColour = value;
     }
@@ -29,13 +29,13 @@ export class Mrbr_UI_Bootstrap_Controls_SplitDropdown extends Mrbr_UI_Bootstrap_
         const self = this;
         let button = self.elements[self.$cls.SPLIT_DROPDOWN_NAME];
         if (button && self.rootElement) {
-            self.classes(button, self.$clsActions.Remove, self.buttonSize);
-            self.classes(button, self.$clsActions.Add, value);
+            self.classes(button, self.$clsActions.remove, self.buttonSize);
+            self.classes(button, self.$clsActions.add, value);
         }
         button = self.elements[self.$cls.SPLIT_MAIN_BUTTON_NAME];
         if (button && self.rootElement) {
-            self.classes(button, self.$clsActions.Remove, self.buttonSize);
-            self.classes(button, self.$clsActions.Add, value);
+            self.classes(button, self.$clsActions.remove, self.buttonSize);
+            self.classes(button, self.$clsActions.add, value);
         }
 
         super.buttonSize = value;
@@ -71,7 +71,7 @@ export class Mrbr_UI_Bootstrap_Controls_SplitDropdown extends Mrbr_UI_Bootstrap_
                 menuItemContainer = <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME, (self.menuStyle === Mrbr_UI_Bootstrap_Controls_Dropdown$MenuStyles.default ? "ul" : "div"), self.elementConfig.getConfig(self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME)));
             self.createElement(new self.$ctrlCfg(self.rootElementName, "div", self.elementConfig.getConfig(self.$cls.SPLIT_DROPDOWN_CONTAINER_NAME)
                 .Children([mainButton, splitButton, menuItemContainer])));
-            self.classes(mainButton, self.$clsActions.Remove, "dropdown-toggle")
+            self.classes(mainButton, self.$clsActions.remove, "dropdown-toggle")
             self.splitHiddenText = self._splitHiddenText;
             self.defaultContainerElementName = self.$cls.DROPDOWN_MENUITEM_CONTAINER_NAME;
             self.buttonText = super.buttonText;

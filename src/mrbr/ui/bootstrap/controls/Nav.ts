@@ -86,8 +86,8 @@ export class Mrbr_UI_Bootstrap_Controls_Nav extends Mrbr_UI_Controls_Control {
     public set navStyle(value: typeof Mrbr_UI_Bootstrap_Controls_Nav.navStyles[keyof typeof Mrbr_UI_Bootstrap_Controls_Nav.navStyles]) {
         const self = this;
         self.rootElement &&
-            self.classes(self.rootElement, self.$clsActions.Remove, self._navStyle) &&
-            self.classes(self.rootElement, self.$clsActions.Add, value);
+            self.classes(self.rootElement, self.$clsActions.remove, self._navStyle) &&
+            self.classes(self.rootElement, self.$clsActions.add, value);
         self._navStyle = value;
     }
 
@@ -102,8 +102,8 @@ export class Mrbr_UI_Bootstrap_Controls_Nav extends Mrbr_UI_Controls_Control {
     public set fillStyle(value: typeof Mrbr_UI_Bootstrap_Controls_Nav.fillStyles[keyof typeof Mrbr_UI_Bootstrap_Controls_Nav.fillStyles]) {
         const self = this;
         self.rootElement &&
-            self.classes(self.rootElement, self.$clsActions.Remove, self._fillStyle) &&
-            self.classes(self.rootElement, self.$clsActions.Add, value);
+            self.classes(self.rootElement, self.$clsActions.remove, self._fillStyle) &&
+            self.classes(self.rootElement, self.$clsActions.add, value);
         self._fillStyle = value;
     }
 
@@ -111,16 +111,16 @@ export class Mrbr_UI_Bootstrap_Controls_Nav extends Mrbr_UI_Controls_Control {
     public set justifyPosition(value: typeof Mrbr_UI_Bootstrap_Controls_Nav.justifyPositions[keyof typeof Mrbr_UI_Bootstrap_Controls_Nav.justifyPositions]) {
         const self = this;
         self.rootElement &&
-            self.classes(self.rootElement, self.$clsActions.Remove, self._justifyPosition) &&
-            self.classes(self.rootElement, self.$clsActions.Add, value);
+            self.classes(self.rootElement, self.$clsActions.remove, self._justifyPosition) &&
+            self.classes(self.rootElement, self.$clsActions.add, value);
         self._justifyPosition = value;
     }
     public get responseSize(): typeof Mrbr_UI_Bootstrap_Controls_Nav.responseSizes[keyof typeof Mrbr_UI_Bootstrap_Controls_Nav.responseSizes] { return this._responseSize; }
     public set responseSize(value: typeof Mrbr_UI_Bootstrap_Controls_Nav.responseSizes[keyof typeof Mrbr_UI_Bootstrap_Controls_Nav.responseSizes]) {
         const self = this;
         self.rootElement &&
-            self.classes(self.rootElement, self.$clsActions.Remove, self._responseSize) &&
-            self.classes(self.rootElement, self.$clsActions.Add, value);
+            self.classes(self.rootElement, self.$clsActions.remove, self._responseSize) &&
+            self.classes(self.rootElement, self.$clsActions.add, value);
         self.rootElement && self.rootElement.classList.toggle("flex-column", value !== Mrbr_UI_Bootstrap_Controls_Nav.responseSizes.default);
         self._responseSize = value;
     }

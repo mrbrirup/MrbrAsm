@@ -202,7 +202,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @readonly
      * @type {typeof Mrbr_UI_HTML_ElementTags}
      */
-    protected get $hmt(): typeof Mrbr_UI_HTML_ElementTags { return Mrbr_UI_HTML_ElementTags; }
+    protected get $htmlt(): typeof Mrbr_UI_HTML_ElementTags { return Mrbr_UI_HTML_ElementTags; }
 
 
     //#endregion Public Aliases
@@ -746,7 +746,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      */
     public assignElementConfig(element: HTMLElement, config: Mrbr_UI_Controls_ControlConfigOptionalParameters): void {
         element.id = config.id || this.$ctrl.createId(element.nodeName?.toLocaleLowerCase() || "element");
-        this.classes(element, this.$clsActions.Add, config.classes)
+        this.classes(element, this.$clsActions.add, config.classes)
         this.attributes(element, config.attributes)
         this.dataset(element, config.data)
         this.properties(element, config.properties)
@@ -811,39 +811,48 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
             targetElement.forEach(entry => returnElements.push(self.classes(entry, action, value, styleType)))
             return returnElements;
         }
-        const valueAsArray = (Array.isArray(value) ? value : [value]);
+        const valueAsArray = (Array.isArray(value) ? value : [value]),
+            styleCls = self.$styleCls,
+            removeIndex = 0,
+            addIndex = 1,
+            act = self.$clsActions;
         let _targetElement = (typeof targetElement === "string") ? self.elements.get(targetElement) : targetElement;
 
         switch (action) {
-            case self.$clsActions.Add:
-                valueAsArray.forEach(valueEntry => self.$styleCls.addClasses(_targetElement, valueEntry))
+            case act.add:
+                valueAsArray.forEach(valueEntry => styleCls.addClasses(_targetElement, valueEntry))
                 break;
-            case self.$clsActions.Clear:
-                Object.keys(styleType).forEach(key => self.$styleCls.removeClass(_targetElement, key))
+            case act.clear:
+                Object.keys(styleType).forEach(key => styleCls.removeClass(_targetElement, key))
                 break;
-            case self.$clsActions.Remove:
-                valueAsArray.forEach(valueEntry => self.$styleCls.removeClass(_targetElement, valueEntry))
+            case act.remove:
+                valueAsArray.forEach(valueEntry => styleCls.removeClass(_targetElement, valueEntry))
                 break;
-            case self.$clsActions.Toggle:
-                valueAsArray.forEach(valueEntry => self.$styleCls.toggleClass(_targetElement, valueEntry))
+            case act.toggle:
+                valueAsArray.forEach(valueEntry => styleCls.toggleClass(_targetElement, valueEntry))
                 break;
-            case self.$clsActions.Swap:
+            case act.swap:
                 if (valueAsArray.length !== 2) { throw new Error("Two values must be provided") }
                 let addClass, removeClass;
-                if (self.$styleCls.hasClass(_targetElement, valueAsArray[0]) === true) {
+                if (styleCls.hasClass(_targetElement, valueAsArray[0]) === true) {
                     addClass = valueAsArray[1]
                     removeClass = valueAsArray[0];
                 }
-                else if (self.$styleCls.hasClass(_targetElement, valueAsArray[1])) {
+                else if (styleCls.hasClass(_targetElement, valueAsArray[1])) {
                     addClass = valueAsArray[0];
                     removeClass = valueAsArray[1];
                 }
-                self.$styleCls.addClasses(_targetElement, addClass)
-                self.$styleCls.removeClass(_targetElement, removeClass)
+                styleCls.addClasses(_targetElement, addClass)
+                styleCls.removeClass(_targetElement, removeClass)
                 break;
-            case self.$clsActions.ReplaceAllWith:
-                Object.keys(styleType).forEach(key => self.$styleCls.removeClass(_targetElement, key))
-                valueAsArray.forEach(valueEntry => self.$styleCls.addClasses(_targetElement, valueEntry))
+            case act.replace:
+                if (valueAsArray.length !== 2) { throw new Error("Two values must be provided") }
+                styleCls.removeClass(_targetElement, valueAsArray[removeIndex])
+                styleCls.addClasses(_targetElement, valueAsArray[addIndex])
+                break;
+            case act.replaceAllWith:
+                Object.keys(styleType).forEach(key => styleCls.removeClass(_targetElement, key))
+                valueAsArray.forEach(valueEntry => styleCls.addClasses(_targetElement, valueEntry))
             default:
                 break;
         }
@@ -1215,8 +1224,8 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
         const currentTheme = theme;
         let toRemove = currentTheme === this.$ctrlTheme.dark ? element.dataset["lightTheme"] : element.dataset["darkTheme"],
             toAdd = currentTheme === this.$ctrlTheme.dark ? element.dataset["darkTheme"] : element.dataset["lightTheme"];
-        (toRemove && toRemove.length > 0) && (this.classes(element, this.$clsActions.Remove, toRemove));
-        (toAdd && toAdd.length > 0) && (this.classes(element, this.$clsActions.Add, toAdd));
+        (toRemove && toRemove.length > 0) && (this.classes(element, this.$clsActions.remove, toRemove));
+        (toAdd && toAdd.length > 0) && (this.classes(element, this.$clsActions.add, toAdd));
     }
 
     /**

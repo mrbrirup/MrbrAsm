@@ -129,8 +129,8 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Bootstrap_Controls
                 <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.ALERT_CLOSE_BUTTON_NAME, "button", self.elementConfig.getConfig(self.$cls.ALERT_CLOSE_BUTTON_NAME))),
             act = self.$clsActions;
         rootElement && alertButton && alertButton.parentElement !== rootElement && rootElement.appendChild(alertButton);
-        alertButton && self.classes(alertButton, value ? act.Remove : act.Add, display.none);
-        rootElement && self.classes(rootElement, value ? act.Add : act.Remove, "alert-dismissible fade show");
+        alertButton && self.classes(alertButton, value ? act.remove : act.add, display.none);
+        rootElement && self.classes(rootElement, value ? act.add : act.remove, "alert-dismissible fade show");
         this._showCloseButton = value;
     }
 
@@ -151,8 +151,8 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Bootstrap_Controls
             alertContexts = Mrbr_UI_Bootstrap_Controls_Alert$Contexts,
             rootElement = self.rootElement;
         if (rootElement) {
-            self.classes(rootElement, self.$clsActions.Remove, Object.keys(alertContexts).map(key => alertContexts[key]))
-            self.classes(rootElement, self.$clsActions.Add, value);
+            self.classes(rootElement, self.$clsActions.remove, Object.keys(alertContexts).map(key => alertContexts[key]))
+            self.classes(rootElement, self.$clsActions.add, value);
         }
         this._alertContext = value;
     }

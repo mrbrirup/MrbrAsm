@@ -207,7 +207,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroupTabs extends Mrbr_UI_Bootstrap_
         this._numberedList = value;
         let element = this.elements.get(this.$cls.TABS_LISTGROUP_NAME)
         if (!element) { return; }
-        this.classes(element, value ? act.Add : act.Remove, "list-group-numbered");
+        this.classes(element, value ? act.add : act.remove, "list-group-numbered");
     }
 
     //#endregion Public Properties
@@ -245,20 +245,20 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroupTabs extends Mrbr_UI_Bootstrap_
                     panesPanelId = self.$cls.createId("panesPanel"),
                     ctrlCfg = self.$ctrlCfg,
                     cls = self.$cls,
-                    listGroup = <HTMLElement>self.createElement(new ctrlCfg(cls.TABS_LISTGROUP_NAME, self.$hmt.div, self.elementConfig.getConfig(cls.TABS_LISTGROUP_NAME)
+                    listGroup = <HTMLElement>self.createElement(new ctrlCfg(cls.TABS_LISTGROUP_NAME, self.$htmlt.div, self.elementConfig.getConfig(cls.TABS_LISTGROUP_NAME)
                         .Id(listGroupId))),
-                    listGroupColumn = <HTMLElement>self.createElement(new ctrlCfg(cls.TABS_LISTGROUP_COLUMN_NAME, self.$hmt.div, self.elementConfig.getConfig(self.$cls.TABS_LISTGROUP_COLUMN_NAME)
+                    listGroupColumn = <HTMLElement>self.createElement(new ctrlCfg(cls.TABS_LISTGROUP_COLUMN_NAME, self.$htmlt.div, self.elementConfig.getConfig(self.$cls.TABS_LISTGROUP_COLUMN_NAME)
                         .Classes("col-4")
                         .Children([listGroup]),
                     )),
-                    panesPanel = <HTMLElement>self.createElement(new ctrlCfg(cls.TABS_PANES_NAME, self.$hmt.div, self.elementConfig.getConfig(self.$cls.TABS_PANES_NAME)
+                    panesPanel = <HTMLElement>self.createElement(new ctrlCfg(cls.TABS_PANES_NAME, self.$htmlt.div, self.elementConfig.getConfig(self.$cls.TABS_PANES_NAME)
                         .Id(panesPanelId)),
                     ),
-                    panesColumn = <HTMLElement>self.createElement(new ctrlCfg(cls.TABS_PANES_COLUMN_NAME, self.$hmt.div, self.elementConfig.getConfig(cls.TABS_PANES_COLUMN_NAME)
+                    panesColumn = <HTMLElement>self.createElement(new ctrlCfg(cls.TABS_PANES_COLUMN_NAME, self.$htmlt.div, self.elementConfig.getConfig(cls.TABS_PANES_COLUMN_NAME)
                         .Classes("col-8")
                         .Children([panesPanel]))
                     );
-                self.createElement(new ctrlCfg(self.rootElementName, self.$hmt.div, self.elementConfig.getConfig(cls.LISTGROUPTABS_CONTROL_NAME)
+                self.createElement(new ctrlCfg(self.rootElementName, self.$htmlt.div, self.elementConfig.getConfig(cls.LISTGROUPTABS_CONTROL_NAME)
                     .Children([listGroupColumn, panesColumn])))
                 self.numberedList = self._numberedList;
                 initalisePromise.resolve(self);
@@ -327,18 +327,18 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroupTabs extends Mrbr_UI_Bootstrap_
             ctrlCfg = this.$ctrlCfg,
 
             //this.properties(listItemText, { innerText: title, id: `${id}_text` });
-            listItemText = <HTMLElement>this.createElement(new ctrlCfg(tabName + "_text", this.$hmt.span, new this.$ctrlPrm()
+            listItemText = <HTMLElement>this.createElement(new ctrlCfg(tabName + "_text", this.$htmlt.span, new this.$ctrlPrm()
                 .Id(`${id}_text`)
                 .Properties({ innerText: title })
             )),
-            listItem = <HTMLElement>this.createElement(new ctrlCfg(tabName + "_tab", this.$hmt.anchor, this.elementConfig.getConfig(cls.TABS_LISTGROUP_ITEM_NAME)
+            listItem = <HTMLElement>this.createElement(new ctrlCfg(tabName + "_tab", this.$htmlt.anchor, this.elementConfig.getConfig(cls.TABS_LISTGROUP_ITEM_NAME)
                 .Id(tabId)
                 .Properties({ href: `#${tabPaneId}` })
                 .Aria({ controls: tabPaneId })
                 .Children([listItemText])
             )
             ),
-            pane = <HTMLElement>this.createElement(new ctrlCfg(`${tabName}_pane`, this.$hmt.div, this.elementConfig.getConfig(cls.TABS_PANE_ITEM_NAME)
+            pane = <HTMLElement>this.createElement(new ctrlCfg(`${tabName}_pane`, this.$htmlt.div, this.elementConfig.getConfig(cls.TABS_PANE_ITEM_NAME)
                 .Id(tabPaneId)
                 .Aria({ labelledby: tabId }))),
             tabPane = new this.$lgtp(listItem, pane);
@@ -392,7 +392,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroupTabs extends Mrbr_UI_Bootstrap_
         if (!listGroupItem) { return null; }
         Reflect.ownKeys(this.$lgcs).forEach(key => {
             const _style: string = this.$lgcs[key];
-            _style !== style ? this.classes(listGroupItem, act.Remove, _style) : this.classes(listGroupItem, act.Add, style);
+            _style !== style ? this.classes(listGroupItem, act.remove, _style) : this.classes(listGroupItem, act.add, style);
         });
         return listGroupItem;
     }
@@ -425,7 +425,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroupTabs extends Mrbr_UI_Bootstrap_
      */
     public setActiveTab(tabName: string): Mrbr_UI_Bootstrap_Controls_ListGroupTabPane {
         let activeTab: Mrbr_UI_Bootstrap_Controls_ListGroupTabPane,
-            add = this.$clsActions.Add;
+            add = this.$clsActions.add;
         if (this.tabPanes.has(tabName)) {
             activeTab = this.tabPanes.get(tabName);
             this.classes(activeTab.tab, add, "active");
@@ -524,7 +524,8 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroupTabs extends Mrbr_UI_Bootstrap_
      */
     private tabShow_handler(event: MouseEvent): void {
         event.stopPropagation();
-        let tabEvent = this.$lgtpes.show,
+        const
+            tabEvent = this.$lgtpes.show,
             currentTab = <HTMLElement>event.target,
             currentId = currentTab.dataset.mrbrId,
             previousTab = <HTMLElement>event.relatedTarget,

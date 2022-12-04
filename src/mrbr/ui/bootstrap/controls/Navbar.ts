@@ -75,16 +75,16 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar extends Mrbr_UI_Controls_Control 
     public set backgroundColour(value: typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundColours[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundColours]) {
         const self = this;
         self.rootElement &&
-            self.classes(self.rootElement, self.$clsActions.Remove, self._backgroundColour) &&
-            self.classes(self.rootElement, self.$clsActions.Add, value);
+            self.classes(self.rootElement, self.$clsActions.remove, self._backgroundColour) &&
+            self.classes(self.rootElement, self.$clsActions.add, value);
         self._backgroundColour = value;
     }
     public get expandSize(): typeof Mrbr_UI_Bootstrap_Controls_Navbar.expandSizes[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.expandSizes] { return this._expandSize; }
     public set expandSize(value: typeof Mrbr_UI_Bootstrap_Controls_Navbar.expandSizes[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.expandSizes]) {
         const self = this;
         self.rootElement &&
-            self.classes(self.rootElement, self.$clsActions.Remove, self._expandSize) &&
-            self.classes(self.rootElement, self.$clsActions.Add, value);
+            self.classes(self.rootElement, self.$clsActions.remove, self._expandSize) &&
+            self.classes(self.rootElement, self.$clsActions.add, value);
         self._expandSize = value;
     }
     public get backgroundVariant(): typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundVariants[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundVariants] {
@@ -93,8 +93,8 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar extends Mrbr_UI_Controls_Control 
     public set backgroundVariant(value: typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundVariants[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundVariants]) {
         const self = this;
         self.rootElement &&
-            self.classes(self.rootElement, self.$clsActions.Remove, self._backgroundVariant) &&
-            self.classes(self.rootElement, self.$clsActions.Add, value);
+            self.classes(self.rootElement, self.$clsActions.remove, self._backgroundVariant) &&
+            self.classes(self.rootElement, self.$clsActions.add, value);
         self._backgroundVariant = value;
     }
     public get placement(): typeof Mrbr_UI_Bootstrap_Controls_Navbar.placements[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.placements] {
@@ -103,8 +103,8 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar extends Mrbr_UI_Controls_Control 
     public set placement(value: typeof Mrbr_UI_Bootstrap_Controls_Navbar.placements[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.placements]) {
         const self = this;
         self.rootElement &&
-            self.classes(self.rootElement, self.$clsActions.Remove, self._placement) &&
-            self.classes(self.rootElement, self.$clsActions.Add, value);
+            self.classes(self.rootElement, self.$clsActions.remove, self._placement) &&
+            self.classes(self.rootElement, self.$clsActions.add, value);
         self._placement = value;
     }
     //#endregion Public Properties

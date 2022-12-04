@@ -199,12 +199,12 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
             if (linkNode) { currentCrumb.removeChild(linkNode); }
             this.aria(currentCrumb, { "current": "page" });
             currentCrumb.textContent = currentNode.value.crumbText;
-            this.classes(currentCrumb, this.$clsActions.Add, "active");
+            this.classes(currentCrumb, this.$clsActions.add, "active");
         }
         else {
             let currentCrumb: HTMLLIElement = <HTMLLIElement>this.elements.get(currentNode.key) || <HTMLLIElement>this.createElement(new this.$ctrlCfg(currentNode.key, "li", this.elementConfig.get(this.$cls.BREADCRUMB_ITEM_NAME)));
             let linkNode: HTMLAnchorElement = this.elements.get(currentNode.key).querySelector("a");
-            this.classes(currentCrumb, this.$clsActions.Remove, "active");
+            this.classes(currentCrumb, this.$clsActions.remove, "active");
             if (!linkNode) {
                 currentCrumb.textContent = "";
                 currentCrumb.removeAttribute("aria-current");

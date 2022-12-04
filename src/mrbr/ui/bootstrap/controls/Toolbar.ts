@@ -31,9 +31,9 @@ export class Mrbr_UI_Bootstrap_Controls_Toolbar extends Mrbr_UI_Controls_Control
             childrenLength = children.length || 0 as number;
         if (childrenLength <= 1) { return; }
         for (let childCounter = 0; childCounter < childrenLength - 1; childCounter++) {
-            self.classes(<HTMLElement>children[childCounter], self.$clsActions.Add, self.$cls.DIVIDER_CLASS);
+            self.classes(<HTMLElement>children[childCounter], self.$clsActions.add, self.$cls.DIVIDER_CLASS);
         }
-        self.classes(<HTMLElement>children[childrenLength - 1], self.$clsActions.Remove, self.$cls.DIVIDER_CLASS);
+        self.classes(<HTMLElement>children[childrenLength - 1], self.$clsActions.remove, self.$cls.DIVIDER_CLASS);
     }
     setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Toolbar> {
         const self = this;

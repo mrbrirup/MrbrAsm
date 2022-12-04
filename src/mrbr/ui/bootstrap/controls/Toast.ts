@@ -81,7 +81,7 @@ export class Mrbr_UI_Bootstrap_Controls_Toast extends Mrbr_UI_Controls_Control {
     public set showHeader(value: boolean) {
         const self = this;
         self._showHeader = value;
-        self.headerElement && self.classes(self.headerElement, value ? self.$clsActions.Remove : self.$clsActions.Add, "visually-hidden");
+        self.headerElement && self.classes(self.headerElement, value ? self.$clsActions.remove : self.$clsActions.add, "visually-hidden");
     }
     public get imageAltText(): string { return this._imageAltText; }
     public set imageAltText(value: string) {

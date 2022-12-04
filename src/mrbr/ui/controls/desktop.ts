@@ -17,7 +17,7 @@ export class Mrbr_UI_Controls_Desktop extends Mrbr_UI_Bootstrap_Containers_Conta
         self.sizing = Mrbr_UI_Bootstrap_Containers_Container$Breakpoints.fluid;
         //self.height = Mrbr_UI_Bootstrap_Utilities_Sizing$Height.viewHeight100;
         //self.width = Mrbr_UI_Bootstrap_Utilities_Sizing$Width.viewWidth100;
-        self.classes(self.rootElement, classActions.Add, ["container-fluid", "px-0", "d-flex", "flex-column"]);
+        self.classes(self.rootElement, classActions.add, ["container-fluid", "px-0", "d-flex", "flex-column"]);
         self.createElement(new Mrbr_UI_Controls_ControlConfig("windowContainer", "div",
             new Mrbr_UI_Controls_ControlConfigOptionalParameters()
                 .Classes(["h-100", "w-100", "overflow-hidden"])

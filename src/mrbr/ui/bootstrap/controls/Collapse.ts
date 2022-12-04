@@ -224,7 +224,7 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Bootstrap_Contr
         this._startOpen = value;
         if ((this.targetElements?.length || 0) === 0) { return; }
         this.aria(targetElements, { "expanded": value ? value : this.$cls.DELETE });
-        this.classes(targetElements, value ? act.Add : act.Remove, "show");
+        this.classes(targetElements, value ? act.add : act.remove, "show");
     }
 
     /**
@@ -313,8 +313,8 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Bootstrap_Contr
             root = this.rootElement,
             act = this.$clsActions;
         root &&
-            this.classes(root, act.Remove, this._buttonStyleClass) &&
-            this.classes(root, act.Add, value)
+            this.classes(root, act.remove, this._buttonStyleClass) &&
+            this.classes(root, act.add, value)
         this._buttonStyleClass = value;
     }
 
@@ -372,7 +372,7 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Bootstrap_Contr
                 this.dataset(root, { bsTarget: ".multi-collapse" });
                 this.aria(root, { controls: controlIds })
             };
-            this.classes(targetElements, this.$clsActions.Add, "multi-collapse");
+            this.classes(targetElements, this.$clsActions.add, "multi-collapse");
         }
         else {
             root && this.dataset(root, { bsTarget: controlIds });
@@ -392,7 +392,7 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Bootstrap_Contr
      * Collapse Horizontally instead of Vertically
      */
     public set horizontal(value: boolean) {
-        this.targetElements && this.classes(this.targetElements, value ? this.$clsActions.Add : this.$clsActions.Remove, "collapse-horizontal");
+        this.targetElements && this.classes(this.targetElements, value ? this.$clsActions.add : this.$clsActions.remove, "collapse-horizontal");
         this._horizontal = value;
     }
 

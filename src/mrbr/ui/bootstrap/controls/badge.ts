@@ -159,8 +159,8 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
      * Sets the shape of the badge.
      */
     public set badgeShape(value: Mrbr_UI_Bootstrap_Controls_Badge$Shape) {
-        this.classes(this.rootElement, this.$clsActions.Remove, this._badgeShape);
-        this.classes(this.rootElement, this.$clsActions.Add, value);
+        this.classes(this.rootElement, this.$clsActions.remove, this._badgeShape);
+        this.classes(this.rootElement, this.$clsActions.add, value);
         this._badgeShape = value;
     }
 
@@ -178,8 +178,8 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
      */
     public set badgeClasses(value: string | string[]) {
         if (!value) { return; }
-        this.classes(this.rootElement, this.$clsActions.Remove, this.badgeClasses);
-        this.classes(this.rootElement, this.$clsActions.Add, value);
+        this.classes(this.rootElement, this.$clsActions.remove, this.badgeClasses);
+        this.classes(this.rootElement, this.$clsActions.add, value);
         this._badgeClasses = (typeof value === "string") ? value.split(" ").map(_class => _class.trim()) : value;
     }
 
@@ -237,9 +237,9 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
      */
     public set badgePosition(value: Mrbr_UI_Bootstrap_Controls_Badge$Position) {
         const self = this;
-        self.classes(self.rootElement, self.$clsActions.Remove,
+        self.classes(self.rootElement, self.$clsActions.remove,
             Array.from(new Set(Object.keys(self.$badgePosition).map(_key => self.$badgePosition[_key].split(" ").map(_class => _class.trim())).flat(3))));
-        (self.badgePosition === self.$badgePosition.none) && (self.classes(self.rootElement, self.$clsActions.Add, value));
+        (self.badgePosition === self.$badgePosition.none) && (self.classes(self.rootElement, self.$clsActions.add, value));
         self._badgePosition = value;
     }
     //#endregion Public Properties
@@ -290,7 +290,7 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
     public override mount(parent: HTMLElement, position: Mrbr_UI_Controls_MountPosition = Mrbr_UI_Controls_MountPosition.append, ...args: any): Mrbr_UI_Bootstrap_Controls_Badge {
         super.mount(parent, position, args);
         this.hasRelativePosition = parent.classList.contains(this.$cls.positionRelativeClass);
-        this.classes(parent, this.$clsActions.Add, this.$cls.positionRelativeClass);
+        this.classes(parent, this.$clsActions.add, this.$cls.positionRelativeClass);
         return this;
     }
 
@@ -328,7 +328,7 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
      * @override
      */
     public override dispose() {
-        !this.hasRelativePosition && this.classes(this.rootElement.parentElement, this.$clsActions.Remove, this.$cls.positionRelativeClass);
+        !this.hasRelativePosition && this.classes(this.rootElement.parentElement, this.$clsActions.remove, this.$cls.positionRelativeClass);
         super.dispose();
     }
 }

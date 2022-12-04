@@ -17,7 +17,7 @@ export class Mrbr_UI_Bootstrap_Navigation_NavBar_NavBar extends Mrbr_UI_Controls
             navStyles.navbarDark,
             bgStyles.dark
         ];
-        this.classes(navbar, Mrbr_UI_Controls_ClassActions.Add, styles)
+        this.classes(navbar, Mrbr_UI_Controls_ClassActions.add, styles)
         document.body.appendChild(self.rootElement);
     }
 }

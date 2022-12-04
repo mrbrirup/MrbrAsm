@@ -143,7 +143,7 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
             elements = this.elements,
             accordionName = this.$cls.ACCORDION_NAME,
             flushClass = "accordion-flush";
-        ((elements[accordionName]) && flush) && (this.classes((<HTMLHeadingElement>elements[accordionName]), (flush ? this.$clsActions.Add : this.$clsActions.Remove), flushClass));
+        ((elements[accordionName]) && flush) && (this.classes((<HTMLHeadingElement>elements[accordionName]), (flush ? this.$clsActions.add : this.$clsActions.remove), flushClass));
         this._flush = flush;
     }
     //#endregion Public Properties

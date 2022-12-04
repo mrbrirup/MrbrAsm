@@ -22,7 +22,7 @@ export class Mrbr_Tests_Application$Container extends Mrbr_UI_Controls_Control {
                 self.controls.set(container.rootElementName, container)
                 container.sizing = self.$mubcc$bp.sm;
                 container.mount(targetElement);
-                self.classes(container.rootElement, self.$clsActions.Add, "h-100");
+                self.classes(container.rootElement, self.$clsActions.add, "h-100");
 
                 setTimeout(() => { self.changeToBlue(); }, 5000);
                 setTimeout(() => { container.sizing = self.$mubcc$bp.lg }, 6000);

@@ -297,7 +297,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
         (this.horizontal !== this.$lghs.none) && Array.from(this.elements.map.keys()).forEach((key) => {
             const element = this.elements.get(key);
             if (element && element.dataset.mrbrListItemType === this.$cls.LISTGROUP_ITEM_DATATYPE) {
-                this.classes(element, value ? this.$clsActions.Add : this.$clsActions.Remove, this.$cls.LISTGROUP_FLEX_FILL);
+                this.classes(element, value ? this.$clsActions.add : this.$clsActions.remove, this.$cls.LISTGROUP_FLEX_FILL);
             }
         });
     }
@@ -315,7 +315,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
      * Display ListGroup in Flush Style
      */
     public set flush(value: boolean) {
-        this.classes(this.rootElement, value ? this.$clsActions.Add : this.$clsActions.Remove, this.$cls.LISTGROUP_FLUSH);
+        this.classes(this.rootElement, value ? this.$clsActions.add : this.$clsActions.remove, this.$cls.LISTGROUP_FLUSH);
         this._flush = value;
     }
 
@@ -333,7 +333,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
      */
     public set horizontal(value: Mrbr_UI_Bootstrap_Controls_ListGroup$HorizontalStyles) {
         const root = this.rootElement;
-        root && (this.classes(root, this.$clsActions.Remove, this._horizontal)) && this.classes(root, this.$clsActions.Add, value);
+        root && (this.classes(root, this.$clsActions.remove, this._horizontal)) && this.classes(root, this.$clsActions.add, value);
         this._horizontal = value;
         this.equalWidth = this._equalWidth;
     }
@@ -352,7 +352,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
      */
     public set numberedList(value: boolean) {
         this._numberedList = value;
-        this.classes(this.rootElement, value ? this.$clsActions.Add : this.$clsActions.Remove, this.$cls.LISTGROUP_NUMBERED);
+        this.classes(this.rootElement, value ? this.$clsActions.add : this.$clsActions.remove, this.$cls.LISTGROUP_NUMBERED);
     }
 
     /**
@@ -380,7 +380,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
         super.initialise(args).then(async _ => {
             await self.loadManifest(self.$cls);
             await self.setDefaultConfig();
-            self.createElement(new self.$ctrlCfg(self.rootElementName, self.orderedList === true ? self.$hmt.olist : self.$hmt.ulist, this.elementConfig.getConfig(self.$cls.LISTGROUP_NAME)));
+            self.createElement(new self.$ctrlCfg(self.rootElementName, self.orderedList === true ? self.$htmlt.olist : self.$htmlt.ulist, this.elementConfig.getConfig(self.$cls.LISTGROUP_NAME)));
             self.flush = self.flush;
             self.numberedList = self.numberedList;
             self.horizontal = self.horizontal;
@@ -522,7 +522,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
             badgedItem: HTMLElement = <HTMLElement>this.createElement(new ctrlCfg(`${id}_badge`, "span", this.elementConfig.getConfig(cls.LISTGROUP_ITEM_BADGE_NAME))),
             returnValue = new this.$lib(listGroupItem, textItem, badgedItem);
         this.customContentContainerItem(listGroupItem, true);
-        this.classes(textItem, this.$clsActions.Add, "ms-2 me-auto");
+        this.classes(textItem, this.$clsActions.add, "ms-2 me-auto");
         listGroupItem.appendChild(textItem)
         listGroupItem.appendChild(badgedItem)
         textItem.innerText = text;
@@ -558,7 +558,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
      */
     public customContentContainerItem(element: string | HTMLElement, customContentContainer: boolean, defaultText?: string): HTMLElement {
         const listGroupItem: HTMLElement = typeof element === "string" ? this.elements.get(element) : element;
-        (listGroupItem) && this.classes(listGroupItem, customContentContainer ? this.$clsActions.Add : this.$clsActions.Remove, "d-flex justify-content-between align-items-start");
+        (listGroupItem) && this.classes(listGroupItem, customContentContainer ? this.$clsActions.add : this.$clsActions.remove, "d-flex justify-content-between align-items-start");
         (listGroupItem && defaultText) && (listGroupItem.innerText = defaultText);
         return listGroupItem;
     }
@@ -575,10 +575,10 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
         const listGroupItem: HTMLElement = typeof element === "string" ? this.elements.get(element) : element;
         Array.from(this.elements.keys()).forEach(key => {
             const _element: HTMLElement = this.elements.get(key as string);
-            _element.dataset?.mrbrListItemType === this.$cls.LISTGROUP_ITEM_DATATYPE && this.classes(_element, this.$clsActions.Remove, "active");
+            _element.dataset?.mrbrListItemType === this.$cls.LISTGROUP_ITEM_DATATYPE && this.classes(_element, this.$clsActions.remove, "active");
             this.aria(_element, { "current": this.$cls.DELETE });
         });
-        (listGroupItem) && this.classes(listGroupItem, this.$clsActions.Add, "active") && this.aria(listGroupItem, { "current": true });
+        (listGroupItem) && this.classes(listGroupItem, this.$clsActions.add, "active") && this.aria(listGroupItem, { "current": true });
         return listGroupItem;
     }
 
@@ -592,7 +592,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
      */
     public disableItem(element: string | HTMLElement): HTMLElement {
         const listGroupItem: HTMLElement = typeof element === "string" ? this.elements.get(element) : element;
-        (listGroupItem) && this.classes(listGroupItem, this.$clsActions.Add, "disabled") && this.aria(listGroupItem, { "disabled": true });
+        (listGroupItem) && this.classes(listGroupItem, this.$clsActions.add, "disabled") && this.aria(listGroupItem, { "disabled": true });
         return listGroupItem;
     }
 
@@ -606,7 +606,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
      */
     public enableItem(element: string | HTMLElement): HTMLElement {
         const listGroupItem: HTMLElement = typeof element === "string" ? this.elements.get(element) : element;
-        (listGroupItem) && this.classes(listGroupItem, this.$clsActions.Remove, "disabled") && this.aria(listGroupItem, { "disabled": this.$cls.DELETE });
+        (listGroupItem) && this.classes(listGroupItem, this.$clsActions.remove, "disabled") && this.aria(listGroupItem, { "disabled": this.$cls.DELETE });
         return listGroupItem;
     }
 
@@ -621,7 +621,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
      */
     public setItemActionState(element: string | HTMLElement, actionable: boolean): HTMLElement {
         const listGroupItem: HTMLElement = typeof element === "string" ? this.elements.get(element) : element;
-        (listGroupItem) && this.classes(listGroupItem, actionable ? this.$clsActions.Add : this.$clsActions.Remove, "list-group-item-action");
+        (listGroupItem) && this.classes(listGroupItem, actionable ? this.$clsActions.add : this.$clsActions.remove, "list-group-item-action");
         return listGroupItem;
     }
 
@@ -638,9 +638,9 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
         const listGroupItem: HTMLElement = typeof element === "string" ? this.elements.get(element) : element;
         Reflect.ownKeys(this.$lgcs).forEach(key => {
             const _style: string = this.$lgcs[key as keyof typeof this.$lgcs];
-            (listGroupItem) && this.classes(listGroupItem, this.$clsActions.Remove, _style);
+            (listGroupItem) && this.classes(listGroupItem, this.$clsActions.remove, _style);
         });
-        (listGroupItem) && this.classes(listGroupItem, this.$clsActions.Add, style);
+        (listGroupItem) && this.classes(listGroupItem, this.$clsActions.add, style);
         return listGroupItem;
     }
 

@@ -135,7 +135,7 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
         const self = this,
             ctrlCfg = Mrbr_UI_Controls_ControlConfig;
         if (self.elements[name] && self.elements[name].classList.contains("d-none")) {
-            self.classes(self.elements[name], Mrbr_UI_Controls_ClassActions.Remove, "d-none")
+            self.classes(self.elements[name], Mrbr_UI_Controls_ClassActions.remove, "d-none")
             return;
         }
         const controlBoxControl: ControlBoxControl = self.controlBoxControls[name],
@@ -160,7 +160,7 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
     removeControlButton(name: string) {
         const self = this;
         if (self.elements[name]) {
-            self.classes(self.elements[name], Mrbr_UI_Controls_ClassActions.Add, "d-none")
+            self.classes(self.elements[name], Mrbr_UI_Controls_ClassActions.add, "d-none")
         }
     }
 
@@ -220,7 +220,7 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
             case states.FullScreen:
                 if (self.elements["fullscreen"]) { self.attributes(self.elements["fullscreen_image"], { src: `${rootPath}mrbr/images/forms/fullscreenRestore.svg` }); }
                 setTimeout(() => {
-                    if (self.elements["maximise"]) { self.classes(self.elements["maximise"], classActions.Add, "d-none"); }
+                    if (self.elements["maximise"]) { self.classes(self.elements["maximise"], classActions.add, "d-none"); }
                 }, 0);
                 break;
             case states.Maximised:
@@ -232,8 +232,8 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
                 if (self.elements["maximise"]) { self.attributes(self.elements["maximise_image"], { src: `${rootPath}mrbr/images/forms/maximise.svg` }); }
                 if (self.elements["fullscreen"]) { self.attributes(self.elements["fullscreen_image"], { src: `${rootPath}mrbr/images/forms/fullscreen.svg` }); }
                 setTimeout(() => {
-                    if (self.elements["maximise"]) { self.classes(self.elements["maximise"], classActions.Remove, "d-none"); }
-                    if (self.elements["fullscreen"]) { self.classes(self.elements["fullscreen"], classActions.Remove, "d-none"); }
+                    if (self.elements["maximise"]) { self.classes(self.elements["maximise"], classActions.remove, "d-none"); }
+                    if (self.elements["fullscreen"]) { self.classes(self.elements["fullscreen"], classActions.remove, "d-none"); }
                 }, 0);
                 break;
         }

@@ -411,14 +411,14 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
         //self.initialise();
         self.parentElement.appendChild(self.rootElement);
         self.drawDialog();
-        self.classes(this.rootElement, Mrbr_UI_Controls_ClassActions.Remove, "d-none")
+        self.classes(this.rootElement, Mrbr_UI_Controls_ClassActions.remove, "d-none")
     }
     showDialog() {
         const self = this;
         //await self.initialise()
         self.parentElement.appendChild(self.rootElement);
         self.drawDialog();
-        self.classes(this.rootElement, Mrbr_UI_Controls_ClassActions.Remove, "d-none")
+        self.classes(this.rootElement, Mrbr_UI_Controls_ClassActions.remove, "d-none")
     }
     public get parentBounds(): Mrbr_Geometry_Bounds2d {
         return this._parentBounds;
@@ -527,7 +527,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     }
     public set controlBox(value: boolean) {
         this._controlBox = value;
-        let action = value ? Mrbr_UI_Controls_ClassActions.Remove : Mrbr_UI_Controls_ClassActions.Add;
+        let action = value ? Mrbr_UI_Controls_ClassActions.remove : Mrbr_UI_Controls_ClassActions.add;
         if (this.controls[(<typeof Mrbr_UI_Bootstrap_Forms_Dialog>this.constructor).CONTROL_BOX_CONTROL_NAME]) {
             this.classes(
                 (<Mrbr_UI_Bootstrap_Forms_ControlBox>this.controls[(<typeof Mrbr_UI_Bootstrap_Forms_Dialog>this.constructor).CONTROL_BOX_CONTROL_NAME]).rootElement,

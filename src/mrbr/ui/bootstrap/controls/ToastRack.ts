@@ -42,7 +42,7 @@ export class Mrbr_UI_Bootstrap_Controls_ToastRack extends Mrbr_UI_Controls_Contr
     public set placement(value: Mrbr_UI_Bootstrap_Controls_Toast$Placements) {
         const self = this;
         self._placement = value;
-        self.defaultContainerElement && value && self.classes(<HTMLElement>self.defaultContainerElement, this.$clsActions.Add, [value, "toast-container"]);
+        self.defaultContainerElement && value && self.classes(<HTMLElement>self.defaultContainerElement, this.$clsActions.add, [value, "toast-container"]);
     }
 
 

@@ -605,7 +605,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Bootstrap_Contr
                             indicator = <HTMLElement>this.createElement(new this.$ctrlCfg(indicatorId, "button", indicatorConfig
                                 .Data({ bsTarget: bsTarget, bsSlideTo: indicatorCount })
                                 .Aria({ label: item.slideName, current: isActive ? "true" : "false" })));
-                        (isActive) && this.classes(indicator, this.$clsActions.Add, "active");
+                        (isActive) && this.classes(indicator, this.$clsActions.add, "active");
                         indicatorCount++;
                         return indicator;
                     });
@@ -673,7 +673,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Bootstrap_Contr
      * Use CrossFade Animation
      */
     public set useCrossFade(value: boolean) {
-        (this.rootElement) && (this.classes(this.rootElement, value ? this.$clsActions.Add : this.$clsActions.Remove, "carousel-fade"));
+        (this.rootElement) && (this.classes(this.rootElement, value ? this.$clsActions.add : this.$clsActions.remove, "carousel-fade"));
         this._useCrossFade = value;
     }
 
@@ -707,7 +707,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Bootstrap_Contr
      * Use Dark/White Variant
      */
     public set darkVariant(value: boolean) {
-        (this.rootElement) && (this.classes(this.rootElement, value ? this.$clsActions.Add : this.$clsActions.Remove, "carousel-dark"));
+        (this.rootElement) && (this.classes(this.rootElement, value ? this.$clsActions.add : this.$clsActions.remove, "carousel-dark"));
         this._darkVariant = value;
     }
 
@@ -743,7 +743,7 @@ export class Mrbr_UI_Bootstrap_Controls_Carousel extends Mrbr_UI_Bootstrap_Contr
             return this.setActiveItem(item);
         }
         const act = this.$clsActions
-        this.carouselItems.forEach((value, key) => this.classes(value.container, value.id === (item as carouselItemType).id ? act.Add : act.Remove, "active"));
+        this.carouselItems.forEach((value, key) => this.classes(value.container, value.id === (item as carouselItemType).id ? act.add : act.remove, "active"));
         return this;
 
     }

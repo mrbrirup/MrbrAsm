@@ -84,11 +84,11 @@ export class Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu extends Mrbr_UI_Control
     set menuId(value: string) { this._menuId = value; }
     show() {
         this._backdrop = document.createElement("div");
-        this.classes(this._backdrop, Mrbr_UI_Controls_ClassActions.Add, "modal-backdrop fade show");
+        this.classes(this._backdrop, Mrbr_UI_Controls_ClassActions.add, "modal-backdrop fade show");
         document.body.appendChild(this._backdrop);
     }
     hide() {
-        this.classes(this._backdrop, Mrbr_UI_Controls_ClassActions.Swap, ["show", "hide"]);
+        this.classes(this._backdrop, Mrbr_UI_Controls_ClassActions.swap, ["show", "hide"]);
     }
     dispose() {
         document.body.removeChild(this._backdrop);

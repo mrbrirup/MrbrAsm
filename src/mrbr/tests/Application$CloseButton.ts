@@ -14,7 +14,7 @@ export class Mrbr_Tests_Application$CloseButton {
         let div = document.createElement("div");
         div.id = "button1";
         div.style.backgroundColor = "blue";
-        button.classes(div, button.$clsActions.Add, "p-3 m-3");
+        button.classes(div, button.$clsActions.add, "p-3 m-3");
         Promise.all([button.initialise(), button2.initialise()])
             .then(_ => {
                 button.onClick(self.buttonClick.bind(self));

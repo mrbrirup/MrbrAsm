@@ -75,7 +75,7 @@ export class Mrbr_UI_Bootstrap_Controls_CloseButton extends Mrbr_UI_Controls_Con
         const
             root = this.rootElement,
             act = this.$clsActions;
-        root && this.classes(root, value ? act.Add : act.Remove, "btn-close-white");
+        root && this.classes(root, value ? act.add : act.remove, "btn-close-white");
         this._whiteVariant = value;
     }
 

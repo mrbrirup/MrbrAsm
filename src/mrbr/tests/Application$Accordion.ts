@@ -39,7 +39,7 @@ export class Mrbr_Tests_Application$Accordion extends Mrbr_UI_Controls_Control {
                 container = self.controls.get("container") as Mrbr_UI_Bootstrap_Containers_Container,
                 accordion = self.controls.get("accordion") as Mrbr_UI_Bootstrap_Controls_Accordion;
             self.createContent();
-            self.classes(container.rootElement, self.$clsActions.Add, "h-100");
+            self.classes(container.rootElement, self.$clsActions.add, "h-100");
             container.sizing = self.$mubcc$bp.md;
             container.defaultContainerElement.appendChild(self.elements.get("contentDiv"));
             accordion.mount(container);

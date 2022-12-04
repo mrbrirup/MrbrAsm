@@ -472,7 +472,7 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Bootstrap_Controls_
                         imageProperties: imagePropertiesType = self._cardImageProperties as imagePropertiesType,
                         overlayBody = self.createBody(self.$cls.CARD_BODY_NAME),
                         overlayImage = self.createImage(self.$cls.CARD_IMAGE_NAME, self.imageLocation, imageProperties?.src || "", imageProperties?.alt || "");
-                    self.classes(overlayBody, self.$clsActions.Add, "card-img-overlay")
+                    self.classes(overlayBody, self.$clsActions.add, "card-img-overlay")
                     elements.push(overlayImage, overlayBody);
                     break;
                 case self.$cls.cardStyles.horizontal:

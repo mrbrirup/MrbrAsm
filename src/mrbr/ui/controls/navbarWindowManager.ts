@@ -20,7 +20,7 @@ export class Mrbr_UI_Controls_NavbarWindowManager extends Mrbr_UI_Bootstrap_Navi
         this.menuButton = document.createElement("button");
         //this.style.addClasses(this.menuButton,"navbar-toggler")
 
-        this.classes(this.menuButton, Mrbr_UI_Controls_ClassActions.Add, ["btn",
+        this.classes(this.menuButton, Mrbr_UI_Controls_ClassActions.add, ["btn",
             "btn-primary",
             "mx-1"]);
         this.menuButton.appendChild(this.menuImage);

@@ -43,7 +43,7 @@ export class Mrbr_Tests_Application$Card {
                 body1.prepend(header1);
                 body1.appendChild(text1);
                 text1.classList.add("p-3");
-                card1.classes(card1.rootElement, card1.$clsActions.Add, "text-bg-primary");
+                card1.classes(card1.rootElement, card1.$clsActions.add, "text-bg-primary");
                 card1.mount(document.body);
                 card1.rootElement.classList.add("m-3");
             })
