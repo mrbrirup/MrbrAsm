@@ -1019,23 +1019,26 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @date 31/10/2022 - 14:27:34
      *
      * @public
-     * @param {HTMLElement} element
+     * @param {HTMLElement} hostElement
      * @param {("replace" | "prepend" | "before" | "after" | "append")} [position="append"]
      * @param {...*} args
      * @returns {Mrbr_UI_Controls_IControl}
      */
-    public mount(element: HTMLElement | Mrbr_UI_Controls_Control | string, position: Mrbr_UI_Controls_MountPosition = Mrbr_UI_Controls_MountPosition.append, ...args: any): Mrbr_UI_Controls_IControl {
-        if (typeof element === "string") { element = document.getElementById(element); }
-        else if (element instanceof Mrbr_UI_Controls_Control) { element = element.defaultContainerElement || element.rootElement; }
-        if (!element) { throw new Error("Element not found"); }
+    public mount(hostElement: HTMLElement | Mrbr_UI_Controls_Control | string, position: Mrbr_UI_Controls_MountPosition = Mrbr_UI_Controls_MountPosition.append, mountingElement: HTMLElement | Mrbr_UI_Controls_Control = null, ...args: any): Mrbr_UI_Controls_IControl {
+        if (typeof hostElement === "string") { hostElement = document.getElementById(hostElement); }
+        else if (hostElement instanceof Mrbr_UI_Controls_Control) { hostElement = hostElement.defaultContainerElement || hostElement.rootElement; }
+        if (!hostElement) { throw new Error("Element not found"); }
         const id = this.rootElement.id;
         this.addMountHandler(id);
+        let _mountingElement: HTMLElement;
+        if (mountingElement) { _mountingElement = (mountingElement instanceof Mrbr_UI_Controls_Control) ? mountingElement.rootElement : mountingElement; }
+        else { _mountingElement = this.rootElement; }
         switch (position) {
-            case "append": element.appendChild(this.rootElement); break;
-            case "before": element.before(this.rootElement); break;
-            case "after": element.after(this.rootElement); break;
-            case "prepend": element.prepend(this.rootElement); break;
-            case "replace": element.replaceWith(this.rootElement); break;
+            case "append": hostElement.appendChild(_mountingElement); break;
+            case "before": hostElement.before(_mountingElement); break;
+            case "after": hostElement.after(_mountingElement); break;
+            case "prepend": hostElement.prepend(_mountingElement); break;
+            case "replace": hostElement.replaceWith(_mountingElement); break;
         }
         return this;
 

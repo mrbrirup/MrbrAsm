@@ -231,8 +231,9 @@ export class Mrbr_UI_Bootstrap_Controls_OffCanvas extends Mrbr_UI_Bootstrap_Cont
      * @constructor
      * @param {string} rootElementName
      */
-    constructor(rootElementName: string) {
+    constructor(rootElementName?: string) {
         super(rootElementName);
+        this.name = this.rootElementName;
     }
 
     //#region Protected OffCanvas Ids
@@ -569,5 +570,6 @@ export class Mrbr_UI_Bootstrap_Controls_OffCanvas extends Mrbr_UI_Bootstrap_Cont
             );
         return setDefaultConfigPromise;
     }
+
     //#endregion Public Methods
 }
