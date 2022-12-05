@@ -6,11 +6,11 @@ import { Mrbr_UI_Bootstrap_Controls_INavbarControls } from "./INavbarControls";
 import { Mrbr_UI_Bootstrap_Controls_Navbar } from "./Navbar";
 
 
-export class Mrbr_UI_Bootstrap_Controls_Navbar$Toggler extends Mrbr_UI_Controls_Control implements Mrbr_UI_Bootstrap_Controls_INavbarControls {
+export class Mrbr_UI_Bootstrap_Controls_NavbarToggler extends Mrbr_UI_Controls_Control implements Mrbr_UI_Bootstrap_Controls_INavbarControls {
     private static _navbar_toggler_config: Mrbr_UI_Controls_ControlConfigOptionalParameters
     private static _navbar_toggler_collapse_config: Mrbr_UI_Controls_ControlConfigOptionalParameters;
     public static get NAVBAR_TOGGLER_CONFIG(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        const cls = Mrbr_UI_Bootstrap_Controls_Navbar$Toggler;
+        const cls = Mrbr_UI_Bootstrap_Controls_NavbarToggler;
         (!cls._navbar_toggler_config) && (cls._navbar_toggler_config = new Mrbr_UI_Controls_ControlConfigOptionalParameters()
             .Classes("navbar-toggler")
             .Properties({ type: "button" })
@@ -22,7 +22,7 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$Toggler extends Mrbr_UI_Controls_
     }
 
     public static get NAVBAR_TOGGLER_COLLAPSE_CONFIG(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        const cls = Mrbr_UI_Bootstrap_Controls_Navbar$Toggler;
+        const cls = Mrbr_UI_Bootstrap_Controls_NavbarToggler;
         (!cls._navbar_toggler_collapse_config) && (cls._navbar_toggler_collapse_config = new Mrbr_UI_Controls_ControlConfigOptionalParameters()
             .Classes("collapse navbar-collapse"));
         return Object.assign(new Mrbr_UI_Controls_ControlConfigOptionalParameters(), cls._navbar_toggler_collapse_config);
@@ -60,7 +60,7 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$Toggler extends Mrbr_UI_Controls_
             initialisePromise = self.$promise.create("initialise");
         super.initialise(args)
             .then(() => {
-                self.$mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar$Toggler[MrbrBase.MANIFEST])
+                self.$mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_NavbarToggler[MrbrBase.MANIFEST])
                     .then(() => {
                         initialisePromise.resolve(self);
                     })
@@ -73,9 +73,9 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$Toggler extends Mrbr_UI_Controls_
 
 
 
-    public build(hostNavbar: Mrbr_UI_Bootstrap_Controls_Navbar, hostElement: HTMLElement = hostNavbar.defaultContainerElement): Mrbr_UI_Bootstrap_Controls_Navbar$Toggler {
+    public build(hostNavbar: Mrbr_UI_Bootstrap_Controls_Navbar, hostElement: HTMLElement = hostNavbar.defaultContainerElement): Mrbr_UI_Bootstrap_Controls_NavbarToggler {
 
-        const cls = Mrbr_UI_Bootstrap_Controls_Navbar$Toggler,
+        const cls = Mrbr_UI_Bootstrap_Controls_NavbarToggler,
             self = this,
             id = hostNavbar.$cls.createId(self.name),
             togglerId = `${id}_toggler`,

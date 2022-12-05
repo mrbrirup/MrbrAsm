@@ -1,12 +1,16 @@
 import { MrbrBase } from "../../../system/MrbrBase";
 import { Mrbr_System_Promise } from "../../../system/Promise";
-import { Mrbr_UI_Controls_Control } from "../../controls/Control";
+import { Mrbr_UI_Bootstrap_Utilities_Backgrounds } from "../utilities/backgrounds";
+import { Mrbr_UI_Bootstrap_Controls_BootstrapControl } from "./BootstrapControl";
 import { Mrbr_UI_Bootstrap_Controls_INavbarControls } from "./INavbarControls";
-import { Mrbr_UI_Bootstrap_Controls_Navbar$Brand } from "./Navbar$Brand";
-import { Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas } from "./Navbar$OffCanvas";
-import { Mrbr_UI_Bootstrap_Controls_Navbar$Toggler } from "./Navbar$Toggler";
+import { Mrbr_UI_Bootstrap_Controls_NavbarBrand } from "./NavbarBrand";
+import { Mrbr_UI_Bootstrap_Controls_NavbarOffCanvas } from "./NavbarOffCanvas";
+import { Mrbr_UI_Bootstrap_Controls_NavbarToggler } from "./NavbarToggler";
+import { Mrbr_UI_Bootstrap_Controls_NavbarBackgroundVariants } from "./NavbarBackgroundVariants";
+import { Mrbr_UI_Bootstrap_Controls_NavbarExpandSizes } from "./NavBarExpandSizes";
+import { Mrbr_UI_Bootstrap_Controls_NavbarPlacements } from "./NavbarPlacements";
 
-export class Mrbr_UI_Bootstrap_Controls_Navbar extends Mrbr_UI_Controls_Control {
+export class Mrbr_UI_Bootstrap_Controls_Navbar extends Mrbr_UI_Bootstrap_Controls_BootstrapControl {
     //#region Private Static Fields
     public static readonly NAVBAR_NAME: string = "navbar";
     public static readonly NAVBAR_CONTAINER_NAME: string = "navbar_container";
@@ -14,151 +18,115 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar extends Mrbr_UI_Controls_Control 
     public static readonly NAVBAR_BRAND_NAME: string = "navbar_brand";
     //#endregion Private Static Fields
 
-    //#region Public Enums
-    public static readonly expandSizes = {
-        sm: "navbar-expand-sm",
-        md: "navbar-expand-md",
-        lg: "navbar-expand-lg",
-        xl: "navbar-expand-xl",
-        xxl: "navbar-expand-xxl",
-        none: ""
-    } as const;
-
-    public static readonly backgroundVariants = {
-        light: "",
-        dark: "navbar-dark"
-    } as const;
-
-    public static readonly backgroundColours = {
-        primary: "bg-primary",
-        secondary: "bg-secondary",
-        success: "bg-success",
-        danger: "bg-danger",
-        warning: "bg-warning",
-        info: "bg-info",
-        light: "bg-light",
-        dark: "bg-dark",
-        white: "bg-white",
-        transparent: "bg-transparent"
-    } as const;
-
-    public static readonly placements = {
-        default: "",
-        fixedTop: "fixed-top",
-        fixedBottom: "fixed-bottom",
-        stickyTop: "sticky-top",
-        stickyBottom: "sticky-bottom"
-    } as const;
-
-
-    //#endregion Public Enums
-
     //#region Private Fields
-    _navbarControls: Map<string, Mrbr_UI_Bootstrap_Controls_INavbarControls> = new Map<string, Mrbr_UI_Bootstrap_Controls_INavbarControls>();
-    private _expandSize: typeof Mrbr_UI_Bootstrap_Controls_Navbar.expandSizes[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.expandSizes] = Mrbr_UI_Bootstrap_Controls_Navbar.expandSizes.none;
-    private _backgroundVariant: typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundVariants[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundVariants] = Mrbr_UI_Bootstrap_Controls_Navbar.backgroundVariants.light;
-    private _backgroundColour: typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundColours[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundColours] = Mrbr_UI_Bootstrap_Controls_Navbar.backgroundColours.primary;
-    private _placement: typeof Mrbr_UI_Bootstrap_Controls_Navbar.placements[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.placements] = Mrbr_UI_Bootstrap_Controls_Navbar.placements.default;
+    private _navbarControls: Map<string, Mrbr_UI_Bootstrap_Controls_INavbarControls>;
+    private _expandSize: Mrbr_UI_Bootstrap_Controls_NavbarExpandSizes;
+    private _backgroundVariant: Mrbr_UI_Bootstrap_Controls_NavbarBackgroundVariants;
+    private _backgroundColour: Mrbr_UI_Bootstrap_Utilities_Backgrounds;
+    private _placement: Mrbr_UI_Bootstrap_Controls_NavbarPlacements;
     //#endregion Private Fields
-    constructor(rootElementName: string) {
+
+    //#region Type Aliases
+    get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Navbar { return this.$bsc.Navbar as typeof Mrbr_UI_Bootstrap_Controls_Navbar; }
+    public get $nbess(): typeof Mrbr_UI_Bootstrap_Controls_NavbarExpandSizes { return this.$bsc.NavbarExpandSizes as typeof Mrbr_UI_Bootstrap_Controls_NavbarExpandSizes; }
+    public get $nbbvs(): typeof Mrbr_UI_Bootstrap_Controls_NavbarBackgroundVariants { return this.$bsc.NavbarBackgroundVariants as typeof Mrbr_UI_Bootstrap_Controls_NavbarBackgroundVariants; }
+    public get $nbps(): typeof Mrbr_UI_Bootstrap_Controls_NavbarPlacements { return this.$bsc.NavbarPlacements as typeof Mrbr_UI_Bootstrap_Controls_NavbarPlacements; }
+    public get $bubs(): typeof Mrbr_UI_Bootstrap_Utilities_Backgrounds { return Mrbr_UI_Bootstrap_Utilities_Backgrounds; }
+
+
+    //#endregion Type Aliases
+
+    constructor(rootElementName?: string) {
         super(rootElementName);
     }
     //#region Private Methods
-    get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Navbar { return Mrbr_UI_Bootstrap_Controls_Navbar; }
     //#endregion Private Methods
 
     //#region Public Properties
-    public get navbarControls(): Map<string, Mrbr_UI_Bootstrap_Controls_INavbarControls> { return this._navbarControls; }
-    public get backgroundColour(): typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundColours[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundColours] {
-        return this._backgroundColour;
+    public get navbarControls(): Map<string, Mrbr_UI_Bootstrap_Controls_INavbarControls> { return this._navbarControls ??= new Map<string, Mrbr_UI_Bootstrap_Controls_INavbarControls>(); }
+    public get backgroundColour(): Mrbr_UI_Bootstrap_Utilities_Backgrounds { return this._backgroundColour ??= this.$bubs.primary }
+    public set backgroundColour(value: Mrbr_UI_Bootstrap_Utilities_Backgrounds) {
+        const root = this.rootElement;
+        (root) && (this.classes(root, this.$clsActions.replace, [this._backgroundColour, value]));
+        this._backgroundColour = value;
     }
-    public set backgroundColour(value: typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundColours[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundColours]) {
-        const self = this;
-        self.rootElement &&
-            self.classes(self.rootElement, self.$clsActions.remove, self._backgroundColour) &&
-            self.classes(self.rootElement, self.$clsActions.add, value);
-        self._backgroundColour = value;
+    public get expandSize(): Mrbr_UI_Bootstrap_Controls_NavbarExpandSizes { return this._expandSize ??= this.$nbess.none; }
+    public set expandSize(value: Mrbr_UI_Bootstrap_Controls_NavbarExpandSizes) {
+        const root = this.rootElement;
+        (root) && (this.classes(root, this.$clsActions.replace, [this._expandSize, value]));
+        this._expandSize = value;
     }
-    public get expandSize(): typeof Mrbr_UI_Bootstrap_Controls_Navbar.expandSizes[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.expandSizes] { return this._expandSize; }
-    public set expandSize(value: typeof Mrbr_UI_Bootstrap_Controls_Navbar.expandSizes[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.expandSizes]) {
-        const self = this;
-        self.rootElement &&
-            self.classes(self.rootElement, self.$clsActions.remove, self._expandSize) &&
-            self.classes(self.rootElement, self.$clsActions.add, value);
-        self._expandSize = value;
+    public get backgroundVariant(): Mrbr_UI_Bootstrap_Controls_NavbarBackgroundVariants { return this._backgroundVariant ??= this.$nbbvs.light; }
+    public set backgroundVariant(value: Mrbr_UI_Bootstrap_Controls_NavbarBackgroundVariants) {
+        const root = this.rootElement;
+        (root) && (this.classes(root, this.$clsActions.replace, [this._backgroundVariant, value]));
+        this._backgroundVariant = value;
     }
-    public get backgroundVariant(): typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundVariants[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundVariants] {
-        return this._backgroundVariant;
-    }
-    public set backgroundVariant(value: typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundVariants[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.backgroundVariants]) {
-        const self = this;
-        self.rootElement &&
-            self.classes(self.rootElement, self.$clsActions.remove, self._backgroundVariant) &&
-            self.classes(self.rootElement, self.$clsActions.add, value);
-        self._backgroundVariant = value;
-    }
-    public get placement(): typeof Mrbr_UI_Bootstrap_Controls_Navbar.placements[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.placements] {
-        return this._placement;
-    }
-    public set placement(value: typeof Mrbr_UI_Bootstrap_Controls_Navbar.placements[keyof typeof Mrbr_UI_Bootstrap_Controls_Navbar.placements]) {
-        const self = this;
-        self.rootElement &&
-            self.classes(self.rootElement, self.$clsActions.remove, self._placement) &&
-            self.classes(self.rootElement, self.$clsActions.add, value);
-        self._placement = value;
+    public get placement(): Mrbr_UI_Bootstrap_Controls_NavbarPlacements { return this._placement ??= this.$nbps.default; }
+    public set placement(value: Mrbr_UI_Bootstrap_Controls_NavbarPlacements) {
+        const root = this.rootElement;
+        (root) && (this.classes(root, this.$clsActions.replace, [this._placement, value]));
+        this._placement = value;
     }
     //#endregion Public Properties
 
     //#region Public Methods
     public initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Navbar> {
         const self = this,
-            initialisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Navbar>("Mrbr_UI_Bootstrap_Controls_Navbar:initialise");
+            controlName = self.$cls[self.$mrbr.COMPONENT_NAME],
+            initialisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Navbar>(`${controlName}:initialise`),
+            cls = self.$cls,
+            ctrlCfg = self.$ctrlCfg;
         super.initialise()
-            .then(superInitialised => {
-                self.$mrbrInstance.loadManifest(Mrbr_UI_Bootstrap_Controls_Navbar[MrbrBase.MANIFEST])
-                    .then(async manifest => {
-                        await self.setDefaultConfig();
-                        self.rootElement = <HTMLElement>self.createElement(new self.$ctrlCfg(self.rootElementName, "nav", self.configuration(self.$cls.NAVBAR_NAME)
-                            .Children([
-                                <HTMLElement>self.createElement(new self.$ctrlCfg(self.$cls.NAVBAR_CONTAINER_NAME, "div", self.configuration(self.$cls.NAVBAR_CONTAINER_NAME)))
-                            ])));
-                        self.defaultContainerElementName = self.$cls.NAVBAR_CONTAINER_NAME;
-                        self.expandSize = self._expandSize;
-                        self.backgroundColour = self._backgroundColour;
-                        self.backgroundVariant = self._backgroundVariant;
-                        self.placement = self._placement;
+            .then(async _ => {
+                await self.loadManifest(cls)
+                await self.setDefaultConfig();
+                self.createElement(new ctrlCfg(self.rootElementName, self.$htmlt.nav, self.elementConfig.getConfig(cls.NAVBAR_NAME)
+                    .Children([
+                        <HTMLElement>self.createElement(new ctrlCfg(cls.NAVBAR_CONTAINER_NAME, self.$htmlt.div, self.elementConfig.getConfig(cls.NAVBAR_CONTAINER_NAME)))
+                    ])));
+                self.defaultContainerElementName = cls.NAVBAR_CONTAINER_NAME;
+                self.expandSize = self.expandSize;
+                self.backgroundColour = self.backgroundColour;
+                self.backgroundVariant = self.backgroundVariant;
+                self.placement = self.placement;
 
-                        initialisePromise.resolve(self);
-                    })
+                initialisePromise.resolve(self);
+
             })
         return initialisePromise;
     }
 
-    public addBrand(brand: Mrbr_UI_Bootstrap_Controls_Navbar$Brand): Mrbr_UI_Bootstrap_Controls_Navbar {
-        const
-            self = this;
-        brand.build(self);
-        return self;
+    public addBrand(brand: Mrbr_UI_Bootstrap_Controls_NavbarBrand): Mrbr_UI_Bootstrap_Controls_Navbar {
+        brand.build(this);
+        return this;
     }
 
-    public addToggler(toggler: Mrbr_UI_Bootstrap_Controls_Navbar$Toggler | Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas): Mrbr_UI_Bootstrap_Controls_Navbar {
-        const self = this;
-        toggler.build(self);
-        return self;
+    public addToggler(toggler: Mrbr_UI_Bootstrap_Controls_NavbarToggler | Mrbr_UI_Bootstrap_Controls_NavbarOffCanvas): Mrbr_UI_Bootstrap_Controls_Navbar {
+        toggler.build(this);
+        return this;
     }
 
     //#endregion Public Methods
     //#region Private Methods
-    setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Navbar> {
+    public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Navbar> {
         const self = this,
-            setDefaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Navbar>("Mrbr_UI_Bootstrap_Controls_Navbar:setDefaultConfig");
-        !self.hasConfiguration(self.$cls.NAVBAR_NAME) && self.defaultConfig.add(self.$cls.NAVBAR_NAME, new self.$ctrlPrm()
-            .Classes("navbar"));
-        !self.hasConfiguration(self.$cls.NAVBAR_CONTAINER_NAME) && self.defaultConfig.add(self.$cls.NAVBAR_CONTAINER_NAME, new self.$ctrlPrm()
-            .Classes("container-fluid"));
-        setDefaultConfigPromise.resolve(self);
+            controlName = self.$cls[self.$mrbr.COMPONENT_NAME],
+            setDefaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Navbar>(`${controlName}:setDefaultConfig`);
+        super.setDefaultConfig()
+            .then(_ => {
+                const
+                    sine = self.elementConfig.setIfNotExist.bind(self.elementConfig),
+                    cls = self.$cls,
+                    ctrlPrm = self.$ctrlPrm;
+                self.elementConfig.controlName(controlName);
+                sine(cls.NAVBAR_NAME, new ctrlPrm()
+                    .Classes("navbar"))
+                sine(cls.NAVBAR_CONTAINER_NAME, new ctrlPrm()
+                    .Classes("container-fluid"));
+                setDefaultConfigPromise.resolve(self);
+            });
         return setDefaultConfigPromise;
     }
     //#endregion Private Methods
-
 }

@@ -426,7 +426,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
     public removeEventListener(...args) { throw new Error("Not implemented"); }
     public dispatchEvent(...args) { throw new Error("Not implemented"); }
     public setDefaultConfig(...args: any[]): Mrbr_System_Promise<any> {
-        this.elementConfig = new Mrbr_UI_Controls_ElementsConfigMap(this.$ctrl[this.$mrbr.COMPONENT_NAME]);
+        //this.elementConfig = new Mrbr_UI_Controls_ElementsConfigMap(this.$ctrl[this.$mrbr.COMPONENT_NAME]);
         return this.$promise.createResolved("");
     }
     //#endregion Dummy Methods to be removed after refactor
@@ -467,7 +467,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @public
      * @type {Mrbr_UI_Controls_ElementsConfigMap}
      */
-    public get elementConfig(): Mrbr_UI_Controls_ElementsConfigMap { return this._elementConfig; }
+    public get elementConfig(): Mrbr_UI_Controls_ElementsConfigMap { return this._elementConfig ??= new Mrbr_UI_Controls_ElementsConfigMap(this.$ctrl[this.$mrbr.COMPONENT_NAME]); }
 
     /**
      * Controls Elements Configuration Property

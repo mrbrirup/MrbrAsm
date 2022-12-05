@@ -1,11 +1,12 @@
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
+import { Mrbr_UI_Bootstrap_Controls_BootstrapControl } from "./BootstrapControl";
 import { Mrbr_UI_Bootstrap_Controls_INavbarControls } from "./INavbarControls";
 import { Mrbr_UI_Bootstrap_Controls_Navbar } from "./Navbar";
 
-export class Mrbr_UI_Bootstrap_Controls_Navbar$Brand implements Mrbr_UI_Bootstrap_Controls_INavbarControls {
+export class Mrbr_UI_Bootstrap_Controls_NavbarBrand extends Mrbr_UI_Bootstrap_Controls_BootstrapControl implements Mrbr_UI_Bootstrap_Controls_INavbarControls {
     private static _navbar_brand_config: Mrbr_UI_Controls_ControlConfigOptionalParameters;
     public static get NAVBAR_BRAND_CONFIG(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        const cls = Mrbr_UI_Bootstrap_Controls_Navbar$Brand;
+        const cls = Mrbr_UI_Bootstrap_Controls_NavbarBrand;
         (!cls._navbar_brand_config) && (cls._navbar_brand_config = new Mrbr_UI_Controls_ControlConfigOptionalParameters()
             .Classes("navbar-brand"))
         return Object.assign(new Mrbr_UI_Controls_ControlConfigOptionalParameters(), cls._navbar_brand_config);
@@ -21,7 +22,10 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$Brand implements Mrbr_UI_Bootstra
     private _textElement: HTMLElement;
     private _url: string = "#";
 
-    constructor(name: string) { this.name = name; }
+    constructor(name: string) {
+        super(name);
+        this.name = name;
+    }
 
     public get active(): boolean { return this._active; }
     public set active(value: boolean) { this._active = value; }
@@ -47,21 +51,21 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar$Brand implements Mrbr_UI_Bootstra
     public set textElement(value: HTMLElement) { this._textElement = value; }
     public get url(): string { return this._url; }
     public set url(value: string) { this._url = value; }
-    public Url(value: string): Mrbr_UI_Bootstrap_Controls_Navbar$Brand {
+    public Url(value: string): Mrbr_UI_Bootstrap_Controls_NavbarBrand {
         this.url = value;
         return this;
     }
-    public ImageUrl(value: string): Mrbr_UI_Bootstrap_Controls_Navbar$Brand {
+    public ImageUrl(value: string): Mrbr_UI_Bootstrap_Controls_NavbarBrand {
         this.imageUrl = value;
         return this;
     }
-    public Text(value: string): Mrbr_UI_Bootstrap_Controls_Navbar$Brand {
+    public Text(value: string): Mrbr_UI_Bootstrap_Controls_NavbarBrand {
         this.text = value;
         return this;
     }
-    public build(hostNavbar: Mrbr_UI_Bootstrap_Controls_Navbar, hostElement: HTMLElement = hostNavbar.defaultContainerElement): Mrbr_UI_Bootstrap_Controls_Navbar$Brand {
+    public build(hostNavbar: Mrbr_UI_Bootstrap_Controls_Navbar, hostElement: HTMLElement = hostNavbar.defaultContainerElement): Mrbr_UI_Bootstrap_Controls_NavbarBrand {
         const
-            brandCls = Mrbr_UI_Bootstrap_Controls_Navbar$Brand,
+            brandCls = Mrbr_UI_Bootstrap_Controls_NavbarBrand,
             self = this;
 
         if (self.text) {

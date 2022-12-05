@@ -1,8 +1,10 @@
-//import { Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas } from "../ui/bootstrap/controls/Navbar$OffCanvas";
-
 import { Mrbr_UI_Bootstrap_Controls_Navbar } from "../ui/bootstrap/controls/Navbar";
-import { Mrbr_UI_Bootstrap_Controls_Navbar$Brand } from "../ui/bootstrap/controls/Navbar$Brand";
-import { Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas } from "../ui/bootstrap/controls/Navbar$OffCanvas";
+import { Mrbr_UI_Bootstrap_Controls_NavbarBrand } from "../ui/bootstrap/controls/NavbarBrand";
+import { Mrbr_UI_Bootstrap_Controls_NavbarOffCanvas } from "../ui/bootstrap/controls/NavbarOffCanvas";
+import { Mrbr_UI_Bootstrap_Controls_NavbarBackgroundVariants } from "../ui/bootstrap/controls/NavbarBackgroundVariants";
+import { Mrbr_UI_Bootstrap_Controls_NavbarPlacements } from "../ui/bootstrap/controls/NavbarPlacements";
+import { Mrbr_UI_Bootstrap_Utilities_Backgrounds } from "../ui/bootstrap/utilities/backgrounds";
+import { Mrbr_UI_Bootstrap_Controls_OffCanvasThemes } from "../ui/bootstrap/controls/OffCanvasThemes";
 
 export class Mrbr_Tests_Application$Navbar$OffCanvas {
 
@@ -11,15 +13,18 @@ export class Mrbr_Tests_Application$Navbar$OffCanvas {
     navbar
       .initialise()
       .then(async _ => {
-        navbar.addBrand(new Mrbr_UI_Bootstrap_Controls_Navbar$Brand("brand").Text("Brand"));
-        let tog = new Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas("toggler");
-        await tog.initialise();
-        tog.build(navbar);
-        navbar.addToggler(tog);
-        let toggler = (navbar.navbarControls.get("toggler") as Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas)
-        navbar.backgroundVariant = Mrbr_UI_Bootstrap_Controls_Navbar.backgroundVariants.dark;
-        navbar.backgroundColour = Mrbr_UI_Bootstrap_Controls_Navbar.backgroundColours.secondary;
-        navbar.placement = Mrbr_UI_Bootstrap_Controls_Navbar.placements.fixedBottom;
+        navbar.addBrand(new Mrbr_UI_Bootstrap_Controls_NavbarBrand("brand").Text("Brand"));
+        let navbarOffCanvas = new Mrbr_UI_Bootstrap_Controls_NavbarOffCanvas("toggler");
+        await navbarOffCanvas.initialise<Mrbr_UI_Bootstrap_Controls_NavbarOffCanvas>();
+
+        navbarOffCanvas.build(navbar);
+
+        navbar.addToggler(navbarOffCanvas);
+
+        let toggler = (navbar.navbarControls.get("toggler") as Mrbr_UI_Bootstrap_Controls_NavbarOffCanvas)
+        navbar.backgroundVariant = Mrbr_UI_Bootstrap_Controls_NavbarBackgroundVariants.dark;
+        navbar.backgroundColour = Mrbr_UI_Bootstrap_Utilities_Backgrounds.secondary;
+        navbar.placement = Mrbr_UI_Bootstrap_Controls_NavbarPlacements.fixedTop;
 
         const template =
           ` <ul class="navbar-nav">
@@ -43,11 +48,13 @@ export class Mrbr_Tests_Application$Navbar$OffCanvas {
                   </ul>
                 </li>
               </ul>`;
-        toggler.defaultContainerElement.innerHTML = template;
-        toggler.offCanvasTheme = Mrbr_UI_Bootstrap_Controls_Navbar$OffCanvas.themes.dark;
-        document.body.appendChild(navbar.rootElement);
+
+        toggler.offCanvasTheme = Mrbr_UI_Bootstrap_Controls_OffCanvasThemes.dark;
+        navbar.mount(document.body);
         navbar.defaultContainerElement.appendChild(toggler.togglerElement)
         navbar.defaultContainerElement.appendChild(toggler.offCanvasElement)
+        toggler.defaultContainerElement.innerHTML = template;
+
       });
   }
 }

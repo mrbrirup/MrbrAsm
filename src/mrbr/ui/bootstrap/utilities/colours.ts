@@ -1,4 +1,4 @@
-export enum Mrbr_UI_Bootstrap_Controls_Utilities_Colors {
+export enum Mrbr_UI_Bootstrap_Utilities_Colours {
     textPrimary = "text-primary",
     textSecondary = "text-secondary",
     textSuccess = "text-success",

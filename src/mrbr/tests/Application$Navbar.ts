@@ -1,25 +1,29 @@
 import { Mrbr_UI_Bootstrap_Controls_Navbar } from "../ui/bootstrap/controls/Navbar";
-import { Mrbr_UI_Bootstrap_Controls_Navbar$Brand } from "../ui/bootstrap/controls/Navbar$Brand";
-import { Mrbr_UI_Bootstrap_Controls_Navbar$Toggler } from "../ui/bootstrap/controls/Navbar$Toggler";
+import { Mrbr_UI_Bootstrap_Controls_NavbarBrand } from "../ui/bootstrap/controls/NavbarBrand";
+import { Mrbr_UI_Bootstrap_Controls_NavbarToggler } from "../ui/bootstrap/controls/NavbarToggler";
+import { Mrbr_UI_Bootstrap_Controls_NavbarBackgroundVariants } from "../ui/bootstrap/controls/NavbarBackgroundVariants";
+import { Mrbr_UI_Bootstrap_Controls_NavbarExpandSizes } from "../ui/bootstrap/controls/NavBarExpandSizes";
+import { Mrbr_UI_Bootstrap_Controls_NavbarPlacements } from "../ui/bootstrap/controls/NavbarPlacements";
+import { Mrbr_UI_Bootstrap_Utilities_Backgrounds } from "../ui/bootstrap/utilities/backgrounds";
 
 
 export class Mrbr_Tests_Application$Navbar {
 
-    constructor() {
-        const navbar = new Mrbr_UI_Bootstrap_Controls_Navbar("navbar");
-        navbar.initialise()
-            .then(_ => {
-                navbar.addBrand(new Mrbr_UI_Bootstrap_Controls_Navbar$Brand("brand").Text("Brand"));
-                navbar.addToggler(new Mrbr_UI_Bootstrap_Controls_Navbar$Toggler("toggler"));
-                navbar.navbarControls.get("toggler").disabled = true;
-                navbar.navbarControls.get("brand").disabled = true;
-                navbar.expandSize = Mrbr_UI_Bootstrap_Controls_Navbar.expandSizes.md;
-                navbar.backgroundVariant = Mrbr_UI_Bootstrap_Controls_Navbar.backgroundVariants.dark;
-                navbar.backgroundColour = Mrbr_UI_Bootstrap_Controls_Navbar.backgroundColours.secondary;
-                navbar.placement = Mrbr_UI_Bootstrap_Controls_Navbar.placements.fixedBottom;
+  constructor() {
+    const navbar = new Mrbr_UI_Bootstrap_Controls_Navbar("navbar");
+    navbar.initialise()
+      .then(_ => {
+        navbar.addBrand(new Mrbr_UI_Bootstrap_Controls_NavbarBrand("brand").Text("Brand"));
+        navbar.addToggler(new Mrbr_UI_Bootstrap_Controls_NavbarToggler("toggler"));
+        //navbar.navbarControls.get("toggler").disabled = true;
+        //navbar.navbarControls.get("brand").disabled = true;
+        navbar.expandSize = Mrbr_UI_Bootstrap_Controls_NavbarExpandSizes.md;
+        navbar.backgroundVariant = Mrbr_UI_Bootstrap_Controls_NavbarBackgroundVariants.dark;
+        navbar.backgroundColour = Mrbr_UI_Bootstrap_Utilities_Backgrounds.secondary;
+        navbar.placement = Mrbr_UI_Bootstrap_Controls_NavbarPlacements.fixedBottom;
 
-                const template =
-                    ` <ul class="navbar-nav">
+        const template =
+          ` <ul class="navbar-nav">
                 <li class="nav-item">
                   <a class="nav-link active" aria-current="page" href="#">Home</a>
                 </li>
@@ -40,13 +44,13 @@ export class Mrbr_Tests_Application$Navbar {
                   </ul>
                 </li>
               </ul>`;
-                navbar.defaultContainerElement.innerHTML = template;
-                document.body.appendChild(navbar.rootElement);
+        navbar.defaultContainerElement.innerHTML = template;
+        navbar.mount(document.body);
 
-                setTimeout(() => {
-                    navbar.navbarControls.get("toggler").disabled = false;
-                    navbar.navbarControls.get("brand").disabled = false;
-                }, 10000);
-            });
-    }
+        // setTimeout(() => {
+        //   navbar.navbarControls.get("toggler").disabled = false;
+        //   navbar.navbarControls.get("brand").disabled = false;
+        // }, 10000);
+      });
+  }
 }

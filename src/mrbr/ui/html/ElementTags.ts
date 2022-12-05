@@ -52,6 +52,7 @@ export enum Mrbr_UI_HTML_ElementTags {
     meta = "meta",
     meter = "meter",
     mod = "mod",
+    nav = "nav",
     object = "object",
     olist = "ol",
     optGroup = "optgroup",
