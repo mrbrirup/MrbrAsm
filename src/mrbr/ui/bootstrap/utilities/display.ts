@@ -1,3 +1,11 @@
+
+/**
+ * Bootstrap Utility Display Classes
+ * @date 09/12/2022 - 03:08:17
+ *
+ * @export
+ * @enum {number}
+ */
 export enum Mrbr_UI_Bootstrap_Utilities_Display {
 
     none = "d-none",

@@ -1,4 +1,6 @@
 import { Mrbr_UI_Bootstrap_Controls_Pagination } from "../ui/bootstrap/controls/Pagination";
+import { Mrbr_UI_Bootstrap_Controls_PaginationButtonSizes } from "../ui/bootstrap/controls/PaginationButtonSizes";
+import { Mrbr_UI_Bootstrap_Controls_PaginationJustifyPositions } from "../ui/bootstrap/controls/PaginationJustifyPositions";
 
 
 export class Mrbr_Tests_Application$Pagination {
@@ -7,27 +9,34 @@ export class Mrbr_Tests_Application$Pagination {
 
     const paginationCls = Mrbr_UI_Bootstrap_Controls_Pagination,
       pagination = new paginationCls("pagination");
-    // pagination.showPrevious = true;
-    // pagination.showNext = false;
-    //pagination.useIconButtons = true;
-    //pagination.buttonSize = Mrbr_UI_Bootstrap_Controls_Pagination.buttonSizes.small;
+    pagination.showPrevious = true;
+    pagination.showNext = false;
+    pagination.useIconButtons = true;
+    pagination.buttonSize = Mrbr_UI_Bootstrap_Controls_PaginationButtonSizes.small;
+    pagination.pageButtonCount = 8;
+    pagination.maxTotalPages = 20;
     pagination.initialise()
       .then(_ => {
-        document.body.appendChild(pagination.rootElement);
-        pagination.addPage(2);
-        pagination.addPage(1);
-        pagination.addPage(4);
-        pagination.addPage(3);
-        // setTimeout(() => {
-        //   pagination.showNext = true;
-        //   pagination.showPrevious = true;
-        //   pagination.buttonSize = Mrbr_UI_Bootstrap_Controls_Pagination.buttonSizes.large;
-        // }, 2000);
 
-        // setTimeout(() => {
-        //   pagination.useIconButtons = false;
-        //   pagination.buttonSize = Mrbr_UI_Bootstrap_Controls_Pagination.buttonSizes.default;
-        // }, 4000);
+        pagination.onPageChange((event) => { console.log(event.data); });
+
+        pagination.mount(document.body);
+        pagination.onMounted((event) => {
+          requestAnimationFrame(() => {
+            pagination.setActivePage(1);
+            debugger
+          });
+        });
+        setTimeout(() => {
+          pagination.showNext = true;
+          pagination.showPrevious = true;
+          pagination.buttonSize = Mrbr_UI_Bootstrap_Controls_PaginationButtonSizes.large;
+        }, 2000);
+
+        setTimeout(() => {
+          pagination.useIconButtons = false;
+          pagination.buttonSize = Mrbr_UI_Bootstrap_Controls_PaginationButtonSizes.default;
+        }, 4000);
 
 
         // setTimeout(() => {
@@ -41,23 +50,22 @@ export class Mrbr_Tests_Application$Pagination {
         // }, 4000);
 
 
-        // setTimeout(() => {
-        //   pagination.setActivePage(3);
-        //   pagination.justifyPosition = Mrbr_UI_Bootstrap_Controls_Pagination.justifyPositions.end;
-        // }, 6000);
-
-        // setTimeout(() => {
-        //   pagination.disablePage(4);
-        // }, 8000);
         setTimeout(() => {
-          pagination.pageButtonCount = 8;
+          pagination.setActivePage(3);
+          pagination.justifyPosition = Mrbr_UI_Bootstrap_Controls_PaginationJustifyPositions.end;
+        }, 6000);
+
+        setTimeout(() => {
+          pagination.disablePage(4);
+        }, 8000);
+        setTimeout(() => {
+          pagination.setActivePage(6);
         }, 2000);
-        pagination.setActivePage(6);
-        pagination.addEventListener(paginationCls.PAGINATION_PAGE_CLICK_EVENT, (e) => {
-          let _e = e as CustomEvent;
-          console.log(_e.detail.page);
-          pagination.setActivePage(_e.detail.page);
-        })
+        // pagination.addEventListener(paginationCls.PAGINATION_PAGE_CLICK_EVENT, (e) => {
+        //   let _e = e as CustomEvent;
+        //   console.log(_e.detail.page);
+        //   pagination.setActivePage(_e.detail.page);
+        // })
       });
   }
 }

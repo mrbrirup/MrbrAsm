@@ -1194,7 +1194,8 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
         handlerFunction: Function,
         context: unknown,
         callback: (event: Mrbr_System_Events_Event<any>) => void | number): number {
-        const self = this,
+        const
+            self = this,
             deferredFns = self.deferredOnMountFunctions;
         if (typeof callback === "number") {
             this.eventSubscribers.remove(subscriberEventName, callback);
@@ -1207,7 +1208,8 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
                     targetElement,
                     handlerFunction,
                     context));
-                return self.eventSubscribers.add(subscriberEventName, callback);
+                if (callback) { return self.eventSubscribers.add(subscriberEventName, callback); }
+                return null;
             });
         }));
         if (self.rootElement?.isConnected) {
