@@ -1,4 +1,4 @@
-import { Mrbr_UI_Bootstrap_Controls_Popovers } from "../ui/bootstrap/controls/Popovers";
+import { Mrbr_UI_Bootstrap_Controls_Popover } from "../ui/bootstrap/controls/Popover";
 import { Mrbr_UI_Bootstrap_Controls_Progress } from "../ui/bootstrap/controls/Progress";
 
 export class Mrbr_Tests_Application$Progress {

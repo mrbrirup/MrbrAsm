@@ -20,7 +20,7 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Contr
      * @static
      * @type {string}
      */
-    public static LISTITEM_TYPE_DATA_ATTRIBUTE: string = "data-mrbr-list-item-type";
+    public static readonly LISTITEM_TYPE_DATA_ATTRIBUTE: string = "data-mrbr-list-item-type";
 
     /**
      * ListGroup Click Event Name

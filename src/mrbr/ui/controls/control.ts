@@ -1070,7 +1070,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      *
      * @private
      */
-    private runDeferedMountFunctions() {
+    protected runDeferedMountFunctions() {
         const self = this;
         let fn;
         while (!!(fn = self.deferredOnMountFunctions.shift())) { fn(); }
