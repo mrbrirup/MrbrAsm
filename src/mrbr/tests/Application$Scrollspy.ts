@@ -1,8 +1,8 @@
-import { Mrbr_UI_Bootstrap_Controls_Scrollspies } from "../ui/bootstrap/controls/Scrollspies";
+import { Mrbr_UI_Bootstrap_Controls_Scrollspy } from "../ui/bootstrap/controls/Scrollspy";
 
-export class Mrbr_Tests_Application$Scrollspies {
+export class Mrbr_Tests_Application$Scrollspy {
   constructor() {
-    const scrollspy = Mrbr_UI_Bootstrap_Controls_Scrollspies;
+    const scrollspyCls = Mrbr_UI_Bootstrap_Controls_Scrollspy;
     document.body.innerHTML = `
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
     <div class="container-fluid">
@@ -37,19 +37,25 @@ export class Mrbr_Tests_Application$Scrollspies {
     <p>Try to scroll this section and look at the navigation bar while scrolling! Try to scroll this section and look at the navigation bar while scrolling!</p>
     <p>Try to scroll this section and look at the navigation bar while scrolling! Try to scroll this section and look at the navigation bar while scrolling!</p>
   </div>
-  </div>
-    `
+  </div>`;
     let nav = document.getElementsByTagName("nav")[0],
-      watched = document.getElementsByClassName("sections")[0];
+      spied = <HTMLElement>document.getElementsByClassName("sections")[0];
 
-
-    let links = document.querySelectorAll("a.nav-link"),
-      sections = document.querySelectorAll("div.sections div.container-fluid");
-    for (let i = 0; i < links.length; i++) {
-      let link = links[i],
-        section = sections[i];
-      scrollspy.joinLinkToSpy(<HTMLAnchorElement>link, <HTMLElement>section);
-    }
-    scrollspy.attachScrollSpy("ss1", <HTMLElement>watched, <HTMLElement>nav);
+    const scrollspy = new scrollspyCls("ss1", spied, nav);
+    scrollspy.initialise()
+      .then(() => {
+        let links = document.querySelectorAll("a.nav-link"),
+          sections = document.querySelectorAll("div.sections div.container-fluid");
+        for (let i = 0; i < links.length; i++) {
+          let link = links[i],
+            section = sections[i];
+          scrollspy.joinSpiedElements(<HTMLAnchorElement>link, <HTMLElement>section);
+        }
+        scrollspy.onScrollspy((e) => {
+          console.log(e);
+        });
+        scrollspy.smoothScroll = true;
+      });
+    //scrollspy.attachScrollSpy("ss1", <HTMLElement>watched, <HTMLElement>nav);
   }
 }
