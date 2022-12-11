@@ -1,3 +1,11 @@
+
+/**
+ * Boostrap Utilities Text Colours
+ * @date 11/12/2022 - 06:18:36
+ *
+ * @export
+ * @enum {number}
+ */
 export enum Mrbr_UI_Bootstrap_Utilities_Colours {
     textPrimary = "text-primary",
     textSecondary = "text-secondary",
