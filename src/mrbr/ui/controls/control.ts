@@ -469,6 +469,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      */
     public get elementConfig(): Mrbr_UI_Controls_ElementsConfigMap { return this._elementConfig ??= new Mrbr_UI_Controls_ElementsConfigMap(this.$ctrl[this.$mrbr.COMPONENT_NAME]); }
 
+
     /**
      * Controls Elements Configuration Property
      */

@@ -274,7 +274,7 @@ export class Mrbr_UI_Controls_ControlConfigOptionalParameters extends EventTarge
      * @returns {Mrbr_UI_Controls_ControlConfigOptionalParameters}
      */
     public Classes(value: Array<string> | string): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        if (!value) { return; }
+        if (!value) { return this; }
         (!Array.isArray(value)) && (value = value.split(" ").map(_val => _val.trim()));
         let currentClasses = [];
         (this.classes) && (currentClasses = (!Array.isArray(this.classes)) ? this.classes.split(" ").map(_val => _val.trim()) : this.classes);

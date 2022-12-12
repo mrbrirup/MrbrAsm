@@ -15,7 +15,7 @@ export class Mrbr_Tests_Application$Dropdown {
         //Promise.all([dropdown.initialise(), splitDropDown.initialise()])
         Promise.all([dropdown.initialise(), submenu2.initialise()])
             .then(_ => {
-                dropdown.buttonColour = Mrbr_UI_Bootstrap_Utilities_ButtonColours.secondary;
+                dropdown.buttonColour = Mrbr_UI_Bootstrap_Utilities_ButtonColours.primary;
                 submenu2.buttonColour = Mrbr_UI_Bootstrap_Utilities_ButtonColours.secondary;
                 dropdown.buttonText = "Dropdown";
                 //splitDropDown.buttonColour = Mrbr_UI_Bootstrap_Controls_Dropdown.buttonColours.primary;

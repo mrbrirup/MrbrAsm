@@ -1,4 +1,4 @@
-import { Mrbr_UI_Bootstrap_Controls_Dropdown$ItemEvents } from "./Dropdown$ItemEvents";
+import { Mrbr_UI_Bootstrap_Controls_DropdownItemEvents } from "./DropdownItemEvents";
 
 /**
  * Dropdown Event Data for Dropdown Event
@@ -12,7 +12,7 @@ export class Mrbr_UI_Bootstrap_Controls_DropdownEventData {
     private _menuItemId: string;
     private _event: Event;
     private _target: HTMLElement;
-    private _menuEvent: Mrbr_UI_Bootstrap_Controls_Dropdown$ItemEvents;
+    private _menuEvent: Mrbr_UI_Bootstrap_Controls_DropdownItemEvents;
 
     /**
      * Creates an instance of Mrbr_UI_Bootstrap_Controls_DropdownEventData.
@@ -24,7 +24,7 @@ export class Mrbr_UI_Bootstrap_Controls_DropdownEventData {
      * @param {Mrbr_UI_Bootstrap_Controls_Dropdown} eventName
      * @param {HTMLElement} target
      */
-    constructor(menuItemId: string, event: Event, eventName: Mrbr_UI_Bootstrap_Controls_Dropdown$ItemEvents, target: HTMLElement) {
+    constructor(menuItemId: string, event: Event, eventName: Mrbr_UI_Bootstrap_Controls_DropdownItemEvents, target: HTMLElement) {
         this.menuItemId = menuItemId;
         this.event = event;
         this.target = target;
@@ -80,10 +80,10 @@ export class Mrbr_UI_Bootstrap_Controls_DropdownEventData {
      * @public
      * @type {Mrbr_UI_Bootstrap_Controls_Dropdown}
      */
-    public get menuEvent(): Mrbr_UI_Bootstrap_Controls_Dropdown$ItemEvents { return this._menuEvent; }
+    public get menuEvent(): Mrbr_UI_Bootstrap_Controls_DropdownItemEvents { return this._menuEvent; }
 
     /**
      * Dropdown Event Name
      */
-    public set menuEvent(value: Mrbr_UI_Bootstrap_Controls_Dropdown$ItemEvents) { this._menuEvent = value; }
+    public set menuEvent(value: Mrbr_UI_Bootstrap_Controls_DropdownItemEvents) { this._menuEvent = value; }
 }

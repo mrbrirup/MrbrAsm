@@ -4,10 +4,10 @@ import { Mrbr_UI_Bootstrap_Utilities_Interactions } from "../utilities/interacti
 import { Mrbr_UI_Bootstrap_Controls_BootstrapControl } from "./BootstrapControl";
 import { Mrbr_UI_Bootstrap_Controls_Dropdown$AutoClosing } from "./Dropdown$AutoClosing";
 import { Mrbr_UI_Bootstrap_Controls_Dropdown$ButtonSizes } from "./Dropdown$ButtonSizes";
-import { Mrbr_UI_Bootstrap_Controls_Dropdown$ItemEvents } from "./Dropdown$ItemEvents";
+import { Mrbr_UI_Bootstrap_Controls_DropdownItemEvents } from "./DropdownItemEvents";
 import { Mrbr_UI_Bootstrap_Controls_Dropdown$MenuAlignments } from "./Dropdown$MenuAlignments";
 import { Mrbr_UI_Bootstrap_Controls_Dropdown$MenuStyles } from "./Dropdown$MenuStyles";
-import { Mrbr_UI_Bootstrap_Controls_Dropdown$MenuTypes } from "./Dropdown$MenuTypes";
+import { Mrbr_UI_Bootstrap_Controls_DropdownMenuTypes } from "./DropdownMenuTypes";
 import { Mrbr_UI_Bootstrap_Controls_Dropdown$Positions } from "./Dropdown$Positions";
 import { Mrbr_UI_Bootstrap_Controls_DropdownEvent } from "./DropdownEvent";
 import { Mrbr_UI_Bootstrap_Controls_DropdownEventData } from "./DropdownEventData";
@@ -21,7 +21,7 @@ import { Mrbr_UI_Bootstrap_Controls_DropdownEventData } from "./DropdownEventDat
  */
 type menuTargetType = {
     element: HTMLElement;
-    targetType: Mrbr_UI_Bootstrap_Controls_Dropdown$MenuTypes;
+    targetType: Mrbr_UI_Bootstrap_Controls_DropdownMenuTypes;
 }
 
 /**
@@ -67,7 +67,7 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Bootstrap_Contr
      * @readonly
      * @type {string}
      */
-    public static readonly DROPDOWN_BUTTON_NAME: string = "button";
+    public static readonly DROPDOWN_BUTTON_NAME: string = "dropdown_button";
 
     /**
      * Internal Dropdown MenuItem Container Element Name
@@ -159,9 +159,9 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Bootstrap_Contr
      *
      * @protected
      * @readonly
-     * @type {typeof Mrbr_UI_Bootstrap_Controls_Dropdown$MenuTypes}
+     * @type {typeof Mrbr_UI_Bootstrap_Controls_DropdownMenuTypes}
      */
-    protected get $ddmt(): typeof Mrbr_UI_Bootstrap_Controls_Dropdown$MenuTypes { return Mrbr_UI_Bootstrap_Controls_Dropdown$MenuTypes; }
+    protected get $ddmt(): typeof Mrbr_UI_Bootstrap_Controls_DropdownMenuTypes { return Mrbr_UI_Bootstrap_Controls_DropdownMenuTypes; }
 
     /**
      * Dropdown Menu Styles Enum Alias
@@ -180,9 +180,9 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Bootstrap_Contr
      *
      * @protected
      * @readonly
-     * @type {typeof Mrbr_UI_Bootstrap_Controls_Dropdown$ItemEvents}
+     * @type {typeof Mrbr_UI_Bootstrap_Controls_DropdownItemEvents}
      */
-    protected get $ddie(): typeof Mrbr_UI_Bootstrap_Controls_Dropdown$ItemEvents { return Mrbr_UI_Bootstrap_Controls_Dropdown$ItemEvents; }
+    protected get $ddie(): typeof Mrbr_UI_Bootstrap_Controls_DropdownItemEvents { return Mrbr_UI_Bootstrap_Controls_DropdownItemEvents; }
 
     /**
      * Dropdown Menu Alignment Enum Alias for Rectivale layouts
@@ -422,10 +422,7 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Bootstrap_Contr
      */
     public set buttonColour(value: Mrbr_UI_Bootstrap_Utilities_ButtonColours) {
         const button = this.elements.get(this.$cls.DROPDOWN_BUTTON_NAME);
-        if (button && this.rootElement) {
-            this.classes(button, this.$clsActions.remove, this._buttonColour);
-            this.classes(button, this.$clsActions.add, value);
-        }
+        (button && this.rootElement) && (this.classes(button, this.$clsActions.replace, [this._buttonColour, value]));
         this._buttonColour = value;
     }
 
@@ -443,10 +440,7 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Bootstrap_Contr
      */
     public set buttonSize(value: Mrbr_UI_Bootstrap_Controls_Dropdown$ButtonSizes) {
         const button = this.elements.get(this.$cls.DROPDOWN_BUTTON_NAME);
-        if (button) {
-            this.classes(button, this.$clsActions.remove, this._buttonSize);
-            this.classes(button, this.$clsActions.add, value);
-        }
+        (button) && (this.classes(button, this.$clsActions.replace, [this._buttonSize, value]));
         this._buttonSize = value;
     }
 
@@ -576,6 +570,7 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Bootstrap_Contr
      * @returns {Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Dropdown>}
      */
     public initialise(...args): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Dropdown> {
+
         const
             self = this,
             cls = self.$cls,
@@ -583,8 +578,8 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Bootstrap_Contr
             ctrlCfg = self.$ctrlCfg;
         super.initialise(args)
             .then(async _ => {
-                await this.loadManifest(cls);
-                await this.setDefaultConfig();
+                await self.loadManifest(cls);
+                await self.setDefaultConfig();
                 if (self.isSubMenu === true) {
                     const
                         buttonLink = <HTMLElement>self.createElement(new ctrlCfg(cls.DROPDOWN_SUBMENU_LINK_NAME, self.$htmlt.anchor,
@@ -605,7 +600,8 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Bootstrap_Contr
                 else {
                     let button = <HTMLElement>self.createElement(new ctrlCfg(cls.DROPDOWN_BUTTON_NAME, self.$htmlt.button, this.elementConfig.getConfig(cls.DROPDOWN_BUTTON_NAME)
                         .Data({ mrbrDropdownType: self.$ddmt.button })
-                        .Classes(self.buttonColour))),
+                        .Classes(self.buttonColour)
+                    )),
                         menuItemContainer = <HTMLElement>self.createElement(new ctrlCfg(cls.DROPDOWN_MENUITEM_CONTAINER_NAME, (self.menuStyle === self.$ddms.default ? self.$htmlt.ulist : self.$htmlt.div), self.elementConfig.getConfig(cls.DROPDOWN_MENUITEM_CONTAINER_NAME)));
                     self.createElement(new ctrlCfg(self.rootElementName, self.$htmlt.div, this.elementConfig.getConfig(cls.DROPDOWN_NAME)
                         .Children([button, menuItemContainer])
@@ -633,7 +629,59 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Bootstrap_Contr
             })
         return initalisePromise;
     }
+    /**
+    * Set Default config for Dropdown Elements
+    * @date 02/12/2022 - 01:52:18
+    *
+    * @public
+    * @returns {Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Dropdown>}
+    */
+    public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Dropdown> {
+        const
+            self = this,
+            selfCls = self.$cls,
+            componentName = selfCls[self.$mrbr.COMPONENT_NAME],
+            setDefaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Dropdown>(componentName + ":setDefaultConfig"),
+            clsUserSelectNone = self.$bui.userSelectNone,
+            dropdown = "dropdown",
+            clsDropDownItem = `${dropdown}-item`,
+            ctrlPrm = self.$ctrlPrm;
+        super.setDefaultConfig()
+            .then(async _ => {
+                self.elementConfig
+                    .controlName(componentName)
+                    .setIfNotExist(selfCls.DROPDOWN_NAME, new ctrlPrm()
+                        .Classes(`btn-group ${clsUserSelectNone}`))
+                    .setIfNotExist(selfCls.DROPDOWN_BUTTON_NAME, new ctrlPrm()
+                        .Classes(`btn ${dropdown}-toggle ${clsUserSelectNone}`)
+                        .Attributes({ "type": "button" })
+                        .Data({ bsToggle: dropdown })
+                        .Aria({ expanded: false }))
+                    .setIfNotExist(selfCls.DROPDOWN_MENUITEM_CONTAINER_NAME, new ctrlPrm()
+                        .Classes(`${dropdown}-menu ${clsUserSelectNone}`))
+                    .setIfNotExist(selfCls.DROPDOWN_MENUITEM_NAME, new ctrlPrm()
+                        .Classes(`${clsDropDownItem} ${clsUserSelectNone}`))
+                    .setIfNotExist(selfCls.DROPDOWN_DIVIDER_NAME, new ctrlPrm()
+                        .Classes(`${dropdown}-divider`))
+                    .setIfNotExist(selfCls.DROPDOWN_SUBMENU_NAME, new ctrlPrm())
+                    .setIfNotExist(selfCls.DROPDOWN_SUBMENU_LINK_NAME, new ctrlPrm()
+                        .Classes(`${clsDropDownItem} ${clsUserSelectNone}`)
+                        .Data({ bsToggle: dropdown })
+                        .Aria({ expanded: false })
+                        .Template(`<div class="d-flex" >` +
+                            `<div class="mrbr-info-text flex-grow-1">Dropdown</div>` +
+                            `<div class="flex-shrink-0" >` +
+                            `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox = "0 0 16 16" >` +
+                            `<path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z" > </path>` +
+                            `</svg>` +
+                            `</div>` +
+                            `</div>`)
 
+                    );
+                setDefaultConfigPromise.resolve(self);
+            })
+        return setDefaultConfigPromise;
+    }
     /**
      * Add SubMenu Dropdown
      * @date 02/12/2022 - 01:38:20
@@ -945,7 +993,7 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Bootstrap_Contr
             self = this,
             eventName = self.$ddie.buttonClick;
         if (typeof callback === "number") {
-            this.eventSubscribers.remove(eventName, callback);
+            self.eventSubscribers.remove(eventName, callback);
             return null;
         }
         if (self.isSubMenu === false) {
@@ -1070,14 +1118,15 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Bootstrap_Contr
      * @param {Event} event
      * @returns {menuTargetType}
      */
-    private getMenuTarget(event: Event): menuTargetType {
+    protected getMenuTarget(event: Event): menuTargetType {
         const eventTarget = <HTMLElement>event.target;
         const result: menuTargetType = {
             targetType: null,
             element: null
         }
         result.element = (eventTarget.dataset?.mrbrDropdownType) ? eventTarget : <HTMLElement>eventTarget.closest(`[${this.$cls.DROPDOWN_DATA_TYPE}]`);
-        result.targetType = this.$ddmt[Object.entries(this.$ddmt).find(([key, value]) => value === result.element?.dataset?.mrbrDropdownType)[0]];
+        const dropdownType = Object.entries(this.$ddmt).find(([key, value]) => value === result.element?.dataset?.mrbrDropdownType);
+        result.targetType = dropdownType ? this.$ddmt[dropdownType[0]] : null;
         return result.targetType ? result : null;
     }
 
@@ -1111,61 +1160,4 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Bootstrap_Contr
     }
 
     //#endregion Private EventHandlers
-    //#region Private Methods
-
-    /**
-     * Set Default config for Dropdown Elements
-     * @date 02/12/2022 - 01:52:18
-     *
-     * @public
-     * @returns {Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Dropdown>}
-     */
-    public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Dropdown> {
-        const
-            self = this,
-            selfCls = self.$cls,
-            componentName = selfCls[self.$mrbr.COMPONENT_NAME],
-            setDefaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Dropdown>(componentName + ":setDefaultConfig"),
-            clsUserSelectNone = self.$bui.userSelectNone,
-            dropdown = "dropdown",
-            clsDropDownItem = `${dropdown}-item`,
-            ctrlPrm = self.$ctrlPrm;
-        super.setDefaultConfig()
-            .then(async _ => {
-                self.elementConfig
-                    .controlName(componentName)
-                    .setIfNotExist(selfCls.DROPDOWN_NAME, new ctrlPrm()
-                        .Classes(`btn-group ${clsUserSelectNone}`))
-                    .setIfNotExist(selfCls.DROPDOWN_BUTTON_NAME, new ctrlPrm()
-                        .Classes(`btn ${dropdown}-toggle ${clsUserSelectNone}`)
-                        .Attributes({ "type": "button" })
-                        .Data({ bsToggle: dropdown })
-                        .Aria({ expanded: false }))
-                    .setIfNotExist(selfCls.DROPDOWN_MENUITEM_CONTAINER_NAME, new ctrlPrm()
-                        .Classes(`${dropdown}-menu ${clsUserSelectNone}`))
-                    .setIfNotExist(selfCls.DROPDOWN_MENUITEM_NAME, new ctrlPrm()
-                        .Classes(`${clsDropDownItem} ${clsUserSelectNone}`))
-                    .setIfNotExist(selfCls.DROPDOWN_DIVIDER_NAME, new ctrlPrm()
-                        .Classes(`${dropdown}-divider`))
-                    .setIfNotExist(selfCls.DROPDOWN_SUBMENU_NAME, new ctrlPrm())
-                    .setIfNotExist(selfCls.DROPDOWN_SUBMENU_LINK_NAME, new ctrlPrm()
-                        .Classes(`${clsDropDownItem} ${clsUserSelectNone}`)
-                        .Data({ bsToggle: dropdown })
-                        .Aria({ expanded: false })
-                        .Template(`<div class="d-flex" >` +
-                            `<div class="mrbr-info-text flex-grow-1">Dropdown</div>` +
-                            `<div class="flex-shrink-0" >` +
-                            `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox = "0 0 16 16" >` +
-                            `<path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z" > </path>` +
-                            `</svg>` +
-                            `</div>` +
-                            `</div>`)
-
-                    );
-                setDefaultConfigPromise.resolve(self);
-            })
-        return setDefaultConfigPromise;
-    }
-    //private stopPropagation(event: Event) { event.stopPropagation(); }
-    //#endregion Private Methods
 }

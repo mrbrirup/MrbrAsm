@@ -6,12 +6,13 @@
  * @export
  * @enum {number}
  */
-export enum Mrbr_UI_Bootstrap_Controls_Dropdown$MenuTypes {
+export enum Mrbr_UI_Bootstrap_Controls_DropdownMenuTypes {
     menuitem = "dropdown_menuitem",
     header = "dropdown_header",
     divider = "dropdown_divider",
     container = "dropdown_container",
     button = "dropdown_button",
     submenuButton = "dropdown_submenuButton",
-    submenu = "dropdown_submenu"
+    submenu = "dropdown_submenu",
+    mainButton = "dropdown_mainButton"
 }
