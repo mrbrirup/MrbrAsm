@@ -1,13 +1,13 @@
 let cfg = {
     // paths: { "Mrbr": "http://127.0.0.1:5500/dist/mrbr/" }
-    paths: { "Mrbr": "http://127.0.0.1:5500/dist/asm/" }
+    paths: { "Mrbr": "http://localhost:61735/dist/asm/" }
 };
 function runRes(result) {
     try {
-        MrbrBase.mrbrInstance.loadManifest(Mrbr.Tests.Application$Toast[MrbrBase.MRBR_COMPONENT_MANIFEST])
+        MrbrBase.mrbrInstance.loadManifest(Mrbr.Tests.Application$ToastRack[MrbrBase.MRBR_COMPONENT_MANIFEST])
             .then(_ => {
 
-                let DropdownApplication = new Mrbr.Tests.Application$Toast()
+                let DropdownApplication = new Mrbr.Tests.Application$ToastRack()
             })
 
     } catch (error) {
@@ -27,7 +27,7 @@ async function onReady() {
     try {
         window["mrbrLoadManifest"] =
             [
-                Mrbr.IO.File.component(Mrbr.Tests.Application$Toast, 0),
+                Mrbr.IO.File.component(Mrbr.Tests.Application$ToastRack, 0),
                 //Mrbr.IO.File.component(Mrbr.UI.Controls.Control, 0),
                 new Mrbr.IO.File(Mrbr.IO.FileType.ScriptLink, null, "https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js", "", {
                     integrity: "sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa",

@@ -72,7 +72,12 @@ export class Mrbr_UI_Html_StyleClasses {
      * @param {HTMLElement} target
      * @param {string} className
      */
-    static removeClass(target: HTMLElement, className: string) { (Mrbr_UI_Html_StyleClasses.hasClass(target, className)) && (target.classList.remove(className)) }
+    static removeClass(target: HTMLElement, className: string) {
+        className.split(" ")
+            .map(_className => _className.trim())
+            .filter(_className => _className.length > 0)
+            .forEach(_className => (Mrbr_UI_Html_StyleClasses.hasClass(target, _className)) && (target.classList.remove(_className)));
+    }
 
     /**
      * Toggles a class on target element.
