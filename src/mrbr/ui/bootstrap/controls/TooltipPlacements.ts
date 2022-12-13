@@ -1,4 +1,4 @@
-export enum Mrbr_UI_Bootstrap_Controls_Tooltip$Placements {
+export enum Mrbr_UI_Bootstrap_Controls_TooltipPlacements {
     top = "top",
     bottom = "bottom",
     left = "left",

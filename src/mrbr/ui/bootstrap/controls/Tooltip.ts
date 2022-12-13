@@ -2,7 +2,7 @@ import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHan
 import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../controls/ControlConfigOptionalParameters";
-import { Mrbr_UI_Bootstrap_Controls_Tooltip$Placements } from "./Tooltip$Placements";
+import { Mrbr_UI_Bootstrap_Controls_TooltipPlacements } from "./TooltipPlacements";
 
 export class Mrbr_UI_Bootstrap_Controls_Tooltip extends Mrbr_UI_Controls_Control {
     get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Tooltip { return Mrbr_UI_Bootstrap_Controls_Tooltip; }
@@ -42,13 +42,13 @@ export class Mrbr_UI_Bootstrap_Controls_Tooltip extends Mrbr_UI_Controls_Control
     //#endregion Public Static Methods
 
 
-    private _placement: Mrbr_UI_Bootstrap_Controls_Tooltip$Placements;
+    private _placement: Mrbr_UI_Bootstrap_Controls_TooltipPlacements;
     //    private _title: string;
     private _options: object;
     public get options(): object { return this._options; }
     public set options(value: object) { this._options = value; }
-    public get placement(): Mrbr_UI_Bootstrap_Controls_Tooltip$Placements { return this._placement; }
-    public set placement(value: Mrbr_UI_Bootstrap_Controls_Tooltip$Placements) {
+    public get placement(): Mrbr_UI_Bootstrap_Controls_TooltipPlacements { return this._placement; }
+    public set placement(value: Mrbr_UI_Bootstrap_Controls_TooltipPlacements) {
         const self = this;
         self._placement = value;
         self.rootElement && self.dataset(self.rootElement, { bsPlacement: value });

@@ -1,6 +1,6 @@
 import { MrbrBase } from "../system/MrbrBase";
 import { Mrbr_UI_Bootstrap_Controls_Tooltip } from "../ui/bootstrap/controls/Tooltip";
-import { Mrbr_UI_Bootstrap_Controls_Tooltip$Placements } from "../ui/bootstrap/controls/Tooltip$Placements";
+import { Mrbr_UI_Bootstrap_Controls_TooltipPlacements } from "../ui/bootstrap/controls/TooltipPlacements";
 export class Mrbr_Tests_Application$Tooltip {
   constructor() {
     let button = document.createElement("button");
@@ -13,7 +13,7 @@ export class Mrbr_Tests_Application$Tooltip {
       .then(async () => {
         const tooltip = new Mrbr_UI_Bootstrap_Controls_Tooltip(button, { title: "This is a tooltip too", popperPlacement: "top" });
         await tooltip.initialise();
-        tooltip.placement = Mrbr_UI_Bootstrap_Controls_Tooltip$Placements.bottom;
+        tooltip.placement = Mrbr_UI_Bootstrap_Controls_TooltipPlacements.bottom;
         tooltip.onHidden(() => {
           console.log("Tooltip hidden");
         });

@@ -1,3 +1,4 @@
+import { Mrbr_System_Events_Event } from "../system/events/Event";
 import { Mrbr_UI_Bootstrap_Controls_Button } from "../ui/bootstrap/controls/Button";
 import { Mrbr_UI_Bootstrap_Controls_ButtonGroup } from "../ui/bootstrap/controls/ButtonGroup";
 import { Mrbr_UI_Bootstrap_Controls_Toolbar } from "../ui/bootstrap/controls/Toolbar";
@@ -35,28 +36,21 @@ export class Mrbr_Tests_Application$Toolbar {
 
                 Promise.all([button1.initialise(), button2.initialise(), button3.initialise(), button4.initialise()])
                     .then(_ => {
-                        button1.addEventListener(self.$button.CLICK_EVENT_NAME, self.buttonClick.bind(self));
-                        button2.addEventListener(self.$button.CLICK_EVENT_NAME, self.buttonClick.bind(self));
+                        button1.onClick((e: Mrbr_System_Events_Event<any>) => { console.log("button1 clicked"); });
+                        button2.onClick((e: Mrbr_System_Events_Event<any>) => { console.log("button2 clicked"); });
+                        //button2.addEventListener(self.$button.CLICK_EVENT_NAME, self.buttonClick.bind(self));
                         buttonGroup0.addGroupItem(button1.id, button1.rootElement);
                         buttonGroup0.addGroupItem(button2.id, button2.rootElement);
                         buttonGroup1.addGroupItem(button3.id, button3.rootElement);
                         buttonGroup1.addGroupItem(button4.id, button4.rootElement);
+                        buttonGroup0.mount(toolbar)
+                        buttonGroup1.mount(toolbar)
+                        toolbar.mount(document.body);
                         toolbar.defaultContainerElement.appendChild(buttonGroup0.rootElement);
                         toolbar.defaultContainerElement.appendChild(buttonGroup1.rootElement);
-                        toolbar.spaceButtonGroups();
-                        document.body.appendChild(toolbar.rootElement);
-                        buttonGroup0.addEventListener(self.$buttonGroup.CLICK_EVENT_NAME, self.buttonGroupClick.bind(self));
+                        buttonGroup1.onClick((e: Mrbr_System_Events_Event<any>) => { console.log("buttonGroup0 clicked"); });
                     })
             })
     }
-    buttonClick(e: CustomEvent) {
-        e.stopPropagation();
-        e.preventDefault();
-        console.log("Button Clicked: ", e.detail);
-    }
-    buttonGroupClick(e: CustomEvent) {
-        e.stopPropagation();
-        e.preventDefault();
-        console.log("Button Group Clicked: ", e.detail);
-    }
+
 }
