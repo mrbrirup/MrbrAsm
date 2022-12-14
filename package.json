@@ -7,7 +7,9 @@
   "author": "",
   "scripts": {
     "build": "tsc --build",
-    "clean": "tsc --build --clean"
+    "clean": "tsc --build --clean",
+    "mrbrtrans": "node build/transpileToMrbrAssembly.js --source ./src --dest=./dist",
+    "mrbrbuild": "npm run build && npm run mrbrtrans"
   },
   "devDependencies": {
     "@types/web": "^0.0.63",
@@ -19,9 +21,6 @@
     "xml2js": "^0.4.23"
   },
   "license": "ISC",
-  "publishConfig": {
-    "registry": "http://localhost:4873"
-  },
   "files": [
     "dist",
     "utils"
