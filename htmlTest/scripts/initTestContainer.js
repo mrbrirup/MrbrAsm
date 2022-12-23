@@ -4,10 +4,7 @@ function runRes(result) {
         mrbr.loadManifest(Mrbr.Tests.Application$Container[MrbrBase.MRBR_COMPONENT_MANIFEST])
             .then(async _ => {
                 let containerApplication = new Mrbr.Tests.Application$Container();
-                await containerApplication.initialise(document.body)
-                    .then(_ => {
 
-                    });
 
             })
     } catch (error) {

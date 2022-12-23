@@ -1,41 +1,23 @@
-import { MrbrBase } from "../system/MrbrBase";
-import { Mrbr_System_Promise } from "../system/Promise";
-import { Mrbr_UI_Bootstrap_Containers_Container } from "../ui/bootstrap/containers/Container";
-import { Mrbr_UI_Bootstrap_Containers_Container$Breakpoints } from "../ui/bootstrap/containers/container$breakpoints";
-import { Mrbr_UI_Controls_Control } from "../ui/controls/Control";
+import { Mrbr_UI_Bootstrap_Layout_Container } from "../ui/bootstrap/layout/Container";
+import { Mrbr_UI_Bootstrap_Layout_ContainerTypes } from "../ui/bootstrap/layout/ContainerTypes";
 
-export class Mrbr_Tests_Application$Container extends Mrbr_UI_Controls_Control {
-    get $mubcc(): typeof Mrbr_UI_Bootstrap_Containers_Container { return Mrbr_UI_Bootstrap_Containers_Container; }
-    get $mubcc$bp(): typeof Mrbr_UI_Bootstrap_Containers_Container$Breakpoints { return Mrbr_UI_Bootstrap_Containers_Container$Breakpoints; }
+export class Mrbr_Tests_Application$Container {
     constructor() {
-        super("Mrbr_Tests_Application$Container");
-    }
-    initialise(targetElement: HTMLElement, ...args): Mrbr_System_Promise<Mrbr_Tests_Application$Container> {
-        const self = this,
-            cls: typeof Mrbr_Tests_Application$Container = Mrbr_Tests_Application$Container,
-            initialisePromise = self.$promise.create<Mrbr_System_Promise<Mrbr_UI_Bootstrap_Containers_Container>>(`${cls[MrbrBase.COMPONENT_NAME]}:initialise`);
-        try {
+        const
+            container = new Mrbr_UI_Bootstrap_Layout_Container(),
+            fluidContainer = new Mrbr_UI_Bootstrap_Layout_Container()
+                .ContainerType(Mrbr_UI_Bootstrap_Layout_ContainerTypes.fluid);
 
-            super.initialise(targetElement, args).then(async _ => {
-                await self.loadManifest(cls)
-                const container = await new self.$mubcc(self.rootElementName).initialise() as Mrbr_UI_Bootstrap_Containers_Container;
-                self.controls.set(container.rootElementName, container)
-                container.sizing = self.$mubcc$bp.sm;
-                container.mount(targetElement);
-                self.classes(container.rootElement, self.$clsActions.add, "h-100");
+        Promise.all([container.initialise(), fluidContainer.initialise()])
 
-                setTimeout(() => { self.changeToBlue(); }, 5000);
-                setTimeout(() => { container.sizing = self.$mubcc$bp.lg }, 6000);
-
-                initialisePromise.resolve(self);
-
+            .then(_ => {
+                container.rootElement.style.backgroundColor = "red";
+                container.rootElement.style.height = "100px";
+                fluidContainer.rootElement.style.backgroundColor = "blue";
+                fluidContainer.rootElement.style.height = "100px";
+                container.mount(document.body);
+                fluidContainer.mount(document.body);
             });
-        } catch (error) {
-            initialisePromise.reject(error);
-        }
-        return initialisePromise;
-    }
-    public changeToBlue() {
-        this.controls.get(this.rootElementName).rootElement.style.backgroundColor = "blue";
+
     }
 }

@@ -41,6 +41,12 @@ if (
 }
 console.info(`transpile from ${resolvedSourceFolder} to ${resolvedDestinationFolder}`);
 
+// get mrbrPaths from tsconfig.json
+let tsconfigText = fs.readFileSync("tsconfig.json", "utf8");
+tsconfigText = tsconfigText.replace(/\/\*[\s\S]*?\*\//gm, "");
+tsconfigText = tsconfigText.replace(/\/\/.*$/gm, "");
+const tsConfig = JSON.parse(tsconfigText);
+const mrbrPaths = tsConfig.mrbrPaths;
 
 const
     rxImportReference = /^(?<import>import)\s*\{*\s*(?<assembly>\S*?)\s*\}*\s*from\s*(?<fileName>'.*?'|".*?")\s*;{0,1}\s*((\s*?)(\/{2}\s*?(?<mrbrConfig>[\S\s]*?))){0,1}$/gm,
@@ -55,7 +61,9 @@ const sourceFiles = [],
     writtenFiles = [],
     fileTypeMap = new Map();
 RecurseFolders(resolvedSourceFolder, sourceFiles);
-createMrbrBaseFile(mrbrBaseSourceFile);
+if (fs.existsSync(path.join(resolvedSourceFolder, "mrbr")) === true) {
+    createMrbrBaseFile(mrbrBaseSourceFile);
+}
 const mrbrJSRootDirectory = path.resolve(destinationFolder),
     mrbrAsmRootDirectory = path.join(mrbrJSRootDirectory, "asm")
 writtenFiles.splice(0, writtenFiles.length);
@@ -121,9 +129,15 @@ function createMrbrBaseFile(sourceFileName) {
     const sourceFile = sourceFiles.find(sourceFile => sourceFile.shortSourceFileName.substring(sourceFile.shortSourceFileName.length - sourceFileName.length).toLowerCase() === sourceFileName.toLowerCase()),
         importedReferences = [],
         importReferenceRegex = cloneRegex(rxImportReference),
-        sourceContent = fs.readFileSync(sourceFile.longSourceFileName, "utf8"),
         classDeclarationRegex = cloneRegex(rxClassDeclaration),
         interfaceRegex = cloneRegex(rxInterface);
+    let sourceContent;
+    try {
+        sourceContent = fs.readFileSync(sourceFile.longSourceFileName, "utf8");
+    } catch (error) {
+        console.error("createMrbrBaseFile: Error reading Source file: " + sourceFile);
+        console.error(error);
+    }
     if (interfaceMatch = interfaceRegex.exec(sourceContent) !== null) {
         return;
     }
@@ -135,6 +149,7 @@ function createMrbrBaseFile(sourceFileName) {
             fileTypeMap.set(importTest, fileType);
         }
         if (fileTypeMap.get(importTest) !== "interface") {
+
             importedReferences.push({ assembly: importMatch?.groups?.assembly, config: mrbrConfigToConfig(importMatch?.groups?.mrbrConfig) });
             // if (config.optional !== true && config.exclude !== true) {
 
@@ -219,29 +234,34 @@ function createMrbrBaseFile(sourceFileName) {
 
 
 function getExportType(assemblyName) {
-    let sourceFileName = assemblyName.replace(/_/gm, "/") + ".ts";
-    let fullSourceFileName = path.join(resolvedSourceFolder, sourceFileName);
-    let exists = fs.existsSync(fullSourceFileName);
-    let importReferenceRegex = cloneRegex(rxImportReference),
-        sourceContent = fs.readFileSync(fullSourceFileName, "utf8"),
-        classDeclarationRegex = cloneRegex(rxClassDeclaration),
-        interfaceRegex = cloneRegex(rxInterface),
-        enumFunctionRegex = cloneRegex(rxEnumFunction),
-        functionRegex = cloneRegex(rxFunction);
     let fileType = "unknown";
-    if (classDeclarationMatch = classDeclarationRegex.exec(sourceContent) !== null) {
-        fileType = "class";
+    try {
+
+        let sourceFileName = assemblyName.replace(/_/gm, "/") + ".ts";
+        let fullSourceFileName = path.join(resolvedSourceFolder, sourceFileName);
+        let exists = fs.existsSync(fullSourceFileName);
+        let importReferenceRegex = cloneRegex(rxImportReference),
+            sourceContent = fs.readFileSync(fullSourceFileName, "utf8"),
+            classDeclarationRegex = cloneRegex(rxClassDeclaration),
+            interfaceRegex = cloneRegex(rxInterface),
+            enumFunctionRegex = cloneRegex(rxEnumFunction),
+            functionRegex = cloneRegex(rxFunction);
+        if (classDeclarationMatch = classDeclarationRegex.exec(sourceContent) !== null) {
+            fileType = "class";
+        }
+        else if (interfaceDeclarationMatch = interfaceRegex.exec(sourceContent) !== null) {
+            fileType = "interface";
+        }
+        else if (enumMatch = enumFunctionRegex.exec(sourceContent) !== null) {
+            fileType = "enum";
+        }
+        else if (functionMatch = functionRegex.exec(sourceContent) !== null) {
+            fileType = "function";
+        }
+    } finally {
+        return fileType;
+
     }
-    else if (interfaceDeclarationMatch = interfaceRegex.exec(sourceContent) !== null) {
-        fileType = "interface";
-    }
-    else if (enumMatch = enumFunctionRegex.exec(sourceContent) !== null) {
-        fileType = "enum";
-    }
-    else if (functionMatch = functionRegex.exec(sourceContent) !== null) {
-        fileType = "function";
-    }
-    return fileType;
 }
 
 
@@ -259,19 +279,40 @@ function createMrbrAssemblyFile(sourceFile) {
         return;
     }
     while ((importMatch = importReferenceRegex.exec(sourceContent)) !== null) {
+        console.log("createMrbrAssemblyFile: importMatch: ", sourceFile.shortSourceFileName, importMatch.groups.assembly, importMatch.groups.fileName)
+        console.log()
         if (importMatch.index === importReferenceRegex.lastIndex) { importReferenceRegex.lastIndex++; }
         let importTest = importMatch?.groups?.assembly.toLowerCase() === "mrbrbase" ? "Mrbr_System_MrbrBase" : importMatch?.groups?.assembly
+        if (mrbrPaths) {
+            const foundMrbrPath = mrbrPaths.find(_mrbrPath => {
+                let importPath = importMatch?.groups?.fileName.replace(/\/{2}/gm).toLowerCase().replace(/\\/gm, "/"),
+                    mrbrPath = _mrbrPath.replace(/\/{2}/gm).toLowerCase().replace(/\\/gm, "/");
+                console.log("importPath.startsWith(_mrbrPath): ", importPath.startsWith(_mrbrPath), importPath, _mrbrPath)
+                return importPath.startsWith(_mrbrPath)
+            });
+            if (foundMrbrPath) { continue }
+        }
+        console.log("importTest: ", importTest)
         if (!fileTypeMap.get(importTest)) {
             let fileType = getExportType(importTest);
             fileTypeMap.set(importTest, fileType);
+            console.log("fileTypeMap: ", importTest, fileType)
         }
         if (fileTypeMap.get(importTest) !== "interface") {
+
             importedReferences.push({ assembly: importMatch?.groups?.assembly, config: mrbrConfigToConfig(importMatch?.groups?.mrbrConfig) });
         }
     }
-    const destinationContent = fs.readFileSync(sourceFile.longDestinationFileName, "utf-8"),
-        classDeclarationMatch = classDeclarationRegex.exec(destinationContent),
-        exportType = classDeclarationMatch?.groups?.exportType,
+    let destinationContent,
+        classDeclarationMatch;
+    try {
+        destinationContent = fs.readFileSync(sourceFile.longDestinationFileName, "utf-8");
+        classDeclarationMatch = classDeclarationRegex.exec(destinationContent)
+    } catch (error) {
+        console.error("Error createMrbrAssemblyFile: ", sourceFile)
+        console.error(error);
+    }
+    const exportType = classDeclarationMatch?.groups?.exportType,
         includeClassExtension = "",
         destinationFileName = path.join(mrbrAsmRootDirectory, sourceFile.longDestinationFileName.substring(resolvedDestinationFolder.length));
 
@@ -323,6 +364,8 @@ function createMrbrAssemblyFile(sourceFile) {
     }
     if (exportName) {
         let manifest = []
+        console.log("exportName: ", exportName)
+        console.log("importedReferences: ", importedReferences);
         if (importedReferences?.length > 0) {
             importedReferences.forEach(importedReference => {
                 let loadRequirementArray = [];
@@ -340,6 +383,7 @@ function createMrbrAssemblyFile(sourceFile) {
             //}
             //    manifest = manifest.concat(...[importedReferences.filter(entry => entry.optional === false).filter(entry => entry.assembly?.name?.toLowerCase() !== "mrbrbase").map(include => (`${" ".repeat(8)} miofc(${include.assembly.replace(/_/g, ".")})`))])
         }
+        console.log("manifest: ", manifest)
         let source = prettify(`((mrbr, data, resolve, reject, symbols) => {
             ${!(classDeclarationMatch) ? "if (MrbrBase.Namespace.isNamespace(" + exportName.replace(/_/g, '.') + ")){" + exportName.replace(/_/g, '.') + " = {}; } " : ""}
             ${manifest?.length ? "const miofc = Mrbr.IO.File.component, mir= Mrbr.IO.LoadRequirements;\r\n" : ""}
@@ -374,6 +418,8 @@ function prettify(code, beautify = false) {
 }
 
 function generateCode(text, replaceNames, exportType, exportName) {
+    //console.log("generateCode: ", text, replaceNames, exportType, exportName)
+    // console.log("generateCode: ", replaceNames, exportType, exportName)
     if (!replaceNames || replaceNames.length === 0) { return text; }
     const ast = esprima.parseScript(text);
     let foundFirst = false;

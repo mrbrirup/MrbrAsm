@@ -70,6 +70,7 @@ export enum Mrbr_UI_HTML_ElementTags {
     source = "source",
     span = "span",
     style = "style",
+    svg = "svg",
     tableCaption = "caption",
     tableCell = "td",
     tableCol = "col",

@@ -13,8 +13,6 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTH
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 import { Mrbr_Assembly_MrbrConfig } from '../assembly/mrbrConfig';
-import { Mrbr_System_Object } from '../system/object';
-import { Mrbr_System_Component } from '../system/component';
 import { Mrbr_System_Promise } from './Promise';
 import { Mrbr_IO_Fetch } from '../io/Fetch';
 import { Mrbr_IO_File } from '../io/File';
@@ -65,7 +63,7 @@ export class MrbrBase extends EventTarget {
     static defaultMrbrPath: string = "/mrbr/";
     static _mrbr: MrbrBase;
     private _config: Mrbr_Assembly_MrbrConfig;
-    private _paths: Map<string, string> = new Map();
+    private _paths: Map<string, string>;
     private _entries: any;
     private _files: any;
     private _index: any;
@@ -467,7 +465,10 @@ export class MrbrBase extends EventTarget {
         })
         self.setAliases();
     }
-
+    public CreateNamespace(name: string | Array<string>): MrbrBase {
+        [name].flat().forEach(name => MrbrBase.Namespace.createAssembly(this.host, name));
+        return this;
+    }
     /**
      * Singleton for MrbrBase.
      * Allows reference to instance through Class instead of having to add dummy reference to every file
@@ -505,9 +506,7 @@ export class MrbrBase extends EventTarget {
      * @readonly
      * @type {Map<string, string>}
      */
-    get paths(): Map<string, string> {
-        return this._paths;
-    }
+    get paths(): Map<string, string> { return this._paths ??= new Map<string, string>(); }
 
     /**
      * Host object, usually a global object globalThis or Window 
@@ -583,14 +582,14 @@ export class MrbrBase extends EventTarget {
         const self = this;
         self.setAliases();
         const
-            promise = self.$promise.create("MrbrBase.initialise"),
-            self_paths = self._paths;
+            promise = self.$promise.create("MrbrBase.initialise");//,
+        //self_paths = self._paths;
         self.config = config;
         !(self.host) && (_ => {
             var global: any = global || null;
             self.host = ((window as any) || (global) || (globalThis as any));
         })();
-        (config?.paths) && Object.keys(config.paths).forEach(key => self_paths.set(key, config.paths[key]));
+        self.Paths(config.paths);
         /// If browser based
         (document) && (_ => {
             const mrbrCss: HTMLStyleElement = document.createElement("style");
@@ -600,6 +599,22 @@ export class MrbrBase extends EventTarget {
         promise.resolve(self);
         return promise;
     }
+
+    /**
+     * Set paths for Mrbr Assembly and Mrbr Assembly compliant objects
+     * @date 18/12/2022 - 15:14:06
+     *
+     * @public
+     * @param {object} paths
+     * @returns {MrbrBase}
+     */
+    public Paths(paths: object): MrbrBase {
+        if (!paths) return this;
+        Object.keys(paths).forEach(key => this.paths.set(key, paths[key]));
+        return this;
+    }
+
+
     private setAliases() {
         const self = this;
         self.$promise = Mrbr_System_Promise;
