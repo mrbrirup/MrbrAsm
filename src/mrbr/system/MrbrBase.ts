@@ -578,7 +578,7 @@ export class MrbrBase extends EventTarget {
      * @param {Mrbr_Assembly_MrbrConfig} config
      * @returns {Promise<any>} Promise for initialisation completed
      */
-    initialise(config: Mrbr_Assembly_MrbrConfig): Mrbr_System_Promise<any> {
+    public initialise(config: Mrbr_Assembly_MrbrConfig): Mrbr_System_Promise<MrbrBase> {
         const self = this;
         self.setAliases();
         const
@@ -589,7 +589,7 @@ export class MrbrBase extends EventTarget {
             var global: any = global || null;
             self.host = ((window as any) || (global) || (globalThis as any));
         })();
-        self.Paths(config.paths);
+        self.Paths(config?.paths);
         /// If browser based
         (document) && (_ => {
             const mrbrCss: HTMLStyleElement = document.createElement("style");
