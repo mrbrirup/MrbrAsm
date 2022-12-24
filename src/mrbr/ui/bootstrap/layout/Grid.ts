@@ -5,6 +5,7 @@ import { Mrbr_UI_Bootstrap_Layout_GridColumnSizes } from "./GridColumnSizes";
 import { Mrbr_UI_Bootstrap_Layout_GridRowAlignItems } from "./GridRowAlignItems";
 import { Mrbr_UI_Bootstrap_Layout_GridRowJustifications } from "./GridRowJustifications";
 import { Mrbr_UI_Bootstrap_Layout_GridRowSizes } from "./GridRowSizes";
+import { Mrbr_UI_Bootstrap_Layout_Gutters } from "./Gutters";
 
 /**
  * Bootstrap Layout.Grid Class
@@ -58,28 +59,6 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
     private _rowAlignItems: Mrbr_UI_Bootstrap_Layout_GridRowAlignItems;
 
     /**
-     * GridRowAlignItems, Align All Items in a Row field
-     * @date 24/12/2022 - 19:54:29
-     *
-     * @public
-     * @type {Mrbr_UI_Bootstrap_Layout_GridRowAlignItems}
-     */
-    public get rowAlignItems(): Mrbr_UI_Bootstrap_Layout_GridRowAlignItems {
-        return this._rowAlignItems ??= this.$rowAlignItems.default;
-    }
-
-    /**
-     * GridRowAlignItems, Align All Items in a Row field
-     */
-    public set rowAlignItems(value: Mrbr_UI_Bootstrap_Layout_GridRowAlignItems) {
-        const root = this.rootElement;
-        root && this.classes(root, this.$clsActions.replace, [this.rowAlignItems, value]);
-        this._rowAlignItems = value;
-    }
-
-
-
-    /**
      * GridRowJustifications, Justify All Items in a Row field
      * @date 24/12/2022 - 19:59:22
      *
@@ -87,26 +66,6 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
      * @type {Mrbr_UI_Bootstrap_Layout_GridRowJustifications}
      */
     private _gridRowJustifications: Mrbr_UI_Bootstrap_Layout_GridRowJustifications;
-    
-    /**
-     * GridRowJustifications, Justify All Items in a Row property
-     * @date 24/12/2022 - 20:00:55
-     *
-     * @public
-     * @type {Mrbr_UI_Bootstrap_Layout_GridRowJustifications}
-     */
-    public get gridRowJustifications(): Mrbr_UI_Bootstrap_Layout_GridRowJustifications {
-        return this._gridRowJustifications ??= this.$rowJustifications.default;
-    }
-    
-    /**
-     * GridRowJustifications, Justify All Items in a Row property
-     */
-    public set gridRowJustifications(value: Mrbr_UI_Bootstrap_Layout_GridRowJustifications) {
-        const root = this.rootElement;
-        root && this.classes(root, this.$clsActions.replace, [this.gridRowJustifications, value]);
-        this._gridRowJustifications = value;
-    }
 
 
     /**
@@ -120,6 +79,14 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
     public get $bootstrapLayout(): any { return this[Symbol.for("Mrbr.UI.Bootstrap.Layout")] ??= this.$mrbrInstance.host["Mrbr"].UI.Bootstrap.Layout; }
 
 
+    /**
+     * Row Justifications Enum Alias
+     * @date 24/12/2022 - 21:12:19
+     *
+     * @public
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Layout_GridRowJustifications}
+     */
     public get $rowJustifications(): typeof Mrbr_UI_Bootstrap_Layout_GridRowJustifications { return this.$bootstrapLayout.GridRowJustifications as typeof Mrbr_UI_Bootstrap_Layout_GridRowJustifications; }
 
     /**
@@ -170,10 +137,79 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
      * @param {?string} [rootElementName]
      * @param {?Mrbr_UI_Bootstrap_Layout_GridRowSizes} [gridRowSize]
      */
+
+
+    /**
+     * Gutter Enum Alias
+     * @date 24/12/2022 - 21:11:32
+     *
+     * @public
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Layout_Gutters}
+     */
+    public get $gutters(): typeof Mrbr_UI_Bootstrap_Layout_Gutters { return this.$bootstrapLayout.Gutters as typeof Mrbr_UI_Bootstrap_Layout_Gutters; }
+
     constructor(rootElementName?: string, gridRowSize?: Mrbr_UI_Bootstrap_Layout_GridRowSizes) {
         super(rootElementName);
         this.gridRowSize = gridRowSize;
     }
+
+
+
+    private _gutters: Array<Mrbr_UI_Bootstrap_Layout_Gutters>;
+    public get gutters(): Array<Mrbr_UI_Bootstrap_Layout_Gutters> {
+        return this._gutters ??= new Array<Mrbr_UI_Bootstrap_Layout_Gutters>();
+    }
+    public set gutters(value: Mrbr_UI_Bootstrap_Layout_Gutters | Array<Mrbr_UI_Bootstrap_Layout_Gutters>) {
+        const root = this.rootElement;
+        if(root)    {
+            this.classes(root, this.$clsActions.remove, this.gutters);
+            this.classes(root, this.$clsActions.add, value);
+        }
+        this._gutters = [value].flat();
+    }
+
+
+    /**
+     * GridRowAlignItems, Align All Items in a Row field
+     * @date 24/12/2022 - 19:54:29
+     *
+     * @public
+     * @type {Mrbr_UI_Bootstrap_Layout_GridRowAlignItems}
+     */
+    public get rowAlignItems(): Mrbr_UI_Bootstrap_Layout_GridRowAlignItems {
+        return this._rowAlignItems ??= this.$rowAlignItems.default;
+    }
+
+    /**
+     * GridRowAlignItems, Align All Items in a Row field
+     */
+    public set rowAlignItems(value: Mrbr_UI_Bootstrap_Layout_GridRowAlignItems) {
+        const root = this.rootElement;
+        root && this.classes(root, this.$clsActions.replace, [this.rowAlignItems, value]);
+        this._rowAlignItems = value;
+    }
+
+    /**
+     * GridRowJustifications, Justify All Items in a Row property
+     * @date 24/12/2022 - 20:00:55
+     *
+     * @public
+     * @type {Mrbr_UI_Bootstrap_Layout_GridRowJustifications}
+     */
+    public get gridRowJustifications(): Mrbr_UI_Bootstrap_Layout_GridRowJustifications {
+        return this._gridRowJustifications ??= this.$rowJustifications.default;
+    }
+
+    /**
+     * GridRowJustifications, Justify All Items in a Row property
+     */
+    public set gridRowJustifications(value: Mrbr_UI_Bootstrap_Layout_GridRowJustifications) {
+        const root = this.rootElement;
+        root && this.classes(root, this.$clsActions.replace, [this.gridRowJustifications, value]);
+        this._gridRowJustifications = value;
+    }
+
 
     /**
      * GridRowSize Property
