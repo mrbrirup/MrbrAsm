@@ -2,6 +2,8 @@ import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Bootstrap_Controls_BootstrapControl } from "../controls/BootstrapControl";
 import { Mrbr_UI_Bootstrap_Layout_GridColumn } from "./GridColumn";
 import { Mrbr_UI_Bootstrap_Layout_GridColumnSizes } from "./GridColumnSizes";
+import { Mrbr_UI_Bootstrap_Layout_GridRowAlignItems } from "./GridRowAlignItems";
+import { Mrbr_UI_Bootstrap_Layout_GridRowJustifications } from "./GridRowJustifications";
 import { Mrbr_UI_Bootstrap_Layout_GridRowSizes } from "./GridRowSizes";
 
 /**
@@ -15,7 +17,7 @@ import { Mrbr_UI_Bootstrap_Layout_GridRowSizes } from "./GridRowSizes";
  */
 export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_BootstrapControl {
 
-    
+
     /**
      * Internal Grid Row Name
      * @date 24/12/2022 - 17:08:56
@@ -26,7 +28,7 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
      * @type {string}
      */
     public static readonly GRID_ROW: string = "Mrbr_UI_Bootstrap_Layout_Grid_Row";
-    
+
     /**
      * GridColumns Collection field
      * @date 24/12/2022 - 17:09:12
@@ -35,7 +37,7 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
      * @type {Map<string, Mrbr_UI_Bootstrap_Layout_GridColumn>}
      */
     private _columns: Map<string, Mrbr_UI_Bootstrap_Layout_GridColumn>;
-    
+
     /**
      * GridRowSize field
      * @date 24/12/2022 - 17:09:28
@@ -44,7 +46,69 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
      * @type {Mrbr_UI_Bootstrap_Layout_GridRowSizes}
      */
     private _gridRowSize: Mrbr_UI_Bootstrap_Layout_GridRowSizes;
+
+
+    /**
+     * GridRowAlignItems, Align All Items in a Row field
+     * @date 24/12/2022 - 19:50:43
+     *
+     * @private
+     * @type {Mrbr_UI_Bootstrap_Layout_GridRowAlignItems}
+     */
+    private _rowAlignItems: Mrbr_UI_Bootstrap_Layout_GridRowAlignItems;
+
+    /**
+     * GridRowAlignItems, Align All Items in a Row field
+     * @date 24/12/2022 - 19:54:29
+     *
+     * @public
+     * @type {Mrbr_UI_Bootstrap_Layout_GridRowAlignItems}
+     */
+    public get rowAlignItems(): Mrbr_UI_Bootstrap_Layout_GridRowAlignItems {
+        return this._rowAlignItems ??= this.$rowAlignItems.default;
+    }
+
+    /**
+     * GridRowAlignItems, Align All Items in a Row field
+     */
+    public set rowAlignItems(value: Mrbr_UI_Bootstrap_Layout_GridRowAlignItems) {
+        const root = this.rootElement;
+        root && this.classes(root, this.$clsActions.replace, [this.rowAlignItems, value]);
+        this._rowAlignItems = value;
+    }
+
+
+
+    /**
+     * GridRowJustifications, Justify All Items in a Row field
+     * @date 24/12/2022 - 19:59:22
+     *
+     * @private
+     * @type {Mrbr_UI_Bootstrap_Layout_GridRowJustifications}
+     */
+    private _gridRowJustifications: Mrbr_UI_Bootstrap_Layout_GridRowJustifications;
     
+    /**
+     * GridRowJustifications, Justify All Items in a Row property
+     * @date 24/12/2022 - 20:00:55
+     *
+     * @public
+     * @type {Mrbr_UI_Bootstrap_Layout_GridRowJustifications}
+     */
+    public get gridRowJustifications(): Mrbr_UI_Bootstrap_Layout_GridRowJustifications {
+        return this._gridRowJustifications ??= this.$rowJustifications.default;
+    }
+    
+    /**
+     * GridRowJustifications, Justify All Items in a Row property
+     */
+    public set gridRowJustifications(value: Mrbr_UI_Bootstrap_Layout_GridRowJustifications) {
+        const root = this.rootElement;
+        root && this.classes(root, this.$clsActions.replace, [this.gridRowJustifications, value]);
+        this._gridRowJustifications = value;
+    }
+
+
     /**
      * Bootstrap Layout Namespace Alias
      * @date 24/12/2022 - 17:11:21
@@ -54,7 +118,20 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
      * @type {*}
      */
     public get $bootstrapLayout(): any { return this[Symbol.for("Mrbr.UI.Bootstrap.Layout")] ??= this.$mrbrInstance.host["Mrbr"].UI.Bootstrap.Layout; }
-    
+
+
+    public get $rowJustifications(): typeof Mrbr_UI_Bootstrap_Layout_GridRowJustifications { return this.$bootstrapLayout.GridRowJustifications as typeof Mrbr_UI_Bootstrap_Layout_GridRowJustifications; }
+
+    /**
+     * GridRowAlignItems Enum Alias
+     * @date 24/12/2022 - 19:54:10
+     *
+     * @public
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Layout_GridRowAlignItems}
+     */
+    public get $rowAlignItems(): typeof Mrbr_UI_Bootstrap_Layout_GridRowAlignItems { return this.$bootstrapLayout.GridRowAlignItems as typeof Mrbr_UI_Bootstrap_Layout_GridRowAlignItems; }
+
     /**
      * Gird Type Alias
      * @date 24/12/2022 - 17:11:52
@@ -64,7 +141,7 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
      * @type {typeof Mrbr_UI_Bootstrap_Layout_Grid}
      */
     public get $grid(): typeof Mrbr_UI_Bootstrap_Layout_Grid { return this.$bootstrapLayout.Grid as typeof Mrbr_UI_Bootstrap_Layout_Grid; }
-    
+
     /**
      * GridRowSize Enum Alias
      * @date 24/12/2022 - 17:12:11
@@ -74,7 +151,7 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
      * @type {typeof Mrbr_UI_Bootstrap_Layout_GridRowSizes}
      */
     public get $gridRowSizes(): typeof Mrbr_UI_Bootstrap_Layout_GridRowSizes { return this.$bootstrapLayout.GridRowSizes as typeof Mrbr_UI_Bootstrap_Layout_GridRowSizes; }
-    
+
     /**
      * GridColumnSize Enum Alias
      * @date 24/12/2022 - 17:12:27
@@ -84,7 +161,7 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
      * @type {typeof Mrbr_UI_Bootstrap_Layout_GridColumnSizes}
      */
     public get $gridColumnSizes(): typeof Mrbr_UI_Bootstrap_Layout_GridColumnSizes { return this.$bootstrapLayout.GridColumnSizes as typeof Mrbr_UI_Bootstrap_Layout_GridColumnSizes; }
-    
+
     /**
      * Creates an instance of Mrbr_UI_Bootstrap_Layout_Grid.
      * @date 24/12/2022 - 17:12:36
@@ -97,7 +174,7 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
         super(rootElementName);
         this.gridRowSize = gridRowSize;
     }
-    
+
     /**
      * GridRowSize Property
      * @date 24/12/2022 - 17:13:04
@@ -106,7 +183,7 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
      * @type {Mrbr_UI_Bootstrap_Layout_GridRowSizes}
      */
     public get gridRowSize(): Mrbr_UI_Bootstrap_Layout_GridRowSizes { return this._gridRowSize ??= Mrbr_UI_Bootstrap_Layout_GridRowSizes.default; }
-    
+
     /**
      * GridRowSize Property
      */
@@ -115,7 +192,7 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
         root && (this.classes(root, this.$clsActions.replace, [this.gridRowSize, value]))
         this._gridRowSize = value;
     }
-    
+
     /**
      * GridColumns Property
      * @date 24/12/2022 - 17:13:23
@@ -125,7 +202,7 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
      * @type {Map<string, Mrbr_UI_Bootstrap_Layout_GridColumn>}
      */
     public get gridColumns(): Map<string, Mrbr_UI_Bootstrap_Layout_GridColumn> { return this._columns ??= new Map<string, Mrbr_UI_Bootstrap_Layout_GridColumn>(); }
-    
+
     /**
      * Initialises the Grid, load manifest and sets default config
      * @date 24/12/2022 - 17:13:31
@@ -154,7 +231,7 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
 
         return initialisePromise;
     }
-    
+
     /**
      * Sets the default config for the Grid
      * @date 24/12/2022 - 17:14:50
@@ -178,7 +255,7 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
             .catch(error => setDefaultConfigPromise.reject(error))
         return setDefaultConfigPromise;
     }
-    
+
     /**
      * Adds a column to the Grid
      * @date 24/12/2022 - 17:14:59
@@ -195,7 +272,7 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
         root && root.appendChild(gridColumn.element);
         return gridColumn.name;
     }
-    
+
     /**
      * Removes a column from the Grid
      * @date 24/12/2022 - 17:15:11
@@ -215,7 +292,7 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
         }
         return self;
     }
-    
+
     /**
      * Adds columns to the Grid
      * @date 24/12/2022 - 17:15:19
@@ -227,8 +304,8 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
     public addColumns(...gridColumns: Mrbr_UI_Bootstrap_Layout_GridColumn[]): string[] {
         return gridColumns.map(gridColumn => this.addColumn(gridColumn));
     }
-    
-    
+
+
     /**
      * Get Column by name
      * @date 24/12/2022 - 17:16:27
@@ -240,7 +317,7 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
     public column(columnName: string): Mrbr_UI_Bootstrap_Layout_GridColumn {
         return this.gridColumns.get(columnName);
     }
-    
+
     /**
      * Get Column Element by name
      * @date 24/12/2022 - 17:16:45

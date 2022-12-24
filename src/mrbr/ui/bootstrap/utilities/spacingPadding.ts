@@ -1,0 +1,58 @@
+export enum Mrbr_UI_Bootstrap_Utilities_SpacingPadding {
+    padding0 = "p-0",
+    padding1 = "p-1",
+    padding2 = "p-2",
+    padding3 = "p-3",
+    padding4 = "p-4",
+    padding5 = "p-5",
+    paddingAuto = "p-auto",
+
+    paddingTop0 = "pt-0",
+    paddingTop1 = "pt-1",
+    paddingTop2 = "pt-2",
+    paddingTop3 = "pt-3",
+    paddingTop4 = "pt-4",
+    paddingTop5 = "pt-5",
+    paddingTopAuto = "pt-auto",
+
+    paddingBottom0 = "pb-0",
+    paddingBottom1 = "pb-1",
+    paddingBottom2 = "pb-2",
+    paddingBottom3 = "pb-3",
+    paddingBottom4 = "pb-4",
+    paddingBottom5 = "pb-5",
+    paddingBottomAuto = "pb-auto",
+
+    paddingStart0 = " ps-0",
+    paddingStart1 = " ps-1",
+    paddingStart2 = " ps-2",
+    paddingStart3 = " ps-3",
+    paddingStart4 = " ps-4",
+    paddingStart5 = " ps-5",
+    paddingStartAuto = "ps-auto",
+
+    paddingEnd0 = " pe-0",
+    paddingEnd1 = " pe-1",
+    paddingEnd2 = " pe-2",
+    paddingEnd3 = " pe-3",
+    paddingEnd4 = " pe-4",
+    paddingEnd5 = " pe-5",
+    paddingEndAuto = "pe-auto",
+
+    paddingX0 = "px-0",
+    paddingX1 = "px-1",
+    paddingX2 = "px-2",
+    paddingX3 = "px-3",
+    paddingX4 = "px-4",
+    paddingX5 = "px-5",
+    paddingXAuto = "px-auto",
+
+    paddingY0 = " py-0",
+    paddingY1 = "py-1",
+    paddingY2 = "py-2",
+    paddingY3 = "py-3",
+    paddingY4 = "py-4",
+    paddingY5 = "py-5",
+    paddingYAuto = "py-auto"
+
+}
