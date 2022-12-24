@@ -1,3 +1,11 @@
+
+/**
+ * Bootstrap Layout Gutters Enum
+ * @date 24/12/2022 - 21:58:22
+ *
+ * @export
+ * @enum {number}
+ */
 export enum Mrbr_UI_Bootstrap_Layout_Gutters {
     x0 = "gx-0",
     x1 = "gx-1",
