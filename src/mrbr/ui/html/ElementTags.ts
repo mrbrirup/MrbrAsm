@@ -24,6 +24,8 @@ export enum Mrbr_UI_HTML_ElementTags {
     dList = "dl",
     embed = "embed",
     fieldSet = "fieldset",
+    figcaption = "figcaption",
+    figure = "figure",
     font = "font",
     form = "form",
     frame = "frame",
