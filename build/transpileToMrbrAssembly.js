@@ -279,8 +279,8 @@ function createMrbrAssemblyFile(sourceFile) {
         return;
     }
     while ((importMatch = importReferenceRegex.exec(sourceContent)) !== null) {
-        console.log("createMrbrAssemblyFile: importMatch: ", sourceFile.shortSourceFileName, importMatch.groups.assembly, importMatch.groups.fileName)
-        console.log()
+        // console.log("createMrbrAssemblyFile: importMatch: ", sourceFile.shortSourceFileName, importMatch.groups.assembly, importMatch.groups.fileName)
+        // console.log()
         if (importMatch.index === importReferenceRegex.lastIndex) { importReferenceRegex.lastIndex++; }
         let importTest = importMatch?.groups?.assembly.toLowerCase() === "mrbrbase" ? "Mrbr_System_MrbrBase" : importMatch?.groups?.assembly
         if (mrbrPaths) {
@@ -292,11 +292,11 @@ function createMrbrAssemblyFile(sourceFile) {
             });
             if (foundMrbrPath) { continue }
         }
-        console.log("importTest: ", importTest)
+        //console.log("importTest: ", importTest)
         if (!fileTypeMap.get(importTest)) {
             let fileType = getExportType(importTest);
             fileTypeMap.set(importTest, fileType);
-            console.log("fileTypeMap: ", importTest, fileType)
+            //console.log("fileTypeMap: ", importTest, fileType)
         }
         if (fileTypeMap.get(importTest) !== "interface") {
 
@@ -356,7 +356,9 @@ function createMrbrAssemblyFile(sourceFile) {
                 code = generateCode(`let ${match.groups.assembly} = ${match.groups.assembly.replace(/_/g, ".")}\r\n` + ` = function ${match.groups.parameters} { ${destinationContent.substring(functionRegex.lastIndex)} `, importedReferences.map(importedReference => importedReference.assembly).concat([exportName]), "function", exportName);
             }
             else {
+                console.log("Source File: ", sourceFile);
                 throw new Error(`No Class or Function definition`)
+
             }
         } catch (error) {
             console.log("error: ", error)
@@ -364,8 +366,8 @@ function createMrbrAssemblyFile(sourceFile) {
     }
     if (exportName) {
         let manifest = []
-        console.log("exportName: ", exportName)
-        console.log("importedReferences: ", importedReferences);
+        //console.log("exportName: ", exportName)
+        //console.log("importedReferences: ", importedReferences);
         if (importedReferences?.length > 0) {
             importedReferences.forEach(importedReference => {
                 let loadRequirementArray = [];
@@ -383,7 +385,7 @@ function createMrbrAssemblyFile(sourceFile) {
             //}
             //    manifest = manifest.concat(...[importedReferences.filter(entry => entry.optional === false).filter(entry => entry.assembly?.name?.toLowerCase() !== "mrbrbase").map(include => (`${" ".repeat(8)} miofc(${include.assembly.replace(/_/g, ".")})`))])
         }
-        console.log("manifest: ", manifest)
+        //console.log("manifest: ", manifest)
         let source = prettify(`((mrbr, data, resolve, reject, symbols) => {
             ${!(classDeclarationMatch) ? "if (MrbrBase.Namespace.isNamespace(" + exportName.replace(/_/g, '.') + ")){" + exportName.replace(/_/g, '.') + " = {}; } " : ""}
             ${manifest?.length ? "const miofc = Mrbr.IO.File.component, mir= Mrbr.IO.LoadRequirements;\r\n" : ""}

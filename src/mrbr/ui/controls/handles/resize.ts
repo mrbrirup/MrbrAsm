@@ -207,7 +207,7 @@ export class Mrbr_UI_Controls_Handles_Resize extends Mrbr_UI_Controls_Control {
                 self.newBounds.width = self._parentBounds.width - self._verticalHandleWidth - self.newBounds.x;
             }
         }
-        self.dispatchEvent(new CustomEvent(Mrbr_UI_Controls_Handles_Resize.RESIZING_EVENT_NAME, { detail: self.newBounds }));
+        //self.dispatchEvent(new CustomEvent(Mrbr_UI_Controls_Handles_Resize.RESIZING_EVENT_NAME, { detail: self.newBounds }));
     }
     handle_mouseUp(mouseEvent: MouseEvent) {
         const self = this;

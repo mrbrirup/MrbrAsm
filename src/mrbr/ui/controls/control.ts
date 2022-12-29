@@ -24,18 +24,6 @@ import { Mrbr_UI_HTML_ElementTags } from "../html/ElementTags";
 export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements Mrbr_UI_Controls_IControl, Mrbr_System_IComponent {
     //#region Public Symbols
 
-
-    /**
-     * Alias Mrbr.UI.Bootstrap.Controls Namespace
-     * @date 03/12/2022 - 17:19:58
-     *
-     * @public
-     * @readonly
-     * @type {*}
-     */
-    public get $bsc(): any { return this[Symbol.for("Mrbr.UI.Bootstrap.Controls")] ??= this.$mrbrInstance.host["Mrbr"].UI.Bootstrap.Controls; }
-
-
     /**
      * Symbol for deleting properties. Unique value cannot be mistaken for a value
      * @date 31/10/2022 - 12:48:08
@@ -415,21 +403,15 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
     private static _mutationObserver: Mrbr_UI_DOM_MutationObserver;
     //#endregion Private Properties Fields
 
-    //TODO: Remove After Carousel is refactored to use new MutationObserver events 
-    private static _mutations: EventTarget = new EventTarget();
-    public static get mutations(): EventTarget { return Mrbr_UI_Controls_Control._mutations; }
-    public static set mutations(value: EventTarget) { Mrbr_UI_Controls_Control._mutations = value; }
-
-    //#region Dummy Methods to be removed after refactor
-    //Events changed from EventTarget to onXXXX methods
-    public addEventListener(...args) { throw new Error("Not implemented"); }
-    public removeEventListener(...args) { throw new Error("Not implemented"); }
-    public dispatchEvent(...args) { throw new Error("Not implemented"); }
-    public setDefaultConfig(...args: any[]): Mrbr_System_Promise<any> {
-        //this.elementConfig = new Mrbr_UI_Controls_ElementsConfigMap(this.$ctrl[this.$mrbr.COMPONENT_NAME]);
-        return this.$promise.createResolved("");
-    }
-    //#endregion Dummy Methods to be removed after refactor
+    /**
+     * Overrideable method to set the default configuration for the control
+     * @date 29/12/2022 - 15:54:38
+     *
+     * @public
+     * @param {...any[]} args
+     * @returns {Mrbr_System_Promise<any>}
+     */
+    public setDefaultConfig(...args: any[]): Mrbr_System_Promise<any> { return this.$promise.createResolved("Mrbr.UI.Controls.Control:setDefaultConfig()"); }
 
     /**
      * Creates an instance of Mrbr_UI_Controls_Control.
@@ -443,10 +425,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
         super();
         this.rootElementName = rootElementName || this.$ctrl.ROOT_ELEMENT_NAME;
         if (rootElement) {
-            if (typeof rootElement === "string") {
-                let _ele = document?.getElementById(rootElement);
-                if (_ele) this.rootElement = _ele;
-            }
+            if (typeof rootElement === "string") { this.rootElement = document?.getElementById(rootElement); }
             else { this.rootElement = rootElement; }
         }
     }
@@ -725,6 +704,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
             return (<Array<Mrbr_UI_Controls_ControlConfig>>controlConfig).map(entry => <HTMLElement>this.createElement(entry));
         }
         if (controlConfig instanceof HTMLElement) { return controlConfig; }
+        
         let _config: Mrbr_UI_Controls_ControlConfig = <Mrbr_UI_Controls_ControlConfig>controlConfig,
             _element: HTMLElement = <HTMLElement>document.createElement(_config.elementType);
         _config?.optionalParameters && this.assignElementConfig(_element, _config.optionalParameters);

@@ -8,6 +8,9 @@
  * @typedef {Mrbr_UI_Html_StyleClasses}
  */
 export class Mrbr_UI_Html_StyleClasses {
+
+    
+
     constructor() { }
     //#region Static Methods
     /**
@@ -32,25 +35,11 @@ export class Mrbr_UI_Html_StyleClasses {
      */
     static addClasses(target: HTMLElement, classes: string | Array<string> | DOMTokenList) {
         const self_addClassToElement = Mrbr_UI_Html_StyleClasses.addClassToElement;
-        if (typeof classes === 'string') {
-            if (classes.length === 0) { return; }
-            let classNames = classes.split(" ");
-            for (let classCounter = 0; classCounter < classNames.length; classCounter++) {
-                const className = classNames[classCounter].trim();
-                (className.length > 0) && (self_addClassToElement(target, className))
-            }
-        }
-        else if (Array.isArray(classes)) {
-            if (classes.length === 0) { return; }
-            for (let classCounter = 0; classCounter < classes.length; classCounter++) {
-                const className = classes[classCounter].trim();
-                (className.length > 0) && (self_addClassToElement(target, className));
-            }
-        }
-        else if (Object.prototype.toString.call(classes).toLowerCase().includes("domtokenlist")) {
-            if ((classes as DOMTokenList).length === 0) { return; }
-            (classes as DOMTokenList).forEach(className => self_addClassToElement(target, className));
-        }
+        let _classes;
+        if (typeof classes === 'string') { _classes = classes.split(" "); }
+        else if (Array.isArray(classes)) { _classes = classes; }
+        else if (classes instanceof DOMTokenList) { _classes = Array.from(classes); }
+        _classes?.forEach(_class => self_addClassToElement(target, _class));
     }
 
     /**
@@ -73,7 +62,7 @@ export class Mrbr_UI_Html_StyleClasses {
      * @param {string} className
      */
     static removeClass(target: HTMLElement, className: string) {
-        className.split(" ")
+        className?.split(" ")
             .map(_className => _className.trim())
             .filter(_className => _className.length > 0)
             .forEach(_className => (Mrbr_UI_Html_StyleClasses.hasClass(target, _className)) && (target.classList.remove(_className)));

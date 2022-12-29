@@ -11,6 +11,19 @@ import { Mrbr_UI_Controls_Control } from "../../controls/Control";
  */
 export class Mrbr_UI_Bootstrap_Controls_BootstrapControl extends Mrbr_UI_Controls_Control {
 
+
+
+    /**
+     * Alias Mrbr.UI.Bootstrap.Controls Namespace
+     * @date 03/12/2022 - 17:19:58
+     *
+     * @public
+     * @readonly
+     * @type {*}
+     */
+    public get $bsc(): any { return this[Symbol.for("Mrbr.UI.Bootstrap.Controls")] ??= this.$mrbrInstance.host["Mrbr"].UI.Bootstrap.Controls; }
+
+
     /**
      * Creates an instance of Mrbr_UI_Bootstrap_Controls_BootstrapControl.
      * @date 09/12/2022 - 03:08:43

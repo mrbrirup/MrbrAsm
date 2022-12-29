@@ -125,7 +125,7 @@ export class Mrbr_UI_Controls_Handles_Drag extends Mrbr_UI_Controls_Control {
         if (self.newBounds.y + dialog.offsetHeight > self.parentElement.clientHeight) { self.newBounds.y = self.parentElement.clientHeight - dialog.offsetHeight }
         if (self.newBounds.x < 0) { self.newBounds.x = 0; }
         if (self.newBounds.x + dialog.offsetWidth > self.parentElement.clientWidth) { self.newBounds.x = self.parentElement.clientWidth - dialog.offsetWidth }
-        self.dispatchEvent(new CustomEvent(Mrbr_UI_Controls_Handles_Drag.DRAGGING_EVENT_NAME, { detail: self.newBounds }));
+        //self.dispatchEvent(new CustomEvent(Mrbr_UI_Controls_Handles_Drag.DRAGGING_EVENT_NAME, { detail: self.newBounds }));
     }
     dragHandle_mouseUp(event: MouseEvent) {
         const self = this;

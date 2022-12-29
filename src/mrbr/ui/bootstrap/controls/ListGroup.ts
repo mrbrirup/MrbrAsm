@@ -1,13 +1,13 @@
 import { Mrbr_System_Events_Event } from "../../../system/events/Event";
 import { Mrbr_System_Promise } from "../../../system/Promise";
-import { Mrbr_UI_Controls_Control } from "../../controls/Control";
+import { Mrbr_UI_Bootstrap_Controls_BootstrapControl } from "./BootstrapControl";
 import { Mrbr_UI_Bootstrap_Controls_ListGroup$ContextualStyles } from "./ListGroup$ContextualStyles";
 import { Mrbr_UI_Bootstrap_Controls_ListGroup$HorizontalStyles } from "./ListGroup$HorizontalStyles";
 import { Mrbr_UI_Bootstrap_Controls_ListGroupEvent } from "./ListGroupEvent";
 import { Mrbr_UI_Bootstrap_Controls_ListGroupEventData } from "./ListGroupEventData";
 import { Mrbr_UI_Bootstrap_Controls_ListItemBadged } from "./ListItemBadged";
 
-export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Controls_Control {
+export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Bootstrap_Controls_BootstrapControl {
     //#region PUblic Static Constants
 
 
