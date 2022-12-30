@@ -704,7 +704,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
             return (<Array<Mrbr_UI_Controls_ControlConfig>>controlConfig).map(entry => <HTMLElement>this.createElement(entry));
         }
         if (controlConfig instanceof HTMLElement) { return controlConfig; }
-        
+
         let _config: Mrbr_UI_Controls_ControlConfig = <Mrbr_UI_Controls_ControlConfig>controlConfig,
             _element: HTMLElement = <HTMLElement>document.createElement(_config.elementType);
         _config?.optionalParameters && this.assignElementConfig(_element, _config.optionalParameters);
@@ -1011,18 +1011,42 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
         if (!hostElement) { throw new Error("Element not found"); }
         const id = this.rootElement.id;
         this.addMountHandler(id);
-        let _mountingElement: HTMLElement;
+        let _mountingElement: HTMLElement,
+            positions = Mrbr_UI_Controls_MountPosition;
         if (mountingElement) { _mountingElement = (mountingElement instanceof Mrbr_UI_Controls_Control) ? mountingElement.rootElement : mountingElement; }
         else { _mountingElement = this.rootElement; }
         switch (position) {
-            case "append": hostElement.appendChild(_mountingElement); break;
-            case "before": hostElement.before(_mountingElement); break;
-            case "after": hostElement.after(_mountingElement); break;
-            case "prepend": hostElement.prepend(_mountingElement); break;
-            case "replace": hostElement.replaceWith(_mountingElement); break;
+            case positions.append: hostElement.appendChild(_mountingElement); break;
+            case positions.before: hostElement.before(_mountingElement); break;
+            case positions.after: hostElement.after(_mountingElement); break;
+            case positions.prepend: hostElement.prepend(_mountingElement); break;
+            case positions.replace: hostElement.replaceWith(_mountingElement); break;
         }
         return this;
 
+    }
+
+    /**
+     * Wrap an element with another element
+     * @date 30/12/2022 - 14:21:22
+     *
+     * @public
+     * @param {(HTMLElement | Mrbr_UI_Controls_Control | string)} elementToWrap
+     * @param {(HTMLElement | Mrbr_UI_Controls_Control | string)} wrappingElement
+     * @returns {Mrbr_UI_Controls_IControl}
+     */
+    public wrapElement(elementToWrap: HTMLElement | Mrbr_UI_Controls_Control | string, wrappingElement: HTMLElement | Mrbr_UI_Controls_Control | string): Mrbr_UI_Controls_IControl {
+        if (typeof elementToWrap === "string") { elementToWrap = document.getElementById(elementToWrap); }
+        else if (elementToWrap instanceof Mrbr_UI_Controls_Control) { elementToWrap = elementToWrap.defaultContainerElement || elementToWrap.rootElement; }
+        if (!elementToWrap) { throw new Error("Wrapping Target Element not found"); }
+
+        if (typeof wrappingElement === "string") { wrappingElement = document.getElementById(wrappingElement); }
+        else if (wrappingElement instanceof Mrbr_UI_Controls_Control) { wrappingElement = wrappingElement.defaultContainerElement || wrappingElement.rootElement; }
+        if (!wrappingElement) { throw new Error("Wrapping Wrapper Element not found"); }
+
+        if (elementToWrap.parentElement === wrappingElement) { return this; } // Already wrapped 
+        (elementToWrap.isConnected ? elementToWrap.parentElement.insertBefore(wrappingElement, elementToWrap) : wrappingElement).appendChild(elementToWrap);
+        return this;
     }
 
     /**

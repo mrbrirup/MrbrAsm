@@ -24,7 +24,7 @@ export class Mrbr_UI_Controls_ControlConfig {
      * @param {string} elementName     
      * @param {(string | typeof HTMLElement)} elementType String tag name or lookup from HTMLElement type .
      * @param {?Mrbr_UI_Controls_ControlConfigOptionalParameters} [optionalParameters]
-     */    
+     */
     constructor(elementName: string, elementType: string | typeof HTMLElement, optionalParameters?: Mrbr_UI_Controls_ControlConfigOptionalParameters) {
         this.elementName = elementName;
         this.elementType = (typeof elementType === "string") ? elementType : Mrbr_UI_HTML_ElementTags[elementType.name];
@@ -38,10 +38,7 @@ export class Mrbr_UI_Controls_ControlConfig {
      * @public
      * @type {Mrbr_UI_Controls_ControlConfigOptionalParameters}
      */
-    public get optionalParameters(): Mrbr_UI_Controls_ControlConfigOptionalParameters {
-        !this._optionalParameters && (this._optionalParameters = new Mrbr_UI_Controls_ControlConfigOptionalParameters());
-        return this._optionalParameters;
-    }
+    public get optionalParameters(): Mrbr_UI_Controls_ControlConfigOptionalParameters { return this._optionalParameters ??= new Mrbr_UI_Controls_ControlConfigOptionalParameters(); }
     /**
      * Optional Parameters for the Control.
      */

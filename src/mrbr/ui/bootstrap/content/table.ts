@@ -648,20 +648,15 @@ export class Mrbr_UI_Bootstrap_Content_Table extends Mrbr_UI_Bootstrap_Controls_
     public set responsiveSize(value: Mrbr_UI_Bootstrap_Content_ResponsiveTableSizes) {
         let
             self = this,
-            root = this.rootElement;
+            root = this.rootElement,
+            wrapper: HTMLElement;
         if (value && root === this.table) {
-            const
-                oldRoot = root,
-                parent = oldRoot.parentElement
-            self.elements.set(self.$table.TABLE, oldRoot);
             root.dataset.mrbrId = self.$table.TABLE;
-            self.elements.delete(self.rootElementName);
-            root = <HTMLElement>self.createElement(new self.$ctrlCfg(self.rootElementName, self.$htmlt.div, new self.$ctrlPrm()
-                .Children(self.elements.get(self.$table.TABLE))
-            ));
-            self.mount(parent)
+            self.elements.set(self.$table.TABLE, root);
+            wrapper = <HTMLElement>self.createElement(new self.$ctrlCfg(self.rootElementName, self.$htmlt.div));
+            self.wrapElement(root, wrapper);
         }
-        (root) && (this.classes(root, this.$clsActions.replace, [this.responsiveSize, value]));
+        (wrapper) && (this.classes(wrapper, this.$clsActions.replace, [this.responsiveSize, value]));
         this._responsiveSize = value;
     }
 
@@ -817,7 +812,7 @@ export class Mrbr_UI_Bootstrap_Content_Table extends Mrbr_UI_Bootstrap_Controls_
         }
         return colGroup;
     }
-    
+
     /**
      * Set the caption text, show the caption, fluent interface 
      * @date 29/12/2022 - 15:27:38
@@ -830,7 +825,7 @@ export class Mrbr_UI_Bootstrap_Content_Table extends Mrbr_UI_Bootstrap_Controls_
         this.captionText = caption;
         return this;
     }
-    
+
     /**
      * Set the table context, fluent interface
      * @date 29/12/2022 - 15:28:07
@@ -843,7 +838,7 @@ export class Mrbr_UI_Bootstrap_Content_Table extends Mrbr_UI_Bootstrap_Controls_
         this.context = context;
         return this;
     }
-    
+
     /**
      * Set the table border, fluent interface
      * @date 29/12/2022 - 15:28:15
@@ -856,7 +851,7 @@ export class Mrbr_UI_Bootstrap_Content_Table extends Mrbr_UI_Bootstrap_Controls_
         this.showHeader = showHeader;
         return this;
     }
-    
+
     /**
      * Set the table border, fluent interface
      * @date 29/12/2022 - 15:28:23
@@ -869,7 +864,7 @@ export class Mrbr_UI_Bootstrap_Content_Table extends Mrbr_UI_Bootstrap_Controls_
         this.showFooter = showFooter;
         return this;
     }
-    
+
     /**
      * Show the table caption, fluent interface
      * @date 29/12/2022 - 15:28:30
@@ -882,7 +877,7 @@ export class Mrbr_UI_Bootstrap_Content_Table extends Mrbr_UI_Bootstrap_Controls_
         this.showCaption = showCaption;
         return this;
     }
-    
+
     /**
      * Set Striped rows, fluent interface
      * @date 29/12/2022 - 15:28:44
@@ -895,7 +890,7 @@ export class Mrbr_UI_Bootstrap_Content_Table extends Mrbr_UI_Bootstrap_Controls_
         this.stripedRows = stripedRows;
         return this;
     }
-    
+
     /**
      * Set Striped columns, fluent interface
      * @date 29/12/2022 - 15:28:51
@@ -908,7 +903,7 @@ export class Mrbr_UI_Bootstrap_Content_Table extends Mrbr_UI_Bootstrap_Controls_
         this.stripedColumns = stripedColumns;
         return this;
     }
-    
+
     /**
      * Set Hoverable style, fluent interface
      * @date 29/12/2022 - 15:29:18
@@ -921,7 +916,7 @@ export class Mrbr_UI_Bootstrap_Content_Table extends Mrbr_UI_Bootstrap_Controls_
         this.hoverable = hoverable;
         return this;
     }
-    
+
     /**
      * Set Dark theme, fluent interface
      * @date 29/12/2022 - 15:29:28
@@ -934,7 +929,7 @@ export class Mrbr_UI_Bootstrap_Content_Table extends Mrbr_UI_Bootstrap_Controls_
         this.darkTheme = darkTheme;
         return this;
     }
-    
+
     /**
      * Set the table border, fluent interface
      * @date 29/12/2022 - 15:30:02
@@ -947,7 +942,7 @@ export class Mrbr_UI_Bootstrap_Content_Table extends Mrbr_UI_Bootstrap_Controls_
         this.bordered = bordered;
         return this;
     }
-    
+
     /**
      * Set the table border, fluent interface
      * @date 29/12/2022 - 15:30:14
@@ -960,7 +955,7 @@ export class Mrbr_UI_Bootstrap_Content_Table extends Mrbr_UI_Bootstrap_Controls_
         this.borderless = borderless;
         return this;
     }
-    
+
     /**
      * Set the table to borderless, fluent interface
      * @date 29/12/2022 - 15:30:21
@@ -973,7 +968,7 @@ export class Mrbr_UI_Bootstrap_Content_Table extends Mrbr_UI_Bootstrap_Controls_
         this.small = small;
         return this;
     }
-    
+
     /**
      * Set table responsive size, fluent interface
      * @date 29/12/2022 - 15:30:36
@@ -986,7 +981,7 @@ export class Mrbr_UI_Bootstrap_Content_Table extends Mrbr_UI_Bootstrap_Controls_
         this.responsiveSize = size;
         return this;
     }
-    
+
     /**
      * Set Caption to top, fluent interface
      * @date 29/12/2022 - 15:30:53
@@ -999,7 +994,7 @@ export class Mrbr_UI_Bootstrap_Content_Table extends Mrbr_UI_Bootstrap_Controls_
         this.captionTop = captionTop;
         return this;
     }
-    
+
     /**
      * Get The table element. If the root element is a table, it will return the root element, otherwise it will return the first table element found in the root element. Used for Responsive tables
      * @date 29/12/2022 - 15:31:09
