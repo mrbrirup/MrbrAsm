@@ -221,7 +221,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
      */
     public set placeholder(value: string) {
         const inputElement = <HTMLInputElement>this.elements.get(this.inputElementName);
-        inputElement && (inputElement.placeholder = value);
+        inputElement && value && (inputElement.placeholder = value);
         this._placeholder = value;
     }
 
@@ -236,6 +236,10 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
      * @type {string}
      */
     public get inputElementName(): string { return this._inputElementName; }
+
+
+    public get inputElement(): HTMLInputElement { return <HTMLInputElement>this.elements.get(this.inputElementName); }
+
 
     /**
      * Label text for the FormCheck

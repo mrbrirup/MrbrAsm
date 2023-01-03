@@ -65,14 +65,4 @@ export class Mrbr_UI_Bootstrap_Form_Email extends Mrbr_UI_Bootstrap_Form_Bootstr
             .catch(error => initialisePromise.reject(error))
         return initialisePromise;
     }
-    public setDefaultConfig(...args: any[]): Mrbr_System_Promise<this> {
-        const
-            self = this,
-            controlName = args?.find(arg => typeof arg === 'object' && arg.hasOwnProperty('controlName'))?.controlName ?? this.$bsEmail[self.$mrbr.COMPONENT_NAME],
-            setDefaultConfigPromise = this.$promise.create(`${controlName}:setDefaultConfig`);
-        super.setDefaultConfig([...args, { controlName }].flat())
-            .then(_ => setDefaultConfigPromise.resolve(self))
-            .catch(error => setDefaultConfigPromise.reject(error))
-        return setDefaultConfigPromise;
-    }
 }
