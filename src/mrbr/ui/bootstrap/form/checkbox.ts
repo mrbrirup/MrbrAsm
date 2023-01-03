@@ -83,18 +83,6 @@ export class Mrbr_UI_Bootstrap_Form_CheckBox extends Mrbr_UI_Bootstrap_Form_Form
     public get $bsCheckBoxStates(): typeof Mrbr_UI_Bootstrap_Form_CheckBoxStates { return this.$bsForm.CheckBoxStates as typeof Mrbr_UI_Bootstrap_Form_CheckBoxStates; }
 
 
-
-    /**
-     * Placeholder text for the checkbox, field
-     * @date 02/01/2023 - 00:15:17
-     *
-     * @private
-     * @type {string}
-     */
-    private _placeholder: string;
-
-
-
     /**
      * Switch style checkbox, field
      * @date 02/01/2023 - 00:15:51
@@ -164,28 +152,10 @@ export class Mrbr_UI_Bootstrap_Form_CheckBox extends Mrbr_UI_Bootstrap_Form_Form
      * Button Context Style for toggle checkbox
      */
     public set buttonContextStyle(value: Mrbr_UI_Bootstrap_Utilities_ButtonColours) {
-        const element = <HTMLInputElement>this.elements.get(this.$bsCheckBox.FORMCHECK_LABEL);
-        element && this.classes(element, this.$clsActions.toggle, [this.buttonContextStyle, value])
+        const element = <HTMLInputElement>this.elements.get(this.$bsCheckBox.FORMCONTROL_LABEL);
+        element && this.classes(element, this.$clsActions.replace, [this.buttonContextStyle, value])
         this._buttonContextStyle = value;
     }
-
-
-
-    /**
-     * Placeholder text
-     * @date 02/01/2023 - 00:19:10
-     *
-     * @public
-     * @type {string}
-     */
-    public get placeholder(): string { return this._placeholder; }
-    public set placeholder(value: string) {
-        const element = <HTMLInputElement>this.elements.get(this.$bsCheckBox.FORMCHECK_LABEL);
-        element && (element.placeholder = value);
-        this._placeholder = value;
-    }
-
-
 
     /**
      * Checked State of the checkbox
@@ -252,7 +222,7 @@ export class Mrbr_UI_Bootstrap_Form_CheckBox extends Mrbr_UI_Bootstrap_Form_Form
     public set toggleStyle(value: boolean) {
         const
             $bsCheckBox = this.$bsCheckBox,
-            label = this.elements.get($bsCheckBox.FORMCHECK_LABEL),
+            label = this.elements.get($bsCheckBox.FORMCONTROL_LABEL),
             checkbox = this.elements.get($bsCheckBox.CHECKBOX),
             checkboxClassList = checkbox?.classList,
             labelClassList = label?.classList,
@@ -320,7 +290,7 @@ export class Mrbr_UI_Bootstrap_Form_CheckBox extends Mrbr_UI_Bootstrap_Form_Form
      * @public
      * @returns {Mrbr_System_Promise<Mrbr_UI_Bootstrap_Form_CheckBox>}
      */
-    public setDefaultConfig(...args: any[]): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Form_CheckBox> {
+    public setDefaultConfig(...args: any[]): Mrbr_System_Promise<this> {
         const
             self = this,
             controlName = args?.find(arg => typeof arg === "object" && arg.hasOwnProperty("controlName"))?.controlName ?? self.$bsCheckBox[self.$mrbr.COMPONENT_NAME],

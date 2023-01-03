@@ -140,7 +140,7 @@ export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_FormChe
      * @param {...any[]} args
      * @returns {Mrbr_System_Promise<Mrbr_UI_Bootstrap_Form_Radio>}
      */
-    public setDefaultConfig(...args: any[]): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Form_Radio> {
+    public setDefaultConfig(...args: any[]): Mrbr_System_Promise<this> {
         const
             self = this,
             controlName = args?.find(arg => typeof arg === 'object' && arg.hasOwnProperty('controlName'))?.controlName ?? this.$bsRadio[self.$mrbr.COMPONENT_NAME],
