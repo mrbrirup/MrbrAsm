@@ -37,6 +37,10 @@ export class Mrbr_Tests_Application$Email {
         email4.mount(document.body);
         email5.mount(document.body);
         email6.mount(document.body);
+        email1.onInputChanged(this.inputChange.bind(this));
       })
+  }
+  inputChange(e: Event) {
+    console.log("Input Changed", e);
   }
 }

@@ -1,4 +1,3 @@
-import { Mrbr_System_Events_Event } from "../../../system/events/Event";
 import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Bootstrap_Utilities_ButtonColours } from "../utilities/buttonColours";
 import { Mrbr_UI_Bootstrap_Form_CheckBoxEvent } from "./checkboxEvent";
@@ -349,37 +348,13 @@ export class Mrbr_UI_Bootstrap_Form_CheckBox extends Mrbr_UI_Bootstrap_Form_Form
     public ButtonContextStyle(value: Mrbr_UI_Bootstrap_Utilities_ButtonColours): Mrbr_UI_Bootstrap_Form_CheckBox { this.buttonContextStyle = value; return this; }
 
     /**
-     * Add/Remove InputChanged event subscriber
-     * @date 02/01/2023 - 00:30:22
-     *
-     * @public
-     * @param {(event: Mrbr_System_Events_Event<any>) => number} callback
-     * @returns {number}
-     */
-    public onInputChanged(callback: (event: Mrbr_System_Events_Event<any>) => number): number {
-        const eventName = this.$bsCheckBox.INPUT_CHANGE_EVENT_NAME;
-        if (typeof callback === "number") {
-            this.eventSubscribers.remove(eventName, callback);
-            return null;
-        }
-        return this.addDeferredOnMountFn(
-            eventName,
-            eventName,
-            this.elements.get(this.$bsCheckBox.CHECKBOX),
-            this.checkboxInput_handler,
-            this,
-            callback
-        );
-    }
-
-    /**
      * InputChanged event handler
      * @date 02/01/2023 - 00:30:34
      *
      * @private
      * @param {Event} event
      */
-    private checkboxInput_handler(event: Event): void {
+    protected override formControlInput_handler(event: Event): void {
         const eventName = this.$bsCheckBox.INPUT_CHANGE_EVENT_NAME;
         event.stopPropagation();
         event.preventDefault();

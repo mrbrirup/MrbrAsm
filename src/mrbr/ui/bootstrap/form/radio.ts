@@ -77,7 +77,7 @@ export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_FormChe
         input && (input.checked = value);
         this._checked = value;
     }
-    
+
     /**
      * Group name for the radio, Property. Groups by name and only allows one to be selected at a time
      * @date 02/01/2023 - 22:57:23
@@ -86,7 +86,7 @@ export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_FormChe
      * @type {string}
      */
     public get groupName(): string { return this._groupName; }
-    
+
     /**
      * Group name for the radio, Property. Groups by name and only allows one to be selected at a time
      */
@@ -95,7 +95,7 @@ export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_FormChe
         input && (input.name = value);
         this._groupName = value;
     }
-    
+
     /**
      * Initialises the control, load the manifest and set the default config
      * @date 02/01/2023 - 22:58:02
@@ -131,7 +131,7 @@ export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_FormChe
             .catch(error => initalisePromise.reject(error))
         return initalisePromise;
     }
-    
+
     /**
      * Sets the default config for the control
      * @date 02/01/2023 - 22:58:31
@@ -159,7 +159,7 @@ export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_FormChe
             .catch(error => setDefaultConfigPromise.reject(error))
         return setDefaultConfigPromise;
     }
-    
+
     /**
      * Set the Checked value for the radio, fluent interface
      * @date 02/01/2023 - 22:56:43
@@ -169,7 +169,7 @@ export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_FormChe
      * @returns {Mrbr_UI_Bootstrap_Form_Radio}
      */
     public Checked(value: boolean): Mrbr_UI_Bootstrap_Form_Radio { this.checked = value; return this; }
-    
+
     /**
      * Set the Group name for the radio, fluent interface
      * @date 02/01/2023 - 22:57:07
@@ -180,31 +180,6 @@ export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_FormChe
      */
     public GroupName(value: string): Mrbr_UI_Bootstrap_Form_Radio { this.groupName = value; return this; }
 
-
-    /**
-     * Add/Remove Radio input change event subscriber
-     * @date 02/01/2023 - 00:30:22
-     *
-     * @public
-     * @param {(event: Mrbr_System_Events_Event<any>) => number} callback
-     * @returns {number}
-     */
-    public onInputChanged(callback: (event: Mrbr_UI_Bootstrap_Form_RadioEvent) => number): number {
-        const eventName = this.$bsFormCheck.INPUT_CHANGE_EVENT_NAME;
-        if (typeof callback === "number") {
-            this.eventSubscribers.remove(eventName, callback);
-            return null;
-        }
-        return this.addDeferredOnMountFn(
-            eventName,
-            eventName,
-            this.elements.get(this.$bsRadio.RADIO),
-            this.radioInput_handler,
-            this,
-            callback
-        );
-    }
-
     /**
      * Input change event handler
      * @date 02/01/2023 - 00:30:34
@@ -212,7 +187,7 @@ export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_FormChe
      * @private
      * @param {Event} event
      */
-    private radioInput_handler(event: Event): void {
+    protected override formControlInput_handler(event: Event): void {
         const eventName = this.$bsFormCheck.INPUT_CHANGE_EVENT_NAME;
         event.stopPropagation();
         event.preventDefault();

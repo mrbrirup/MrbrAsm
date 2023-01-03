@@ -24,9 +24,12 @@ export class Mrbr_Tests_Application$TextArea {
           textArea2.Cols("clear");
           textArea2.Rows("clear");
         }, 5000);
-
+        textArea2.onInputChanged(this.inputChange.bind(this));
 
       })
 
+  }
+  inputChange(e: Event) {
+    console.log("Input Changed", e);
   }
 }

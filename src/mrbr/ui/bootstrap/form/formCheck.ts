@@ -13,17 +13,6 @@ import { Mrbr_UI_Bootstrap_Form_BootstrapFormControl } from "./BootstrapFormCont
  */
 export class Mrbr_UI_Bootstrap_Form_FormCheck<TFormCheck> extends Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormCheck> {
 
-    /**
-     * Event name for changes to the checkbox
-     * @date 02/01/2023 - 00:13:08
-     *
-     * @public
-     * @static
-     * @readonly
-     * @type {string}
-     */
-    public static readonly INPUT_CHANGE_EVENT_NAME: string = "input";
-
 
     /**
      * FormCheck wrapper class when a label is present

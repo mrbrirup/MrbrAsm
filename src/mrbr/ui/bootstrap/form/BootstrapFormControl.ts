@@ -1,7 +1,20 @@
+import { Mrbr_System_Events_Event } from "../../../system/events/Event";
 import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Bootstrap_Controls_BootstrapControl } from "../controls/BootstrapControl";
 
 export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends Mrbr_UI_Bootstrap_Controls_BootstrapControl {
+
+
+    /**
+     * Event name for changes to the input element
+     * @date 02/01/2023 - 00:13:08
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly INPUT_CHANGE_EVENT_NAME: string = "input";
 
     /**
      * Namespace Alias for Mrbr.UI.Bootstrap.Form
@@ -344,7 +357,6 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
                     .controlName(controlName)
                     .setIfNotExist(self.$bsFormControl.FORMCONTROL, new self.$ctrlPrm()
                         .Classes("form-control"))
-                    //.Attributes({ type: self.inputType }))
                     .setIfNotExist(self.$bsFormControl.FORMCONTROL_LABEL, new self.$ctrlPrm()
                         .Classes("form-label"));
 
@@ -451,6 +463,45 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
         self.Placeholder(self.placeholder)
         self.Size(self.size)
         self.ReadOnly(self.readonly)
+    }
+
+
+    /**
+     * Add/Remove Radio input change event subscriber
+     * @date 02/01/2023 - 00:30:22
+     *
+     * @public
+     * @param {(event: Mrbr_System_Events_Event<any>) => number} callback
+     * @returns {number}
+     */
+    public onInputChanged(callback: (event: Mrbr_System_Events_Event<any>) => number): number {
+        const eventName = this.$bsFormControl.INPUT_CHANGE_EVENT_NAME;
+        if (typeof callback === "number") {
+            this.eventSubscribers.remove(eventName, callback);
+            return null;
+        }
+        return this.addDeferredOnMountFn(
+            eventName,
+            eventName,
+            this.elements.get(this.inputElementName),
+            this.formControlInput_handler,
+            this,
+            callback
+        );
+    }
+
+    /**
+     * Default Input change event handler
+     * @date 02/01/2023 - 00:30:34
+     *
+     * @private
+     * @param {Event} event
+     */
+    protected formControlInput_handler(event: Event): void {
+        const eventName = this.$bsFormControl.INPUT_CHANGE_EVENT_NAME;
+        event.stopPropagation();
+        event.preventDefault();
+        this.eventSubscribers.raiseEvent(new this.$event(eventName, this, { event: event }))
     }
 
 }
