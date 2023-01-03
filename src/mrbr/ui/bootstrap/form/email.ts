@@ -42,7 +42,15 @@ export class Mrbr_UI_Bootstrap_Form_Email extends Mrbr_UI_Bootstrap_Form_Bootstr
         this._inputElementName = this.$bsEmail.EMAIL;
     }
 
-
+    
+    /**
+     * Initialise the control, load the manifest and set the default config
+     * @date 03/01/2023 - 04:53:37
+     *
+     * @public
+     * @param {...any[]} args
+     * @returns {Mrbr_System_Promise<Mrbr_UI_Bootstrap_Form_Email>}
+     */
     public initialise(...args: any[]): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Form_Email> {
         const
             self = this,
