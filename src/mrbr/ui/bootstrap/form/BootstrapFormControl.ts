@@ -350,7 +350,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
             self = this,
             controlName = args?.find(arg => typeof arg === 'object' && arg.hasOwnProperty('controlName'))?.controlName ?? this.$bsFormControl[self.$mrbr.COMPONENT_NAME],
             setDefaultConfigPromise = this.$promise.create(`${controlName}:setDefaultConfig`);
-        super.setDefaultConfig([...args, { controlName }].flat())
+        super.setDefaultConfig({ controlName })
             .then(_ => {
                 self
                     .elementConfig
