@@ -401,7 +401,11 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
      * @param {string} value
      * @returns {TFormCheck}
      */
-    public Value(value: string): TFormControl { this.value = value; return <TFormControl>(this as unknown); }
+    public Value(value: string | any): TFormControl {
+        (value !== undefined && value !== null && typeof value !== "string") && (value = value.toString());
+        this.value = value;
+        return <TFormControl>(this as unknown);
+    }
 
 
     /**
