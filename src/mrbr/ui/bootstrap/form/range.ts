@@ -4,7 +4,7 @@ import { Mrbr_UI_Bootstrap_Form_TextInputEvent } from "./textInputEvent";
 import { Mrbr_UI_Bootstrap_Form_TextInputEventData } from "./textInputEventData";
 
 export class Mrbr_UI_Bootstrap_Form_Range extends Mrbr_UI_Bootstrap_Form_BootstrapFormControl<Mrbr_UI_Bootstrap_Form_Range> {
-    
+
     /**
      * Internal Range element name
      * @date 04/01/2023 - 19:41:01
@@ -15,7 +15,7 @@ export class Mrbr_UI_Bootstrap_Form_Range extends Mrbr_UI_Bootstrap_Form_Bootstr
      * @type {string}
      */
     public static readonly RANGE: string = "range";
-    
+
     /**
      * Type Alias for Mrbr_UI_Bootstrap_Form_Range
      * @date 04/01/2023 - 19:41:09
@@ -26,7 +26,7 @@ export class Mrbr_UI_Bootstrap_Form_Range extends Mrbr_UI_Bootstrap_Form_Bootstr
      */
     public get $bsRange(): typeof Mrbr_UI_Bootstrap_Form_Range { return Mrbr_UI_Bootstrap_Form_Range; }
 
-    
+
     /**
      * Range min
      * @date 04/01/2023 - 19:41:25
@@ -35,7 +35,7 @@ export class Mrbr_UI_Bootstrap_Form_Range extends Mrbr_UI_Bootstrap_Form_Bootstr
      * @type {number}
      */
     private _min: number = 0;
-    
+
     /**
      * Range max
      * @date 04/01/2023 - 19:41:31
@@ -44,7 +44,7 @@ export class Mrbr_UI_Bootstrap_Form_Range extends Mrbr_UI_Bootstrap_Form_Bootstr
      * @type {number}
      */
     private _max: number = 100;
-    
+
     /**
      * Range step
      * @date 04/01/2023 - 19:41:37
@@ -53,7 +53,7 @@ export class Mrbr_UI_Bootstrap_Form_Range extends Mrbr_UI_Bootstrap_Form_Bootstr
      * @type {number}
      */
     private _step: number;
-    
+
     /**
      * Creates an instance of Mrbr_UI_Bootstrap_Form_Range.
      * @date 04/01/2023 - 19:41:46
@@ -65,7 +65,7 @@ export class Mrbr_UI_Bootstrap_Form_Range extends Mrbr_UI_Bootstrap_Form_Bootstr
         super(rootElementName);
         this._inputElementName = this.$bsRange.RANGE;
     }
-    
+
     /**
      * Range min
      * @date 04/01/2023 - 19:41:52
@@ -74,7 +74,7 @@ export class Mrbr_UI_Bootstrap_Form_Range extends Mrbr_UI_Bootstrap_Form_Bootstr
      * @type {number}
      */
     public get min(): number { return this._min; }
-    
+
     /**
      * Range min
      */
@@ -83,7 +83,7 @@ export class Mrbr_UI_Bootstrap_Form_Range extends Mrbr_UI_Bootstrap_Form_Bootstr
         if (inputElement && this.min) { inputElement.min = value.toString(); }
         this._min = value;
     }
-    
+
     /**
      * Range max
      * @date 04/01/2023 - 19:42:07
@@ -92,7 +92,7 @@ export class Mrbr_UI_Bootstrap_Form_Range extends Mrbr_UI_Bootstrap_Form_Bootstr
      * @type {number}
      */
     public get max(): number { return this._max; }
-    
+
     /**
      * Range max
      */
@@ -101,7 +101,7 @@ export class Mrbr_UI_Bootstrap_Form_Range extends Mrbr_UI_Bootstrap_Form_Bootstr
         if (inputElement && this.max) { inputElement.max = value.toString(); }
         this._max = value;
     }
-    
+
     /**
      * Range step
      * @date 04/01/2023 - 19:42:19
@@ -110,16 +110,18 @@ export class Mrbr_UI_Bootstrap_Form_Range extends Mrbr_UI_Bootstrap_Form_Bootstr
      * @type {number}
      */
     public get step(): number { return this._step; }
-    
+
     /**
      * Range step
      */
     public set step(value: number) {
         const inputElement = <HTMLInputElement>this.elements.get(this.inputElementName);
-        if (inputElement && this.step) { inputElement.step = value.toString(); }
+        if (inputElement)
+            if (value) { inputElement.setAttribute("step", value.toString()) }
+            else { inputElement.removeAttribute("step"); }
         this._step = value;
     }
-    
+
     /**
      * Initialise the control, load manifest and set default config
      * @date 04/01/2023 - 19:42:32
@@ -149,7 +151,7 @@ export class Mrbr_UI_Bootstrap_Form_Range extends Mrbr_UI_Bootstrap_Form_Bootstr
             .catch(error => initialisePromise.reject(error))
         return initialisePromise;
     }
-    
+
     /**
      * Set default config
      * @date 04/01/2023 - 19:42:56
@@ -175,7 +177,7 @@ export class Mrbr_UI_Bootstrap_Form_Range extends Mrbr_UI_Bootstrap_Form_Bootstr
             })
         return setDefaultConfigPromise;
     }
-    
+
     /**
      * Set the range min, fluent interface
      * @date 04/01/2023 - 19:43:04
@@ -185,7 +187,7 @@ export class Mrbr_UI_Bootstrap_Form_Range extends Mrbr_UI_Bootstrap_Form_Bootstr
      * @returns {this}
      */
     public Min(value: number): this { this.min = value; return this; }
-    
+
     /**
      * Set the range max, fluent interface
      * @date 04/01/2023 - 19:43:28
@@ -195,7 +197,7 @@ export class Mrbr_UI_Bootstrap_Form_Range extends Mrbr_UI_Bootstrap_Form_Bootstr
      * @returns {this}
      */
     public Max(value: number): this { this.max = value; return this; }
-    
+
     /**
      * Set the range step, fluent interface
      * @date 04/01/2023 - 19:43:35
@@ -205,7 +207,7 @@ export class Mrbr_UI_Bootstrap_Form_Range extends Mrbr_UI_Bootstrap_Form_Bootstr
      * @returns {this}
      */
     public Step(value: number): this { this.step = value; return this; }
-    
+
     /**
      * Set the range properties
      * @date 04/01/2023 - 19:43:42

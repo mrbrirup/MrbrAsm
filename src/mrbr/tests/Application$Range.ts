@@ -17,7 +17,8 @@ export class Mrbr_Tests_Application$Range {
         range2.mount(document.body);
         range2
           .Value(25)
-          .Label("Range 2");
+          .Label("Range 2")
+          .Step(5);
         range1.onInputChanged(this.inputChange.bind(this));
         range2.onInputChanged(this.inputChange.bind(this));
       })
