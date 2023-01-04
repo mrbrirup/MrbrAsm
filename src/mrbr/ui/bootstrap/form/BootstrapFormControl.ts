@@ -267,7 +267,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
      */
     public set label(value: string) {
         const root = this.rootElement;
-        if (root) {
+        if (value && root) {
             const
                 bsfc = this.$bsFormControl,
                 inputElement = <HTMLInputElement>this.elements.get(this.inputElementName),
