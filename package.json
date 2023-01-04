@@ -1,6 +1,6 @@
 {
   "name": "mrbr-assembly",
-  "version": "0.0.49",
+  "version": "0.0.50",
   "description": "MrbrAssembly",
   "main": ".dist/mrbr/system/mrbrbase.js",
   "types": "dist/types",
