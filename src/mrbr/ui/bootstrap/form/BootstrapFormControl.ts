@@ -6,6 +6,28 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
 
 
     /**
+     * Internal name for InputGroup Wrapper
+     * @date 04/01/2023 - 21:32:27
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly FORMCONTROL_INPUT_GROUP: string = "form-control-input-group";
+
+    /**
+     * Internal name for InputGroup Text element
+     * @date 04/01/2023 - 21:32:55
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly FORMCONTROL_INPUT_GROUP_TEXT: string = "form-control-input-group-text";
+
+    /**
      * Event name for changes to the input element
      * @date 02/01/2023 - 00:13:08
      *
@@ -59,6 +81,15 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
     public static readonly FORMCONTROL_LABEL: string = "formcontrol_label";
 
 
+    /**
+     * Internal name for Form Control Input Element
+     * @date 04/01/2023 - 21:34:13
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
     public static readonly FORMCONTROL: string = "formcontrol";
 
     /**
@@ -149,6 +180,25 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
     /**
      * Creates an instance of Mrbr_UI_Bootstrap_Form_BootstrapFormControl.
      * @date 03/01/2023 - 01:08:56
+     *
+     * @constructor
+     * @param {?string} [rootElementName]
+     */
+
+
+    /**
+     * Use InputGroup Layout
+     * @date 04/01/2023 - 22:05:11
+     *
+     * @private
+     * @type {boolean}
+     */
+    private _inputGroup: boolean = false;
+
+    
+    /**
+     * Creates an instance of Mrbr_UI_Bootstrap_Form_BootstrapFormControl.
+     * @date 04/01/2023 - 22:09:27
      *
      * @constructor
      * @param {?string} [rootElementName]
@@ -251,6 +301,14 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
     public get inputElementName(): string { return this._inputElementName; }
 
 
+    /**
+     * Input Element
+     * @date 04/01/2023 - 22:01:02
+     *
+     * @public
+     * @readonly
+     * @type {HTMLInputElement}
+     */
     public get inputElement(): HTMLInputElement { return <HTMLInputElement>this.elements.get(this.inputElementName); }
 
 
@@ -335,7 +393,38 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
     }
 
 
+    /**
+     * InputGroup layout for input element
+     * @date 04/01/2023 - 21:52:50
+     *
+     * @public
+     * @type {boolean}
+     */
+    public get inputGroup(): boolean { return this._inputGroup; }
 
+    /**
+     * InputGroup layout for input element
+     */
+    public set inputGroup(value: boolean) {
+        const
+            root = this.rootElement,
+            bsfc = this.$bsFormControl;
+        this.defaultContainerElementName = value ? bsfc.FORMCONTROL_INPUT_GROUP : this.rootElementName;
+        if (root) {
+            const
+                inputGroup = this.elements.get(bsfc.FORMCONTROL_INPUT_GROUP) ?? <HTMLDivElement>this.createElement(new this.$ctrlCfg(bsfc.FORMCONTROL_INPUT_GROUP, this.$htmlt.div, this.elementConfig.getConfig(bsfc.FORMCONTROL_INPUT_GROUP))),
+                label = this.elements.get(bsfc.FORMCONTROL_LABEL);
+            if (value) {
+                (inputGroup.parentElement !== root) && (root.append(inputGroup));
+                root.childNodes.forEach(node => { (node !== inputGroup && node !== label) && (inputGroup.append(node)); });
+            }
+            else {
+                if (inputGroup.parentElement === root) { inputGroup.childNodes.forEach(node => { root.insertBefore(node, inputGroup); }); }
+                else { inputGroup.childNodes.forEach(node => { root.append(node); }); }
+            }
+        }
+        this._inputGroup = value;
+    }
 
     /**
      * Set the default configuration for the component
@@ -348,27 +437,61 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
     public setDefaultConfig(...args: any[]): Mrbr_System_Promise<this> {
         const
             self = this,
-            controlName = args?.find(arg => typeof arg === 'object' && arg.hasOwnProperty('controlName'))?.controlName ?? this.$bsFormControl[self.$mrbr.COMPONENT_NAME],
+            bsFormControl = this.$bsFormControl,
+            ctrlPrm = this.$ctrlPrm,
+            controlName = args?.find(arg => typeof arg === 'object' && arg.hasOwnProperty('controlName'))?.controlName ?? bsFormControl[self.$mrbr.COMPONENT_NAME],
             setDefaultConfigPromise = this.$promise.create(`${controlName}:setDefaultConfig`);
-        super.setDefaultConfig({ controlName })
+        super
+            .setDefaultConfig({ controlName })
             .then(_ => {
                 self
                     .elementConfig
                     .controlName(controlName)
-                    .setIfNotExist(self.$bsFormControl.FORMCONTROL, new self.$ctrlPrm()
+                    .setIfNotExist(bsFormControl.FORMCONTROL, new ctrlPrm()
                         .Classes("form-control"))
-                    .setIfNotExist(self.$bsFormControl.FORMCONTROL_LABEL, new self.$ctrlPrm()
-                        .Classes("form-label"));
-
+                    .setIfNotExist(bsFormControl.FORMCONTROL_LABEL, new ctrlPrm()
+                        .Classes("form-label"))
+                    .setIfNotExist(bsFormControl.FORMCONTROL_INPUT_GROUP, new ctrlPrm()
+                        .Classes("input-group"))
+                    .setIfNotExist(bsFormControl.FORMCONTROL_INPUT_GROUP_TEXT, new ctrlPrm()
+                        .Classes("input-group-text"));
                 setDefaultConfigPromise.resolve(self);
             })
             .catch(error => setDefaultConfigPromise.reject(error))
         return setDefaultConfigPromise;
     }
 
+    /**
+     * Set InputGroup layout for input element, default is false, fluent layout.
+     * @date 04/01/2023 - 21:53:48
+     *
+     * @public
+     * @param {boolean} value
+     * @returns {this}
+     */
+    public InputGroup(value: boolean): this { this.inputGroup = value; return this; }
 
-
-
+    /**
+     * Create InputGroupText element. Control must be initialised to be able to add TextElements to the control.
+     * @date 04/01/2023 - 21:54:36
+     *
+     * @public
+     * @param {string} name
+     * @param {string} text
+     * @param {("append" | "prepend" | "none")} position
+     * @returns {HTMLSpanElement}
+     */
+    public createInputGroupText(name: string, text: string, position: "append" | "prepend" | "none"): HTMLSpanElement {
+        const
+            bsfc = this.$bsFormControl,
+            inputGroup = this.elements.get(bsfc.FORMCONTROL_INPUT_GROUP),
+            inputGroupText = this.elements.get(name) ?? <HTMLSpanElement>this.createElement(new this.$ctrlCfg(name, this.$htmlt.span, this.elementConfig.getConfig(bsfc.FORMCONTROL_INPUT_GROUP_TEXT)));
+        text && (inputGroupText.innerText = text);
+        if (inputGroup && position !== "none") {
+            (position === "append") ? inputGroup.append(inputGroupText) : inputGroup.prepend(inputGroupText);
+        }
+        return inputGroupText;
+    }
 
 
     /**
@@ -467,6 +590,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
         self.Placeholder(self.placeholder)
         self.Size(self.size)
         self.ReadOnly(self.readonly)
+        self.InputGroup(self.inputGroup)
     }
 
 

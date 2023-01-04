@@ -28,8 +28,12 @@ export class Mrbr_Tests_Application$Email {
         .Placeholder("email6@example.com")
         .Label("Email6")
         .Size("large")
-        .Disabled(true);
-    Promise.all([email1.initialise(), email2.initialise(), email3.initialise(), email4.initialise(), email5.initialise(), email6.initialise()])
+        .Disabled(true),
+      email7 = new mrbrEmail()
+        .Placeholder("email7@example.com")
+        .Label("Email7")
+        .InputGroup(true)
+    Promise.all([email1.initialise(), email2.initialise(), email3.initialise(), email4.initialise(), email5.initialise(), email6.initialise(), email7.initialise()])
       .then(_ => {
         email1.mount(document.body);
         email2.mount(document.body);
@@ -37,6 +41,9 @@ export class Mrbr_Tests_Application$Email {
         email4.mount(document.body);
         email5.mount(document.body);
         email6.mount(document.body);
+        email7
+          .createInputGroupText("emailText", "Email7", "prepend");
+        email7.mount(document.body);
         email1.onInputChanged(this.inputChange.bind(this));
       })
   }
