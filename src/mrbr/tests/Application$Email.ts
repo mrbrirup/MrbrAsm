@@ -12,13 +12,15 @@ export class Mrbr_Tests_Application$Email {
         .Label("Email2"),
       email3 = new mrbrEmail()
         .Placeholder("name3@example.com")
-        .Label("Email3")
-        .Size("small"),
+        .Label("Floating Label for Email3")
+        .Size("small")
+        .FloatingLabel(true),
       email4 = new mrbrEmail()
         .Placeholder("name4@example.com")
         .Label("Email4")
         .Size("large")
-        .ReadOnly(true),
+        .ReadOnly(true)
+        .FloatingLabel(true),
       email5 = new mrbrEmail()
         .Placeholder("email5@example.com")
         .Label("Email5")
@@ -31,8 +33,8 @@ export class Mrbr_Tests_Application$Email {
         .Disabled(true),
       email7 = new mrbrEmail()
         .Placeholder("email7@example.com")
-        .Label("Email7")
         .InputGroup(true)
+        .Label("Email7")
     Promise.all([email1.initialise(), email2.initialise(), email3.initialise(), email4.initialise(), email5.initialise(), email6.initialise(), email7.initialise()])
       .then(_ => {
         email1.mount(document.body);

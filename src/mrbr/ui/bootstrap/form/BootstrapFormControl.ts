@@ -195,7 +195,17 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
      */
     private _inputGroup: boolean = false;
 
-    
+
+    /**
+     * Use Floating Label
+     * @date 04/01/2023 - 22:59:34
+     *
+     * @private
+     * @type {boolean}
+     */
+    private _floatingLabel: boolean = false;
+
+
     /**
      * Creates an instance of Mrbr_UI_Bootstrap_Form_BootstrapFormControl.
      * @date 04/01/2023 - 22:09:27
@@ -207,6 +217,30 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
         super(rootElementName);
     }
 
+    /**
+     * Use flaoting label
+     * @date 04/01/2023 - 23:02:22
+     *
+     * @public
+     * @type {boolean}
+     */
+    public get floatingLabel(): boolean { return this._floatingLabel; }
+
+    /**
+     * Use flaoting label
+     */
+    public set floatingLabel(value: boolean) {
+        this.Label(this.label);
+        const
+            label = <HTMLLabelElement>this.elements.get(this.$bsFormControl.FORMCONTROL_LABEL),
+            input = <HTMLInputElement>this.elements.get(this.inputElementName),
+            parent = label?.parentElement;
+        if (parent && this.inputGroup === false && value !== undefined && value !== null) {
+            (label && input && (value ? label.before(input) : input.before(label)));
+            (parent.classList.toggle("form-floating", value));
+        }
+        this._floatingLabel = value;
+    }
 
     /**
      * Readonly state of the input element
@@ -406,7 +440,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
      * InputGroup layout for input element
      */
     public set inputGroup(value: boolean) {
-        const
+        let
             root = this.rootElement,
             bsfc = this.$bsFormControl;
         this.defaultContainerElementName = value ? bsfc.FORMCONTROL_INPUT_GROUP : this.rootElementName;
@@ -416,7 +450,8 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
                 label = this.elements.get(bsfc.FORMCONTROL_LABEL);
             if (value) {
                 (inputGroup.parentElement !== root) && (root.append(inputGroup));
-                root.childNodes.forEach(node => { (node !== inputGroup && node !== label) && (inputGroup.append(node)); });
+                root.childNodes.forEach(node => (node !== inputGroup && node !== label) && (inputGroup.append(node)));
+                label && root.prepend(label);
             }
             else {
                 if (inputGroup.parentElement === root) { inputGroup.childNodes.forEach(node => { root.insertBefore(node, inputGroup); }); }
@@ -575,6 +610,16 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
 
 
     /**
+     * Sets the floating label state of the FormControl, fluent interface
+     * @date 04/01/2023 - 23:03:34
+     *
+     * @public
+     * @param {boolean} value
+     * @returns {TFormControl}
+     */
+    public FloatingLabel(value: boolean): TFormControl { this.floatingLabel = value; return <TFormControl>(this as unknown); }
+
+    /**
      * Sets the properties of the FormControl
      * @date 03/01/2023 - 03:34:00
      *
@@ -591,6 +636,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
         self.Size(self.size)
         self.ReadOnly(self.readonly)
         self.InputGroup(self.inputGroup)
+        self.FloatingLabel(self.floatingLabel)
     }
 
 
