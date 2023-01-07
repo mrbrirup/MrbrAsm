@@ -91,10 +91,11 @@ export class Mrbr_UI_Bootstrap_Form_Select extends Mrbr_UI_Bootstrap_Form_Bootst
             bsSelect = self.$bsSelect,
             controlName = args?.find(arg => typeof arg === "object" && arg.hasOwnProperty("controlName"))?.controlName ?? bsSelect[self.$mrbr.COMPONENT_NAME],
             initialisePromise = self.$promise.create(`${controlName}:initialise`);
-        super.initialise([...args, { controlName }].flat())
+        super
+            .initialise([...args, { controlName }].flat())
             .then(async _ => {
                 await self.loadManifest(bsSelect);
-                await self.setDefaultConfig();
+                await self.setDefaultConfig({ controlName });
                 self.
                     createElement(new self.$ctrlCfg(self.rootElementName, self.$htmlt.div, new self.$ctrlPrm()
                         .Children(
@@ -115,7 +116,8 @@ export class Mrbr_UI_Bootstrap_Form_Select extends Mrbr_UI_Bootstrap_Form_Bootst
             bsSelect = self.$bsSelect,
             controlName = args?.find(arg => typeof arg === "object" && arg.hasOwnProperty("controlName"))?.controlName ?? bsSelect[self.$mrbr.COMPONENT_NAME],
             setDefaultConfigPromise = self.$promise.create(`${controlName}:setDefaultConfig`);
-        super.setDefaultConfig(...args)
+        super
+            .setDefaultConfig({ controlName })
             .then(_ => {
                 self
                     .elementConfig

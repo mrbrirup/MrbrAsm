@@ -358,18 +358,18 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
      * Label text for the FormCheck
      */
     public set label(value: string) {
-        const root = this.rootElement;
-        if (value && root) {
+        const
+            root = this.rootElement,
+            inputElement = <HTMLInputElement>this.elements.get(this.inputElementName);
+        if (value && inputElement) {
             const
                 bsfc = this.$bsFormControl,
-                inputElement = <HTMLInputElement>this.elements.get(this.inputElementName),
                 labelElement = this.elements.get(bsfc.FORMCONTROL_LABEL) ?? <HTMLLabelElement>this.createElement(new this.$ctrlCfg(bsfc.FORMCONTROL_LABEL, this.$htmlt.label, this.elementConfig.getConfig(bsfc.FORMCONTROL_LABEL)
-                    .Properties({ htmlFor: inputElement.id })
-                ));
-            root && labelElement.parentElement !== root && root.prepend(labelElement);
+                    .Properties({ htmlFor: inputElement?.id })));
             labelElement.innerText = value;
+            root && labelElement.parentElement !== root && root.prepend(labelElement);
         }
-        !this.ariaLabel && (this.ariaLabel = value);
+        value && !this.ariaLabel && (this.ariaLabel = value);
         this._label = value;
     }
     /**

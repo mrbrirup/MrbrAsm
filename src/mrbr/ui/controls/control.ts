@@ -20,8 +20,22 @@ import { Mrbr_System_Events_EventSubscribers } from "../../system/events/EventSu
 import { Mrbr_UI_Controls_MountPosition } from "./MountPosition";
 import { Mrbr_System_Events_Event } from "../../system/events/Event";
 import { Mrbr_UI_HTML_ElementTags } from "../html/ElementTags";
+import { Mrbr_UI_Controls_IRootElement } from "./IRootElement";
 
-export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements Mrbr_UI_Controls_IControl, Mrbr_System_IComponent {
+
+/**
+ * Base Class for all UI Controls
+ * @date 07/01/2023 - 09:21:35
+ *
+ * @export
+ * @class Mrbr_UI_Controls_Control
+ * @typedef {Mrbr_UI_Controls_Control}
+ * @extends {Mrbr_System_Component}
+ * @implements {Mrbr_UI_Controls_IControl}
+ * @implements {Mrbr_UI_Controls_IRootElement}
+ * @implements {Mrbr_System_IComponent}
+ */
+export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements Mrbr_UI_Controls_IControl, Mrbr_UI_Controls_IRootElement, Mrbr_System_IComponent {
     //#region Public Symbols
 
     /**
@@ -249,7 +263,23 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @param {string} prefix Use to prefix with related value, e.g. HTMLElement.elementName
      * @returns {string}
      */
-    public static createId(prefix: string) { return `${prefix}_` + (new Date()).toISOString().replace(/[:z.-]/gmi, "").split("T").map(part => parseInt(part).toString(36)).concat((Math.floor(Math.random() * 10000)).toString(36)).join("_"); }
+    public static createId(prefix: string) {
+        const
+            ctrl = Mrbr_UI_Controls_Control,
+            datePart = (new Date()).toISOString().replace(/[:z.-]/gmi, ""),
+            fnRandom = () => (Math.floor(Math.random() * 10000)).toString(36);
+        ctrl._staticIds.forEach((value, key) => { if (key === datePart) { ctrl._staticIds.delete(key); } });
+        if (!ctrl._staticIds.has(datePart)) { ctrl._staticIds.set(datePart, new Array<string>()); }
+        const ids = ctrl._staticIds.get(datePart);
+        let random = fnRandom();
+        while (ids.includes(random)) { random = fnRandom(); }
+        ids.push(random);
+        return `${prefix}_` + datePart.split("T").map(part => parseInt(part).toString(36)).concat(random).join("_");
+    }
+
+
+    private static _staticIds = new Map<string, string[]>();
+
     //#endregion Static Methods
     //TODO: Remove After refactoring
     protected _defaultConfiguration: Mrbr_UI_Controls_ControlDefaultsCollection;
@@ -773,18 +803,51 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @returns {Mrbr_UI_Controls_Control}
      */
     public Id(value: string): Mrbr_UI_Controls_Control { this.id = value; return this; }
+
+    
+    /**
+     * Get Target elemeent from types of input
+     * @date 07/01/2023 - 09:11:38
+     *
+     * @private
+     * @param {*} targetElement
+     * @returns {HTMLElement}
+     */
+    private getTargetElement(targetElement: any): HTMLElement {
+        switch (true) {
+            case (targetElement instanceof HTMLElement): return <HTMLElement>targetElement;
+            case (typeof targetElement === "string"): return <HTMLElement>this.elements.get(<string>targetElement);
+            case (!!(<Mrbr_UI_Controls_IRootElement>targetElement)?.rootElement): return <HTMLElement>((<Mrbr_UI_Controls_IRootElement>targetElement)?.rootElement);
+            default: throw new Error("Invalid target element");
+        }
+    }
+
+
+    /**
+     * Assigns classes to this control root element
+     * @date 07/01/2023 - 09:09:03
+     *
+     * @public
+     * @param {Mrbr_UI_Controls_ClassActions} action
+     * @param {(Array<string> | string)} value
+     * @param {?Object} [styleType]
+     * @returns {(HTMLElement | Array<HTMLElement>)}
+     */
+    public rootClasses(action: Mrbr_UI_Controls_ClassActions, value: Array<string> | string, styleType?: Object): HTMLElement | Array<HTMLElement> { return this.classes(this, action, value, styleType); }
+
     /**
      * Assigns classes to a control or control array
      * @date 31/10/2022 - 14:18:41
      *
      * @public
-     * @param {(string | HTMLElement | Array<string> | Array<HTMLElement>)} targetElement
+     * @param {(string | HTMLElement | Array<string> | Array<HTMLElement> | Mrbr_UI_Controls_IRootElement)} targetElement
      * @param {Mrbr_UI_Controls_ClassActions} action Add, Remove, Toggle styles
      * @param {(Array<string> | string)} value Class or classes for the action
      * @param {?Object} [styleType] Class names to remove from the element
      * @returns {(HTMLElement | Array<HTMLElement>)}
      */
-    public classes(targetElement: string | HTMLElement | Array<string> | Array<HTMLElement>, action: Mrbr_UI_Controls_ClassActions, value: Array<string> | string, styleType?: Object): HTMLElement | Array<HTMLElement> {
+
+    public classes(targetElement: string | HTMLElement | Array<string> | Array<HTMLElement> | Mrbr_UI_Controls_IRootElement, action: Mrbr_UI_Controls_ClassActions, value: Array<string> | string, styleType?: Object): HTMLElement | Array<HTMLElement> {
         //TODO: Review use of styleType
         const self = this;
         if (Array.isArray(targetElement)) {
@@ -792,12 +855,12 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
             targetElement.forEach(entry => returnElements.push(self.classes(entry, action, value, styleType)))
             return returnElements;
         }
-        const valueAsArray = (Array.isArray(value) ? value : [value]),
+        const valueAsArray = ([value].flat() as Array<string>).filter(entry => entry !== ""),
             styleCls = self.$styleCls,
             removeIndex = 0,
             addIndex = 1,
             act = self.$clsActions;
-        let _targetElement = (typeof targetElement === "string") ? self.elements.get(targetElement) : targetElement;
+        let _targetElement: HTMLElement = this.getTargetElement(targetElement);
 
         switch (action) {
             case act.add:
@@ -1000,15 +1063,18 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @date 31/10/2022 - 14:27:34
      *
      * @public
-     * @param {HTMLElement} hostElement
+     * @param {HTMLElement} _hostElement
      * @param {("replace" | "prepend" | "before" | "after" | "append")} [position="append"]
      * @param {...*} args
      * @returns {Mrbr_UI_Controls_IControl}
      */
-    public mount(hostElement: HTMLElement | Mrbr_UI_Controls_Control | string, position: Mrbr_UI_Controls_MountPosition = Mrbr_UI_Controls_MountPosition.append, mountingElement: HTMLElement | Mrbr_UI_Controls_Control = null, ...args: any): Mrbr_UI_Controls_IControl {
-        if (typeof hostElement === "string") { hostElement = document.getElementById(hostElement); }
-        else if (hostElement instanceof Mrbr_UI_Controls_Control) { hostElement = hostElement.defaultContainerElement || hostElement.rootElement; }
-        if (!hostElement) { throw new Error("Element not found"); }
+    public mount(hostElement: HTMLElement | Mrbr_UI_Controls_Control | Mrbr_UI_Controls_IRootElement | string, position: Mrbr_UI_Controls_MountPosition = Mrbr_UI_Controls_MountPosition.append, mountingElement: HTMLElement | Mrbr_UI_Controls_Control = null, ...args: any): Mrbr_UI_Controls_IControl {
+        let _hostElement: HTMLElement;
+        if (hostElement instanceof HTMLElement) { _hostElement = hostElement; }
+        if (typeof hostElement === "string") { _hostElement = document.getElementById(hostElement); }
+        else if (hostElement instanceof Mrbr_UI_Controls_Control) { _hostElement = hostElement.defaultContainerElement || hostElement.rootElement; }
+        else if ((<Mrbr_UI_Controls_IRootElement>hostElement).rootElement) { _hostElement = (<Mrbr_UI_Controls_IRootElement>hostElement).rootElement; }
+        if (!_hostElement) { throw new Error("Element not found"); }
         const id = this.rootElement.id;
         this.addMountHandler(id);
         let _mountingElement: HTMLElement,
@@ -1016,16 +1082,15 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
         if (mountingElement) { _mountingElement = (mountingElement instanceof Mrbr_UI_Controls_Control) ? mountingElement.rootElement : mountingElement; }
         else { _mountingElement = this.rootElement; }
         switch (position) {
-            case positions.append: hostElement.appendChild(_mountingElement); break;
-            case positions.before: hostElement.before(_mountingElement); break;
-            case positions.after: hostElement.after(_mountingElement); break;
-            case positions.prepend: hostElement.prepend(_mountingElement); break;
-            case positions.replace: hostElement.replaceWith(_mountingElement); break;
+            case positions.append: _hostElement.appendChild(_mountingElement); break;
+            case positions.before: _hostElement.before(_mountingElement); break;
+            case positions.after: _hostElement.after(_mountingElement); break;
+            case positions.prepend: _hostElement.prepend(_mountingElement); break;
+            case positions.replace: _hostElement.replaceWith(_mountingElement); break;
         }
         return this;
 
     }
-
     /**
      * Wrap an element with another element
      * @date 30/12/2022 - 14:21:22
