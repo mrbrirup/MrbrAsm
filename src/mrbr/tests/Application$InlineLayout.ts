@@ -4,7 +4,7 @@ import { Mrbr_UI_Bootstrap_Form_Layout } from "../ui/bootstrap/form/layout";
 import { Mrbr_UI_Bootstrap_Form_Select } from "../ui/bootstrap/form/select";
 
 
-export class Mrbr_Tests_Application$Layout {
+export class Mrbr_Tests_Application$InlineLayout {
   constructor() {
     const
       mrbrButton = Mrbr_UI_Bootstrap_Controls_Button,
@@ -19,6 +19,7 @@ export class Mrbr_Tests_Application$Layout {
         .Label("Email 1"),
       opt = mrbrSelect.Option,
       options = [
+        new opt("", "Choose One"),
         new opt("1", "One"),
         new opt("2", "Two"),
         new opt("3", "Three"),
@@ -31,26 +32,19 @@ export class Mrbr_Tests_Application$Layout {
       .Options(options)
       .Label("Select 1");
     button.text = "Button 1";
+    layout.controls.setMultiple(
+      ["email1", email1],
+      ["select1", select1],
+      ["button", button]);
     Promise.all([layout.initialise(), email1.initialise(), select1.initialise(), button.initialise()])
       .then(_ => {
-        //  All three of these produce the same result, creating a 2x2 grid with a button in the bottom right corner
-        /*
-          layout.addRow().Column({ s: 6 })({ s: 6 })("addRow").Column({ s: 9 })({ s: 3 })
-          layout.row(1).rootElement.classList.add("mt-3");
-          */
-        /*
-          layout.addRow().Columns(6, 6, "addRow", 9, 3).row.rootElement.classList.add("mt-3");
-        */
-        layout
-          .addRow().CreateColumns({ i: 0, s: 6 }, 6, "addRow")
-          .row.CreateColumns(9, 3)
-          .row.rootElement.classList.add("mt-3");
+        const inlineRow = layout.addInlineRow("sm", "auto", 3, 3);
         layout.mount(document.body);
         email1.mount(layout.cell(0, 0));
         select1.mount(layout.cell(0, 1));
-        button.rootClasses(button.$clsActions.add, "float-end");
-        button.mount(layout.cell(1, 1));
-
+        email1.hiddenLabel = true;
+        select1.hiddenLabel = true;
+        button.mount(layout.cell(0, 2));
       })
       .catch(error => console.log("Error", error));
 

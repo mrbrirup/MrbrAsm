@@ -804,7 +804,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      */
     public Id(value: string): Mrbr_UI_Controls_Control { this.id = value; return this; }
 
-    
+
     /**
      * Get Target elemeent from types of input
      * @date 07/01/2023 - 09:11:38
@@ -847,7 +847,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @returns {(HTMLElement | Array<HTMLElement>)}
      */
 
-    public classes(targetElement: string | HTMLElement | Array<string> | Array<HTMLElement> | Mrbr_UI_Controls_IRootElement, action: Mrbr_UI_Controls_ClassActions, value: Array<string> | string, styleType?: Object): HTMLElement | Array<HTMLElement> {
+    public classes(targetElement: string | HTMLElement | Array<string> | Array<HTMLElement> | Mrbr_UI_Controls_IRootElement, action: Mrbr_UI_Controls_ClassActions, value: Array<string> | string | DOMTokenList, styleType?: Object): HTMLElement | Array<HTMLElement> {
         //TODO: Review use of styleType
         const self = this;
         if (Array.isArray(targetElement)) {
@@ -855,6 +855,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
             targetElement.forEach(entry => returnElements.push(self.classes(entry, action, value, styleType)))
             return returnElements;
         }
+        if (value instanceof DOMTokenList) { value = [...value]; }
         const valueAsArray = ([value].flat() as Array<string>).filter(entry => entry !== ""),
             styleCls = self.$styleCls,
             removeIndex = 0,
@@ -891,6 +892,9 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
                 break;
             case act.replace:
                 if (valueAsArray.length !== 2) { throw new Error("Two values must be provided") }
+                const
+                    classToRemove = valueAsArray[removeIndex],
+                    classToAdd = valueAsArray[addIndex];
                 styleCls.removeClass(_targetElement, valueAsArray[removeIndex])
                 styleCls.addClasses(_targetElement, valueAsArray[addIndex])
                 break;

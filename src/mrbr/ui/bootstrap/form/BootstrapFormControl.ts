@@ -39,6 +39,17 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
     public static readonly INPUT_CHANGE_EVENT_NAME: string = "input";
 
     /**
+     * Class for Visually Hidden Label
+     * @date 10/01/2023 - 22:44:38
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly FORMCONTROL_VISUALLY_HIDDEN: string = "visually-hidden";
+
+    /**
      * Namespace Alias for Mrbr.UI.Bootstrap.Form
      * @date 02/01/2023 - 00:13:36
      *
@@ -345,6 +356,15 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
      */
     public get inputElement(): HTMLInputElement { return <HTMLInputElement>this.elements.get(this.inputElementName); }
 
+    private _hiddenLabel: boolean = false;
+    private _hiddenLabelClass: string;
+    public get hiddenLabel(): boolean {
+        return this._hiddenLabel;
+    }
+    public set hiddenLabel(value: boolean) {
+        this._hiddenLabel = value;
+        this.Label(this.label);
+    }
 
     /**
      * Label text for the FormCheck
@@ -361,14 +381,31 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
         const
             root = this.rootElement,
             inputElement = <HTMLInputElement>this.elements.get(this.inputElementName);
+        let labelElement;
         if (value && inputElement) {
             const
-                bsfc = this.$bsFormControl,
-                labelElement = this.elements.get(bsfc.FORMCONTROL_LABEL) ?? <HTMLLabelElement>this.createElement(new this.$ctrlCfg(bsfc.FORMCONTROL_LABEL, this.$htmlt.label, this.elementConfig.getConfig(bsfc.FORMCONTROL_LABEL)
-                    .Properties({ htmlFor: inputElement?.id })));
+                bsfc = this.$bsFormControl;
+            labelElement = this.elements.get(bsfc.FORMCONTROL_LABEL) ?? <HTMLLabelElement>this.createElement(new this.$ctrlCfg(bsfc.FORMCONTROL_LABEL, this.$htmlt.label, this.elementConfig.getConfig(bsfc.FORMCONTROL_LABEL)
+                .Properties({ htmlFor: inputElement?.id })));
             labelElement.innerText = value;
             root && labelElement.parentElement !== root && root.prepend(labelElement);
         }
+        const
+            isHidden = this.hiddenLabel,
+            visuallyHidden = this.$bsFormControl.FORMCONTROL_VISUALLY_HIDDEN;
+        if (labelElement) {
+            if (isHidden === true && !labelElement.classList.contains(visuallyHidden)) {
+                const classes = [...labelElement.classList].map(c => c.trim()).join(" ");
+                this.classes(labelElement, this.$clsActions.remove, classes)
+                this._hiddenLabelClass = classes;
+                labelElement.classList.add(this.$bsFormControl.FORMCONTROL_VISUALLY_HIDDEN);
+            }
+            else if (isHidden === false && labelElement.classList.contains(visuallyHidden)) {
+                this.classes(labelElement, this.$clsActions.remove, this.$bsFormControl.FORMCONTROL_VISUALLY_HIDDEN);
+                this.classes(labelElement, this.$clsActions.add, this._hiddenLabelClass);
+            }
+        }
+
         value && !this.ariaLabel && (this.ariaLabel = value);
         this._label = value;
     }
@@ -460,6 +497,18 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
         }
         this._inputGroup = value;
     }
+
+
+    /**
+     * Label Element
+     * @date 10/01/2023 - 06:19:17
+     *
+     * @public
+     * @readonly
+     * @type {HTMLLabelElement}
+     */
+    public get labelElement(): HTMLLabelElement { return <HTMLLabelElement>this.elements.get(this.$bsFormControl.FORMCONTROL_LABEL); }
+
 
     /**
      * Set the default configuration for the component

@@ -180,7 +180,7 @@ export class Mrbr_UI_Bootstrap_Form_LayoutRow implements Mrbr_UI_Controls_IRootE
      * @param {?ColumnParameters} [columnParameters]
      * @returns {columnParameterFunction}
      */
-    public Column(columnParameters?: ColumnParameters): columnParameterFunction;
+    public CreateColumn(columnParameters?: ColumnParameters): columnParameterFunction;
     
     /**
      * When passing "addNew" as the columnParameter rowId will be used as the new Id for the row
@@ -191,7 +191,7 @@ export class Mrbr_UI_Bootstrap_Form_LayoutRow implements Mrbr_UI_Controls_IRootE
      * @param {(number | string)} rowId
      * @returns {Mrbr_UI_Bootstrap_Form_LayoutRow}
      */
-    public Column(columnParameters: ColumnParameters, rowId: number | string): Mrbr_UI_Bootstrap_Form_LayoutRow;
+    public CreateColumn(columnParameters: ColumnParameters, rowId: number | string): Mrbr_UI_Bootstrap_Form_LayoutRow;
     
     /**
      * Add a column to the layout using column parameters or create a new row
@@ -202,7 +202,7 @@ export class Mrbr_UI_Bootstrap_Form_LayoutRow implements Mrbr_UI_Controls_IRootE
      * @param {?(number | string | undefined)} [rowId]
      * @returns {(columnParameterFunction | Mrbr_UI_Bootstrap_Form_LayoutRow)}
      */
-    public Column(columnParameters?: ColumnParameters, rowId?: number | string | undefined): columnParameterFunction | Mrbr_UI_Bootstrap_Form_LayoutRow {
+    public CreateColumn(columnParameters?: ColumnParameters, rowId?: number | string | undefined): columnParameterFunction | Mrbr_UI_Bootstrap_Form_LayoutRow {
         if (typeof columnParameters === "string" && columnParameters === "addRow") { return this._layout.addRow(rowId); }
         if (typeof columnParameters === "number") { columnParameters = { span: columnParameters }; }
         else if (!columnParameters) { columnParameters = {}; }
@@ -216,7 +216,7 @@ export class Mrbr_UI_Bootstrap_Form_LayoutRow implements Mrbr_UI_Controls_IRootE
         element.dataset.mrbrId = layoutColumn.id.toString();
         this.columns.set(layoutColumn.id, layoutColumn);
         this.rootElement.appendChild(element);
-        return this.Column.bind(this) as columnParameterFunction;
+        return this.CreateColumn.bind(this) as columnParameterFunction;
     }
     
     /**
@@ -281,7 +281,7 @@ export class Mrbr_UI_Bootstrap_Form_LayoutRow implements Mrbr_UI_Controls_IRootE
      * @param {...ColumnParameters[]} args
      * @returns {AddColumnsResult} collection of rows from the starting Row in .rows to the last row added in .row
      */
-    public Columns(...args: ColumnParameters[]): AddColumnsResult {
+    public CreateColumns(...args: ColumnParameters[]): AddColumnsResult {
         const
             currentRow: Mrbr_UI_Bootstrap_Form_LayoutRow = this,
             addColumnsResult = { rows: new Map<string | number, Mrbr_UI_Bootstrap_Form_LayoutRow>(), row: currentRow };
@@ -292,7 +292,7 @@ export class Mrbr_UI_Bootstrap_Form_LayoutRow implements Mrbr_UI_Controls_IRootE
                 addColumnsResult.row = row;
                 addColumnsResult.rows.set(row.id, row);
             }
-            else { addColumnsResult.row.Column(columnParameters) }
+            else { addColumnsResult.row.CreateColumn(columnParameters) }
         });
         return addColumnsResult;
     }
