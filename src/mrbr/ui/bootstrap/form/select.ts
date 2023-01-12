@@ -3,7 +3,7 @@ import { Mrbr_UI_Bootstrap_Form_BootstrapFormControl } from "./BootstrapFormCont
 import { Mrbr_UI_Bootstrap_Form_SelectInputEvent } from "./selectInputEvent";
 import { Mrbr_UI_Bootstrap_Form_SelectInputEventData } from "./selectInputEventData";
 
-export class Mrbr_UI_Bootstrap_Form_Select extends Mrbr_UI_Bootstrap_Form_BootstrapFormControl<Mrbr_UI_Bootstrap_Form_Select> {
+export class Mrbr_UI_Bootstrap_Form_Select extends Mrbr_UI_Bootstrap_Form_BootstrapFormControl {
 
     public static readonly SELECT: string = "select";
 

@@ -2,7 +2,7 @@ import { Mrbr_System_Events_Event } from "../../../system/events/Event";
 import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Bootstrap_Controls_BootstrapControl } from "../controls/BootstrapControl";
 
-export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends Mrbr_UI_Bootstrap_Controls_BootstrapControl {
+export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstrap_Controls_BootstrapControl {
 
 
     /**
@@ -586,7 +586,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
      * @param {string} value
      * @returns {TFormCheck}
      */
-    public AriaLabel(value: string): TFormControl { this.ariaLabel = value; return <TFormControl>(this as unknown); }
+    public AriaLabel(value: string): this { this.ariaLabel = value; return this; }
 
     /**
      * Sets the label for the FormCheck, fluent interface
@@ -596,7 +596,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
      * @param {string} value
      * @returns {TFormCheck}
      */
-    public Label(value: string): TFormControl { this.label = value; return <TFormControl>(this as unknown); }
+    public Label(value: string): this { this.label = value; return this; }
 
 
 
@@ -608,10 +608,10 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
      * @param {string} value
      * @returns {TFormCheck}
      */
-    public Value(value: string | any): TFormControl {
+    public Value(value: string | any): this {
         (value !== undefined && value !== null && typeof value !== "string") && (value = value.toString());
         this.value = value;
-        return <TFormControl>(this as unknown);
+        return this;
     }
 
 
@@ -621,9 +621,9 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
      *
      * @public
      * @param {string} value
-     * @returns {TFormControl}
+     * @returns {this}
      */
-    public Placeholder(value: string): TFormControl { this.placeholder = value; return <TFormControl>(this as unknown); }
+    public Placeholder(value: string): this { this.placeholder = value; return this; }
 
     /**
      * Sets the disabled state for the FormCheck, fluent interface
@@ -633,7 +633,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
      * @param {boolean} value
      * @returns {TFormCheck}
      */
-    public Disabled(value: boolean): TFormControl { this.disabled = value; return <TFormControl>(this as unknown); }
+    public Disabled(value: boolean): this { this.disabled = value; return this; }
 
 
     /**
@@ -642,9 +642,9 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
      *
      * @public
      * @param {("small" | "large" | "default")} value
-     * @returns {TFormControl}
+     * @returns {this}
      */
-    public Size(value: "small" | "large" | "default"): TFormControl { this.size = value; return <TFormControl>(this as unknown); }
+    public Size(value: "small" | "large" | "default"): this { this.size = value; return this; }
 
 
     /**
@@ -653,9 +653,9 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
      *
      * @public
      * @param {("plaintext" | boolean)} value
-     * @returns {TFormControl}
+     * @returns {this}
      */
-    public ReadOnly(value: "plaintext" | boolean): TFormControl { this.readonly = value; return <TFormControl>(this as unknown); }
+    public ReadOnly(value: "plaintext" | boolean): this { this.readonly = value; return this; }
 
 
     /**
@@ -664,16 +664,16 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormControl> extends M
      *
      * @public
      * @param {boolean} value
-     * @returns {TFormControl}
+     * @returns {this}
      */
-    public FloatingLabel(value: boolean): TFormControl { this.floatingLabel = value; return <TFormControl>(this as unknown); }
+    public FloatingLabel(value: boolean): this { this.floatingLabel = value; return this; }
 
     /**
      * Sets the properties of the FormControl
      * @date 03/01/2023 - 03:34:00
      *
      * @public
-     * @returns {TFormControl}
+     * @returns {this}
      */
     public setProperties(): void {
         const self = this;

@@ -12,7 +12,7 @@ import { Mrbr_UI_Bootstrap_Form_TextInputEventData } from "./textInputEventData"
  * @typedef {Mrbr_UI_Bootstrap_Form_Colour}
  * @extends {Mrbr_UI_Bootstrap_Form_BootstrapFormControl<Mrbr_UI_Bootstrap_Form_Colour>}
  */
-export class Mrbr_UI_Bootstrap_Form_Colour extends Mrbr_UI_Bootstrap_Form_BootstrapFormControl<Mrbr_UI_Bootstrap_Form_Colour> {
+export class Mrbr_UI_Bootstrap_Form_Colour extends Mrbr_UI_Bootstrap_Form_BootstrapFormControl {
 
     
     /**

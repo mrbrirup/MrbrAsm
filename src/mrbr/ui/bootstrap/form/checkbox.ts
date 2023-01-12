@@ -14,7 +14,7 @@ import { Mrbr_UI_Bootstrap_Form_FormCheck } from "./formCheck";
  * @typedef {Mrbr_UI_Bootstrap_Form_CheckBox}
  * @extends {Mrbr_UI_Bootstrap_Form_FormCheck<Mrbr_UI_Bootstrap_Form_CheckBox>}
  */
-export class Mrbr_UI_Bootstrap_Form_CheckBox extends Mrbr_UI_Bootstrap_Form_FormCheck<Mrbr_UI_Bootstrap_Form_CheckBox> {
+export class Mrbr_UI_Bootstrap_Form_CheckBox extends Mrbr_UI_Bootstrap_Form_FormCheck {
 
 
     /**

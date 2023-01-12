@@ -3,7 +3,7 @@ import { Mrbr_UI_Bootstrap_Form_FormCheck } from "./formCheck";
 import { Mrbr_UI_Bootstrap_Form_RadioEvent } from "./radioEvent";
 import { Mrbr_UI_Bootstrap_Form_RadioEventData } from "./radioEventData";
 
-export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_FormCheck<Mrbr_UI_Bootstrap_Form_Radio> {
+export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_FormCheck {
 
 
     /**

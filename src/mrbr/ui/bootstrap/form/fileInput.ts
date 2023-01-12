@@ -12,7 +12,7 @@ import { Mrbr_UI_Bootstrap_Form_FileInputEventData } from "./fileInputEventData"
  * @typedef {Mrbr_UI_Bootstrap_Form_FileInput}
  * @extends {Mrbr_UI_Bootstrap_Form_BootstrapFormControl<Mrbr_UI_Bootstrap_Form_FileInput>}
  */
-export class Mrbr_UI_Bootstrap_Form_FileInput extends Mrbr_UI_Bootstrap_Form_BootstrapFormControl<Mrbr_UI_Bootstrap_Form_FileInput> {
+export class Mrbr_UI_Bootstrap_Form_FileInput extends Mrbr_UI_Bootstrap_Form_BootstrapFormControl {
 
 
     /**

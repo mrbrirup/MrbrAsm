@@ -3,7 +3,7 @@ import { Mrbr_UI_Bootstrap_Form_BootstrapFormControl } from "./BootstrapFormCont
 import { Mrbr_UI_Bootstrap_Form_TextInputEvent } from "./textInputEvent";
 import { Mrbr_UI_Bootstrap_Form_TextInputEventData } from "./textInputEventData";
 
-export class Mrbr_UI_Bootstrap_Form_Email extends Mrbr_UI_Bootstrap_Form_BootstrapFormControl<Mrbr_UI_Bootstrap_Form_Email> {
+export class Mrbr_UI_Bootstrap_Form_Email extends Mrbr_UI_Bootstrap_Form_BootstrapFormControl {
 
 
     /**

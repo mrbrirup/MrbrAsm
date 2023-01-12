@@ -11,7 +11,7 @@ import { Mrbr_UI_Bootstrap_Form_BootstrapFormControl } from "./BootstrapFormCont
  * @template TFormCheck - Type of the FormCheck class used for fluent interface
  * @extends {Mrbr_UI_Bootstrap_Controls_BootstrapFormControl}
  */
-export class Mrbr_UI_Bootstrap_Form_FormCheck<TFormCheck> extends Mrbr_UI_Bootstrap_Form_BootstrapFormControl<TFormCheck> {
+export class Mrbr_UI_Bootstrap_Form_FormCheck extends Mrbr_UI_Bootstrap_Form_BootstrapFormControl {
 
 
     /**
@@ -184,7 +184,7 @@ export class Mrbr_UI_Bootstrap_Form_FormCheck<TFormCheck> extends Mrbr_UI_Bootst
      * @param {boolean} value
      * @returns {TFormCheck}
      */
-    public Inline(value: boolean): TFormCheck { this.inline = value; return <TFormCheck>(this as unknown); }
+    public Inline(value: boolean): this { this.inline = value; return this; }
 
     /**
      * Sets the reverse state for the FormCheck, fluent interface
@@ -194,7 +194,7 @@ export class Mrbr_UI_Bootstrap_Form_FormCheck<TFormCheck> extends Mrbr_UI_Bootst
      * @param {boolean} value
      * @returns {TFormCheck}
      */
-    public Reverse(value: boolean): TFormCheck { this.reverse = value; return <TFormCheck>(this as unknown); }
+    public Reverse(value: boolean): this { this.reverse = value; return this; }
 
 
 

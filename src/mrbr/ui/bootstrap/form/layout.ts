@@ -71,7 +71,7 @@ type inlineSpanSizes = "auto" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | 
  * @typedef {Mrbr_UI_Bootstrap_Form_Layout}
  * @extends {Mrbr_UI_Bootstrap_Form_BootstrapFormControl<Mrbr_UI_Bootstrap_Form_Layout>}
  */
-export class Mrbr_UI_Bootstrap_Form_Layout extends Mrbr_UI_Bootstrap_Form_BootstrapFormControl<Mrbr_UI_Bootstrap_Form_Layout> {
+export class Mrbr_UI_Bootstrap_Form_Layout extends Mrbr_UI_Bootstrap_Form_BootstrapFormControl {
 
 
     /**
@@ -309,7 +309,7 @@ export class Mrbr_UI_Bootstrap_Form_Layout extends Mrbr_UI_Bootstrap_Form_Bootst
      * @param {Mrbr_UI_Bootstrap_Form_BootstrapFormControl<any>} control
      * @returns {this}
      */
-    public ApplyHorizontalLayout(control: Mrbr_UI_Bootstrap_Form_BootstrapFormControl<any>): this {
+    public ApplyHorizontalLayout(control: Mrbr_UI_Bootstrap_Form_BootstrapFormControl): this {
         let
             labelColumnClass,
             labelFormClass,
@@ -379,7 +379,7 @@ export class Mrbr_UI_Bootstrap_Form_Layout extends Mrbr_UI_Bootstrap_Form_Bootst
      * @returns {this}
      */
     public ApplyHorizontalLayouts(): this {
-        this.controls.forEach(control => (control instanceof this.$bsFormControl) && (this.ApplyHorizontalLayout(<Mrbr_UI_Bootstrap_Form_BootstrapFormControl<unknown>>control)));
+        this.controls.forEach(control => (control instanceof this.$bsFormControl) && (this.ApplyHorizontalLayout(<Mrbr_UI_Bootstrap_Form_BootstrapFormControl>control)));
         return this;
     }
 
