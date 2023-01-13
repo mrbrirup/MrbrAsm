@@ -104,8 +104,8 @@ export class Mrbr_UI_Bootstrap_Controls_Progress extends Mrbr_UI_Bootstrap_Contr
     public get $ped(): typeof Mrbr_UI_Bootstrap_Controls_ProgressEventData { return this.$bsc.ProgressEventData as typeof Mrbr_UI_Bootstrap_Controls_ProgressEventData; }
 
     private _useDefaultProgress: boolean;
-    constructor(rootElementName?: string, useDefaultProgress: boolean = true) {
-        super(rootElementName);
+    constructor(useDefaultProgress: boolean = true) {
+        super();
         this._useDefaultProgress = useDefaultProgress;
     }
 

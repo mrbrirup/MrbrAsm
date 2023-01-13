@@ -222,8 +222,8 @@ export class Mrbr_UI_Bootstrap_Controls_Scrollspy extends Mrbr_UI_Bootstrap_Cont
      * @param {HTMLElement} spiedElement
      * @param {HTMLElement} navigationElement
      */
-    constructor(name: string, spiedElement: HTMLElement, navigationElement: HTMLElement) {
-        super(name);
+    constructor(spiedElement: HTMLElement, navigationElement: HTMLElement) {
+        super();
         this._spiedElement = spiedElement;
         this._navigationElement = navigationElement;
     }

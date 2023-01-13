@@ -45,7 +45,7 @@ export class Mrbr_UI_Bootstrap_Form_FileInput extends Mrbr_UI_Bootstrap_Form_Boo
      * @readonly
      * @type {typeof Mrbr_UI_Bootstrap_Form_FileInputEvent}
      */
-    public get $bsFileInputEvent(): typeof Mrbr_UI_Bootstrap_Form_FileInputEvent { return this.$bsForm.FileInputEvent as typeof Mrbr_UI_Bootstrap_Form_FileInputEvent; }
+    public get $bsFileInputEvent(): typeof Mrbr_UI_Bootstrap_Form_FileInputEvent { return this.$nsBsForm.FileInputEvent as typeof Mrbr_UI_Bootstrap_Form_FileInputEvent; }
 
     /**
      * Type Alias for Mrbr_UI_Bootstrap_Form_FileInputEventData
@@ -55,7 +55,7 @@ export class Mrbr_UI_Bootstrap_Form_FileInput extends Mrbr_UI_Bootstrap_Form_Boo
      * @readonly
      * @type {typeof Mrbr_UI_Bootstrap_Form_FileInputEventData}
      */
-    public get $bsFileInputEventData(): typeof Mrbr_UI_Bootstrap_Form_FileInputEventData { return this.$bsForm.FileInputEventData as typeof Mrbr_UI_Bootstrap_Form_FileInputEventData; }
+    public get $bsFileInputEventData(): typeof Mrbr_UI_Bootstrap_Form_FileInputEventData { return this.$nsBsForm.FileInputEventData as typeof Mrbr_UI_Bootstrap_Form_FileInputEventData; }
 
 
     /**
@@ -74,10 +74,9 @@ export class Mrbr_UI_Bootstrap_Form_FileInput extends Mrbr_UI_Bootstrap_Form_Boo
      * @date 03/01/2023 - 15:34:09
      *
      * @constructor
-     * @param {string} rootElementName
      */
-    constructor(rootElementName?: string) {
-        super(rootElementName);
+    constructor() {
+        super();
         this._inputType = this.$bsFileInput.FILE;
         this._inputElementName = this.$bsFileInput.FILE;
     }
@@ -175,6 +174,6 @@ export class Mrbr_UI_Bootstrap_Form_FileInput extends Mrbr_UI_Bootstrap_Form_Boo
         event.stopPropagation();
         event.preventDefault();
         const inputElement = <HTMLInputElement>this.elements.get(this.inputElementName)
-        this.eventSubscribers.raiseEvent(new this.$bsFileInputEvent(eventName, this, new this.$bsForm.FileInputEventData(inputElement.files, event)));
+        this.eventSubscribers.raiseEvent(new this.$bsFileInputEvent(eventName, this, new this.$nsBsForm.FileInputEventData(inputElement.files, event)));
     }
 }

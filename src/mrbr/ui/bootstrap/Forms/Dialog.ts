@@ -52,8 +52,8 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     protected _footer: boolean = false;
     protected _draggable: boolean = false;
     protected _resizable: boolean = false;
-    constructor(rootElementName: string) {
-        super(rootElementName);
+    constructor() {
+        super();
         const self = this
         if (!self._drawDialog) { self._drawDialog = self.drawDialog.bind(self) }
     }
@@ -278,7 +278,7 @@ export class Mrbr_UI_Bootstrap_Forms_Dialog extends Mrbr_UI_Controls_Control {
     async createControlBox() {
         const self = this;
         if (self.titleBar !== true || self.controlBox !== true) { return; }
-        const controlBox = self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.CONTROL_BOX_CONTROL_NAME] = new Mrbr_UI_Bootstrap_Forms_ControlBox(Mrbr_UI_Bootstrap_Forms_Dialog.CONTROL_BOX_CONTROL_NAME);
+        const controlBox = self.controls[Mrbr_UI_Bootstrap_Forms_Dialog.CONTROL_BOX_CONTROL_NAME] = new Mrbr_UI_Bootstrap_Forms_ControlBox();
         controlBox.minimiseBox = self.minimiseBox;
         controlBox.maximiseBox = self.maximiseBox;
         controlBox.closeBox = self.closeBox;

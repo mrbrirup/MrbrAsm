@@ -8,7 +8,7 @@ export class Mrbr_Tests_Application$Pagination {
   constructor() {
 
     const paginationCls = Mrbr_UI_Bootstrap_Controls_Pagination,
-      pagination = new paginationCls("pagination");
+      pagination = new paginationCls();
     pagination.showPrevious = true;
     pagination.showNext = false;
     pagination.useIconButtons = true;

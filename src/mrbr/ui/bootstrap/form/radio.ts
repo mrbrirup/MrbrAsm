@@ -27,7 +27,7 @@ export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_FormChe
      * @readonly
      * @type {typeof Mrbr_UI_Bootstrap_Form_Radio}
      */
-    public get $bsRadio(): typeof Mrbr_UI_Bootstrap_Form_Radio { return this.$bsForm.Radio as typeof Mrbr_UI_Bootstrap_Form_Radio; }
+    public get $bsRadio(): typeof Mrbr_UI_Bootstrap_Form_Radio { return this.$nsBsForm.Radio as typeof Mrbr_UI_Bootstrap_Form_Radio; }
 
 
     /**
@@ -53,10 +53,9 @@ export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_FormChe
      * @date 02/01/2023 - 22:53:21
      *
      * @constructor
-     * @param {?string} [rootElementName]
      */
-    constructor(rootElementName?: string) {
-        super(rootElementName);
+    constructor() {
+        super();
         this._inputElementName = this.$bsRadio.RADIO;
     }
 

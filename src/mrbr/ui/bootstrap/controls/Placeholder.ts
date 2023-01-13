@@ -219,8 +219,8 @@ export class Mrbr_UI_Bootstrap_Controls_Placeholder extends Mrbr_UI_Bootstrap_Co
         this._width = value
     }
     //#endregion Public Properties
-    constructor(name?: string, elementType?: Mrbr_UI_Bootstrap_Controls_PlaceholderElementTypes, width?: Mrbr_UI_Bootstrap_Controls_PlaceholderWidths, sizing?: Mrbr_UI_Bootstrap_Controls_PlaceholderSizings) {
-        super(name);
+    constructor(elementType?: Mrbr_UI_Bootstrap_Controls_PlaceholderElementTypes, width?: Mrbr_UI_Bootstrap_Controls_PlaceholderWidths, sizing?: Mrbr_UI_Bootstrap_Controls_PlaceholderSizings) {
+        super();
         width && (this.width = width);
         elementType && (this._elementType = elementType);
         sizing && (this.sizing = sizing);

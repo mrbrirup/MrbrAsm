@@ -552,11 +552,10 @@ export class Mrbr_UI_Bootstrap_Controls_Dropdown extends Mrbr_UI_Bootstrap_Contr
      * @date 02/12/2022 - 01:32:30
      *
      * @constructor
-     * @param {string} rootElementName
      * @param {?Mrbr_UI_Bootstrap_Controls_Dropdown} [dropdownMenuStyle]
      */
-    constructor(rootElementName: string, dropdownMenuStyle?: Mrbr_UI_Bootstrap_Controls_Dropdown$MenuStyles) {
-        super(rootElementName);
+    constructor(dropdownMenuStyle?: Mrbr_UI_Bootstrap_Controls_Dropdown$MenuStyles) {
+        super();
         this._menuStyle = dropdownMenuStyle
     }
     //#region Public Methods

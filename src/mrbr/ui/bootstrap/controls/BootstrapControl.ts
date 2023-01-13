@@ -29,10 +29,9 @@ export class Mrbr_UI_Bootstrap_Controls_BootstrapControl extends Mrbr_UI_Control
      * @date 09/12/2022 - 03:08:43
      *
      * @constructor
-     * @param {?string} [rootElementName]
      * @param {?(HTMLElement | string)} [rootElement]
      */
-    constructor(rootElementName?: string, rootElement?: HTMLElement | string) { super(rootElementName, rootElement); }
+    constructor() { super(); }
 
     /**
      * Returns the Bootstrap Instance from MrbrBase.host, usually Window

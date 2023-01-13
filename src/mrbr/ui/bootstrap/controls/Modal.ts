@@ -463,7 +463,7 @@ export class Mrbr_UI_Bootstrap_Controls_Modal extends Mrbr_UI_Bootstrap_Controls
 
 
     //#endregion Private Properties
-    constructor(rootElementName?: string) { super(rootElementName); }
+    constructor() { super(); }
     //#region Public Methods
 
     /**

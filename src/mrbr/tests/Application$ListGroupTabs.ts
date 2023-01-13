@@ -3,7 +3,7 @@ import { Mrbr_UI_Bootstrap_Controls_ListGroupTabs } from "../ui/bootstrap/contro
 export class Mrbr_Tests_Application$ListGroupTabs {
 
     constructor() {
-        const listGroupTabs = new Mrbr_UI_Bootstrap_Controls_ListGroupTabs("listGroupTabs");
+        const listGroupTabs = new Mrbr_UI_Bootstrap_Controls_ListGroupTabs();
         listGroupTabs.numberedList = true;
         listGroupTabs.initialise()
             .then(_ => {

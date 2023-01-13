@@ -89,9 +89,8 @@ export class Mrbr_UI_Bootstrap_Content_Figure extends Mrbr_UI_Bootstrap_Controls
      * @date 29/12/2022 - 17:36:40
      *
      * @constructor
-     * @param {?string} [rootElementName]
      */
-    constructor(rootElementName?: string) { super(rootElementName); }
+    constructor() { super(); }
 
 
     /**

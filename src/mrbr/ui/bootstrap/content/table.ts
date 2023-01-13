@@ -343,10 +343,9 @@ export class Mrbr_UI_Bootstrap_Content_Table extends Mrbr_UI_Bootstrap_Controls_
      * @date 29/12/2022 - 15:10:54
      *
      * @constructor
-     * @param {?string} [rootElementName]
      */
-    constructor(rootElementName?: string) {
-        super(rootElementName);
+    constructor() {
+        super();
     }
 
     /**

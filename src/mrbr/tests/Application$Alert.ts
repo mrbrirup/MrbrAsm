@@ -5,7 +5,7 @@ export class Mrbr_Tests_Application$Alert {
     mrbrAlert: Mrbr_UI_Bootstrap_Controls_Alert;
     constructor() {
         const self = this;
-        self.mrbrAlert = new Mrbr_UI_Bootstrap_Controls_Alert("alert1");
+        self.mrbrAlert = new Mrbr_UI_Bootstrap_Controls_Alert();
         self.mrbrAlert.initialise()
             .then(_ => {
                 self.mrbrAlert.defaultContainerElement.textContent = "This is an alert";

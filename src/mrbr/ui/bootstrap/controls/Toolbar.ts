@@ -52,11 +52,9 @@ export class Mrbr_UI_Bootstrap_Controls_Toolbar extends Mrbr_UI_Bootstrap_Contro
      * @date 13/12/2022 - 15:42:34
      *
      * @constructor
-     * @param {?string} [rootElementName]
      */
-    constructor(rootElementName?: string) {
-        super(rootElementName);
-        this.defaultContainerElementName = rootElementName;
+    constructor() {
+        super();
     }
 
     /**

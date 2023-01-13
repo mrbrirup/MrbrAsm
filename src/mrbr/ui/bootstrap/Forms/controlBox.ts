@@ -25,8 +25,8 @@ export class Mrbr_UI_Bootstrap_Forms_ControlBox extends Mrbr_UI_Controls_Control
     }
     private _dialogState: Mrbr_UI_Bootstrap_Forms_Dialog$States;
     private _lastDialogState: Mrbr_UI_Bootstrap_Forms_Dialog$States;
-    constructor(rootElementName: string) {
-        super(rootElementName);
+    constructor() {
+        super();
 
         //this.createControls();
     }

@@ -102,10 +102,9 @@ export class Mrbr_UI_Bootstrap_Controls_Breadcrumb extends Mrbr_UI_Controls_Cont
      * @date 11/11/2022 - 07:21:39
      *
      * @constructor
-     * @param {string} rootElementName
      */
-    constructor(rootElementName: string) {
-        super(rootElementName);
+    constructor() {
+        super();
         const self = this;
         self.defaultContainerElementName = self.$cls.BREADCRUMB_LIST_NAME;
     }

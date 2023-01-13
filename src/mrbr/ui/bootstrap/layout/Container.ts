@@ -30,11 +30,10 @@ export class Mrbr_UI_Bootstrap_Layout_Container extends Mrbr_UI_Bootstrap_Contro
      * @date 23/12/2022 - 02:07:16
      *
      * @constructor
-     * @param {?string} [rootElementName]
      * @param {?Mrbr_UI_Bootstrap_Layout_ContainerTypes} [containerType]
      */
-    constructor(rootElementName?: string, containerType?: Mrbr_UI_Bootstrap_Layout_ContainerTypes) {
-        super(rootElementName);
+    constructor(containerType?: Mrbr_UI_Bootstrap_Layout_ContainerTypes) {
+        super();
         this.containerType = containerType;
     }
 

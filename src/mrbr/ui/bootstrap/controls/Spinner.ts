@@ -181,10 +181,9 @@ export class Mrbr_UI_Bootstrap_Controls_Spinner extends Mrbr_UI_Bootstrap_Contro
      * @date 11/12/2022 - 06:22:05
      *
      * @constructor
-     * @param {?string} [rootElementName]
      */
-    constructor(rootElementName?: string) {
-        super(rootElementName);
+    constructor() {
+        super();
     }
     
     /**

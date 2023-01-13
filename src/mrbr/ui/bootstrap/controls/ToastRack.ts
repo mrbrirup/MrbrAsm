@@ -120,9 +120,8 @@ export class Mrbr_UI_Bootstrap_Controls_ToastRack extends Mrbr_UI_Bootstrap_Cont
      * @date 12/12/2022 - 14:32:27
      *
      * @constructor
-     * @param {?string} [rootElementName]
      */
-    constructor(rootElementName?: string) { super(rootElementName); }
+    constructor() { super(); }
 
     /**
      * Array of all Toasts, visible and hidden property

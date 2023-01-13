@@ -11,7 +11,7 @@ export class Mrbr_Tests_Application$InlineLayout {
       mrbrLayout = Mrbr_UI_Bootstrap_Form_Layout,
       mrbrEmail = Mrbr_UI_Bootstrap_Form_Email,
       mrbrSelect = Mrbr_UI_Bootstrap_Form_Select,
-      button = new mrbrButton("button1"),
+      button = new mrbrButton(),
       select1 = new mrbrSelect(),
       layout = new mrbrLayout(),
       email1 = new mrbrEmail()

@@ -67,10 +67,9 @@ export class Mrbr_UI_Bootstrap_Form_DataList extends Mrbr_UI_Bootstrap_Form_Boot
      * @date 03/01/2023 - 21:39:10
      *
      * @constructor
-     * @param {?string} [rootElementName]
      */
-    constructor(rootElementName?: string) {
-        super(rootElementName);
+    constructor() {
+        super();
         this._inputElementName = this.$bsDatalist.DATALIST_INPUT;
     }
 

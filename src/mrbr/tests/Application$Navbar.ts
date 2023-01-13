@@ -10,11 +10,11 @@ import { Mrbr_UI_Bootstrap_Utilities_Backgrounds } from "../ui/bootstrap/utiliti
 export class Mrbr_Tests_Application$Navbar {
 
   constructor() {
-    const navbar = new Mrbr_UI_Bootstrap_Controls_Navbar("navbar");
+    const navbar = new Mrbr_UI_Bootstrap_Controls_Navbar();
     navbar.initialise()
       .then(_ => {
-        navbar.addBrand(new Mrbr_UI_Bootstrap_Controls_NavbarBrand("brand").Text("Brand"));
-        navbar.addToggler(new Mrbr_UI_Bootstrap_Controls_NavbarToggler("toggler"));
+        navbar.addBrand(new Mrbr_UI_Bootstrap_Controls_NavbarBrand().Text("Brand"));
+        navbar.addToggler(new Mrbr_UI_Bootstrap_Controls_NavbarToggler());
         //navbar.navbarControls.get("toggler").disabled = true;
         //navbar.navbarControls.get("brand").disabled = true;
         navbar.expandSize = Mrbr_UI_Bootstrap_Controls_NavbarExpandSizes.md;

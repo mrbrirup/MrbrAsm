@@ -4,7 +4,7 @@ import { Mrbr_UI_Bootstrap_Controls_TabPanelEvent } from "../ui/bootstrap/contro
 export class Mrbr_Tests_Application$TabPanelContainer {
 
   constructor() {
-    const nav = new Mrbr_UI_Bootstrap_Controls_TabPanelContainer("tabPanel_container");
+    const nav = new Mrbr_UI_Bootstrap_Controls_TabPanelContainer();
     nav.initialise()
       .then(_ => {
         const homePanel = nav.addTabPanel("homeTab", "Home"),

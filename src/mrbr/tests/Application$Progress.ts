@@ -4,7 +4,7 @@ export class Mrbr_Tests_Application$Progress {
 
   constructor() {
     const progress = Mrbr_UI_Bootstrap_Controls_Progress;
-    let progressControl = new progress("progress1");
+    let progressControl = new progress();
     progressControl.initialise()
       .then(() => {
         progressControl.mount(document.body);
@@ -19,7 +19,7 @@ export class Mrbr_Tests_Application$Progress {
         }
         requestAnimationFrame(fn);
       });
-    const progressControl2 = new progress("progress2", false);
+    const progressControl2 = new progress(false);
     progressControl2.initialise()
       .then(() => {
         const progressBar1 = new progressControl2.$bar("progress2_bar1")

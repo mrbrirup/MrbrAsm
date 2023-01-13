@@ -54,10 +54,9 @@ export class Mrbr_UI_Bootstrap_Form_Colour extends Mrbr_UI_Bootstrap_Form_Bootst
      *
      * @constructor
      * @public
-     * @param {?string} [rootElementName]
      */
-    public constructor(rootElementName?: string) {
-        super(rootElementName);
+    public constructor() {
+        super();
         this._inputType = this.$bsColour.COLOUR;
         this._inputElementName = this.$bsColour.COLOUR;
     }

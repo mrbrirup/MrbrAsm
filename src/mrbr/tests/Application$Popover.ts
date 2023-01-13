@@ -10,7 +10,7 @@ export class Mrbr_Tests_Application$Popover {
     but.classList.add("btn", "btn-primary");
     but.innerText = "Popover 1";
     document.body.appendChild(but);
-    let popover1 = new popover(but, "popover1", popoverConfig);
+    let popover1 = new popover(but, popoverConfig);
     popover1.initialise()
       .then(() => {
         //popover1.rootElement.innerText = "Popover 1";

@@ -10,7 +10,7 @@ export class Mrbr_Tests_Application$ButtonGroup extends Mrbr_UI_Controls_Control
     private $buttonGroup = Mrbr_UI_Bootstrap_Controls_ButtonGroup;
     get $cls(): typeof Mrbr_Tests_Application$ButtonGroup { return Mrbr_Tests_Application$ButtonGroup; }
     constructor() {
-        super("Mrbr_Tests_Application$ButtonGroup");
+        super();
     }
     buttonClick(e: CustomEvent) {
         console.log("Button Clicked: ", e);
@@ -27,9 +27,9 @@ export class Mrbr_Tests_Application$ButtonGroup extends Mrbr_UI_Controls_Control
             super.initialise(args).then(async _ => {
                 await self.loadManifest(self.$cls[self.$mrbr.MANIFEST])
                 const
-                    buttonGroup = self.mrbrButtonGroup = new self.$buttonGroup("buttonGroup1"),
-                    button = self.mrbrButton = new self.$button("button1"),
-                    button2 = new self.$button("button2");
+                    buttonGroup = self.mrbrButtonGroup = new self.$buttonGroup(),
+                    button = self.mrbrButton = new self.$button(),
+                    button2 = new self.$button();
                 button.text = "Click Me";
                 button2.text = "Click Me Again";
                 button2.size = self.$button.buttonSizes.small;

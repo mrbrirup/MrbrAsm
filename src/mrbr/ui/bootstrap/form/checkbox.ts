@@ -69,7 +69,7 @@ export class Mrbr_UI_Bootstrap_Form_CheckBox extends Mrbr_UI_Bootstrap_Form_Form
      * @readonly
      * @type {typeof Mrbr_UI_Bootstrap_Form_CheckBox}
      */
-    public get $bsCheckBox(): typeof Mrbr_UI_Bootstrap_Form_CheckBox { return this.$bsForm.CheckBox as typeof Mrbr_UI_Bootstrap_Form_CheckBox; }
+    public get $bsCheckBox(): typeof Mrbr_UI_Bootstrap_Form_CheckBox { return this.$nsBsForm.CheckBox as typeof Mrbr_UI_Bootstrap_Form_CheckBox; }
 
     /**
      * Type Alias for Mrbr.UI.Bootstrap.Form.CheckBoxStates
@@ -79,7 +79,7 @@ export class Mrbr_UI_Bootstrap_Form_CheckBox extends Mrbr_UI_Bootstrap_Form_Form
      * @readonly
      * @type {typeof Mrbr_UI_Bootstrap_Form_CheckBoxStates}
      */
-    public get $bsCheckBoxStates(): typeof Mrbr_UI_Bootstrap_Form_CheckBoxStates { return this.$bsForm.CheckBoxStates as typeof Mrbr_UI_Bootstrap_Form_CheckBoxStates; }
+    public get $bsCheckBoxStates(): typeof Mrbr_UI_Bootstrap_Form_CheckBoxStates { return this.$nsBsForm.CheckBoxStates as typeof Mrbr_UI_Bootstrap_Form_CheckBoxStates; }
 
 
     /**
@@ -129,10 +129,9 @@ export class Mrbr_UI_Bootstrap_Form_CheckBox extends Mrbr_UI_Bootstrap_Form_Form
      * @date 02/01/2023 - 00:18:12
      *
      * @constructor
-     * @param {?string} [rootElementName]
      */
-    constructor(rootElementName?: string) {
-        super(rootElementName);
+    constructor() {
+        super();
         this._inputElementName = this.$bsCheckBox.CHECKBOX;
     }
 

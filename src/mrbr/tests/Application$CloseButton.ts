@@ -7,8 +7,8 @@ export class Mrbr_Tests_Application$CloseButton {
 
     constructor() {
         const self = this;
-        const button = self.mrbrButton = new self.$button("button1");
-        const button2 = new self.$button("button2");
+        const button = self.mrbrButton = new self.$button();
+        const button2 = new self.$button();
         button.whiteVariant = true;
         button2.disabled = true;
         let div = document.createElement("div");

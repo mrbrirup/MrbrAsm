@@ -7,7 +7,7 @@ export class Mrbr_Tests_Application$Badge {
     mrbrBadge: Mrbr_UI_Bootstrap_Controls_Badge;
     constructor() {
         const self = this;
-        self.mrbrBadge = new Mrbr_UI_Bootstrap_Controls_Badge("badge1");
+        self.mrbrBadge = new Mrbr_UI_Bootstrap_Controls_Badge();
         self.mrbrBadge.initialise()
             .then(async _ => {
                 let badge = self.mrbrBadge;

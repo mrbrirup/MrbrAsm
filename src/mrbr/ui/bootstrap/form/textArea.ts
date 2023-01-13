@@ -61,7 +61,7 @@ export class Mrbr_UI_Bootstrap_Form_TextArea extends Mrbr_UI_Bootstrap_Form_Boot
      * @readonly
      * @type {typeof Mrbr_UI_Bootstrap_Form_TextArea}
      */
-    public get $bsTextArea(): typeof Mrbr_UI_Bootstrap_Form_TextArea { return this.$bsForm.TextArea as typeof Mrbr_UI_Bootstrap_Form_TextArea; }
+    public get $bsTextArea(): typeof Mrbr_UI_Bootstrap_Form_TextArea { return this.$nsBsForm.TextArea as typeof Mrbr_UI_Bootstrap_Form_TextArea; }
 
 
     /**
@@ -69,10 +69,9 @@ export class Mrbr_UI_Bootstrap_Form_TextArea extends Mrbr_UI_Bootstrap_Form_Boot
      * @date 03/01/2023 - 04:44:49
      *
      * @constructor
-     * @param {?string} [rootElementName]
      */
-    constructor(rootElementName?: string) {
-        super(rootElementName);
+    constructor() {
+        super();
         this._inputElementName = "textarea";
     }
 

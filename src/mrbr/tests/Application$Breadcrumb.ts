@@ -7,7 +7,7 @@ export class Mrbr_Tests_Application$Breadcrumb {
     breadcrumb: Mrbr_UI_Bootstrap_Controls_Breadcrumb;
     constructor() {
         const self = this;
-        self.breadcrumb = new Mrbr_UI_Bootstrap_Controls_Breadcrumb("breadCrumb1");
+        self.breadcrumb = new Mrbr_UI_Bootstrap_Controls_Breadcrumb();
     }
     initialise(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Breadcrumb> {
         const self = this,

@@ -95,10 +95,9 @@ export class Mrbr_UI_Bootstrap_Controls_AccordionItem extends Mrbr_UI_Bootstrap_
      * @date 31/10/2022 - 05:24:09
      *
      * @constructor
-     * @param {string} rootElementName
      */
-    constructor(rootElementName: string) {
-        super(rootElementName);
+    constructor() {
+        super();
         this.defaultContainerElementName = this.$cls.ACCORDION_BODY;
     }
     //#region Public Properties

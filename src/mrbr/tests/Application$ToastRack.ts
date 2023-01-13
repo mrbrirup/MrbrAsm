@@ -8,7 +8,7 @@ export class Mrbr_Tests_Application$ToastRack {
     //div2.classList.add("bg-dark", "position-relative");
     MrbrBase.mrbrInstance.loadManifest(Mrbr_Tests_Application$ToastRack[MrbrBase.MANIFEST])
       .then(async () => {
-        let toastRack = new Mrbr_UI_Bootstrap_Controls_ToastRack("toastRack");
+        let toastRack = new Mrbr_UI_Bootstrap_Controls_ToastRack();
         await toastRack.initialise();
         toastRack.Placement(Mrbr_UI_Bootstrap_Controls_ToastPlacements.bottomRight);
         //toastRack.rootElement.classList.add("bg-dark", "w-100");
@@ -36,7 +36,7 @@ export class Mrbr_Tests_Application$ToastRack {
         let fn = () => {
           setTimeout(async () => {
             toastCounter++;
-            const toast = new Mrbr_UI_Bootstrap_Controls_Toast(`toast${toastCounter}`, `This is a toast: ${toastCounter}`, `This is a toast body: ${toastCounter}`)
+            const toast = new Mrbr_UI_Bootstrap_Controls_Toast(`This is a toast: ${toastCounter}`, `This is a toast body: ${toastCounter}`)
               .SubTitle(`This is a toast subtitle: ${toastCounter}`)
             await toast.initialise();
             toastRack.addToast(toast);

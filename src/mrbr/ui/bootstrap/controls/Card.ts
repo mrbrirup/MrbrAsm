@@ -395,12 +395,11 @@ export class Mrbr_UI_Bootstrap_Controls_Card extends Mrbr_UI_Bootstrap_Controls_
      * @date 14/11/2022 - 08:03:10
      *
      * @constructor
-     * @param {string} rootElementName
      * @param {cardStyleType} [cardStyle=Mrbr_UI_Bootstrap_Controls_Card.cardStyles.horizontal]
      * @param {?(imagePropertiesType | horizontalCardStyleType)} [cardImageProperties]
      */
-    constructor(rootElementName: string, cardStyle: cardStyleType = Mrbr_UI_Bootstrap_Controls_Card.cardStyles.horizontal, cardImageProperties?: imagePropertiesType | horizontalCardStyleType) {
-        super(rootElementName);
+    constructor(cardStyle: cardStyleType = Mrbr_UI_Bootstrap_Controls_Card.cardStyles.horizontal, cardImageProperties?: imagePropertiesType | horizontalCardStyleType) {
+        super();
         const self = this;
         self.cardStyle = cardStyle;
         if (cardStyle === self.$cls.cardStyles.overlay &&

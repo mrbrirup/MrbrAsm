@@ -48,8 +48,8 @@ export class Mrbr_UI_Bootstrap_Form_Select extends Mrbr_UI_Bootstrap_Form_Bootst
         this._options = value;
     }
 
-    constructor(rootElementName?: string) {
-        super(rootElementName);
+    constructor() {
+        super();
         this._inputElementName = this.$bsSelect.SELECT;
     }
     /**

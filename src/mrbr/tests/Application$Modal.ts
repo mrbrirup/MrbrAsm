@@ -11,7 +11,7 @@ export class Mrbr_Tests_Application$Modal {
 
 
         const
-            modal = new Mrbr_UI_Bootstrap_Controls_Modal("modal1"),
+            modal = new Mrbr_UI_Bootstrap_Controls_Modal(),
             oa = Object.assign;
         oa(modal, {
             titleText: "Modal title",

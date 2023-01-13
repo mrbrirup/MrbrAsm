@@ -186,7 +186,11 @@ export class Mrbr_UI_Bootstrap_Controls_Collapse extends Mrbr_UI_Bootstrap_Contr
      * @param {?(string | HTMLElement | Array<string> | Array<HTMLElement>)} [target]
      */
     constructor(toggle?: string | HTMLElement, target?: string | HTMLElement | Array<string> | Array<HTMLElement>) {
-        super((toggle instanceof HTMLElement ? (toggle.id || (Mrbr_UI_Controls_Control.createId(Mrbr_UI_Bootstrap_Controls_Collapse.TOGGLE_NAME))) : toggle));
+        super();
+        if (toggle instanceof HTMLElement && !toggle.id) {
+            toggle.id = Mrbr_UI_Controls_Control.createId(Mrbr_UI_Bootstrap_Controls_Collapse.TOGGLE_NAME);
+        }
+        //(toggle.id || (Mrbr_UI_Controls_Control.createId(Mrbr_UI_Bootstrap_Controls_Collapse.TOGGLE_NAME))) : toggle
         (toggle instanceof HTMLElement) && (this.rootElement = toggle);
         if (!Array.isArray(target)) {
             if (target instanceof HTMLElement) { this._targetElements = [target]; }

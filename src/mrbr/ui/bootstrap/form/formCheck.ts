@@ -101,7 +101,7 @@ export class Mrbr_UI_Bootstrap_Form_FormCheck extends Mrbr_UI_Bootstrap_Form_Boo
      * @readonly
      * @type {typeof Mrbr_UI_Bootstrap_Form_FormCheck}
      */
-    public get $bsFormCheck(): typeof Mrbr_UI_Bootstrap_Form_FormCheck { return this.$bsForm.FormCheck as typeof Mrbr_UI_Bootstrap_Form_FormCheck; }
+    public get $bsFormCheck(): typeof Mrbr_UI_Bootstrap_Form_FormCheck { return this.$nsBsForm.FormCheck as typeof Mrbr_UI_Bootstrap_Form_FormCheck; }
 
 
 
@@ -133,10 +133,9 @@ export class Mrbr_UI_Bootstrap_Form_FormCheck extends Mrbr_UI_Bootstrap_Form_Boo
      * @date 02/01/2023 - 22:35:12
      *
      * @constructor
-     * @param {?string} [rootElementName]
     */
-    constructor(rootElementName?: string) {
-        super(rootElementName);
+    constructor() {
+        super();
     }
 
 

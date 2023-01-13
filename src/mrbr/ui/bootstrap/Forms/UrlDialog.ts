@@ -14,8 +14,8 @@ export class Mrbr_UI_Bootstrap_Forms_UrlDialog extends Mrbr_UI_Bootstrap_Forms_D
     _history: Array<string> = [];
     public static IFRAME_ELEMENT_NAME: string = "iframeBrowserPanel";
     public static BROWSER_ELEMENT_NAME: string = "iframeBrowserPanel";
-    constructor(rootElementName: string) {
-        super(rootElementName);
+    constructor() {
+        super();
     }
     protected _iFrameConfig(): Mrbr_UI_Controls_ControlConfig {
         const self = this,

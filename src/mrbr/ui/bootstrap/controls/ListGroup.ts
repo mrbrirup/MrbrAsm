@@ -271,11 +271,10 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroup extends Mrbr_UI_Bootstrap_Cont
      * @date 03/12/2022 - 09:41:30
      *
      * @constructor
-     * @param {string} rootElementName
      * @param {boolean} [orderedList=false] set at initialisation time as the list is created using the UL or OL tag
      */
-    constructor(rootElementName: string, orderedList: boolean = false) {
-        super(rootElementName);
+    constructor(orderedList: boolean = false) {
+        super();
         this._orderedList = orderedList;
     }
 

@@ -167,13 +167,11 @@ export class Mrbr_UI_Bootstrap_Controls_Nav extends Mrbr_UI_Bootstrap_Controls_B
      * @date 04/12/2022 - 23:15:27
      *
      * @constructor
-     * @param {?string} [rootElementName]
      * @param {?Mrbr_UI_Bootstrap_Controls_NavContainerTypes} [navContainerType]
      */
-    constructor(rootElementName?: string, navContainerType?: Mrbr_UI_Bootstrap_Controls_NavContainerTypes) {
-        super(rootElementName);
-        const self = this;
-        self._containerType = navContainerType;
+    constructor(navContainerType?: Mrbr_UI_Bootstrap_Controls_NavContainerTypes) {
+        super();
+        this._containerType = navContainerType;
     }
 
     //#region Public Properties

@@ -10,8 +10,8 @@ import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "./ControlConfi
 
 export class Mrbr_UI_Controls_Desktop extends Mrbr_UI_Bootstrap_Containers_Container {
     navbar: Mrbr_UI_Controls_NavbarWindowManager;
-    constructor(rootElementName: string) {
-        super(rootElementName);
+    constructor() {
+        super();
         let self = this,
             classActions = Mrbr_UI_Controls_ClassActions;
         self.sizing = Mrbr_UI_Bootstrap_Containers_Container$Breakpoints.fluid;
@@ -25,7 +25,7 @@ export class Mrbr_UI_Controls_Desktop extends Mrbr_UI_Bootstrap_Containers_Conta
                 .Attributes({ id: Mrbr_UI_Controls_Control.createId("windowContainer") })
         ))
         let windowContainer = self.windowContainer;
-        self.navbar = new Mrbr_UI_Controls_NavbarWindowManager(Mrbr_UI_Controls_Control.createId("navbar"))
+        self.navbar = new Mrbr_UI_Controls_NavbarWindowManager()
         self.rootElement.appendChild(windowContainer)
         self.rootElement.appendChild(self.navbar.rootElement)
         self.rootElement.classList.add("mrbr_fadeIn");

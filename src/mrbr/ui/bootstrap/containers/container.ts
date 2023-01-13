@@ -17,7 +17,7 @@ export class Mrbr_UI_Bootstrap_Containers_Container extends Mrbr_UI_Controls_Con
     private get $mubcc(): typeof Mrbr_UI_Bootstrap_Containers_Container { return Mrbr_UI_Bootstrap_Containers_Container; }
 
 
-    constructor(rootElementName: string) { super(rootElementName); }
+    constructor() { super(); }
 
     get sizing(): Mrbr_UI_Bootstrap_Containers_Container$Breakpoints { return this._sizing; }
     set sizing(value: Mrbr_UI_Bootstrap_Containers_Container$Breakpoints) {

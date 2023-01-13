@@ -237,9 +237,8 @@ export class Mrbr_UI_Bootstrap_Controls_Pagination extends Mrbr_UI_Bootstrap_Con
      * @date 09/12/2022 - 02:49:27
      *
      * @constructor
-     * @param {?string} [rootElementName]
      */
-    constructor(rootElementName?: string) { super(rootElementName); }
+    constructor() { super(); }
 
     //#region Public Properties
 

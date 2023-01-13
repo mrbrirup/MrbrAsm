@@ -35,10 +35,9 @@ export class Mrbr_UI_Bootstrap_Controls_SplitDropdown extends Mrbr_UI_Bootstrap_
      * @date 12/12/2022 - 02:26:07
      *
      * @constructor
-     * @param {?string} [rootElementName]
      */
-    constructor(rootElementName?: string) {
-        super(rootElementName, Mrbr_UI_Bootstrap_Controls_Dropdown$MenuStyles.default);
+    constructor() {
+        super(Mrbr_UI_Bootstrap_Controls_Dropdown$MenuStyles.default);
     }
 
     /**

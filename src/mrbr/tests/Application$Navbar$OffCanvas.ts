@@ -9,12 +9,12 @@ import { Mrbr_UI_Bootstrap_Controls_OffCanvasThemes } from "../ui/bootstrap/cont
 export class Mrbr_Tests_Application$Navbar$OffCanvas {
 
   constructor() {
-    const navbar = new Mrbr_UI_Bootstrap_Controls_Navbar("navbar");
+    const navbar = new Mrbr_UI_Bootstrap_Controls_Navbar();
     navbar
       .initialise()
       .then(async _ => {
-        navbar.addBrand(new Mrbr_UI_Bootstrap_Controls_NavbarBrand("brand").Text("Brand"));
-        let navbarOffCanvas = new Mrbr_UI_Bootstrap_Controls_NavbarOffCanvas("toggler");
+        navbar.addBrand(new Mrbr_UI_Bootstrap_Controls_NavbarBrand().Text("Brand"));
+        let navbarOffCanvas = new Mrbr_UI_Bootstrap_Controls_NavbarOffCanvas();
         await navbarOffCanvas.initialise<Mrbr_UI_Bootstrap_Controls_NavbarOffCanvas>();
 
         navbarOffCanvas.build(navbar);

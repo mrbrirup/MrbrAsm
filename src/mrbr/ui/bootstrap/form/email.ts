@@ -26,7 +26,7 @@ export class Mrbr_UI_Bootstrap_Form_Email extends Mrbr_UI_Bootstrap_Form_Bootstr
      * @readonly
      * @type {typeof Mrbr_UI_Bootstrap_Form_Email}
      */
-    public get $bsEmail(): typeof Mrbr_UI_Bootstrap_Form_Email { return this.$bsForm.Email as typeof Mrbr_UI_Bootstrap_Form_Email; }
+    public get $bsEmail(): typeof Mrbr_UI_Bootstrap_Form_Email { return this.$nsBsForm.Email as typeof Mrbr_UI_Bootstrap_Form_Email; }
 
 
 
@@ -36,10 +36,9 @@ export class Mrbr_UI_Bootstrap_Form_Email extends Mrbr_UI_Bootstrap_Form_Bootstr
      * @date 03/01/2023 - 03:47:35
      *
      * @constructor
-     * @param {?string} [rootElementName]
      */
-    constructor(rootElementName?: string) {
-        super(rootElementName);
+    constructor() {
+        super();
         this._inputType = this.$bsEmail.EMAIL;
         this._inputElementName = this.$bsEmail.EMAIL;
     }

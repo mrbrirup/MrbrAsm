@@ -16,15 +16,13 @@ export class Mrbr_UI_Bootstrap_Controls_NavbarBrand extends Mrbr_UI_Bootstrap_Co
     private _disabled: boolean = false;
     private _imageElement: HTMLImageElement;
     private _imageUrl: string;
-    private _name: string;
     private _rootElement: HTMLElement;
     private _text: string = "";
     private _textElement: HTMLElement;
     private _url: string = "#";
 
-    constructor(name: string) {
-        super(name);
-        this.name = name;
+    constructor() {
+        super();
     }
 
     public get active(): boolean { return this._active; }
@@ -41,8 +39,6 @@ export class Mrbr_UI_Bootstrap_Controls_NavbarBrand extends Mrbr_UI_Bootstrap_Co
     public set imageElement(value: HTMLImageElement) { this._imageElement = value; }
     public get imageUrl(): string { return this._imageUrl; }
     public set imageUrl(value: string) { this._imageUrl = value; }
-    public get name(): string { return this._name; }
-    public set name(value: string) { this._name = value; }
     public get rootElement(): HTMLElement { return this._rootElement; }
     public set rootElement(value: HTMLElement) { this._rootElement = value; }
     public get text(): string { return this._text; }

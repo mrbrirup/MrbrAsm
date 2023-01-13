@@ -257,11 +257,9 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * @date 11/11/2022 - 10:42:42
      *
      * @constructor
-     * @param {string} rootElementName
      */
-    constructor(rootElementName: string) {
-        super(rootElementName);
-        this.defaultContainerElementName = rootElementName;
+    constructor() {
+        super();        
     }
 
 

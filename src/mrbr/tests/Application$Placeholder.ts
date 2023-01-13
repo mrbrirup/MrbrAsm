@@ -9,7 +9,7 @@ export class Mrbr_Tests_Application$Placeholder {
 
   constructor() {
     const placeholder = Mrbr_UI_Bootstrap_Controls_Placeholder,
-      placeholder1 = new placeholder("placeholder1", Mrbr_UI_Bootstrap_Controls_PlaceholderElementTypes.span, Mrbr_UI_Bootstrap_Controls_PlaceholderWidths.col9, Mrbr_UI_Bootstrap_Controls_PlaceholderSizings.lg)
+      placeholder1 = new placeholder(Mrbr_UI_Bootstrap_Controls_PlaceholderElementTypes.span, Mrbr_UI_Bootstrap_Controls_PlaceholderWidths.col9, Mrbr_UI_Bootstrap_Controls_PlaceholderSizings.lg)
         .Animation(Mrbr_UI_Bootstrap_Controls_PlaceholderAnimations.wave),
       placeholder2 = new placeholder()
         .Width(Mrbr_UI_Bootstrap_Controls_PlaceholderWidths.col3)

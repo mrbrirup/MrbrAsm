@@ -36,8 +36,8 @@ export class Mrbr_UI_Bootstrap_Controls_Navbar extends Mrbr_UI_Bootstrap_Control
 
     //#endregion Type Aliases
 
-    constructor(rootElementName?: string) {
-        super(rootElementName);
+    constructor() {
+        super();
     }
     //#region Private Methods
     //#endregion Private Methods

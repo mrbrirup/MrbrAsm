@@ -18,7 +18,7 @@ export class Mrbr_UI_Controls_Handles_Drag extends Mrbr_UI_Controls_Control {
     private _dragTarget: HTMLElement;
     private _parentElement: HTMLElement;
     constructor(dragHandle: HTMLElement, dragTarget: HTMLElement, parentElement: HTMLElement) {
-        super("");
+        super();
         const self = this;
         self.dragHandle = dragHandle;
         self.dragTarget = dragTarget;

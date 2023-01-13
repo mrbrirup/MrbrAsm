@@ -25,7 +25,7 @@ export class Mrbr_UI_Bootstrap_Controls_CloseButton extends Mrbr_UI_Controls_Con
      */
     public static CLOSE_BUTTON_CLICK_EVENT_NAME: string = "close_button_click";
     //#endregion Static Members
-    constructor(rootElementName: string) { super(rootElementName); }
+    constructor() { super(); }
     //#region Private Field
 
     /**

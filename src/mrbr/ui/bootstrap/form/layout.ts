@@ -138,7 +138,7 @@ export class Mrbr_UI_Bootstrap_Form_Layout extends Mrbr_UI_Bootstrap_Form_Bootst
      * @readonly
      * @type {typeof Mrbr_UI_Bootstrap_Form_Layout}
      */
-    public get $bsLayout(): typeof Mrbr_UI_Bootstrap_Form_Layout { return this.$bsForm.Layout as typeof Mrbr_UI_Bootstrap_Form_Layout; }
+    public get $bsLayout(): typeof Mrbr_UI_Bootstrap_Form_Layout { return this.$nsBsForm.Layout as typeof Mrbr_UI_Bootstrap_Form_Layout; }
 
     /**
      * Layout Row Type Alias
@@ -148,7 +148,7 @@ export class Mrbr_UI_Bootstrap_Form_Layout extends Mrbr_UI_Bootstrap_Form_Bootst
      * @readonly
      * @type {typeof Mrbr_UI_Bootstrap_Form_LayoutRow}
      */
-    public get $bsLayoutRow(): typeof Mrbr_UI_Bootstrap_Form_LayoutRow { return this.$bsForm.LayoutRow as typeof Mrbr_UI_Bootstrap_Form_LayoutRow; }
+    public get $bsLayoutRow(): typeof Mrbr_UI_Bootstrap_Form_LayoutRow { return this.$nsBsForm.LayoutRow as typeof Mrbr_UI_Bootstrap_Form_LayoutRow; }
 
     /**
      * Layout Column Type Alias
@@ -158,7 +158,7 @@ export class Mrbr_UI_Bootstrap_Form_Layout extends Mrbr_UI_Bootstrap_Form_Bootst
      * @readonly
      * @type {typeof Mrbr_UI_Bootstrap_Form_LayoutColumn}
      */
-    public get $bsLayoutColumn(): typeof Mrbr_UI_Bootstrap_Form_LayoutColumn { return this.$bsForm.LayoutColumn as typeof Mrbr_UI_Bootstrap_Form_LayoutColumn; }
+    public get $bsLayoutColumn(): typeof Mrbr_UI_Bootstrap_Form_LayoutColumn { return this.$nsBsForm.LayoutColumn as typeof Mrbr_UI_Bootstrap_Form_LayoutColumn; }
 
 
     /**
@@ -388,10 +388,9 @@ export class Mrbr_UI_Bootstrap_Form_Layout extends Mrbr_UI_Bootstrap_Form_Bootst
      * @date 07/01/2023 - 08:02:08
      *
      * @constructor
-     * @param {?string} [rootElementName]
      */
-    constructor(rootElementName?: string) {
-        super(rootElementName);
+    constructor() {
+        super();
     }
 
 

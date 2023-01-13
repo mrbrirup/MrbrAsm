@@ -5,6 +5,32 @@ import { Mrbr_UI_Bootstrap_Controls_BootstrapControl } from "../controls/Bootstr
 export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstrap_Controls_BootstrapControl {
 
 
+
+    /**
+     * Internal name for FormControl Valid Message
+     * @date 12/01/2023 - 09:47:35
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly FORMCONTROL_VALID_MESSAGE: string = "form-control-valid-message";
+
+
+    /**
+     * Internal name for FormControl Invalid Message
+     * @date 12/01/2023 - 09:47:55
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {string}
+     */
+    public static readonly FORMCONTROL_INVALID_MESSAGE: string = "form-control-invalid-message";
+
+
+
     /**
      * Internal name for InputGroup Wrapper
      * @date 04/01/2023 - 21:32:27
@@ -57,7 +83,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
      * @readonly
      * @type {*}
      */
-    public get $bsForm(): any { return this[Symbol.for("Mrbr.UI.Bootstrap.Form")] ??= this.$mrbrInstance.host["Mrbr"].UI.Bootstrap.Form; }
+    public get $nsBsForm(): any { return this[Symbol.for("Mrbr.UI.Bootstrap.Form")] ??= this.$mrbrInstance.host["Mrbr"].UI.Bootstrap.Form; }
 
     /**
      * Type Alias for Mrbr.UI.Bootstrap.Form.FormCheck class
@@ -67,7 +93,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
      * @readonly
      * @type {typeof Mrbr_UI_Bootstrap_Form_FormCheck}
      */
-    public get $bsFormControl(): typeof Mrbr_UI_Bootstrap_Form_BootstrapFormControl { return this.$bsForm.BootstrapFormControl as typeof Mrbr_UI_Bootstrap_Form_BootstrapFormControl; }
+    public get $bsFormControl(): typeof Mrbr_UI_Bootstrap_Form_BootstrapFormControl { return this.$nsBsForm.BootstrapFormControl as typeof Mrbr_UI_Bootstrap_Form_BootstrapFormControl; }
 
     /**
      * Internal FormCheck wrapper name
@@ -216,20 +242,16 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
      */
     private _floatingLabel: boolean = false;
 
-
     /**
      * Creates an instance of Mrbr_UI_Bootstrap_Form_BootstrapFormControl.
-     * @date 04/01/2023 - 22:09:27
+     * @date 13/01/2023 - 06:50:00
      *
      * @constructor
-     * @param {?string} [rootElementName]
      */
-    constructor(rootElementName?: string) {
-        super(rootElementName);
-    }
+    constructor() { super(); }
 
     /**
-     * Use flaoting label
+     * Use floating label
      * @date 04/01/2023 - 23:02:22
      *
      * @public
@@ -238,7 +260,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
     public get floatingLabel(): boolean { return this._floatingLabel; }
 
     /**
-     * Use flaoting label
+     * Use floating label
      */
     public set floatingLabel(value: boolean) {
         this.Label(this.label);
@@ -356,11 +378,37 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
      */
     public get inputElement(): HTMLInputElement { return <HTMLInputElement>this.elements.get(this.inputElementName); }
 
+
+    /**
+     * Hidden Label, used for Inline Form
+     * @date 13/01/2023 - 06:51:23
+     *
+     * @private
+     * @type {boolean}
+     */
     private _hiddenLabel: boolean = false;
+
+    /**
+     * Existing Hidden Label Classes, cached for later use if Inline form layout is removed
+     * @date 13/01/2023 - 06:51:53
+     *
+     * @private
+     * @type {string}
+     */
     private _hiddenLabelClass: string;
-    public get hiddenLabel(): boolean {
-        return this._hiddenLabel;
-    }
+
+    /**
+     * Is the Label Hidden, text is still present for accessibility
+     * @date 13/01/2023 - 06:52:51
+     *
+     * @public
+     * @type {boolean}
+     */
+    public get hiddenLabel(): boolean { return this._hiddenLabel; }
+
+    /**
+     * Is the Label Hidden, text is still present for accessibility
+     */
     public set hiddenLabel(value: boolean) {
         this._hiddenLabel = value;
         this.Label(this.label);
@@ -410,7 +458,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
         this._label = value;
     }
     /**
-     * Disabled State of the FormCheck
+     * Disabled State of the Form Control
      * @date 02/01/2023 - 00:23:47
      *
      * @public
@@ -419,7 +467,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
     public get disabled(): boolean { return this._disabled; }
 
     /**
-     * Disabled State of the FormCheck
+     * Disabled State of the Form Control
      */
     public set disabled(value: boolean) {
         const element = <HTMLInputElement>this.elements.get(this.inputElementName);
@@ -427,7 +475,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
         this._disabled = value;
     }
     /**
-     * FormCheck aria label
+     * Form Control aria label
      * @date 02/01/2023 - 00:25:24
      *
      * @public
@@ -436,7 +484,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
     public get ariaLabel(): string { return this._ariaLabel; }
 
     /**
-     * FormCheck aria label
+     * Form Control aria label
      */
     public set ariaLabel(value: string) {
         const element = <HTMLInputElement>this.elements.get(this.inputElementName);
@@ -446,17 +494,25 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
 
 
     /**
-     * The value of the FormCheck, not the checked state
+     * The value of the Form Control, depends on the type of control
      * @date 02/01/2023 - 00:18:50
      *
      * @public
      * @type {string}
      */
-    public get value(): string { return this._value; }
+    public get value(): string {
+        const element = <HTMLInputElement>this.elements.get(this.inputElementName);
+        element && (this._value = element.value);
+        return this._value;
+    }
+
 
     /**
-     * The value for the FormCheck, not the checked state
-     */
+     * The value of the Form Control, depends on the type of control
+     * @date 02/01/2023 - 00:18:50
+     * @param {string} value
+     * @returns {void}
+    */
     public set value(value: string) {
         const element = <HTMLInputElement>this.elements.get(this.inputElementName);
         element && value && (element.value = value);
@@ -530,15 +586,20 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
             .then(_ => {
                 self
                     .elementConfig
-                    .controlName(controlName)
-                    .setIfNotExist(bsFormControl.FORMCONTROL, new ctrlPrm()
-                        .Classes("form-control"))
-                    .setIfNotExist(bsFormControl.FORMCONTROL_LABEL, new ctrlPrm()
-                        .Classes("form-label"))
-                    .setIfNotExist(bsFormControl.FORMCONTROL_INPUT_GROUP, new ctrlPrm()
-                        .Classes("input-group"))
-                    .setIfNotExist(bsFormControl.FORMCONTROL_INPUT_GROUP_TEXT, new ctrlPrm()
-                        .Classes("input-group-text"));
+                    .controlName(controlName);
+                const sine = self.elementConfig.setIfNotExist.bind(self.elementConfig);
+                sine(bsFormControl.FORMCONTROL, new ctrlPrm()
+                    .Classes("form-control"));
+                sine(bsFormControl.FORMCONTROL_LABEL, new ctrlPrm()
+                    .Classes("form-label"));
+                sine(bsFormControl.FORMCONTROL_INPUT_GROUP, new ctrlPrm()
+                    .Classes("input-group"));
+                sine(bsFormControl.FORMCONTROL_INPUT_GROUP_TEXT, new ctrlPrm()
+                    .Classes("input-group-text"));
+                sine(bsFormControl.FORMCONTROL_VALID_MESSAGE, new ctrlPrm()
+                    .Classes("valid-feedback"));
+                sine(bsFormControl.FORMCONTROL_INVALID_MESSAGE, new ctrlPrm()
+                    .Classes("invalid-feedback"));
                 setDefaultConfigPromise.resolve(self);
             })
             .catch(error => setDefaultConfigPromise.reject(error))
@@ -626,7 +687,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
     public Placeholder(value: string): this { this.placeholder = value; return this; }
 
     /**
-     * Sets the disabled state for the FormCheck, fluent interface
+     * Sets the disabled state for the Form Control, fluent interface
      * @date 02/01/2023 - 00:29:32
      *
      * @public
@@ -678,14 +739,24 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
     public setProperties(): void {
         const self = this;
         self.Label(self.label)
-        self.Disabled(self.disabled)
-        self.AriaLabel(self.ariaLabel)
-        self.Value(self.value)
-        self.Placeholder(self.placeholder)
-        self.Size(self.size)
-        self.ReadOnly(self.readonly)
-        self.InputGroup(self.inputGroup)
-        self.FloatingLabel(self.floatingLabel)
+            .Disabled(self.disabled)
+            .AriaLabel(self.ariaLabel)
+            .Value(self.value)
+            .Placeholder(self.placeholder)
+            .Size(self.size)
+            .ReadOnly(self.readonly)
+            .InputGroup(self.inputGroup)
+            .FloatingLabel(self.floatingLabel)
+            .Min(self.min)
+            .Max(self.max)
+            .Step(self.step)
+            .Required(self.required)
+            .MinLength(self.minLength)
+            .MaxLength(self.maxLength)
+            .Pattern(self.pattern)
+            .ValidMessage(self.isValidMessage)
+            .InvalidMessage(self.isInvalidMessage)
+            .FieldName(self.fieldName);
     }
 
 
@@ -726,5 +797,433 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
         event.preventDefault();
         this.eventSubscribers.raiseEvent(new this.$event(eventName, this, { event: event }))
     }
+
+
+    //#region Validation
+    /**
+     * Input Element Step value
+     * @date 04/01/2023 - 19:41:37
+     *
+     * @private
+     * @type { string | number}
+     */
+    private _step: string | number;
+
+    /**
+     * Input Element Required
+     * @date 13/01/2023 - 06:57:33
+     *
+     * @private
+     * @type {boolean}
+     */
+    private _required: boolean;
+
+    /**
+     * Input Element Min Length
+     * @date 13/01/2023 - 06:57:40
+     *
+     * @private
+     * @type {number}
+     */
+    private _minLength: number;
+
+    /**
+     * Input Element Max Length
+     * @date 13/01/2023 - 06:57:46
+     *
+     * @private
+     * @type {number}
+     */
+    private _maxLength: number;
+
+    /**
+     * Input Element Pattern
+     * @date 13/01/2023 - 06:57:53
+     *
+     * @private
+     * @type {string}
+     */
+    private _pattern: string;
+
+    /**
+     * Input Element Min
+     * @date 13/01/2023 - 06:58:03
+     *
+     * @private
+     * @type {(string | number)}
+     */
+    private _min: string | number;
+
+    /**
+     * Input Element Field Name, used as the NAME attribute
+     * @date 13/01/2023 - 06:58:15
+     *
+     * @private
+     * @type {string}
+     */
+    private _fieldName: string;
+    /**
+     * Input Element Max
+     * @date 04/01/2023 - 19:41:31
+     *
+     * @private
+     * @type {string | number}
+     */
+    private _max: string | number;
+
+    /**
+     * Input Element Valid Message
+     * @date 13/01/2023 - 06:59:08
+     *
+     * @private
+     * @type {string}
+     */
+    private _isValidMessage: string;
+
+    /**
+     * Input Element Invalid Message
+     * @date 13/01/2023 - 06:59:18
+     *
+     * @private
+     * @type {string}
+     */
+    private _isInvalidMessage: string;
+
+    /**
+     * Input Element NAME attribute
+     * @date 13/01/2023 - 06:59:28
+     *
+     * @public
+     * @type {string}
+     */
+    public get fieldName(): string { return this._fieldName; }
+
+    /**
+     * Input Element NAME attribute
+     */
+    public set fieldName(value: string) {
+        const inputElement = this.inputElement;
+        (inputElement) && (inputElement.name = value);
+        this._fieldName = value;
+    }
+
+
+    /**
+     * Input Element Required
+     * @date 13/01/2023 - 06:59:59
+     *
+     * @public
+     * @type {boolean}
+     */
+    public get required(): boolean { return this._required; }
+
+    /**
+     * Input Element Required
+     */
+    public set required(value: boolean) {
+        const inputElement = this.inputElement;
+        (inputElement) && (inputElement.required = !!value);
+        this._required = !!value;
+    }
+
+    /**
+     * Input Element Min Length
+     * @date 13/01/2023 - 07:00:25
+     *
+     * @public
+     * @type {number}
+     */
+    public get minLength(): number { return this._minLength; }
+
+    /**
+     * Input Element Min Length
+     */
+    public set minLength(value: number) {
+        const inputElement = this.inputElement;
+        if (inputElement && !isNaN(value) && value >= 0) { (inputElement.minLength = value); }
+        else { inputElement?.removeAttribute("minLength"); }
+        this._minLength = value;
+    }
+
+    /**
+     * Input Element Max Length
+     * @date 13/01/2023 - 07:00:47
+     *
+     * @public
+     * @type {number}
+     */
+    public get maxLength(): number { return this._maxLength; }
+
+    /**
+     * Input Element Max Length
+     */
+    public set maxLength(value: number) {
+        const inputElement = this.inputElement;
+        if (inputElement && !isNaN(value) && value >= 0) {
+            try { inputElement.maxLength = value; }
+            catch (e) {
+                console.error(`Error setting maxLength property on input element: ${e}`);
+                inputElement.removeAttribute("maxLength");
+            }
+        }
+        else { inputElement?.removeAttribute("maxLength"); }
+
+
+
+        this._maxLength = value;
+    }
+
+    /**
+     * Input Element Pattern (Regex) to validate against
+     * @date 13/01/2023 - 07:01:07
+     *
+     * @public
+     * @type {string}
+     */
+    public get pattern(): string { return this._pattern; }
+
+    /**
+     * Input Element Pattern (Regex) to validate against
+     */
+    public set pattern(value: string) {
+        const inputElement = this.inputElement;
+        if (inputElement) {
+            if (value) { inputElement.pattern = value }
+            else { inputElement.removeAttribute("pattern"); }
+        }
+        this._pattern = value;
+    }
+
+    /**
+     * Input Element Min
+     * @date 13/01/2023 - 07:01:27
+     *
+     * @public
+     * @type {(string | number)}
+     */
+    public get min(): string | number { return this._min; }
+
+    /**
+     * Input Element Min
+     */
+    public set min(value: string | number) {
+        const inputElement = this.inputElement;
+        if (inputElement) {
+            if (value) { inputElement.min = value.toString(); }
+            else { inputElement.removeAttribute("min"); }
+        }
+        this._min = value;
+    }
+
+    /**
+     * Input Element Max
+     * @date 13/01/2023 - 07:01:40
+     *
+     * @public
+     * @type {(string | number)}
+     */
+    public get max(): string | number { return this._max; }
+
+    /**
+     * Input Element Max
+     */
+    public set max(value: string | number) {
+        const inputElement = this.inputElement;
+        if (inputElement) {
+            if (value !== undefined && value !== null && value !== "") { inputElement.max = value.toString(); }
+            else { inputElement.removeAttribute("max"); }
+        }
+        this._max = value;
+    }
+
+    /**
+     * Input Element Step
+     * @date 04/01/2023 - 19:42:19
+     *
+     * @public
+     * @type { string | number}
+     */
+    public get step(): string | number { return this._step; }
+
+    /**
+     * Input Element Step
+     */
+    public set step(value: string | number) {
+        const inputElement = this.inputElement;
+        if (inputElement) {
+            if (value) { inputElement.step = value.toString(); }
+            else { inputElement.removeAttribute("step"); }
+        }
+        this._step = value;
+    }
+
+
+    /**
+     * Input Element value is Valid Message
+     * @date 13/01/2023 - 07:02:11
+     *
+     * @public
+     * @type {string}
+     */
+    public get isValidMessage(): string { return this._isValidMessage; }
+
+    /**
+     * Input Element value is Valid Message
+     */
+    public set isValidMessage(value: string) {
+        const
+            inputElement = this.inputElement,
+            parent = this.inputElement?.parentElement;
+        if (parent) {
+            let validMessageElement = this.elements.get(this.$bsFormControl.FORMCONTROL_VALID_MESSAGE);
+            if (!value) {
+                (validMessageElement?.parentElement) && (validMessageElement?.remove());
+            }
+            else {
+                (!validMessageElement) && (validMessageElement = <HTMLDivElement>this.createElement(new this.$ctrlCfg(this.$bsFormControl.FORMCONTROL_VALID_MESSAGE, this.$htmlt.div, this.elementConfig.getConfig(this.$bsFormControl.FORMCONTROL_VALID_MESSAGE))));
+                validMessageElement.textContent = value;
+                inputElement.after(validMessageElement);
+            }
+        }
+        this._isValidMessage = value;
+    }
+
+    /**
+     * Input Element value is Invalid Message
+     * @date 13/01/2023 - 07:03:02
+     *
+     * @public
+     * @type {string}
+     */
+    public get isInvalidMessage(): string { return this._isInvalidMessage; }
+
+    /**
+     * Input Element value is Invalid Message
+     */
+    public set isInvalidMessage(value: string) {
+        const
+            inputElement = this.inputElement,
+            parent = this.inputElement?.parentElement;
+        if (parent) {
+            let invalidMessageElement = this.elements.get(this.$bsFormControl.FORMCONTROL_INVALID_MESSAGE);
+            if (!value) {
+                (invalidMessageElement?.parentElement) && (invalidMessageElement?.remove());
+            }
+            else {
+                (!invalidMessageElement) && (invalidMessageElement = <HTMLDivElement>this.createElement(new this.$ctrlCfg(this.$bsFormControl.FORMCONTROL_INVALID_MESSAGE, this.$htmlt.div, this.elementConfig.getConfig(this.$bsFormControl.FORMCONTROL_INVALID_MESSAGE))));
+                invalidMessageElement.textContent = value;
+                inputElement.after(invalidMessageElement);
+            }
+        }
+        this._isInvalidMessage = value;
+    }
+
+    /**
+     * Set the Input Element min, fluent interface
+     * @date 04/01/2023 - 19:43:04
+     *
+     * @public
+     * @param {number} value
+     * @returns {this}
+     */
+    public Min(value: number | string): this { this.min = value; return this; }
+
+    /**
+     * Set the Input Element max, fluent interface
+     * @date 04/01/2023 - 19:43:28
+     *
+     * @public
+     * @param {number} value
+     * @returns {this}
+     */
+    public Max(value: number | string): this { this.max = value; return this; }
+
+    /**
+     * Set the Input Element Step, fluent interface
+     * @date 04/01/2023 - 19:43:35
+     *
+     * @public
+     * @param {number} value
+     * @returns {this}
+     */
+    public Step(value: number | string): this { this.step = value; return this; }
+
+
+    /**
+     * Set the Input Element Required, fluent interface
+     * @date 13/01/2023 - 07:04:03
+     *
+     * @public
+     * @param {boolean} value
+     * @returns {this}
+     */
+    public Required(value: boolean): this { this.required = value; return this; }
+
+    /**
+     * Set the Input Element Min Length, fluent interface
+     * @date 13/01/2023 - 07:04:32
+     *
+     * @public
+     * @param {number} value
+     * @returns {this}
+     */
+    public MinLength(value: number): this { this.minLength = value; return this; }
+
+    /**
+     * Set the Input Element Max Length, fluent interface
+     * @date 13/01/2023 - 07:04:47
+     *
+     * @public
+     * @param {number} value
+     * @returns {this}
+     */
+    public MaxLength(value: number): this { this.maxLength = value; return this; }
+
+    /**
+     * Set the Input Element Pattern, fluent interface
+     * @date 13/01/2023 - 07:04:55
+     *
+     * @public
+     * @param {string} value
+     * @returns {this}
+     */
+    public Pattern(value: string): this { this.pattern = value; return this; }
+
+    /**
+     * Set the Input Element Valid Message, fluent interface
+     * @date 13/01/2023 - 07:05:04
+     *
+     * @public
+     * @param {string} value
+     * @returns {this}
+     */
+    public ValidMessage(value: string): this { this.isValidMessage = value; return this; }
+
+    /**
+     * Set the Input Element Invalid Message, fluent interface
+     * @date 13/01/2023 - 07:05:11
+     *
+     * @public
+     * @param {string} value
+     * @returns {this}
+     */
+    public InvalidMessage(value: string): this { this.isInvalidMessage = value; return this; }
+
+    /**
+     * Set the Input Element Field Name, fluent interface
+     * @date 13/01/2023 - 07:05:20
+     *
+     * @public
+     * @param {string} value
+     * @returns {this}
+     */
+    public FieldName(value: string): this { this.fieldName = value; return this; }
+
+
+
+
+
+    //#endregion
+
 
 }

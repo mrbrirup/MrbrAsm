@@ -8,8 +8,8 @@ import { Mrbr_UI_Bootstrap_Utilities_ButtonColours } from "../ui/bootstrap/utili
 export class Mrbr_Tests_Application$Dropdown {
 
     constructor() {
-        let dropdown: Mrbr_UI_Bootstrap_Controls_Dropdown = new Mrbr_UI_Bootstrap_Controls_Dropdown("dropdown1");
-        let submenu2 = new Mrbr_UI_Bootstrap_Controls_Dropdown("submenu2");
+        let dropdown: Mrbr_UI_Bootstrap_Controls_Dropdown = new Mrbr_UI_Bootstrap_Controls_Dropdown();
+        let submenu2 = new Mrbr_UI_Bootstrap_Controls_Dropdown();
         submenu2.isSubMenu = true;
         //let splitDropDown: Mrbr_UI_Bootstrap_Controls_SplitDropdown = new Mrbr_UI_Bootstrap_Controls_SplitDropdown("splitDropdown1");
         //Promise.all([dropdown.initialise(), splitDropDown.initialise()])

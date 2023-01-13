@@ -149,8 +149,8 @@ export class Mrbr_UI_Bootstrap_Layout_Grid extends Mrbr_UI_Bootstrap_Controls_Bo
      */
     public get $gutters(): typeof Mrbr_UI_Bootstrap_Layout_Gutters { return this.$bootstrapLayout.Gutters as typeof Mrbr_UI_Bootstrap_Layout_Gutters; }
 
-    constructor(rootElementName?: string, gridRowSize?: Mrbr_UI_Bootstrap_Layout_GridRowSizes) {
-        super(rootElementName);
+    constructor(gridRowSize?: Mrbr_UI_Bootstrap_Layout_GridRowSizes) {
+        super();
         this.gridRowSize = gridRowSize;
     }
 

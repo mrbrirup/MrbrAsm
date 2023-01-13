@@ -102,9 +102,8 @@ export class Mrbr_UI_Bootstrap_Controls_Alert extends Mrbr_UI_Bootstrap_Controls
      * @date 10/11/2022 - 14:52:33
      *
      * @constructor
-     * @param {string} rootElementName
      */
-    constructor(rootElementName: string) { super(rootElementName); }
+    constructor() { super(); }
     //#region Public Properties
 
     /**

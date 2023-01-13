@@ -41,11 +41,9 @@ export class Mrbr_UI_Bootstrap_Controls_NavbarOffCanvas extends Mrbr_UI_Bootstra
      * @date 05/12/2022 - 04:18:37
      *
      * @constructor
-     * @param {string} rootElementName
      */
-    constructor(rootElementName: string) {
-        super(rootElementName)
-        this.name = rootElementName;
+    constructor() {
+        super()
     }
 
 

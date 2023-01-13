@@ -13,13 +13,13 @@ export class Mrbr_Tests_Application {
     accordionItems: Array<Mrbr_UI_Bootstrap_Controls_AccordionItem> = new Array<Mrbr_UI_Bootstrap_Controls_AccordionItem>();
     constructor() {
         const self = this;
-        self.accordion = new Mrbr_UI_Bootstrap_Controls_Accordion("accordian-test")
+        self.accordion = new Mrbr_UI_Bootstrap_Controls_Accordion()
         self.accordion.flush = true;
         self.accordion.initialise()
             .then(async accordion => {
                 const
-                    accItem1 = new Mrbr_UI_Bootstrap_Controls_AccordionItem("collapseOne"),
-                    accItem2 = new Mrbr_UI_Bootstrap_Controls_AccordionItem("collapseTwo");
+                    accItem1 = new Mrbr_UI_Bootstrap_Controls_AccordionItem(),
+                    accItem2 = new Mrbr_UI_Bootstrap_Controls_AccordionItem();
                 accItem1.title = "Collapsable One"
                 accItem2.title = "Collapsable Two"
 

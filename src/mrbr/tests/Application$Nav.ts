@@ -6,7 +6,7 @@ import { Mrbr_UI_Bootstrap_Controls_NavContainerTypes } from "../ui/bootstrap/co
 export class Mrbr_Tests_Application$Nav {
 
   constructor() {
-    const nav = new Mrbr_UI_Bootstrap_Controls_Nav("navbar"),
+    const nav = new Mrbr_UI_Bootstrap_Controls_Nav(),
       ct = Mrbr_UI_Bootstrap_Controls_NavContainerTypes,
       name = ct[MrbrBase.COMPONENT_NAME],
       config = {};

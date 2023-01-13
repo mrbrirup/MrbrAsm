@@ -5,7 +5,7 @@ export class Mrbr_Tests_Application$Card {
     constructor() {
         const cardType = Mrbr_UI_Bootstrap_Controls_Card;
 
-        let card2 = new cardType("card2", cardType.cardStyles.vertical, new cardType.ImageCardProperties("https://picsum.photos/100/50", "An image"));
+        let card2 = new cardType(cardType.cardStyles.vertical, new cardType.ImageCardProperties("https://picsum.photos/100/50", "An image"));
         card2.imageLocation = cardType.imageLocations.top;
         card2.initialise()
             .then(result => {
@@ -20,7 +20,7 @@ export class Mrbr_Tests_Application$Card {
                 card2.rootElement.classList.add("m-3");
             })
 
-        let card3 = new cardType("card3", cardType.cardStyles.horizontal, new cardType.HorizontalCardStyle(cardType.HorizontalImageSize.i4_8, cardType.HorizontalImageSplit.md, "https://picsum.photos/640/480", "An image"));
+        let card3 = new cardType(cardType.cardStyles.horizontal, new cardType.HorizontalCardStyle(cardType.HorizontalImageSize.i4_8, cardType.HorizontalImageSplit.md, "https://picsum.photos/640/480", "An image"));
         card3.initialise()
             .then(result => {
                 let text3 = card3.createText("text1", "Card 3 Text");
@@ -34,7 +34,7 @@ export class Mrbr_Tests_Application$Card {
                 card3.rootElement.classList.add("m-3");
             });
 
-        let card1 = new cardType("card4", cardType.cardStyles.overlay, new cardType.ImageCardProperties("https://picsum.photos/100/50", "An image"));
+        let card1 = new cardType(cardType.cardStyles.overlay, new cardType.ImageCardProperties("https://picsum.photos/100/50", "An image"));
         card1.initialise()
             .then(result => {
                 let text1 = card1.createText("text1", "Card Text 1");

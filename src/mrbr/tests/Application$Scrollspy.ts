@@ -41,7 +41,7 @@ export class Mrbr_Tests_Application$Scrollspy {
     let nav = document.getElementsByTagName("nav")[0],
       spied = <HTMLElement>document.getElementsByClassName("sections")[0];
 
-    const scrollspy = new scrollspyCls("ss1", spied, nav);
+    const scrollspy = new scrollspyCls(spied, nav);
     scrollspy.initialise()
       .then(() => {
         let links = document.querySelectorAll("a.nav-link"),

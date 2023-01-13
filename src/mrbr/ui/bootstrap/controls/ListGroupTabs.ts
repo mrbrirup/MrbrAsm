@@ -218,9 +218,8 @@ export class Mrbr_UI_Bootstrap_Controls_ListGroupTabs extends Mrbr_UI_Bootstrap_
      * @date 04/12/2022 - 06:28:38
      *
      * @constructor
-     * @param {?string} [rootElementName]
      */
-    constructor(rootElementName?: string) { super(rootElementName); }
+    constructor() { super(); }
 
     //#region Public Methods
 

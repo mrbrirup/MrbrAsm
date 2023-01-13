@@ -6,8 +6,8 @@ import { Mrbr_UI_Bootstrap_Navigation_NavBar_NavBar$classes } from './navbar$cla
 
 export class Mrbr_UI_Bootstrap_Navigation_NavBar_NavBar extends Mrbr_UI_Controls_Control {
 
-    constructor(rootElementName: string) {
-        super(rootElementName);
+    constructor() {
+        super();
         const self = this;
         let navbar = <HTMLElement>this.createElement(new Mrbr_UI_Controls_ControlConfig(this.rootElementName, "nav"));
         let navStyles = Mrbr_UI_Bootstrap_Navigation_NavBar_NavBar$classes,

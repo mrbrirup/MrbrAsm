@@ -6,8 +6,8 @@ import { Mrbr_UI_Bootstrap_Controls_ListGroupEventData } from "../ui/bootstrap/c
 export class Mrbr_Tests_Application$ListGroup {
 
     constructor() {
-        const listGroup = new Mrbr_UI_Bootstrap_Controls_ListGroup("listGroup");
-        const radioGroup = new Mrbr_UI_Bootstrap_Controls_ListGroup("radioGroup");
+        const listGroup = new Mrbr_UI_Bootstrap_Controls_ListGroup();
+        const radioGroup = new Mrbr_UI_Bootstrap_Controls_ListGroup();
         Promise.all([listGroup.initialise(), radioGroup.initialise()])
             .then(_ => {
                 listGroup.numberedList = true;

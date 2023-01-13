@@ -178,9 +178,8 @@ export class Mrbr_UI_Bootstrap_Controls_TabPanelContainer extends Mrbr_UI_Bootst
      * @date 12/12/2022 - 09:02:54
      *
      * @constructor
-     * @param {string} rootElementName
      */
-    constructor(rootElementName: string) { super(rootElementName); }
+    constructor() { super(); }
 
     /**
      * TabPanel Container Tab Style

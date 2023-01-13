@@ -7,8 +7,8 @@ export class Mrbr_Tests_Application$Button {
 
     constructor() {
         const
-            button = new this.$button("button1"),
-            button2 = new this.$button("button2"),
+            button = new this.$button(),
+            button2 = new this.$button(),
             buttons = [button, button2];
         button.text = "Click Me";
 

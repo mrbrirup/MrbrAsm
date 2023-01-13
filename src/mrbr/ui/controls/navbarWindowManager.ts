@@ -8,8 +8,8 @@ export class Mrbr_UI_Controls_NavbarWindowManager extends Mrbr_UI_Bootstrap_Navi
     menuButton: HTMLElement
     menuImage: HTMLElement;
     mainMenu: Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu;
-    constructor(rootElementName: string) {
-        super(rootElementName);
+    constructor() {
+        super();
 
 
         this.menuImage = document.createElement("img");
@@ -35,7 +35,7 @@ export class Mrbr_UI_Controls_NavbarWindowManager extends Mrbr_UI_Bootstrap_Navi
             .then(_ => {
                 //var mrbr = _mrbr;
                 let id = Mrbr_UI_Controls_NavbarWindowManager.createId("mainMenu");
-                self.mainMenu = new Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu("mainMenu");
+                self.mainMenu = new Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu();
                 self.dataset(self.menuButton, {
                     bsToggle: "offcanvas",
                     bsTarget: `#${self.mainMenu.menuId}`

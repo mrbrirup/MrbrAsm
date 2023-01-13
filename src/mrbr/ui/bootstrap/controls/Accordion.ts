@@ -93,9 +93,8 @@ export class Mrbr_UI_Bootstrap_Controls_Accordion extends Mrbr_UI_Controls_Contr
      * @date 31/10/2022 - 05:06:09
      *
      * @constructor
-     * @param {string} rootElementName Name for the root element.
      */
-    constructor(rootElementName: string) { super(rootElementName); }
+    constructor() { super(); }
     //#region Public Properties
 
     /**

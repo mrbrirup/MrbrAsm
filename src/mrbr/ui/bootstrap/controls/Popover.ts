@@ -84,8 +84,8 @@ export class Mrbr_UI_Bootstrap_Controls_Popover extends Mrbr_UI_Bootstrap_Contro
      * @param {?string} [name]
      * @param {?Mrbr_UI_Bootstrap_Controls_PopoverConfig} [config]
      */
-    constructor(hostElement: HTMLElement | Mrbr_UI_Controls_Control | string, name?: string, config?: Mrbr_UI_Bootstrap_Controls_PopoverConfig) {
-        super(name);
+    constructor(hostElement: HTMLElement | Mrbr_UI_Controls_Control | string, config?: Mrbr_UI_Bootstrap_Controls_PopoverConfig) {
+        super();
         config && (this._config = config);
         let targetElement;
         if (hostElement instanceof Mrbr_UI_Controls_Control) { targetElement = hostElement.rootElement; }

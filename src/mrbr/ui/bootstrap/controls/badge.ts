@@ -138,10 +138,9 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
      * @date 11/11/2022 - 07:08:12
      *
      * @constructor
-     * @param {string} rootElementName
      */
-    constructor(rootElementName: string) {
-        super(rootElementName);
+    constructor() {
+        super();
         this.defaultContainerElementName = this.$cls.BADGE_TEXT_NAME;
     }
 

@@ -192,12 +192,11 @@ export class Mrbr_UI_Bootstrap_Controls_Toast extends Mrbr_UI_Bootstrap_Controls
      * @date 12/12/2022 - 14:46:00
      *
      * @constructor
-     * @param {?string} [rootElementName]
      * @param {?string} [title]
      * @param {?string} [bodyText]
      */
-    constructor(rootElementName?: string, title?: string, bodyText?: string) {
-        super(rootElementName);
+    constructor(title?: string, bodyText?: string) {
+        super();
         this.title = title;
         this.bodyText = bodyText;
     }

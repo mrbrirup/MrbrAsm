@@ -29,13 +29,11 @@ export class Mrbr_UI_Bootstrap_Controls_NavbarToggler extends Mrbr_UI_Controls_C
     }
     private _active: boolean = false;
     private _disabled: boolean = false;
-    private _name: string;
     private _navCollapseElement: HTMLDivElement;
     private _togglerElement: HTMLButtonElement;
 
-    constructor(name: string) {
-        super(name);
-        this.name = name;
+    constructor() {
+        super();
     }
 
     public get active(): boolean { return this._active; }
@@ -47,8 +45,6 @@ export class Mrbr_UI_Bootstrap_Controls_NavbarToggler extends Mrbr_UI_Controls_C
         [self.togglerElement, self.navCollapseElement].filter(element => !!element).forEach(element => element.classList.toggle("pe-none", value))
         self._disabled = value;
     }
-    public get name(): string { return this._name; }
-    public set name(value: string) { this._name = value; }
     public get navCollapseElement(): HTMLDivElement { return this._navCollapseElement; }
     public set navCollapseElement(value: HTMLDivElement) { this._navCollapseElement = value; }
     public get togglerElement(): HTMLButtonElement { return this._togglerElement; }

@@ -4,8 +4,8 @@ export class Mrbr_Tests_Application$Spinner {
   constructor() {
     const spinner = Mrbr_UI_Bootstrap_Controls_Spinner;
     const
-      spinner1 = new spinner("spinner1"),
-      spinner2 = new spinner("spinner2");
+      spinner1 = new spinner(),
+      spinner2 = new spinner();
     Promise.all([spinner1.initialise(), spinner2.initialise()])
       .then(() => {
         spinner1

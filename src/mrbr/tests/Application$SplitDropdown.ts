@@ -8,7 +8,7 @@ import { Mrbr_UI_Bootstrap_Utilities_ButtonColours } from "../ui/bootstrap/utili
 export class Mrbr_Tests_Application$SplitDropdown {
   constructor() {
     const dropdown = Mrbr_UI_Bootstrap_Controls_SplitDropdown,
-      splitDropdown1 = new dropdown("splitDropdown1");
+      splitDropdown1 = new dropdown();
 
     splitDropdown1
       .initialise()

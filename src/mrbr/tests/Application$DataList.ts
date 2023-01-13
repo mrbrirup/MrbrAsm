@@ -4,7 +4,7 @@ import { Mrbr_UI_Bootstrap_Form_DataList } from "../ui/bootstrap/form/datalist";
 export class Mrbr_Tests_Application$DataList {
   constructor() {
     const
-      dataList = new Mrbr_UI_Bootstrap_Form_DataList("mrbrDataList");
+      dataList = new Mrbr_UI_Bootstrap_Form_DataList();
     dataList
       .initialise()
       .then(_ => {

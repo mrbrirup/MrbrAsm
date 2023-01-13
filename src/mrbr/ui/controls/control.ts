@@ -392,16 +392,16 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      *
      * @private
      * @type {Set<HTMLElement>}
-     */
+    */
     private _themedElements: Set<HTMLElement> = new Set<HTMLElement>();
 
     /**
-     * Cotrol's Id property field
-     * @date 31/10/2022 - 14:06:01
-     *
-     * @private
-     * @type {string}
-     */
+      * Cotrol's Id property field
+      * @date 31/10/2022 - 14:06:01
+    *
+    * @private
+    * @type {string}
+      */
     private _id: string;
 
     /**
@@ -419,8 +419,17 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      *
      * @private
      * @type {Mrbr_System_Events_EventSubscribers}
-     */
+    */
     private _eventSubscribers: Mrbr_System_Events_EventSubscribers;
+
+    /**
+     * Control's name
+     * @date 12/01/2023 - 16:30:59
+     *
+     * @private
+     * @type {string}
+     */
+    private _name: string;
 
     /**
      * Mutation Observer for DOM
@@ -448,16 +457,9 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @date 31/10/2022 - 14:06:57
      *
      * @constructor
-     * @param {string} rootElementName Name of root element for control. Each control should have a single root element. Optional else must be supplied by inheriting class
-     * @param {?(HTMLElement | string)} [rootElement] Optional HTMLElement or string Id of the root element. If not supplied then the root element will be created by the control
      */
-    constructor(rootElementName?: string, rootElement?: HTMLElement | string) {
+    constructor() {
         super();
-        this.rootElementName = rootElementName || this.$ctrl.ROOT_ELEMENT_NAME;
-        if (rootElement) {
-            if (typeof rootElement === "string") { this.rootElement = document?.getElementById(rootElement); }
-            else { this.rootElement = rootElement; }
-        }
     }
 
     //#region Public Properties
@@ -569,7 +571,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @public
      * @type {string}
      */
-    public get defaultContainerElementName(): string { return this._defaultContainerElementName; }
+    public get defaultContainerElementName(): string { return this._defaultContainerElementName ?? this.rootElementName; }
 
     /**
      * Default container element name for adding child controls
@@ -647,12 +649,15 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      *
      * @type {string}
      */
-    get rootElementName(): string { return this._rootElementName; }
+    get rootElementName(): string { return this._rootElementName ?? this.$ctrl.ROOT_ELEMENT_NAME; }
 
     /**
      * Control's root element name. Only one root element per control
      */
-    set rootElementName(value: string) { this._rootElementName = value; }
+    set rootElementName(value: string) {
+        if (this._rootElementName) { throw new Error("Root element name can only be set once"); }
+        this._rootElementName = value;
+    }
 
     /**
      * Control's root element. Only one root element per control
@@ -660,12 +665,34 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      *
      * @type {HTMLElement}
      */
-    get rootElement(): HTMLElement { const self = this; return self.elements.get(self._rootElementName); }
+    get rootElement(): HTMLElement { const self = this; return self.elements.get(self.rootElementName); }
 
     /**
      * Control's root element. Only one root element per control
      */
-    set rootElement(value: HTMLElement) { const self = this; self.elements.set(self._rootElementName, value); }
+    set rootElement(value: HTMLElement) { const self = this; self.elements.set(self.rootElementName, value); }
+
+
+
+
+
+    /**
+     * Control's name
+     * @date 12/01/2023 - 16:31:07
+     *
+     * @public
+     * @type {string}
+     */
+    public set name(value: string) { this._name = value; }
+
+
+    /**
+     * Control's name
+     */
+    public get name(): string { return this._name; }
+
+
+
     //#endregion Public Properties
 
     //#region Public Methods
@@ -1320,8 +1347,11 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
     }
 
 
+    public RootElementName(value: string): this {
+        this.rootElementName = value;
+        return this;
+    }
 
 
-    //#region Private Methods
 }
 

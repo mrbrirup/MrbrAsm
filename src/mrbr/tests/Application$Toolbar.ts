@@ -11,9 +11,9 @@ export class Mrbr_Tests_Application$Toolbar {
     private $toolbar = Mrbr_UI_Bootstrap_Controls_Toolbar;
     constructor() {
         const self = this;
-        const buttonGroup0 = new self.$buttonGroup("buttonGroup1");
-        const buttonGroup1 = new self.$buttonGroup("buttonGroup2");
-        const toolbar = new self.$toolbar("toolbar1");
+        const buttonGroup0 = new self.$buttonGroup();
+        const buttonGroup1 = new self.$buttonGroup();
+        const toolbar = new self.$toolbar();
         Promise.all([
             toolbar.initialise(),
             buttonGroup0.initialise(),
@@ -21,10 +21,10 @@ export class Mrbr_Tests_Application$Toolbar {
         ])
             .then(_ => {
 
-                const button1 = new self.$button("button1");
-                const button2 = new self.$button("button2");
-                const button3 = new self.$button("button3");
-                const button4 = new self.$button("button4");
+                const button1 = new self.$button();
+                const button2 = new self.$button();
+                const button3 = new self.$button();
+                const button4 = new self.$button();
                 button1.text = "Button 1";
                 button2.text = "Button 2";
                 button3.text = "Button 3";

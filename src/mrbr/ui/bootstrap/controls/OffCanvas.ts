@@ -159,15 +159,6 @@ export class Mrbr_UI_Bootstrap_Controls_OffCanvas extends Mrbr_UI_Bootstrap_Cont
     private _headerVisible: boolean = true;
 
     /**
-     * OffCanvas name field
-     * @date 05/12/2022 - 05:14:38
-     *
-     * @private
-     * @type {string}
-     */
-    private _name: string;
-
-    /**
      * OffCanvas Root Element field
      * @date 05/12/2022 - 05:14:50
      *
@@ -231,9 +222,8 @@ export class Mrbr_UI_Bootstrap_Controls_OffCanvas extends Mrbr_UI_Bootstrap_Cont
      * @constructor
      * @param {string} rootElementName
      */
-    constructor(rootElementName?: string) {
-        super(rootElementName);
-        this.name = this.rootElementName;
+    constructor() {
+        super();
     }
 
     //#region Protected OffCanvas Ids
@@ -345,20 +335,6 @@ export class Mrbr_UI_Bootstrap_Controls_OffCanvas extends Mrbr_UI_Bootstrap_Cont
         this.headerElement?.classList.toggle("visually-hidden", !value);
         this._headerVisible = value;
     }
-
-    /**
-     * OffCanvas Name
-     * @date 05/12/2022 - 05:20:43
-     *
-     * @public
-     * @type {string}
-     */
-    public get name(): string { return this._name; }
-
-    /**
-     * OffCanvas Name
-     */
-    public set name(value: string) { this._name = value; }
 
     /**
      * OffCanvas Root Element

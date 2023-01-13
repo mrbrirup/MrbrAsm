@@ -24,7 +24,7 @@ export class Mrbr_Tests_Application$Accordion extends Mrbr_UI_Controls_Control {
     get $mubcc$bp(): typeof Mrbr_UI_Bootstrap_Containers_Container$Breakpoints { return Mrbr_UI_Bootstrap_Containers_Container$Breakpoints; }
     get $mta$a(): typeof Mrbr_Tests_Application$Accordion { return Mrbr_Tests_Application$Accordion; }
     constructor() {
-        super("Mrbr_Tests_Application$Accordion");
+        super();
     }
     initialise(targetElement: HTMLElement, ...args): Mrbr_System_Promise<Mrbr_Tests_Application$Accordion> {
         const self = this,
@@ -61,9 +61,9 @@ export class Mrbr_Tests_Application$Accordion extends Mrbr_UI_Controls_Control {
         const
             self = this,
             selfControls = self.controls,
-            accordion = new Mrbr_UI_Bootstrap_Controls_Accordion("accordionTest"),
-            collapseOne = new Mrbr_UI_Bootstrap_Controls_AccordionItem("collapseOne"),
-            collapseTwo = new Mrbr_UI_Bootstrap_Controls_AccordionItem("collapseTwo");
+            accordion = new Mrbr_UI_Bootstrap_Controls_Accordion(),
+            collapseOne = new Mrbr_UI_Bootstrap_Controls_AccordionItem(),
+            collapseTwo = new Mrbr_UI_Bootstrap_Controls_AccordionItem();
         selfControls
             .set("accordion", accordion)
             .set("collapseOne", collapseOne)
@@ -81,7 +81,7 @@ export class Mrbr_Tests_Application$Accordion extends Mrbr_UI_Controls_Control {
     }
     private async createContainer() {
         await this.controls
-            .set("container", new this.$mubcc(this.rootElementName))
+            .set("container", new this.$mubcc())
             .get("container")
             .initialise();
     }

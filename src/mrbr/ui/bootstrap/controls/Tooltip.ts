@@ -133,7 +133,7 @@ export class Mrbr_UI_Bootstrap_Controls_Tooltip extends Mrbr_UI_Bootstrap_Contro
      * @param {?(Mrbr_UI_Bootstrap_Controls_TooltipConfig | string)} [config]
      */
     constructor(hostElement: string | HTMLElement, config?: Mrbr_UI_Bootstrap_Controls_TooltipConfig | string) {
-        super("tooltip");
+        super();
         const cfg = Mrbr_UI_Bootstrap_Controls_TooltipConfig;
         if (typeof hostElement === "string") { this._hostElement = document.getElementById(hostElement); } else { this._hostElement = hostElement; }
         if (!this._hostElement) { throw new Error("Mrbr_UI_Bootstrap_Controls_Tooltip.mount: Host element not found"); }

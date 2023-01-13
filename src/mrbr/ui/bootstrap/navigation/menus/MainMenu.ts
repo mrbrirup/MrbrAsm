@@ -6,8 +6,8 @@ import { Mrbr_UI_Controls_ControlConfigOptionalParameters } from "../../../contr
 export class Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu extends Mrbr_UI_Controls_Control {
     _backdrop: HTMLElement;
     _menuId: string;
-    constructor(rootElementName: string) {
-        super(rootElementName);
+    constructor() {
+        super();
         const self = this;
         //actionsAdd = Mrbr_UI_Bootstrap_Controls_ClassActions.Add,
         //mainMenu = self.createElement(rootElementName, "div"),
@@ -40,7 +40,7 @@ export class Mrbr_UI_Bootstrap_Navigation_Menus_MainMenu extends Mrbr_UI_Control
         //self.dataset(button, { bsDismiss: "offcanvas" })
         self._menuId = Mrbr_UI_Controls_Control.createId("mainMenu");
         const ctrlCfg = Mrbr_UI_Controls_ControlConfig;
-        self.createElement(new ctrlCfg(rootElementName, "div",
+        self.createElement(new ctrlCfg(this.rootElementName, "div",
             new Mrbr_UI_Controls_ControlConfigOptionalParameters()
                 .Classes("offcanvas offcanvas-start text-bg-white")
                 .Attributes({ tabindex: "-1", id: self.menuId, "aria-labelledby": "offcanvasDarkLabel" })

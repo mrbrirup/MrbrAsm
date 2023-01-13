@@ -30,7 +30,7 @@ export class Mrbr_UI_Controls_Handles_Resize extends Mrbr_UI_Controls_Control {
     private _resizeTarget: HTMLElement;
     private _parentElement: HTMLElement;
     constructor(resizeTarget: HTMLElement, parentElement: HTMLElement) {
-        super("");
+        super();
         const self = this;
         self.resizeTarget = resizeTarget;
         self.parentElement = parentElement;

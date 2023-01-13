@@ -1,8 +1,8 @@
 import { Mrbr_UI_Controls_Control } from "../../controls/Control";
 
 export class Mrbr_UI_Bootstrap_Controls_DropdownItem extends Mrbr_UI_Controls_Control {
-    constructor(rootElementName: string) {
-        super(rootElementName);
+    constructor() {
+        super();
     }
     private _textOnly: boolean = false;
     private _menuItem: boolean = false;
