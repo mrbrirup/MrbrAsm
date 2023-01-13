@@ -5,8 +5,8 @@ export class Mrbr_Tests_Application$Range {
   constructor() {
     const
       mrbrRange = Mrbr_UI_Bootstrap_Form_Range,
-      range1 = new mrbrRange("mrbrRange"),
-      range2 = new mrbrRange("mrbrRange2");
+      range1 = new mrbrRange(),
+      range2 = new mrbrRange();
     Promise.all([range1.initialise(), range2.initialise()])
       .then(_ => {
         range1.mount(document.body);
