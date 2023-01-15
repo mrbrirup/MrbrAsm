@@ -851,7 +851,7 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
 
 
     /**
-     * Assigns classes to this control root element
+     * Assigns classes to this control root element, return null if no root element
      * @date 07/01/2023 - 09:09:03
      *
      * @public
@@ -860,7 +860,83 @@ export class Mrbr_UI_Controls_Control extends Mrbr_System_Component implements M
      * @param {?Object} [styleType]
      * @returns {(HTMLElement | Array<HTMLElement>)}
      */
-    public rootClasses(action: Mrbr_UI_Controls_ClassActions, value: Array<string> | string, styleType?: Object): HTMLElement | Array<HTMLElement> { return this.classes(this, action, value, styleType); }
+    public rootClasses(action: Mrbr_UI_Controls_ClassActions, value: Array<string> | string, styleType?: Object): HTMLElement | Array<HTMLElement> {
+        return (!this.rootElement) ? null : this.classes(this.rootElement, action, value, styleType);
+    }
+
+    
+    /**
+     * Assign Aria Attributes to the root element, return null if no root element
+     * @date 15/01/2023 - 11:04:28
+     *
+     * @public
+     * @param {object} ariaSettings
+     * @returns {(HTMLElement | Array<HTMLElement>)}
+     */
+    public rootAria(ariaSettings: object): HTMLElement | Array<HTMLElement> {
+        return (!this.rootElement) ? null : this.aria(this.rootElement, ariaSettings);
+    }
+    
+    /**
+     * Assign Attributes to the root element, return null if no root element
+     * @date 15/01/2023 - 11:04:47
+     *
+     * @public
+     * @param {object} attributes
+     * @returns {(HTMLElement | Array<HTMLElement>)}
+     */
+    public rootAttributes(attributes: object): HTMLElement | Array<HTMLElement> {
+        return (!this.rootElement) ? null : this.attributes(this.rootElement, attributes);
+    }
+    
+    /**
+     * Assign Data Attributes to the root element, return null if no root element
+     * @date 15/01/2023 - 11:04:57
+     *
+     * @public
+     * @param {object} data
+     * @returns {(HTMLElement | Array<HTMLElement>)}
+     */
+    public rootDataset(data: object): HTMLElement | Array<HTMLElement> {
+        return (!this.rootElement) ? null : this.dataset(this.rootElement, data);
+    }
+    
+    /**
+     * Assign Properties to the root element, return null if no root element
+     * @date 15/01/2023 - 11:05:04
+     *
+     * @public
+     * @param {object} properties
+     * @returns {(HTMLElement | Array<HTMLElement>)}
+     */
+    public rootProperties(properties: object): HTMLElement | Array<HTMLElement> {
+        return (!this.rootElement) ? null : this.properties(this.rootElement, properties);
+    }
+    
+    /**
+     * Assign Styles to the root element, return null if no root element
+     * @date 15/01/2023 - 11:05:48
+     *
+     * @public
+     * @param {object} styles
+     * @returns {(HTMLElement | Array<HTMLElement>)}
+     */
+    public rootStyles(styles: object): HTMLElement | Array<HTMLElement> {
+        return (!this.rootElement) ? null : this.styles(this.rootElement, styles);
+    }
+    
+    /**
+     * Assigns a template to the root element, return null if no root element
+     * @date 15/01/2023 - 11:05:56
+     *
+     * @public
+     * @param {string} template
+     * @returns {(HTMLElement | Array<HTMLElement>)}
+     */
+    public rootTemplate(template: string): HTMLElement | Array<HTMLElement> {
+        return (!this.rootElement) ? null : this.template(this.rootElement, template);
+    }
+
 
     /**
      * Assigns classes to a control or control array

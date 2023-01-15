@@ -32,8 +32,8 @@ export class Mrbr_Tests_Application$ButtonGroup extends Mrbr_UI_Controls_Control
                     button2 = new self.$button();
                 button.text = "Click Me";
                 button2.text = "Click Me Again";
-                button2.size = self.$button.buttonSizes.small;
-                button2.colour = self.$button.buttonColours.danger;
+                button2.size = "sm"
+                button2.colour = button2.$bsButtonColours.danger;
                 button2.outline = true;
                 buttonGroup.buttonGroupSize = self.$buttonGroup.groupSizes.large;
                 await Promise.all([button.initialise(), button2.initialise(), buttonGroup.initialise()]);

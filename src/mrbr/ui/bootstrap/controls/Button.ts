@@ -1,12 +1,13 @@
 import { Mrbr_System_Events_Event } from "../../../system/events/Event";
 import { Mrbr_System_Events_EventHandler } from "../../../system/events/EventHandler";
 import { Mrbr_System_Promise } from "../../../system/Promise";
+import { Mrbr_UI_Bootstrap_Utilities_ButtonColours } from "../utilities/buttonColours";
 import { Mrbr_UI_Bootstrap_Controls_BootstrapControl } from "./BootstrapControl";
-type typeButtonColor = typeof Mrbr_UI_Bootstrap_Controls_Button.buttonColours[keyof typeof Mrbr_UI_Bootstrap_Controls_Button.buttonColours];
-type typeButtonSize = typeof Mrbr_UI_Bootstrap_Controls_Button.buttonSizes[keyof typeof Mrbr_UI_Bootstrap_Controls_Button.buttonSizes];
-type typeButtonType = typeof Mrbr_UI_Bootstrap_Controls_Button.buttonTypes[keyof typeof Mrbr_UI_Bootstrap_Controls_Button.buttonTypes];
-type typeElementType = typeof Mrbr_UI_Bootstrap_Controls_Button.elementTypes[keyof typeof Mrbr_UI_Bootstrap_Controls_Button.elementTypes];
-type typeToggleState = typeof Mrbr_UI_Bootstrap_Controls_Button.toggleStates[keyof typeof Mrbr_UI_Bootstrap_Controls_Button.toggleStates];
+
+type typeButtonSizes = "sm" | "lg" | "";
+type typeButtonTypes = "button" | "submit" | "reset";
+type typeElementType = "button" | "a";
+type typeToggleStates = "on" | "off";
 export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Controls_BootstrapControl {
     //#region Public Static Constants
 
@@ -30,7 +31,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * @readonly
      * @type {string}
      */
-    public static readonly CLICK_EVENT_NAME: string = "button_click";
+    public static readonly CLICK_EVENT_NAME: string = "click";
 
     /**
      * Internal Button Toggle Event Name
@@ -56,79 +57,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
     //#endregion Public Static Constants
     //#region enums
 
-    /**
-     * Button Element Types
-     * @date 11/11/2022 - 10:36:56
-     *
-     * @public
-     * @static
-     * @type {{ readonly button: "button"; readonly submit: "submit"; readonly reset: "reset"; }}
-     */
-    public static buttonTypes = {
-        button: "button",
-        submit: "submit",
-        reset: "reset"
-    } as const;
 
-    /**
-     * Element Type to Use for a Button. Must eb set before intialising the control
-     * @date 11/11/2022 - 10:37:13
-     *
-     * @public
-     * @static
-     * @type {{ readonly button: "button"; readonly link: "a"; }}
-     */
-    public static elementTypes = {
-        button: "button",
-        link: "a"
-    } as const;
-
-    /**
-     * Button Sizes 
-     * @date 11/11/2022 - 10:37:26
-     *
-     * @public
-     * @static
-     * @type {{ readonly large: "btn-lg"; readonly small: "btn-sm"; readonly default: ""; }}
-     */
-    public static buttonSizes = {
-        large: "btn-lg",
-        small: "btn-sm",
-        default: ""
-    } as const
-
-    /**
-     * The colour for the button
-     * @date 11/11/2022 - 10:37:57
-     *
-     * @public
-     * @static
-     * @type {{ readonly primary: "primary"; readonly secondary: "secondary"; readonly success: "success"; readonly danger: "danger"; readonly warning: "warning"; readonly info: "info"; readonly light: "light"; readonly dark: "dark"; readonly link: "link"; }}
-     */
-    public static buttonColours = {
-        primary: "primary",
-        secondary: "secondary",
-        success: "success",
-        danger: "danger",
-        warning: "warning",
-        info: "info",
-        light: "light",
-        dark: "dark",
-        link: "link"
-    } as const;
-
-    /**
-     * Toggle state for the button when isToggle is true
-     * @date 11/11/2022 - 10:38:10
-     *
-     * @public
-     * @static
-     * @type {{ readonly on: "on"; readonly off: "off"; }}
-     */
-    public static toggleStates = {
-        on: "on",
-        off: "off"
-    } as const
     //#endregion enums
     //#region aliases
 
@@ -139,7 +68,21 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * @readonly
      * @type {typeof Mrbr_UI_Bootstrap_Controls_Button}
      */
-    get $cls(): typeof Mrbr_UI_Bootstrap_Controls_Button { return Mrbr_UI_Bootstrap_Controls_Button; }
+    get $bsButton(): typeof Mrbr_UI_Bootstrap_Controls_Button { return Mrbr_UI_Bootstrap_Controls_Button; }
+
+
+
+    /**
+     * Type Alias for Mrbr_UI_Bootstrap_Utilities_ButtonColours
+     * @date 15/01/2023 - 10:29:47
+     *
+     * @public
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Utilities_ButtonColours}
+     */
+    public get $bsButtonColours(): typeof Mrbr_UI_Bootstrap_Utilities_ButtonColours { return Mrbr_UI_Bootstrap_Utilities_ButtonColours; }
+
+
     //#endregion aliases
     //#region fields
 
@@ -211,9 +154,9 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * @date 11/11/2022 - 10:41:28
      *
      * @private
-     * @type {typeToggleState}
+     * @type {typeToggleStates}
      */
-    private _toggleState: typeToggleState = this.$cls.toggleStates.off;
+    private _toggleState: typeToggleStates;
 
     /**
      * Colour of the button
@@ -222,16 +165,16 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * @private
      * @type {typeButtonColor}
      */
-    private _colour: typeButtonColor = this.$cls.buttonColours.primary;
+    private _colour: Mrbr_UI_Bootstrap_Utilities_ButtonColours;
 
     /**
      * Size of the button
      * @date 11/11/2022 - 10:41:50
      *
      * @private
-     * @type {typeButtonSize}
+     * @type {typeButtonSizes}
      */
-    private _size: typeButtonSize = this.$cls.buttonSizes.default;
+    private _size: typeButtonSizes;
 
     /**
      * Type of the button. Must be set before initialising the control
@@ -240,16 +183,16 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * @private
      * @type {typeElementType}
      */
-    private _elementType: typeElementType = this.$cls.elementTypes.button;
+    private _elementType: typeElementType;
 
     /**
      * Button Element Type
      * @date 11/11/2022 - 10:42:30
      *
      * @private
-     * @type {typeButtonType}
+     * @type {typeButtonTypes}
      */
-    private _buttonType: typeButtonType = this.$cls.buttonTypes.button;
+    private _buttonType: typeButtonTypes;
     //#endregion fields
 
     /**
@@ -258,8 +201,10 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      *
      * @constructor
      */
-    constructor() {
-        super();        
+    constructor(buttonType: typeButtonTypes = "button", elementType: typeElementType = "button") {
+        super();
+        this._buttonType = buttonType;
+        this._elementType = elementType;
     }
 
 
@@ -288,22 +233,20 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * @date 11/11/2022 - 10:43:11
      *
      * @public
-     * @type {typeToggleState}
+     * @type {typeToggleStates}
      */
-    public get toggleState(): typeToggleState { return this._toggleState; }
+    public get toggleState(): typeToggleStates { return this._toggleState; }
 
     /**
      * Toggle state of the button. If isToggle is false, this will always be off
      */
-    public set toggleState(value: typeToggleState) {
-        const root = this.rootElement,
-            act = this.$clsActions,
-            states = this.$cls.toggleStates;
-
+    public set toggleState(value: typeToggleStates) {
+        const act = this.$clsActions;
+        if (this.isToggle) {
+            this.rootClasses((value === "on") ? act.add : act.remove, "active");
+            this.rootAria({ pressed: value === "on" });
+        }
         this._toggleState = value;
-        if (!root || !this.isToggle) { return; }
-        this.classes(root, (value === states.on) ? act.add : act.remove, "active");
-        this.aria(root, { pressed: value === states.on });
     }
 
     /**
@@ -320,7 +263,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      */
     public set isToggle(value: boolean) {
         const root = this.rootElement;
-        (root && !value) && this.aria(root, { pressed: this.$ctrl.DELETE });
+        this.rootAria({ pressed: value ? value : this.$ctrl.DELETE });
         this._isToggle = value;
         this.toggleState = this._toggleState;
     }
@@ -330,19 +273,21 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * @date 11/11/2022 - 11:10:15
      *
      * @public
-     * @type {typeButtonSize}
+     * @type {typeButtonSizes}
      */
-    public get size(): typeButtonSize { return this._size; }
+    public get size(): typeButtonSizes { return this._size; }
 
     /**
      * Button Size
      */
-    public set size(value: typeButtonSize) {
-        const root = this.rootElement,
-            act = this.$clsActions;
-        if (!root) { this._size = value; return; }
-        this.classes(root, act.remove, this.size)
-        this.classes(root, act.add, value)
+    public set size(value: typeButtonSizes) {
+        const
+            act = this.$clsActions,
+            classes = { lg: "btn-lg", sm: "btn-sm" };
+        this.rootElement && Object.keys(classes).forEach(key => {
+            if (key === this._size) this.rootClasses(act.remove, classes[key]);
+            else if (key === value) this.rootClasses(act.add, classes[key]);
+        });
         this._size = value;
     }
 
@@ -351,16 +296,15 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * @date 11/11/2022 - 10:44:17
      *
      * @public
-     * @type {typeButtonType}
+     * @type {typeButtonTypes}
      */
-    public get buttonType(): typeButtonType { return this._buttonType; }
+    public get buttonType(): typeButtonTypes { return this._buttonType; }
 
     /**
      * Button Element Type. Only for HTMLButtonElement not HTMLAnchorElement
      */
-    public set buttonType(value: typeButtonType) {
-        const root = this.rootElement;
-        root && this.attributes(root, { type: value });
+    public set buttonType(value: typeButtonTypes) {
+        this.rootAttributes({ type: value });
         this._buttonType = value;
     }
 
@@ -377,8 +321,11 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * HTMLElement Type of the button
      */
     public set elementType(value: typeElementType) {
-        const root = this.rootElement;
-        root && this.attributes(root, { role: (value === this.$cls.elementTypes.link) ? "button" : this.$ctrl.DELETE });
+        if (!value) { return; }
+        if (value && this._elementType !== value) {
+            throw new Error("Cannot change elementType after initialisation");
+        }
+        this.rootAttributes({ role: (value === "a") ? "button" : this.$ctrl.DELETE });
         this._elementType = value;
     }
 
@@ -395,9 +342,8 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * NoWarp for button text
      */
     public set noWrap(value: boolean) {
-        const root = this.rootElement,
-            act = this.$clsActions;
-        root && this.classes(root, value ? act.add : act.remove, "btn-no-wrap");
+        const act = this.$clsActions;
+        this.rootClasses(value ? act.add : act.remove, "btn-no-wrap");
         this._noWrap = value;
     }
 
@@ -413,12 +359,10 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * Button is outline style
      */
     public set outline(value: boolean) {
-        const root = this.rootElement;
-        root && (_ => {
-            this.classes(root, this.$clsActions.remove, `btn-${(this._outline ? "outline-" : "")}${this._colour}`);
-            this.classes(root, this.$clsActions.add, `btn-${(value ? "outline-" : "")}${this._colour}`);
-        })()
+        const colour = this.colour;
+        this.rootClasses(this.$clsActions.remove, this.outlineColour(colour));
         this._outline = value;
+        this.rootClasses(this.$clsActions.add, this.outlineColour(colour));
     }
 
     /**
@@ -442,18 +386,18 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
         if (value) {
             this._tabIndex = root.tabIndex;
             root.tabIndex = -1;
-            if (this.elementType === this.$cls.elementTypes.link) {
+            if (this.elementType === "a") {
                 this._href = (<HTMLAnchorElement>root).href;
                 (<HTMLAnchorElement>root).href = "";
             }
         }
         else {
             (this._tabIndex !== null) && (root.tabIndex = this._tabIndex);
-            (this.elementType === this.$cls.elementTypes.link) && ((<HTMLAnchorElement>root).href = this._href)
+            (this.elementType === "a") && ((<HTMLAnchorElement>root).href = this._href)
         }
-        this.attributes(root, { disabled: value ? "" : this.$ctrl.DELETE });
-        this.classes(root, value ? act.add : act.remove, this.$cls.DISABLED_CLASSES);
-        this.aria(root, { disabled: value ? "true" : this.$ctrl.DELETE });
+        this.rootAttributes({ disabled: value ? "" : this.$ctrl.DELETE });
+        this.rootClasses(value ? act.add : act.remove, this.$bsButton.DISABLED_CLASSES);
+        this.rootAria({ disabled: value ? "true" : this.$ctrl.DELETE });
     }
 
     /**
@@ -463,19 +407,23 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * @public
      * @type {typeButtonColor}
      */
-    public get colour(): typeButtonColor { return this._colour; }
+    public get colour(): Mrbr_UI_Bootstrap_Utilities_ButtonColours { return this._colour ??= Mrbr_UI_Bootstrap_Utilities_ButtonColours.primary; }
 
     /**
      * Button Colour
      */
-    public set colour(value: typeButtonColor) {
-        const root = this.rootElement;
-        if (!root) { this._colour = value; return; }
-        this.classes(root, this.$clsActions.remove, `btn-${(this.outline ? "outline-" : "")}${this._colour}`);
-        this.classes(root, this.$clsActions.add, `btn-${(this.outline ? "outline-" : "")}${value}`);
+    public set colour(value: Mrbr_UI_Bootstrap_Utilities_ButtonColours) {
+        this.rootClasses(this.$clsActions.replace, [this.outlineColour(this.colour), this.outlineColour(value)]);
         this._colour = value;
-
     }
+
+    private outlineColour(value: string): string {
+        const arrColour = value.split("-");
+        (this.outline) && (arrColour.splice(1, 0, "outline"));
+        return arrColour.join("-");
+    }
+
+
     //#endregion properties
 
     /**
@@ -487,23 +435,26 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * @returns {Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Button>}
      */
     public initialise(...args: any[]): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Button> {
-        const self = this,
-            initialisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Button>(`${self.$cls[self.$mrbr.COMPONENT_NAME]}:initialise`);
+        const
+            self = this,
+            controlName = args?.find(arg => typeof arg === "object" && arg?.controlName)?.controlName ?? self.$bsButton[self.$mrbr.COMPONENT_NAME],
+            initialisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Button>(`${controlName}: initialise`);
         try {
             super.initialise(args).then(async _ => {
-                await self.loadManifest(self.$cls);
-                await self.setDefaultConfig();
-                self.createElement(new self.$ctrlCfg(self.rootElementName, self.elementType, self.elementConfig.get(self.$cls.BUTTON_NAME)));
-                self.colour = self._colour;
-                self.size = self._size;
-                self.buttonType = self._buttonType;
+                await self.loadManifest(self.$bsButton);
+                await self.setDefaultConfig({ controlName });
+                self.createElement(new self.$ctrlCfg(self.rootElementName, self.elementType, self.elementConfig.getConfig(self.$bsButton.BUTTON_NAME)));
+                self.Colour(self.colour);
+                self.Size(self.size);
+                self.ButtonType(self.buttonType);
+                self.Disabled(self.disabled);
+                self.IsToggle(self.isToggle);
+                self.NoWrap(self.noWrap);
+                self.Outline(self.outline);
+                self.ToggleState(self.toggleState);
+                self.Text(self.text);
+
                 self.elementType = self._elementType;
-                self.disabled = self._disabled;
-                self.isToggle = self._isToggle;
-                self.noWrap = self._noWrap;
-                self.outline = self._outline;
-                self.toggleState = self._toggleState;
-                self.text = self._buttonText;
                 initialisePromise.resolve(self);
             })
         } catch (error) { initialisePromise.reject(error); }
@@ -517,14 +468,16 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * @public
      * @returns {Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Button>}
      */
-    public setDefaultConfig(): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Button> {
-        const self = this,
-            setDefaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Button>(`${self.$cls[self.$mrbr.COMPONENT_NAME]}:setDefaultConfig`);
+    public setDefaultConfig(...args: any[]): Mrbr_System_Promise<Mrbr_UI_Bootstrap_Controls_Button> {
+        const
+            self = this,
+            controlName = args?.find(arg => typeof arg === "object" && arg?.controlName)?.controlName ?? self.$bsButton[self.$mrbr.COMPONENT_NAME],
+            setDefaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Controls_Button>(`${controlName}:setDefaultConfig`);
         try {
             super.setDefaultConfig().then(_ => {
                 self.elementConfig
-                    .controlName(self.$cls[self.$mrbr.COMPONENT_NAME])
-                    .setIfNotExist(self.$cls.BUTTON_NAME, new self.$ctrlPrm()
+                    .controlName(controlName)
+                    .setIfNotExist(self.$bsButton.BUTTON_NAME, new self.$ctrlPrm()
                         .Classes("btn"));
                 setDefaultConfigPromise.resolve(self);
             })
@@ -543,7 +496,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
     public buttonClick_handler(event: MouseEvent | TouchEvent): void {
         event.stopPropagation();
         event.preventDefault();
-        this.eventSubscribers.raise(this.$cls.CLICK_EVENT_NAME, new Mrbr_System_Events_Event(this.$cls.CLICK_EVENT_NAME, this));
+        this.eventSubscribers.raise(this.$bsButton.CLICK_EVENT_NAME, new Mrbr_System_Events_Event(this.$bsButton.CLICK_EVENT_NAME, this));
     }
 
     /**
@@ -554,9 +507,12 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * @param {(MouseEvent | TouchEvent)} event
      */
     public buttonToggle_handler(event: MouseEvent | TouchEvent): void {
-        const ts = this.$cls.toggleStates;
-        this.toggleState = (this.toggleState === ts.on) ? ts.off : ts.on;
-        this.eventSubscribers.raise(this.$cls.TOGGLE_EVENT_NAME, new Mrbr_System_Events_Event(this.$cls.TOGGLE_EVENT_NAME, this, { toggleState: this.toggleState }));
+        this.toggleState = (this.toggleState === "on") ? "off" : "on";
+
+        event.stopPropagation();
+        event.preventDefault();
+
+        this.eventSubscribers.raise(this.$bsButton.TOGGLE_EVENT_NAME, new Mrbr_System_Events_Event(this.$bsButton.TOGGLE_EVENT_NAME, this, { toggleState: this.toggleState }));
     }
 
     /**
@@ -567,14 +523,20 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * @param {(event: Mrbr_System_Events_Event<any>) => void} callback
      * @returns {number}
      */
-    public onClick(callback: (event: Mrbr_System_Events_Event<any>) => void): number {
-        (!this.events.has(this.$cls.CLICK_EVENT_NAME)) && this.events.addEventHandler(new Mrbr_System_Events_EventHandler(
-            "click",
+    public onClick(callback: (event: Mrbr_System_Events_Event<any>) => void | number): number {
+        const eventName = this.$bsButton.CLICK_EVENT_NAME;
+        if (typeof callback === "number") {
+            this.eventSubscribers.remove(eventName, callback);
+            return null;
+        }
+        return this.addDeferredOnMountFn(
+            eventName,
+            eventName,
             this.rootElement,
             this.buttonClick_handler,
-            this
-        ));
-        return this.eventSubscribers.add(this.$cls.CLICK_EVENT_NAME, callback);
+            this,
+            callback
+        );
     }
 
     /**
@@ -586,14 +548,23 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
      * @param {(event: Mrbr_System_Events_Event<any>) => void} callback
      * @returns {number}
      */
-    public onToggle(callback: (event: Mrbr_System_Events_Event<any>) => void): number {
-        (!this.events.has(this.$cls.TOGGLE_EVENT_NAME)) && this.events.add(this.$cls.TOGGLE_EVENT_NAME, new Mrbr_System_Events_EventHandler(
-            "click",
+    public onToggle(callback: (event: Mrbr_System_Events_Event<any>) => void | number): number {
+        const
+            toggleEventName = this.$bsButton.TOGGLE_EVENT_NAME,
+            clickEventName = this.$bsButton.CLICK_EVENT_NAME;
+        if (typeof callback === "number") {
+            this.eventSubscribers.remove(toggleEventName, callback);
+            return null;
+        }
+
+        this.addDeferredOnMountFn(
+            toggleEventName,
+            clickEventName,
             this.rootElement,
             this.buttonToggle_handler,
-            this
-        ));
-        return this.eventSubscribers.add(this.$cls.TOGGLE_EVENT_NAME, callback);
+            this,
+            callback
+        );
     }
 
     /**
@@ -606,7 +577,7 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
         this.bootstrap.Button.getOrCreateInstance(this.rootElement)?.toggle();
     }
 
-    
+
     /**
      * Dispose of button and Bootstrap button instance
      * @date 11/11/2022 - 13:09:10
@@ -618,4 +589,123 @@ export class Mrbr_UI_Bootstrap_Controls_Button extends Mrbr_UI_Bootstrap_Control
         super.dispose();
     }
     //#endregion event handlers
+
+
+    /**
+     * Set the button colour, using Bootstrap Button Colours, fluent interface
+     * @date 15/01/2023 - 10:40:44
+     *
+     * @public
+     * @param {Mrbr_UI_Bootstrap_Utilities_ButtonColours} value
+     * @returns {this}
+     */
+    public Colour(value: Mrbr_UI_Bootstrap_Utilities_ButtonColours): this {
+        this.colour = value;
+        return this;
+    }
+
+    /**
+     * Set the button size, using Bootstrap Button Sizes, fluent interface
+     * @date 15/01/2023 - 10:41:04
+     *
+     * @public
+     * @param {typeButtonSizes} value
+     * @returns {this}
+     */
+    public Size(value: typeButtonSizes): this {
+        this.size = value;
+        return this;
+    }
+
+
+    /**
+     * Set the button type, fluent interface
+     * @date 15/01/2023 - 10:57:10
+     *
+     * @public
+     * @param {typeButtonTypes} value
+     * @returns {this}
+     */
+    public ButtonType(value: typeButtonTypes): this {
+        this.buttonType = value;
+        return this;
+    }
+
+    /**
+     * Set the button disabled state, fluent interface
+     * @date 15/01/2023 - 10:57:24
+     *
+     * @public
+     * @param {boolean} value
+     * @returns {this}
+     */
+    public Disabled(value: boolean): this {
+        this.disabled = value;
+        return this;
+    }
+
+    /**
+     * Set the button toggle state, fluent interface
+     * @date 15/01/2023 - 10:57:32
+     *
+     * @public
+     * @param {boolean} value
+     * @returns {this}
+     */
+    public IsToggle(value: boolean): this {
+        this.isToggle = value;
+        return this;
+    }
+
+    /**
+     * Set the button noWrap state, fluent interface
+     * @date 15/01/2023 - 10:57:38
+     *
+     * @public
+     * @param {boolean} value
+     * @returns {this}
+     */
+    public NoWrap(value: boolean): this {
+        this.noWrap = value;
+        return this;
+    }
+
+    /**
+     * Set the button outline state, fluent interface
+     * @date 15/01/2023 - 10:57:46
+     *
+     * @public
+     * @param {boolean} value
+     * @returns {this}
+     */
+    public Outline(value: boolean): this {
+        this.outline = value;
+        return this;
+    }
+
+    /**
+     * Set the button toggle state, fluent interface
+     * @date 15/01/2023 - 10:57:54
+     *
+     * @public
+     * @param {typeToggleStates} value
+     * @returns {this}
+     */
+    public ToggleState(value: typeToggleStates): this {
+        this.toggleState = value;
+        return this;
+    }
+
+    /**
+     * Set the button text, fluent interface
+     * @date 15/01/2023 - 10:58:00
+     *
+     * @public
+     * @param {string} value
+     * @returns {this}
+     */
+    public Text(value: string): this {
+        this.text = value;
+        return this;
+    }
 }

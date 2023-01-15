@@ -12,16 +12,14 @@ export class Mrbr_Tests_Application$Button {
             buttons = [button, button2];
         button.text = "Click Me";
 
-        Object.assign(button2, {
-            text: "Click Me Again",
-            size: this.$button.buttonSizes.small,
-            colour: this.$button.buttonColours.danger,
-            outline: true,
-            isToggle: true
-        })
-
         Promise.all(buttons.map(btn => btn.initialise()))
             .then(_ => {
+                button2
+                    .Text("Click me too")
+                    .Size("sm")
+                    .Colour(button2.$bsButtonColours.danger)
+                    .Outline(true)
+                    .IsToggle(true);
                 button.onClick(this.buttonClick.bind(this));
                 button2.onToggle(this.buttonToggle.bind(this));
                 buttons.forEach(btn => btn.mount(document.body))
