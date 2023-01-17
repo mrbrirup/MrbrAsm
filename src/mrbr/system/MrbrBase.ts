@@ -322,8 +322,7 @@ export class MrbrBase extends EventTarget {
             get(target: Map<string, any>, name: string | Symbol): any {
                 const ns = MrbrBase.Namespace;
                 if (typeof name === "string") {
-                    !target.has(<string>name) && target.set(<string>name, new ns(target, <string>name));
-                    return (target.has(<string>name)) ? (target.get(<string>name)) : null;
+                    return target.get(name) ?? target.set(<string>name, new ns(target, <string>name)).get(name);
                 }
                 switch (name) {
                     case ns.KEYS: return target.keys();
@@ -381,6 +380,32 @@ export class MrbrBase extends EventTarget {
              */
             set(target: Map<string, any>, name: string | Symbol, value: any) {
                 const ns = MrbrBase.Namespace;
+                if (typeof name === "string") {
+                    /// Set value of an empty Target Namespace
+                    let namedTarget,
+                        namedTargetInstanceOfMap;
+                    if (
+                        (target[ns.SIZE] === 0 && target[ns.IS_NAMESPACE] === true) ||
+                        (!(namedTarget ??= target.get(<string>name))) ||
+                        ((namedTargetInstanceOfMap ??= namedTarget instanceof Map) === false) ||
+                        (namedTargetInstanceOfMap &&
+                            (
+                                (namedTarget[ns.IS_NAMESPACE] === false) ||
+                                (namedTarget[ns.SIZE] === 0 && namedTarget[ns.IS_NAMESPACE] === true)
+                            )
+                        )
+                    ) {
+                        target.set(<string>name, value);
+                        return true;
+                    }
+                    if (namedTargetInstanceOfMap &&
+                        namedTarget[ns.SIZE] > 0 &&
+                        namedTarget[ns.IS_NAMESPACE] === true) {
+                        throw new Error(`${namedTarget[ns.NAME]} is not an empty Namespace`);
+                    }
+                    return false;
+                }
+
                 /// Static Symbols are returned with no action
                 switch (name) {
                     case ns.IS_NAMESPACE:
@@ -397,32 +422,6 @@ export class MrbrBase extends EventTarget {
                     case ns.KEY_ARRAY:
                         return true
                 }
-                /// Set value of an empty Target Namespace
-                if (target[ns.SIZE] === 0 &&
-                    target[ns.IS_NAMESPACE] === true) {
-                    target.set(<string>name, value);
-                    return true;
-                }
-                /// If the Namespace part has already been created check if the value can be assigne to it
-                let namedTarget = target.get(<string>name);
-                if (
-                    !namedTarget ||
-                    (namedTarget instanceof Map === false) ||
-                    (namedTarget instanceof Map &&
-                        namedTarget[ns.IS_NAMESPACE] === false) ||
-                    (namedTarget instanceof Map &&
-                        namedTarget[ns.SIZE] === 0 &&
-                        namedTarget[ns.IS_NAMESPACE] === true)) {
-                    target.set(<string>name, value);
-                    return true;
-                }
-                /// Throw error if attempting to set a value for the Namespace Part that already has entries
-                if (namedTarget instanceof Map &&
-                    namedTarget[ns.SIZE] > 0 &&
-                    namedTarget[ns.IS_NAMESPACE] === true) {
-                    throw new Error(`${namedTarget[ns.NAME]} is not an empty Namespace`);
-                }
-                return false;
             }
         }
         /**
