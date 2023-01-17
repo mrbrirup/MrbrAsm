@@ -1,6 +1,8 @@
 import { Mrbr_System_Events_Event } from "../../../system/events/Event";
 import { Mrbr_System_Promise } from "../../../system/Promise";
 import { Mrbr_UI_Bootstrap_Controls_BootstrapControl } from "../controls/BootstrapControl";
+import { Mrbr_UI_Bootstrap_Form_TextInputEvent } from "./textInputEvent";
+import { Mrbr_UI_Bootstrap_Form_TextInputEventData } from "./textInputEventData";
 
 export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstrap_Controls_BootstrapControl {
 
@@ -17,6 +19,8 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
      */
     public static readonly FORMCONTROL_VALID_MESSAGE: string = "form-control-valid-message";
 
+
+    public static readonly FORMCONTROL_FORM_LABEL_CLASS: string = "form-label";
 
     /**
      * Internal name for FormControl Invalid Message
@@ -75,6 +79,19 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
      */
     public static readonly FORMCONTROL_VISUALLY_HIDDEN: string = "visually-hidden";
 
+
+    /**
+     * Throttle time for input events
+     * @date 17/01/2023 - 07:52:51
+     *
+     * @public
+     * @static
+     * @readonly
+     * @type {number}
+     */
+    public static readonly FORMCONTROL_THROTTLE_TIME: number = 250;
+
+
     /**
      * Namespace Alias for Mrbr.UI.Bootstrap.Form
      * @date 02/01/2023 - 00:13:36
@@ -86,17 +103,40 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
     public get $nsBsForm(): any { return this[Symbol.for("Mrbr.UI.Bootstrap.Form")] ??= this.$mrbrInstance.host["Mrbr"].UI.Bootstrap.Form; }
 
     /**
-     * Type Alias for Mrbr.UI.Bootstrap.Form.FormCheck class
+     * Type Alias for Mrbr.UI.Bootstrap.Form.FormControl class
      * @date 02/01/2023 - 00:14:49
      *
      * @public
      * @readonly
-     * @type {typeof Mrbr_UI_Bootstrap_Form_FormCheck}
+     * @type {typeof Mrbr_UI_Bootstrap_Form_FormControl}
      */
     public get $bsFormControl(): typeof Mrbr_UI_Bootstrap_Form_BootstrapFormControl { return this.$nsBsForm.BootstrapFormControl as typeof Mrbr_UI_Bootstrap_Form_BootstrapFormControl; }
 
+
     /**
-     * Internal FormCheck wrapper name
+     * Type Alias for Mrbr_UI_Bootstrap_Form_TextInputEvent
+     * @date 16/01/2023 - 13:31:28
+     *
+     * @public
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Form_TextInputEvent}
+     * @memberof Mrbr_UI_Bootstrap_Form_DateTimeLocal
+     */
+    public get $bsTextInputEvent(): typeof Mrbr_UI_Bootstrap_Form_TextInputEvent { return this.$nsBsForm.TextInputEvent as typeof Mrbr_UI_Bootstrap_Form_TextInputEvent; }
+    /**
+     * Type Alias for Mrbr_UI_Bootstrap_Form_TextInputEventData
+     * @date 16/01/2023 - 13:31:37
+     *
+     * @public
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Form_TextInputEventData}
+     * @memberof Mrbr_UI_Bootstrap_Form_DateTimeLocal
+     */
+    public get $bsTextInputEventData(): typeof Mrbr_UI_Bootstrap_Form_TextInputEventData { return this.$nsBsForm.TextInputEventData as typeof Mrbr_UI_Bootstrap_Form_TextInputEventData; }
+
+
+    /**
+     * Internal FormControl wrapper name
      * @date 02/01/2023 - 00:06:31
      *
      * @public
@@ -107,7 +147,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
     public static readonly FORMCONTROL_LABEL_WRAPPER: string = "formcontrol_label_wrapper";
 
     /**
-     * Internal FormCheck label name
+     * Internal FormControl label name
      * @date 02/01/2023 - 00:06:24
      *
      * @public
@@ -130,7 +170,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
     public static readonly FORMCONTROL: string = "formcontrol";
 
     /**
-     * Value of the FormCheck not the check state, use checked property for checked state, field
+     * Value of the FormControl not the check state, use checked property for checked state, field
      * @date 02/01/2023 - 00:16:30
      *
      * @private
@@ -140,7 +180,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
 
 
     /**
-     * Disabled state of the FormCheck, field
+     * Disabled state of the FormControl, field
      * @date 02/01/2023 - 00:15:44
      *
      * @private
@@ -148,7 +188,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
      */
     private _disabled: boolean = false;
     /**
-     * Label text for the FormCheck, field
+     * Label text for the FormControl, field
      * @date 02/01/2023 - 00:15:38
      *
      * @private
@@ -166,7 +206,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
     protected _inputElementName: string;
 
     /**
-     * Aria label for the FormCheck, field
+     * Aria label for the FormControl, field
      * @date 02/01/2023 - 00:16:16
      *
      * @private
@@ -415,7 +455,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
     }
 
     /**
-     * Label text for the FormCheck
+     * Label text for the FormControl
      * @date 02/01/2023 - 00:19:25
      *
      * @public
@@ -423,7 +463,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
      */
     public get label(): string { return this._label; }
     /**
-     * Label text for the FormCheck
+     * Label text for the FormControl
      */
     public set label(value: string) {
         const
@@ -640,34 +680,34 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
 
 
     /**
-     * Sets the aria label for the FormCheck, fluent interface
+     * Sets the aria label for the FormControl, fluent interface
      * @date 02/01/2023 - 00:30:01
      *
      * @public
      * @param {string} value
-     * @returns {TFormCheck}
+     * @returns {this}
      */
     public AriaLabel(value: string): this { this.ariaLabel = value; return this; }
 
     /**
-     * Sets the label for the FormCheck, fluent interface
+     * Sets the label for the FormControl, fluent interface
      * @date 02/01/2023 - 00:29:09
      *
      * @public
      * @param {string} value
-     * @returns {TFormCheck}
+     * @returns {this}
      */
     public Label(value: string): this { this.label = value; return this; }
 
 
 
     /**
-     * Sets the value for the FormCheck, fluent interface
+     * Sets the value for the FormControl, fluent interface
      * @date 03/01/2023 - 00:53:28
      *
      * @public
      * @param {string} value
-     * @returns {TFormCheck}
+     * @returns {this}
      */
     public Value(value: string | any): this {
         (value !== undefined && value !== null && typeof value !== "string") && (value = value.toString());
@@ -692,7 +732,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
      *
      * @public
      * @param {boolean} value
-     * @returns {TFormCheck}
+     * @returns {this}
      */
     public Disabled(value: boolean): this { this.disabled = value; return this; }
 
@@ -792,10 +832,21 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
      * @param {Event} event
      */
     protected formControlInput_handler(event: Event): void {
-        const eventName = this.$bsFormControl.INPUT_CHANGE_EVENT_NAME;
+        const
+            eventName = this.$bsFormControl.INPUT_CHANGE_EVENT_NAME,
+            timeoutHandle = Symbol.for("formControlInput_timeout");
         event.stopPropagation();
         event.preventDefault();
-        this.eventSubscribers.raiseEvent(new this.$event(eventName, this, { event: event }))
+        if (this[timeoutHandle]) {
+            clearTimeout(this[timeoutHandle]);
+            this[timeoutHandle] = null;
+        }
+        this[timeoutHandle] = setTimeout(() => {
+            const
+                inputEventData = new this.$bsTextInputEventData(this.inputElement.value, event),
+                inputEvent = new this.$bsTextInputEvent(eventName, this, inputEventData);
+            this.eventSubscribers.raiseEvent(inputEvent)
+        }, this.$bsFormControl.FORMCONTROL_THROTTLE_TIME);
     }
 
 
@@ -903,7 +954,7 @@ export class Mrbr_UI_Bootstrap_Form_BootstrapFormControl extends Mrbr_UI_Bootstr
      */
     public set fieldName(value: string) {
         const inputElement = this.inputElement;
-        (inputElement) && (inputElement.name = value);
+        (inputElement && value) && (inputElement.name = value);
         this._fieldName = value;
     }
 

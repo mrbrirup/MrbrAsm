@@ -115,7 +115,7 @@ export class Mrbr_UI_Bootstrap_Form_FileInput extends Mrbr_UI_Bootstrap_Form_Boo
         const
             self = this,
             bsFileInput = self.$bsFileInput,
-            controlName = args?.find(arg => typeof arg === "object" && arg?.hasOwnProperty("controlName"))?.controlName ?? self.$bsFileInput[self.$mrbr.COMPONENT_NAME],
+            controlName = args?.find(arg => typeof arg === "object" && arg.controlName)?.controlName ?? self.$bsFileInput[self.$mrbr.COMPONENT_NAME],
             initialisePromise = self.$promise.create(`${controlName}:initialise`);
         super
             .initialise([...args, { controlName }].flat())

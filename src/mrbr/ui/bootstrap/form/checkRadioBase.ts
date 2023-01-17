@@ -7,11 +7,10 @@ import { Mrbr_UI_Bootstrap_Form_BootstrapFormControl } from "./BootstrapFormCont
  *
  * @export
  * @class Mrbr_UI_Bootstrap_Form_FormCheck
- * @typedef {Mrbr_UI_Bootstrap_Form_FormCheck}
- * @template TFormCheck - Type of the FormCheck class used for fluent interface
+ * @typedef {Mrbr_UI_Bootstrap_Form_CheckRadioBase}
  * @extends {Mrbr_UI_Bootstrap_Controls_BootstrapFormControl}
  */
-export class Mrbr_UI_Bootstrap_Form_FormCheck extends Mrbr_UI_Bootstrap_Form_BootstrapFormControl {
+export class Mrbr_UI_Bootstrap_Form_CheckRadioBase extends Mrbr_UI_Bootstrap_Form_BootstrapFormControl {
 
 
     /**
@@ -99,9 +98,9 @@ export class Mrbr_UI_Bootstrap_Form_FormCheck extends Mrbr_UI_Bootstrap_Form_Boo
      *
      * @public
      * @readonly
-     * @type {typeof Mrbr_UI_Bootstrap_Form_FormCheck}
+     * @type {typeof Mrbr_UI_Bootstrap_Form_CheckRadioBase}
      */
-    public get $bsFormCheck(): typeof Mrbr_UI_Bootstrap_Form_FormCheck { return this.$nsBsForm.FormCheck as typeof Mrbr_UI_Bootstrap_Form_FormCheck; }
+    public get $bsCheckRadioBase(): typeof Mrbr_UI_Bootstrap_Form_CheckRadioBase { return this.$nsBsForm.CheckRadioBase as typeof Mrbr_UI_Bootstrap_Form_CheckRadioBase; }
 
 
 
@@ -154,7 +153,7 @@ export class Mrbr_UI_Bootstrap_Form_FormCheck extends Mrbr_UI_Bootstrap_Form_Boo
      * FormCheck inline style
      */
     public set inline(value: boolean) {
-        this.rootElement?.classList.toggle(this.$bsFormCheck.FORMCHECK_CLASS_WRAPPER_INLINE, value);
+        this.rootElement?.classList.toggle(this.$bsCheckRadioBase.FORMCHECK_CLASS_WRAPPER_INLINE, value);
         this._inline = value;
     }
 
@@ -171,7 +170,7 @@ export class Mrbr_UI_Bootstrap_Form_FormCheck extends Mrbr_UI_Bootstrap_Form_Boo
      * FormCheck reverse style
      */
     public set reverse(value: boolean) {
-        this.rootElement?.classList.toggle(this.$bsFormCheck.FORMCHECK_CLASS_WRAPPER_REVERSE, value);
+        this.rootElement?.classList.toggle(this.$bsCheckRadioBase.FORMCHECK_CLASS_WRAPPER_REVERSE, value);
         this._reverse = value;
     }
 
@@ -208,21 +207,33 @@ export class Mrbr_UI_Bootstrap_Form_FormCheck extends Mrbr_UI_Bootstrap_Form_Boo
     public setDefaultConfig(...args: any[] | null): Mrbr_System_Promise<this> {
         const
             self = this,
-            controlName = args?.find(arg => typeof arg === 'object' && arg.hasOwnProperty('controlName'))?.controlName ?? self.$bsFormCheck[self.$mrbr.COMPONENT_NAME],
+            controlName = args?.find(arg => typeof arg === 'object' && arg.controlName)?.controlName ?? self.$bsCheckRadioBase[self.$mrbr.COMPONENT_NAME],
             setDefaultConfigPromise = self.$promise.create(`${controlName}:setDefaultConfig`);
         super
-            .setDefaultConfig(...args)
+            .setDefaultConfig({ controlName })
             .then(() => {
                 self
                     .elementConfig
                     .controlName(controlName)
-                    .setIfNotExist(self.$bsFormCheck.FORMCHECK_LABEL, new self.$ctrlPrm()
+                    .setIfNotExist(self.$bsCheckRadioBase.FORMCHECK_LABEL, new self.$ctrlPrm()
                         .Classes("form-check-label"))
-                    .setIfNotExist(self.$bsFormCheck.FORMCHECK_LABEL_WRAPPER, new self.$ctrlPrm()
+                    .setIfNotExist(self.$bsCheckRadioBase.FORMCHECK_LABEL_WRAPPER, new self.$ctrlPrm()
                         .Classes("form-check"));
                 setDefaultConfigPromise.resolve(self);
             })
             .catch(error => setDefaultConfigPromise.reject(error))
         return setDefaultConfigPromise;
     }
+
+    /**
+     * Label text for the FormControl
+     */
+    public set label(value: string) {
+        super.label = value;
+        const label = this.labelElement;
+        if (label) {
+            this.classes(label, this.$clsActions.replace, [this.$bsCheckRadioBase.FORMCONTROL_FORM_LABEL_CLASS, this.$bsCheckRadioBase.FORMCHECK_LABEL]);
+        }
+    }
+
 }

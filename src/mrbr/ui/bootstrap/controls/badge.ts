@@ -158,8 +158,7 @@ export class Mrbr_UI_Bootstrap_Controls_Badge extends Mrbr_UI_Controls_Control {
      * Sets the shape of the badge.
      */
     public set badgeShape(value: Mrbr_UI_Bootstrap_Controls_Badge$Shape) {
-        this.classes(this.rootElement, this.$clsActions.remove, this._badgeShape);
-        this.classes(this.rootElement, this.$clsActions.add, value);
+        this.rootClasses(this.$clsActions.replace, [this._badgeShape, value]);
         this._badgeShape = value;
     }
 

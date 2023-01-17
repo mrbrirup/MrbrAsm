@@ -3,7 +3,7 @@ import { Mrbr_UI_Bootstrap_Utilities_ButtonColours } from "../utilities/buttonCo
 import { Mrbr_UI_Bootstrap_Form_CheckBoxEvent } from "./checkboxEvent";
 import { Mrbr_UI_Bootstrap_Form_CheckBoxEventData } from "./checkboxEventData";
 import { Mrbr_UI_Bootstrap_Form_CheckBoxStates } from "./checkboxStates";
-import { Mrbr_UI_Bootstrap_Form_FormCheck } from "./formCheck";
+import { Mrbr_UI_Bootstrap_Form_CheckRadioBase } from "./checkRadioBase";
 
 /**
  * Create a bootstrap checkbox or toggle control
@@ -12,9 +12,9 @@ import { Mrbr_UI_Bootstrap_Form_FormCheck } from "./formCheck";
  * @export
  * @class Mrbr_UI_Bootstrap_Form_CheckBox
  * @typedef {Mrbr_UI_Bootstrap_Form_CheckBox}
- * @extends {Mrbr_UI_Bootstrap_Form_FormCheck<Mrbr_UI_Bootstrap_Form_CheckBox>}
+ * @extends {Mrbr_UI_Bootstrap_Form_CheckRadioBase<Mrbr_UI_Bootstrap_Form_CheckBox>}
  */
-export class Mrbr_UI_Bootstrap_Form_CheckBox extends Mrbr_UI_Bootstrap_Form_FormCheck {
+export class Mrbr_UI_Bootstrap_Form_CheckBox extends Mrbr_UI_Bootstrap_Form_CheckRadioBase {
 
 
     /**
@@ -253,14 +253,14 @@ export class Mrbr_UI_Bootstrap_Form_CheckBox extends Mrbr_UI_Bootstrap_Form_Form
         const
             self = this,
             bsCheckBox = self.$bsCheckBox,
-            controlName = bsCheckBox[self.$mrbr.COMPONENT_NAME],
+            controlName = args?.find(arg => typeof arg === "object" && arg.controlName)?.controlName ?? bsCheckBox[self.$mrbr.COMPONENT_NAME],
             initalisePromise = self.$promise.create<Mrbr_UI_Bootstrap_Form_CheckBox>(`${controlName}:initialise`);
         super
-            .initialise(...args)
+            .initialise([{ controlName }, ...args].flat())
             .then(async _ => {
                 await self.loadManifest(bsCheckBox);
-                await self.setDefaultConfig();
-                self.createElement(new self.$ctrlCfg(self.rootElementName, self.$htmlt.div, new self.$ctrlPrm()
+                await self.setDefaultConfig({ controlName });
+                self.createElement(new self.$ctrlCfg(self.rootElementName, self.$htmlt.div, self.elementConfig.getConfig(bsCheckBox.FORMCHECK_LABEL_WRAPPER)
                     .Children(
                         self.createElement(new self.$ctrlCfg(bsCheckBox.CHECKBOX, self.$htmlt.input, self.elementConfig.getConfig(bsCheckBox.CHECKBOX)))
                     )));
@@ -291,7 +291,7 @@ export class Mrbr_UI_Bootstrap_Form_CheckBox extends Mrbr_UI_Bootstrap_Form_Form
     public setDefaultConfig(...args: any[]): Mrbr_System_Promise<this> {
         const
             self = this,
-            controlName = args?.find(arg => typeof arg === "object" && arg.hasOwnProperty("controlName"))?.controlName ?? self.$bsCheckBox[self.$mrbr.COMPONENT_NAME],
+            controlName = args?.find(arg => typeof arg === "object" && arg.controlName)?.controlName ?? self.$bsCheckBox[self.$mrbr.COMPONENT_NAME],
             setDefaultConfigPromise = self.$promise.create<Mrbr_UI_Bootstrap_Form_CheckBox>(`${controlName}:setDefaultConfig`);
         super
             .setDefaultConfig({ controlName })

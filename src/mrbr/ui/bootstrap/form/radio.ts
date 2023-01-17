@@ -1,9 +1,9 @@
 import { Mrbr_System_Promise } from "../../../system/Promise";
-import { Mrbr_UI_Bootstrap_Form_FormCheck } from "./formCheck";
+import { Mrbr_UI_Bootstrap_Form_CheckRadioBase } from "./checkRadioBase";
 import { Mrbr_UI_Bootstrap_Form_RadioEvent } from "./radioEvent";
 import { Mrbr_UI_Bootstrap_Form_RadioEventData } from "./radioEventData";
 
-export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_FormCheck {
+export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_CheckRadioBase {
 
 
     /**
@@ -106,14 +106,15 @@ export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_FormChe
     public initialise(...args: any[]): Mrbr_System_Promise<this> {
         const
             self = this,
-            controlName = args?.find(args => typeof args === "object" && args.hasOwnProperty("controlName"))?.controlName ?? this.$bsRadio[self.$mrbr.COMPONENT_NAME],
+            controlName = args?.find(args => typeof args === "object" && args.controlName)?.controlName ?? this.$bsRadio[self.$mrbr.COMPONENT_NAME],
             initalisePromise = this.$promise.create(`${controlName}:initialise`);
         super
-            .initialise(...args)
+            .initialise([{ controlName }, ...args].flat())
             .then(async _ => {
                 await self.loadManifest(self.$bsRadio);
                 await self.setDefaultConfig({ controlName });
-                self.createElement(new self.$ctrlCfg(self.rootElementName, self.$htmlt.div, new self.$ctrlPrm()
+                debugger;
+                self.createElement(new self.$ctrlCfg(self.rootElementName, self.$htmlt.div, self.elementConfig.getConfig(self.$bsRadio.FORMCHECK_LABEL_WRAPPER)
                     .Children(
                         self.createElement(new self.$ctrlCfg(self.$bsRadio.RADIO, self.$htmlt.input, self.elementConfig.getConfig(self.$bsRadio.RADIO)))
                     )));
@@ -142,10 +143,11 @@ export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_FormChe
     public setDefaultConfig(...args: any[]): Mrbr_System_Promise<this> {
         const
             self = this,
-            controlName = args?.find(arg => typeof arg === 'object' && arg.hasOwnProperty('controlName'))?.controlName ?? this.$bsRadio[self.$mrbr.COMPONENT_NAME],
+            controlName = args?.find(arg => typeof arg === 'object' && arg.controlName)?.controlName ?? this.$bsRadio[self.$mrbr.COMPONENT_NAME],
             setDefaultConfigPromise = this.$promise.create(`${controlName}:setDefaultConfig`);
+        debugger
         super
-            .setDefaultConfig([...args, { controlName }].flat())
+            .setDefaultConfig({ controlName })
             .then(_ => {
                 self.
                     elementConfig
@@ -187,7 +189,7 @@ export class Mrbr_UI_Bootstrap_Form_Radio extends Mrbr_UI_Bootstrap_Form_FormChe
      * @param {Event} event
      */
     protected override formControlInput_handler(event: Event): void {
-        const eventName = this.$bsFormCheck.INPUT_CHANGE_EVENT_NAME;
+        const eventName = this.$bsCheckRadioBase.INPUT_CHANGE_EVENT_NAME;
         event.stopPropagation();
         event.preventDefault();
         const radio = <HTMLInputElement>this.elements.get(this.$bsRadio.RADIO)

@@ -542,11 +542,15 @@ export class Mrbr_UI_Bootstrap_Form_Layout extends Mrbr_UI_Bootstrap_Form_Bootst
      * @param {ColumnParameters[]} columns
      * @returns {Array<Mrbr_UI_Bootstrap_Form_LayoutRow>}
      */
-    public createGrid(rows: number, columns: ColumnParameters[]): Array<Mrbr_UI_Bootstrap_Form_LayoutRow> {
+    public createGrid(rows: number, columns: ColumnParameters[] | number): Array<Mrbr_UI_Bootstrap_Form_LayoutRow> {
         const addRowResult = Array<Mrbr_UI_Bootstrap_Form_LayoutRow>();
         for (let rowCounter: number = 0; rowCounter < rows; rowCounter++) {
             const row = this.addRow();
             addRowResult.push(row);
+            if (typeof columns === "number") {
+                const span = Math.floor(12 / columns);
+                columns = [...Array(Math.floor(12 / span))].map((_, i) => span)
+            }
             for (let columnCounter: number = 0; columnCounter < columns.length; columnCounter++) {
                 row.CreateColumn(columns[columnCounter]);
             }

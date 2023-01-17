@@ -74,32 +74,4 @@ export class Mrbr_UI_Bootstrap_Form_Email extends Mrbr_UI_Bootstrap_Form_Bootstr
             .catch(error => initialisePromise.reject(error))
         return initialisePromise;
     }
-    /**
-     * Handle the input change event, throttle the event to prevent multiple events being fired
-     * @date 03/01/2023 - 15:35:44
-     *
-     * @protected
-     * @override
-     * @param {Event} event
-     */
-    protected override formControlInput_handler(event: Event): void {
-        const
-            eventName = this.$bsFormControl.INPUT_CHANGE_EVENT_NAME,
-            throttleTimeMs = 250;
-        event.stopPropagation();
-        event.preventDefault();
-        const
-            inputElement = <HTMLInputElement>this.elements.get(this.inputElementName),
-            timeoutHandle = Symbol.for("formControlInput_timeout");
-        if (this[timeoutHandle]) {
-            clearTimeout(this[timeoutHandle]);
-            this[timeoutHandle] = null;
-        }
-        this[timeoutHandle] = setTimeout(() => {
-            const
-                eventData = new Mrbr_UI_Bootstrap_Form_TextInputEventData(inputElement.value, event),
-                inputEvent = new Mrbr_UI_Bootstrap_Form_TextInputEvent(eventName, this, eventData);
-            this.eventSubscribers.raiseEvent(inputEvent);
-        }, throttleTimeMs);
-    }
 }

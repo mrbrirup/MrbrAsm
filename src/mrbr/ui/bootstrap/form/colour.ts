@@ -14,7 +14,7 @@ import { Mrbr_UI_Bootstrap_Form_TextInputEventData } from "./textInputEventData"
  */
 export class Mrbr_UI_Bootstrap_Form_Colour extends Mrbr_UI_Bootstrap_Form_BootstrapFormControl {
 
-    
+
     /**
      * Internal Colour element name
      * @date 03/01/2023 - 17:08:28
@@ -26,7 +26,7 @@ export class Mrbr_UI_Bootstrap_Form_Colour extends Mrbr_UI_Bootstrap_Form_Bootst
      */
     public static readonly COLOUR: string = "color";
 
-    
+
     /**
      * Type Alias for Mrbr_UI_Bootstrap_Form_Colour
      * @date 03/01/2023 - 17:08:36
@@ -35,9 +35,32 @@ export class Mrbr_UI_Bootstrap_Form_Colour extends Mrbr_UI_Bootstrap_Form_Bootst
      * @readonly
      * @type {typeof Mrbr_UI_Bootstrap_Form_Colour}
      */
-    public get $bsColour(): typeof Mrbr_UI_Bootstrap_Form_Colour { return Mrbr_UI_Bootstrap_Form_Colour; }
+    public get $bsColour(): typeof Mrbr_UI_Bootstrap_Form_Colour { return this.$nsBsForm.Colour as typeof Mrbr_UI_Bootstrap_Form_Colour; }
 
-    
+
+    /**
+     * Type Alias for Mrbr_UI_Bootstrap_Form_TextInputEvent
+     * @date 16/01/2023 - 13:31:28
+     *
+     * @public
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Form_TextInputEvent}
+     */
+    public get $bsTextInputEvent(): typeof Mrbr_UI_Bootstrap_Form_TextInputEvent { return this.$nsBsForm.TextInputEvent as typeof Mrbr_UI_Bootstrap_Form_TextInputEvent; }
+
+
+    /**
+     * Type Alias for Mrbr_UI_Bootstrap_Form_TextInputEventData
+     * @date 16/01/2023 - 13:31:37
+     *
+     * @public
+     * @readonly
+     * @type {typeof Mrbr_UI_Bootstrap_Form_TextInputEventData}
+     */
+    public get $bsTextInputEventData(): typeof Mrbr_UI_Bootstrap_Form_TextInputEventData { return this.$nsBsForm.TextInputEventData as typeof Mrbr_UI_Bootstrap_Form_TextInputEventData; }
+
+
+
     /**
      * Colour Picker Title
      * @date 03/01/2023 - 17:08:52
@@ -46,8 +69,8 @@ export class Mrbr_UI_Bootstrap_Form_Colour extends Mrbr_UI_Bootstrap_Form_Bootst
      * @type {string}
      */
     private _title: string;
-    
-    
+
+
     /**
      * Creates an instance of Mrbr_UI_Bootstrap_Form_Colour.
      * @date 03/01/2023 - 17:08:59
@@ -60,7 +83,7 @@ export class Mrbr_UI_Bootstrap_Form_Colour extends Mrbr_UI_Bootstrap_Form_Bootst
         this._inputType = this.$bsColour.COLOUR;
         this._inputElementName = this.$bsColour.COLOUR;
     }
-    
+
     /**
      * Colour Picker Title
      * @date 03/01/2023 - 17:11:09
@@ -69,7 +92,7 @@ export class Mrbr_UI_Bootstrap_Form_Colour extends Mrbr_UI_Bootstrap_Form_Bootst
      * @type {string}
      */
     public get title(): string { return this._title; }
-    
+
     /**
      * Colour Picker Title
      */
@@ -79,7 +102,7 @@ export class Mrbr_UI_Bootstrap_Form_Colour extends Mrbr_UI_Bootstrap_Form_Bootst
         this._title = value;
     }
 
-    
+
     /**
      * Initialise the control, load the manifest and set the default config
      * @date 03/01/2023 - 17:11:22
@@ -92,7 +115,7 @@ export class Mrbr_UI_Bootstrap_Form_Colour extends Mrbr_UI_Bootstrap_Form_Bootst
         const
             self = this,
             bsColour = self.$bsColour,
-            controlName = args?.find(arg => typeof arg === "object" && arg?.hasOwnProperty("controlName"))?.controlName ?? bsColour[self.$mrbr.COMPONENT_NAME],
+            controlName = args?.find(arg => typeof arg === "object" && arg?.controlName)?.controlName ?? bsColour[self.$mrbr.COMPONENT_NAME],
             initialisePromise = self.$promise.create(`${controlName}:initialise`);
         super
             .initialise([{ controlName }, ...args].flat()).then(async _ => {
@@ -115,7 +138,7 @@ export class Mrbr_UI_Bootstrap_Form_Colour extends Mrbr_UI_Bootstrap_Form_Bootst
 
 
     }
-    
+
     /**
      * Set the default config for the control
      * @date 03/01/2023 - 17:11:42
@@ -128,7 +151,7 @@ export class Mrbr_UI_Bootstrap_Form_Colour extends Mrbr_UI_Bootstrap_Form_Bootst
         const
             self = this,
             bsColour = self.$bsColour,
-            controlName = args?.find(arg => typeof arg === "object" && arg?.hasOwnProperty("controlName"))?.controlName ?? bsColour[self.$mrbr.COMPONENT_NAME],
+            controlName = args?.find(arg => typeof arg === "object" && arg?.controlName)?.controlName ?? bsColour[self.$mrbr.COMPONENT_NAME],
             setDefaultConfigPromise = self.$promise.create(`${controlName}:setDefaultConfig`);
         super
             .setDefaultConfig({ controlName }).then(_ => {
@@ -143,7 +166,7 @@ export class Mrbr_UI_Bootstrap_Form_Colour extends Mrbr_UI_Bootstrap_Form_Bootst
             .catch((error) => { setDefaultConfigPromise.reject(error); })
         return setDefaultConfigPromise;
     }
-    
+
     /**
      * Set the control properties
      * @date 03/01/2023 - 17:11:54
@@ -154,7 +177,7 @@ export class Mrbr_UI_Bootstrap_Form_Colour extends Mrbr_UI_Bootstrap_Form_Bootst
         super.setProperties();
         this.Title(this.title);
     }
-    
+
     /**
      * Set Colour Picker Title, fluent interface
      * @date 03/01/2023 - 17:12:01
@@ -166,34 +189,5 @@ export class Mrbr_UI_Bootstrap_Form_Colour extends Mrbr_UI_Bootstrap_Form_Bootst
     public Title(title: string): this {
         this.title = title;
         return this;
-    }
-
-    /**
-     * Handle the input change event, throttle raising the event
-     * @date 03/01/2023 - 15:35:44
-     *
-     * @protected
-     * @override
-     * @param {Event} event
-     */
-    protected override formControlInput_handler(event: Event): void {
-        const
-            eventName = this.$bsFormControl.INPUT_CHANGE_EVENT_NAME,
-            throttleTimeMs = 250;
-        event.stopPropagation();
-        event.preventDefault();
-        const
-            inputElement = <HTMLInputElement>this.elements.get(this.inputElementName),
-            timeoutHandle = Symbol.for("formControlInput_timeout");
-        if (this[timeoutHandle]) {
-            clearTimeout(this[timeoutHandle]);
-            this[timeoutHandle] = null;
-        }
-        this[timeoutHandle] = setTimeout(() => {
-            const
-                eventData = new Mrbr_UI_Bootstrap_Form_TextInputEventData(inputElement.value, event),
-                inputEvent = new Mrbr_UI_Bootstrap_Form_TextInputEvent(eventName, this, eventData);
-            this.eventSubscribers.raiseEvent(inputEvent);
-        }, throttleTimeMs);
     }
 }
